@@ -262,22 +262,19 @@ export default function VideoPlayer() {
                       )}
                       <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center px-2">{videoTitle}</h3>
                       
-                      <div className="text-center space-y-3 mb-6">
-                        <p className="text-gray-300">Watch this video on YouTube to earn ₹{videoEarning}</p>
-                        <p className="text-sm text-yellow-400">
-                          Required watch time: {Math.floor(requiredWatchTime / 60)}:{(requiredWatchTime % 60).toString().padStart(2, '0')} minutes
+                      <div className="text-center space-y-2 sm:space-y-3 mb-4 sm:mb-6 px-2">
+                        <p className="text-gray-300 text-sm sm:text-base">Watch this video on YouTube to earn ₹{videoEarning}</p>
+                        <p className="text-xs sm:text-sm text-yellow-400">
+                          Required: {Math.floor(requiredWatchTime / 60)}:{(requiredWatchTime % 60).toString().padStart(2, '0')} min
                         </p>
                         {isWatchingOnYoutube && youtubeWatchStartTime && (
-                          <div className="text-sm text-green-400 bg-green-900/20 px-3 py-1 rounded">
-                            ⏱️ Watching for: {Math.floor(currentWatchTime / 60)}:{(currentWatchTime % 60).toString().padStart(2, '0')}
+                          <div className="text-xs sm:text-sm text-green-400 bg-green-900/20 px-2 sm:px-3 py-1 sm:py-1.5 rounded max-w-xs mx-auto">
+                            ⏱️ {Math.floor(currentWatchTime / 60)}:{(currentWatchTime % 60).toString().padStart(2, '0')}
                             {currentWatchTime >= requiredWatchTime && (
-                              <span className="ml-2 text-green-300">✓ Eligible to complete!</span>
+                              <div className="text-green-300 font-medium">✓ Ready!</div>
                             )}
                           </div>
                         )}
-                        <p className="text-xs text-yellow-400">
-                          Note: If ad blockers prevent embedded playback, click "Open on YouTube" below
-                        </p>
                       </div>
 
                       <div className="flex flex-col gap-3 w-full max-w-sm px-2">
@@ -409,27 +406,40 @@ export default function VideoPlayer() {
               </div>
             )}
             
-            {/* Instructions for YouTube videos */}
-            {isYouTubeVideo && (
-              <div className="p-4 bg-blue-50 border-t">
-                <div className="flex items-start gap-3">
-                  <Info className="w-5 h-5 text-blue-600 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium text-blue-900 mb-1">How to earn from this video:</h4>
-                    <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-                      <li>Click "Open on YouTube" to watch the video</li>
-                      <li>Watch the complete video on YouTube</li>
-                      <li>Return here and click "Mark as Completed" to earn ₹{videoEarning}</li>
-                    </ol>
-                    <p className="text-xs text-blue-600 mt-2">
-                      Status: {hasCompleted ? '✅ Completed' : '⏳ Pending completion'}
-                    </p>
+
+          </CardContent>
+        </Card>
+
+        {/* Instructions for YouTube videos - Separate card */}
+        {isYouTubeVideo && (
+          <Card className="mb-4 sm:mb-6 touch-manipulation">
+            <CardContent className="p-3 sm:p-4 bg-blue-50">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
+                <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-medium text-blue-900 mb-2 text-sm sm:text-base">How to earn:</h4>
+                  <div className="text-xs sm:text-sm text-blue-800 space-y-1">
+                    <div className="flex items-start gap-2">
+                      <span className="flex-shrink-0 w-4 h-4 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                      <span>Click "Open on YouTube"</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="flex-shrink-0 w-4 h-4 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                      <span>Watch complete video</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="flex-shrink-0 w-4 h-4 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                      <span>Return & click "Mark as Completed" to earn ₹{videoEarning}</span>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-blue-600">
+                    Status: {hasCompleted ? '✅ Completed' : '⏳ Pending completion'}
                   </div>
                 </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Earning Status */}
         {canEarn ? (
