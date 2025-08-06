@@ -15,14 +15,14 @@ export default function Videos() {
     queryKey: ["/api/videos"],
   });
 
-  const filteredVideos = videos.filter((video: any) => {
+  const filteredVideos = (videos as any[]).filter((video: any) => {
     const matchesSearch = video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          video.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "all" || video.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const categories = Array.from(new Set(videos.map((video: any) => video.category).filter(Boolean)));
+  const categories = Array.from(new Set((videos as any[]).map((video: any) => video.category).filter(Boolean)));
 
   return (
     <div className="min-h-screen bg-neutral-50 safe-area-padding">
@@ -59,7 +59,7 @@ export default function Videos() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
-                    {categories.map((category) => (
+                    {categories.map((category: string) => (
                       <SelectItem key={category} value={category}>
                         {category}
                       </SelectItem>

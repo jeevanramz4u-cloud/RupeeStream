@@ -18,7 +18,7 @@ export default function EarningsHistory() {
     enabled: !!user,
   });
 
-  const { data: stats } = useQuery({
+  const { data: stats = {} } = useQuery({
     queryKey: ["/api/earnings/stats"],
     enabled: !!user,
   });
@@ -38,8 +38,8 @@ export default function EarningsHistory() {
   }
 
   // Group earnings by type for summary
-  const videoEarnings = earnings.filter((e: any) => e.type === 'video');
-  const referralEarnings = earnings.filter((e: any) => e.type === 'referral');
+  const videoEarnings = (earnings as any[]).filter((e: any) => e.type === 'video');
+  const referralEarnings = (earnings as any[]).filter((e: any) => e.type === 'referral');
   
   const totalVideoEarnings = videoEarnings.reduce((sum: number, e: any) => sum + parseFloat(e.amount), 0);
   const totalReferralEarnings = referralEarnings.reduce((sum: number, e: any) => sum + parseFloat(e.amount), 0);
@@ -74,7 +74,7 @@ export default function EarningsHistory() {
                 <Coins className="h-8 w-8 text-green-600" />
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-500">Total Earnings</p>
-                  <p className="text-xl sm:text-2xl font-bold text-gray-900">₹{stats?.totalEarnings || 0}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">₹{(stats as any)?.totalEarnings || 0}</p>
                 </div>
               </div>
             </CardContent>
@@ -110,7 +110,7 @@ export default function EarningsHistory() {
                 <Calendar className="h-8 w-8 text-orange-600" />
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-500">Today's Earnings</p>
-                  <p className="text-xl sm:text-2xl font-bold text-gray-900">₹{stats?.todayEarnings || 0}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">₹{(stats as any)?.todayEarnings || 0}</p>
                 </div>
               </div>
             </CardContent>
@@ -123,7 +123,7 @@ export default function EarningsHistory() {
             <CardTitle className="text-base sm:text-lg">All Earnings</CardTitle>
           </CardHeader>
           <CardContent>
-            {earnings.length === 0 ? (
+            {(earnings as any[]).length === 0 ? (
               <div className="text-center py-8">
                 <Coins className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500">No earnings yet</p>
@@ -137,7 +137,7 @@ export default function EarningsHistory() {
               </div>
             ) : (
               <div className="space-y-3">
-                {earnings.map((earning: any) => (
+                {(earnings as any[]).map((earning: any) => (
                   <div key={earning.id} className="flex items-center justify-between p-4 rounded-lg border bg-white">
                     <div className="flex items-start space-x-3">
                       <div className="flex-shrink-0 mt-1">

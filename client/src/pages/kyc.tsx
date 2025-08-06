@@ -64,7 +64,7 @@ export default function KYC() {
     retry: false,
     enabled: !!user,
     staleTime: 0, // Always fetch fresh data
-    cacheTime: 0, // Don't cache
+    gcTime: 0, // Don't cache (formerly cacheTime in TanStack Query v5)
   });
 
   // Auto-refresh KYC status every 10 seconds when submitted or waiting for approval
@@ -193,11 +193,11 @@ export default function KYC() {
       
       // Update the appropriate state
       if (documentType === 'front') {
-        setGovIdFrontUrl(documentUrl);
+        setGovIdFrontUrl(documentUrl || "");
       } else if (documentType === 'back') {
-        setGovIdBackUrl(documentUrl);
+        setGovIdBackUrl(documentUrl || "");
       } else if (documentType === 'selfie') {
-        setSelfieWithIdUrl(documentUrl);
+        setSelfieWithIdUrl(documentUrl || "");
       }
 
       // Save to backend
@@ -292,7 +292,7 @@ export default function KYC() {
                 <Shield className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-600" />
                 Verification Status
               </CardTitle>
-              {kycData && getKycStatusBadge((kycData as any).kycStatus || 'pending')}
+              {kycData ? getKycStatusBadge((kycData as any).kycStatus || 'pending') : null}
             </div>
           </CardHeader>
           <CardContent className="pt-0">

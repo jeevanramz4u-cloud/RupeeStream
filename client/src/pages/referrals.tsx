@@ -28,13 +28,13 @@ export default function Referrals() {
     enabled: !!user,
   });
 
-  const referralLink = `${window.location.origin}?ref=${user?.referralCode}`;
-  const referralText = `Join EarnPay and start earning money by watching videos! Use my referral code: ${user?.referralCode || ''}\n\nSign up here: ${referralLink}`;
+  const referralLink = `${window.location.origin}?ref=${(user as any)?.referralCode}`;
+  const referralText = `Join EarnPay and start earning money by watching videos! Use my referral code: ${(user as any)?.referralCode || ''}\n\nSign up here: ${referralLink}`;
 
   const copyReferralCode = async () => {
-    if (user?.referralCode) {
+    if ((user as any)?.referralCode) {
       try {
-        await navigator.clipboard.writeText(user.referralCode);
+        await navigator.clipboard.writeText((user as any).referralCode);
         setCopySuccess(true);
         toast({
           title: "Copied!",
@@ -87,8 +87,8 @@ export default function Referrals() {
     }
   };
 
-  const verifiedReferrals = referrals.filter((ref: any) => ref.isEarningCredited);
-  const pendingReferrals = referrals.filter((ref: any) => !ref.isEarningCredited);
+  const verifiedReferrals = (referrals as any[]).filter((ref: any) => ref.isEarningCredited);
+  const pendingReferrals = (referrals as any[]).filter((ref: any) => !ref.isEarningCredited);
   const totalEarnings = verifiedReferrals.length * 49;
 
   const formatDate = (dateString: string) => {
@@ -119,7 +119,7 @@ export default function Referrals() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Referrals</p>
-                  <p className="text-2xl font-bold text-gray-900">{referrals.length}</p>
+                  <p className="text-2xl font-bold text-gray-900">{(referrals as any[]).length}</p>
                 </div>
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                   <Users className="text-primary w-6 h-6" />
@@ -171,7 +171,7 @@ export default function Referrals() {
                 <div className="bg-white/20 rounded-lg p-4 mb-4">
                   <div className="flex items-center justify-between">
                     <code className="text-xl font-mono font-bold">
-                      {user?.referralCode || 'Loading...'}
+                      {(user as any)?.referralCode || 'Loading...'}
                     </code>
                     <Button
                       variant="ghost"
@@ -283,7 +283,7 @@ export default function Referrals() {
               <CardTitle>Referral History</CardTitle>
             </CardHeader>
             <CardContent>
-              {referrals.length === 0 ? (
+              {(referrals as any[]).length === 0 ? (
                 <div className="text-center py-12">
                   <UserPlus className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No Referrals Yet</h3>
@@ -297,7 +297,7 @@ export default function Referrals() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {referrals.map((referral: any) => (
+                  {(referrals as any[]).map((referral: any) => (
                     <div 
                       key={referral.id}
                       className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
