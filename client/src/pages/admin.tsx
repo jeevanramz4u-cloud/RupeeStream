@@ -177,7 +177,7 @@ export default function Admin() {
 
   const createVideoMutation = useMutation({
     mutationFn: async (videoData: any) => {
-      await apiRequest("POST", "/api/videos", videoData);
+      await apiRequest("POST", "/api/admin/videos", videoData);
     },
     onSuccess: () => {
       toast({
@@ -199,7 +199,7 @@ export default function Admin() {
 
   const updateVideoMutation = useMutation({
     mutationFn: async ({ videoId, updates }: { videoId: string; updates: any }) => {
-      await apiRequest("PUT", `/api/videos/${videoId}`, updates);
+      await apiRequest("PUT", `/api/admin/videos/${videoId}`, updates);
     },
     onSuccess: () => {
       toast({
@@ -220,7 +220,7 @@ export default function Admin() {
 
   const deleteVideoMutation = useMutation({
     mutationFn: async (videoId: string) => {
-      await apiRequest("DELETE", `/api/videos/${videoId}`);
+      await apiRequest("DELETE", `/api/admin/videos/${videoId}`);
     },
     onSuccess: () => {
       toast({

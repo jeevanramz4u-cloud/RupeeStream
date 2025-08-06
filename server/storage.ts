@@ -231,7 +231,7 @@ export class DatabaseStorage implements IStorage {
       .update(videos)
       .set({ isActive: false, updatedAt: new Date() })
       .where(eq(videos.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async incrementVideoViews(id: string): Promise<void> {
