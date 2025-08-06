@@ -29,7 +29,7 @@ export default function Referrals() {
     retry: false,
   });
 
-  const referralLink = `${window.location.origin}?ref=${(user as any)?.referralCode}`;
+  const referralLink = `${window.location.origin}/signup?ref=${(user as any)?.referralCode}`;
   const referralText = `Join EarnPay and start earning money by watching videos! Use my referral code: ${(user as any)?.referralCode || ''}\n\nSign up here: ${referralLink}`;
 
   const copyReferralCode = async () => {

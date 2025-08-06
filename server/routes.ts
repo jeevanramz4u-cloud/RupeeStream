@@ -142,26 +142,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Process referral if provided
+      console.log(`Processing referral code: ${referralCode}`);
       if (referralCode) {
         try {
           const referrer = await storage.getUserByReferralCode(referralCode);
+          console.log(`Found referrer:`, referrer ? { id: referrer.id, email: referrer.email, code: referrer.referralCode } : 'NOT FOUND');
+          
           if (referrer) {
             // Create referral record
-            await storage.createReferral({
+            const referralRecord = await storage.createReferral({
               referrerId: referrer.id,
               referredId: newUser.id,
               isEarningCredited: false
             });
+            console.log(`Referral record created:`, referralRecord);
             
             // Update the new user's referredBy field
-            await storage.updateUser(newUser.id, { referredBy: referrer.id });
+            const updatedUser = await storage.updateUser(newUser.id, { referredBy: referrer.id });
+            console.log(`Updated new user with referredBy:`, updatedUser?.referredBy);
             
-            console.log(`Referral created: ${referrer.id} referred ${newUser.id}`);
+            console.log(`✅ Referral created successfully: ${referrer.email} (${referrer.referralCode}) referred ${newUser.email}`);
+          } else {
+            console.log(`❌ No user found with referral code: ${referralCode}`);
           }
         } catch (error) {
-          console.error("Error processing referral:", error);
+          console.error("❌ Error processing referral:", error);
           // Don't fail signup if referral processing fails
         }
+      } else {
+        console.log(`No referral code provided in signup`);
       }
 
       // Create session for the new user
