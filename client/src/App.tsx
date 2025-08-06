@@ -22,6 +22,7 @@ import TermsConditions from "./pages/terms-conditions";
 import HowToEarn from "./pages/how-to-earn";
 import EarningsHistory from "./pages/earnings-history";
 import KYC from "./pages/kyc";
+import Profile from "./pages/profile";
 
 function AdminRoute() {
   const { isAuthenticated: isAdminAuth } = useAdminAuth();
@@ -96,6 +97,7 @@ function Router() {
       <Route path="/referrals" component={() => <ProtectedRoute component={Referrals} />} />
       <Route path="/support" component={() => <ProtectedRoute component={Support} />} />
       <Route path="/kyc" component={() => <ProtectedRoute component={KYC} />} />
+      <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
       
       <Route component={NotFound} />
     </Switch>

@@ -93,7 +93,7 @@ export default function Header() {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="flex items-center text-sm touch-manipulation">
+                  <Link href="/profile" className="flex items-center text-sm touch-manipulation">
                     <User className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     Profile
                   </Link>
