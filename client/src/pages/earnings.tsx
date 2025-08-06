@@ -23,7 +23,7 @@ export default function Earnings() {
     enabled: !!user,
   });
 
-  const { data: stats } = useQuery({
+  const { data: stats = {} } = useQuery({
     queryKey: ["/api/earnings/stats"],
     enabled: !!user,
   });
@@ -35,14 +35,14 @@ export default function Earnings() {
 
   // Check if user needs account suspension for not meeting daily target
   useEffect(() => {
-    if (stats && stats.dailyWatchTime < 480) { // 8 hours = 480 minutes
+    if (stats && (stats as any).dailyWatchTime < 480) { // 8 hours = 480 minutes
       // Here you could implement logic to suspend accounts
       // For now, just show a warning
     }
   }, [stats]);
 
   const targetHours = 8;
-  const watchedHours = stats?.dailyWatchTime ? stats.dailyWatchTime / 60 : 0;
+  const watchedHours = (stats as any)?.dailyWatchTime ? (stats as any).dailyWatchTime / 60 : 0;
   const progressPercentage = Math.min((watchedHours / targetHours) * 100, 100);
   const remainingHours = Math.max(targetHours - watchedHours, 0);
 
@@ -94,7 +94,7 @@ export default function Earnings() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Balance</p>
-                  <p className="text-2xl font-bold text-gray-900">₹{user?.balance || '0.00'}</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{(user as any)?.balance || '0.00'}</p>
                 </div>
                 <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
                   <Wallet className="text-secondary w-6 h-6" />
@@ -108,7 +108,7 @@ export default function Earnings() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Today's Earnings</p>
-                  <p className="text-2xl font-bold text-gray-900">₹{stats?.todayEarnings || '0.00'}</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{(stats as any)?.todayEarnings || '0.00'}</p>
                 </div>
                 <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
                   <Coins className="text-accent w-6 h-6" />
@@ -162,7 +162,7 @@ export default function Earnings() {
               <CardTitle>Recent Earnings</CardTitle>
             </CardHeader>
             <CardContent>
-              {earnings.length === 0 ? (
+              {(earnings as any[]).length === 0 ? (
                 <div className="text-center py-8">
                   <Coins className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-500">No earnings yet</p>
@@ -170,7 +170,7 @@ export default function Earnings() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {earnings.slice(0, 10).map((earning: any) => (
+                  {(earnings as any[]).slice(0, 10).map((earning: any) => (
                     <div key={earning.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center space-x-3">
                         {getEarningIcon(earning.type)}
@@ -189,7 +189,7 @@ export default function Earnings() {
                     </div>
                   ))}
                   
-                  {earnings.length > 10 && (
+                  {(earnings as any[]).length > 10 && (
                     <div className="text-center">
                       <Button variant="outline" size="sm">
                         View All Earnings
@@ -207,7 +207,7 @@ export default function Earnings() {
               <CardTitle>Payout History</CardTitle>
             </CardHeader>
             <CardContent>
-              {payouts.length === 0 ? (
+              {(payouts as any[]).length === 0 ? (
                 <div className="text-center py-8">
                   <Wallet className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-500">No payouts yet</p>
@@ -215,7 +215,7 @@ export default function Earnings() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {payouts.map((payout: any) => (
+                  {(payouts as any[]).map((payout: any) => (
                     <div key={payout.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
                         <p className="text-sm font-medium text-gray-900">
