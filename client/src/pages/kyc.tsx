@@ -289,67 +289,36 @@ export default function KYC() {
           <p className="text-sm sm:text-base text-gray-600">Complete your identity verification to start earning. One-time ₹99 processing fee required.</p>
         </div>
 
-        {/* Quick Actions for Pending Users */}
+        {/* Quick Guide for Pending Users */}
         {(!kycData || ((kycData as any)?.kycStatus === 'pending' && !(kycData as any)?.kycFeePaid)) && (
-          <Card className="mb-6 sm:mb-8 border-orange-200 bg-orange-50">
+          <Card className="mb-6 sm:mb-8 border-blue-200 bg-blue-50">
             <CardHeader className="pb-4">
-              <CardTitle className="text-lg flex items-center text-orange-900">
-                <CreditCard className="w-5 h-5 mr-2" />
-                Complete Your KYC Verification
+              <CardTitle className="text-lg flex items-center text-blue-900">
+                <Info className="w-5 h-5 mr-2" />
+                Getting Started
               </CardTitle>
-              <p className="text-orange-700">Two simple steps to unlock payouts and premium features:</p>
             </CardHeader>
             <CardContent className="pt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-white rounded-lg border border-orange-200">
-                  <div className="flex items-center mb-3">
-                    <Upload className="w-5 h-5 text-blue-600 mr-2" />
-                    <span className="font-semibold text-gray-900">Step 1: Upload Documents</span>
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span className="text-blue-600 font-semibold">1</span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-3">Upload your government ID and selfie</p>
-                  <Button 
-                    onClick={() => document.getElementById('kyc-form')?.scrollIntoView({ behavior: 'smooth' })}
-                    variant="outline" 
-                    className="w-full border-blue-600 text-blue-600 hover:bg-blue-50"
-                  >
-                    Upload Documents
-                  </Button>
                 </div>
-                
-                <div className="p-4 bg-white rounded-lg border border-orange-200">
-                  <div className="flex items-center mb-3">
-                    <CreditCard className="w-5 h-5 text-green-600 mr-2" />
-                    <span className="font-semibold text-gray-900">Step 2: Pay Processing Fee</span>
+                <div>
+                  <h4 className="font-semibold text-blue-900 mb-1">Upload Documents</h4>
+                  <p className="text-blue-700 text-sm mb-2">Fill the form below and upload your government ID + selfie</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4 mt-4">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span className="text-blue-600 font-semibold">2</span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-3">One-time ₹99 verification fee</p>
-                  <Button
-                    onClick={() => {
-                      console.log("Pay Fee button clicked");
-                      console.log("Form data:", { govIdType, govIdNumber, govIdFrontUrl, govIdBackUrl, selfieWithIdUrl });
-                      
-                      if (!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) {
-                        console.log("Missing required fields");
-                        toast({
-                          title: "Documents Required",
-                          description: "Please upload all documents first before paying the fee.",
-                          variant: "destructive",
-                        });
-                        document.getElementById('kyc-form')?.scrollIntoView({ behavior: 'smooth' });
-                        return;
-                      }
-                      
-                      console.log("All fields complete, submitting KYC...");
-                      handleSubmitKyc();
-                      setTimeout(() => {
-                        console.log("Initiating payment...");
-                        payFeeMutation.mutate();
-                      }, 500);
-                    }}
-                    disabled={submitKycMutation.isPending || payFeeMutation.isPending}
-                    className="w-full bg-green-600 hover:bg-green-700"
-                  >
-                    {(submitKycMutation.isPending || payFeeMutation.isPending) ? "Processing..." : "Pay ₹99 Fee"}
-                  </Button>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-blue-900 mb-1">Pay Processing Fee</h4>
+                  <p className="text-blue-700 text-sm">One-time ₹99 fee (appears after document upload)</p>
                 </div>
               </div>
             </CardContent>
@@ -631,73 +600,58 @@ export default function KYC() {
                 </div>
               </div>
 
-              {/* Submit and Payment Section - Always show when documents are uploaded */}
+              {/* Complete KYC Section - Show after document upload */}
               {govIdType && govIdNumber && govIdFrontUrl && govIdBackUrl && selfieWithIdUrl && (
                 <div className="space-y-4">
                   <div className="flex items-center mb-4">
                     <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
                       <CreditCard className="w-4 h-4 text-purple-600" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800">Complete Verification</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">Complete KYC Verification</h3>
                   </div>
                   
-                  {/* Submit button for pending status */}
-                  {(!kycData || (kycData as any)?.kycStatus === 'pending') && !(kycData as any)?.kycSubmittedAt && (
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-center mb-3">
-                        <Info className="w-5 h-5 text-blue-600 mr-2" />
-                        <span className="font-semibold text-blue-900">Ready to Submit</span>
-                      </div>
-                      <p className="text-blue-700 mb-4">All documents uploaded successfully. Click submit to continue with verification.</p>
-                      <Button
-                        onClick={handleSubmitKyc}
-                        disabled={submitKycMutation.isPending}
-                        className="w-full bg-blue-600 hover:bg-blue-700"
-                      >
-                        {submitKycMutation.isPending ? "Submitting..." : "Submit for Review"}
-                      </Button>
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center mb-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+                      <span className="font-semibold text-green-900">All Documents Uploaded</span>
                     </div>
-                  )}
-
-                  {/* Payment button for submitted but unpaid status */}
-                  {(kycData as any)?.kycStatus === 'submitted' && !(kycData as any)?.kycFeePaid && (
-                    <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <div className="flex items-center mb-3">
-                        <CreditCard className="w-5 h-5 text-yellow-600 mr-2" />
-                        <span className="font-semibold text-yellow-900">Payment Required</span>
-                      </div>
-                      <p className="text-yellow-700 mb-4">Documents submitted! Pay the one-time ₹99 processing fee to complete verification.</p>
-                      <Button
-                        onClick={() => payFeeMutation.mutate()}
-                        disabled={payFeeMutation.isPending}
-                        className="w-full bg-green-600 hover:bg-green-700"
-                      >
-                        {payFeeMutation.isPending ? "Processing Payment..." : "Pay ₹99 Processing Fee"}
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Direct payment option if all documents are ready but no submission yet */}
-                  {(!kycData || (kycData as any)?.kycStatus === 'pending') && !(kycData as any)?.kycSubmittedAt && (
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                      <div className="flex items-center mb-3">
-                        <CreditCard className="w-5 h-5 text-green-600 mr-2" />
-                        <span className="font-semibold text-green-900">Quick Complete</span>
-                      </div>
-                      <p className="text-green-700 mb-4">Skip review and pay the one-time ₹99 processing fee now to complete verification instantly.</p>
-                      <Button
-                        onClick={() => {
-                          // First submit, then pay
-                          handleSubmitKyc();
-                          setTimeout(() => payFeeMutation.mutate(), 500);
-                        }}
-                        disabled={submitKycMutation.isPending || payFeeMutation.isPending}
-                        className="w-full bg-green-600 hover:bg-green-700"
-                      >
-                        {(submitKycMutation.isPending || payFeeMutation.isPending) ? "Processing..." : "Complete KYC + Pay ₹99 Fee"}
-                      </Button>
-                    </div>
-                  )}
+                    <p className="text-green-700 mb-4">
+                      Great! All your documents have been uploaded successfully. 
+                      Now pay the one-time ₹99 processing fee to complete your KYC verification.
+                    </p>
+                    
+                    {/* Pay Processing Fee Button */}
+                    <Button
+                      onClick={() => {
+                        console.log("Complete KYC button clicked");
+                        console.log("Form data:", { govIdType, govIdNumber, govIdFrontUrl, govIdBackUrl, selfieWithIdUrl });
+                        
+                        console.log("All fields complete, submitting KYC...");
+                        handleSubmitKyc();
+                        setTimeout(() => {
+                          console.log("Initiating payment...");
+                          payFeeMutation.mutate();
+                        }, 500);
+                      }}
+                      disabled={submitKycMutation.isPending || payFeeMutation.isPending}
+                      className="w-full bg-green-600 hover:bg-green-700 text-lg py-3"
+                    >
+                      {(submitKycMutation.isPending || payFeeMutation.isPending) ? "Processing Payment..." : "Pay ₹99 Processing Fee & Complete KYC"}
+                    </Button>
+                  </div>
+                </div>
+              )}
+              
+              {/* Show message for incomplete documents */}
+              {(!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center mb-3">
+                    <Info className="w-5 h-5 text-blue-600 mr-2" />
+                    <span className="font-semibold text-blue-900">Complete Document Upload</span>
+                  </div>
+                  <p className="text-blue-700">
+                    Please fill in all information and upload all required documents above to proceed with payment.
+                  </p>
                 </div>
               )}
             </CardContent>
