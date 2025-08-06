@@ -804,6 +804,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin - Update user profile
+  app.put("/api/admin/users/:id", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      const userData = req.body;
+      
+      const user = await storage.getUser(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const updatedUser = await storage.updateUser(id, userData);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      res.status(500).json({ message: "Failed to update user profile" });
+    }
+  });
+
   // Admin - Delete user profile
   app.delete("/api/admin/users/:id", async (req: any, res) => {
     try {

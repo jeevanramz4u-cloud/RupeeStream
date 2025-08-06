@@ -19,6 +19,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { 
   Users, 
   Video, 
@@ -54,6 +55,11 @@ export default function Admin() {
   const [kycFilter, setKycFilter] = useState<'all' | 'unpaid' | 'verification' | 'verified'>('all');
   const [activeTab, setActiveTab] = useState('users');
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [verificationFilter, setVerificationFilter] = useState("all");
+  const [kycFeeFilter, setKycFeeFilter] = useState("all");
+  const [editingUser, setEditingUser] = useState<any>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   // Filter users based on KYC status
   const getFilteredUsers = () => {
@@ -72,25 +78,45 @@ export default function Admin() {
     }
   };
 
-  // Filter users based on search term
+  // Filter users based on search term and filters
   const getSearchFilteredUsers = () => {
     if (!users) return [];
-    const userList = users as any[];
+    let userList = users as any[];
     
-    if (!searchTerm.trim()) {
-      return userList;
-    }
-    
-    return userList.filter(user => {
+    // Apply search filter
+    if (searchTerm.trim()) {
       const searchLower = searchTerm.toLowerCase();
-      return (
-        (user.firstName && user.firstName.toLowerCase().includes(searchLower)) ||
-        (user.lastName && user.lastName.toLowerCase().includes(searchLower)) ||
-        (user.email && user.email.toLowerCase().includes(searchLower)) ||
-        (user.phone && user.phone.includes(searchTerm)) ||
-        (user.governmentIdNumber && user.governmentIdNumber.includes(searchTerm))
-      );
-    });
+      userList = userList.filter(user => {
+        return (
+          (user.firstName && user.firstName.toLowerCase().includes(searchLower)) ||
+          (user.lastName && user.lastName.toLowerCase().includes(searchLower)) ||
+          (user.email && user.email.toLowerCase().includes(searchLower)) ||
+          (user.phone && user.phone.includes(searchTerm)) ||
+          (user.governmentIdNumber && user.governmentIdNumber.includes(searchTerm))
+        );
+      });
+    }
+
+    // Apply status filter
+    if (statusFilter !== "all") {
+      userList = userList.filter(user => {
+        return statusFilter === "active" ? user.status !== 'suspended' : user.status === 'suspended';
+      });
+    }
+
+    // Apply verification filter
+    if (verificationFilter !== "all") {
+      userList = userList.filter(user => user.verificationStatus === verificationFilter);
+    }
+
+    // Apply KYC fee filter
+    if (kycFeeFilter !== "all") {
+      userList = userList.filter(user => {
+        return kycFeeFilter === "paid" ? user.kycFeePaid : !user.kycFeePaid;
+      });
+    }
+
+    return userList;
   };
 
   // Check admin authentication
@@ -233,6 +259,29 @@ export default function Admin() {
       toast({
         title: "Error",
         description: "Failed to delete user profile",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Edit user profile mutation
+  const editUserMutation = useMutation({
+    mutationFn: async ({ userId, userData }: { userId: string; userData: any }) => {
+      await apiRequest("PUT", `/api/admin/users/${userId}`, userData);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "User profile updated successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      setIsEditDialogOpen(false);
+      setEditingUser(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update user profile",
         variant: "destructive",
       });
     },
@@ -727,7 +776,7 @@ export default function Admin() {
           <TabsContent value="profiles">
             <div className="space-y-6">
               {/* User Profiles Management Header */}
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">User Profile Management</h2>
                   {searchTerm.trim() && (
@@ -736,10 +785,10 @@ export default function Admin() {
                     </p>
                   )}
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Input
                     placeholder="Search users by email or name..."
-                    className="w-80"
+                    className="w-full sm:w-80"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -754,6 +803,74 @@ export default function Admin() {
                   )}
                 </div>
               </div>
+
+              {/* Filter Controls */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Filters</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">Account Status</Label>
+                      <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Status</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="suspended">Suspended</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">Verification Status</Label>
+                      <Select value={verificationFilter} onValueChange={setVerificationFilter}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Verification</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="verified">Verified</SelectItem>
+                          <SelectItem value="rejected">Rejected</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">KYC Fee Status</Label>
+                      <Select value={kycFeeFilter} onValueChange={setKycFeeFilter}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All KYC Fee</SelectItem>
+                          <SelectItem value="paid">Fee Paid</SelectItem>
+                          <SelectItem value="unpaid">Fee Not Paid</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-end">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setStatusFilter("all");
+                          setVerificationFilter("all");
+                          setKycFeeFilter("all");
+                          setSearchTerm("");
+                        }}
+                        className="w-full"
+                      >
+                        Clear All Filters
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Users Grid */}
               <div className="grid grid-cols-1 gap-6">
@@ -795,6 +912,17 @@ export default function Admin() {
                             <Badge variant={user.status === 'suspended' ? 'destructive' : 'default'}>
                               {user.status === 'suspended' ? 'Suspended' : 'Active'}
                             </Badge>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setEditingUser(user);
+                                setIsEditDialogOpen(true);
+                              }}
+                            >
+                              <Edit className="w-4 h-4 mr-1" />
+                              Edit
+                            </Button>
                           </div>
                         </div>
                       </CardHeader>
@@ -1467,6 +1595,206 @@ export default function Admin() {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* Edit User Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit User Profile</DialogTitle>
+          </DialogHeader>
+          
+          {editingUser && (
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target as HTMLFormElement);
+                const userData = {
+                  firstName: formData.get('firstName'),
+                  lastName: formData.get('lastName'),
+                  email: formData.get('email'),
+                  phoneNumber: formData.get('phoneNumber'),
+                  dateOfBirth: formData.get('dateOfBirth'),
+                  address: formData.get('address'),
+                  city: formData.get('city'),
+                  state: formData.get('state'),
+                  pinCode: formData.get('pinCode'),
+                  accountHolderName: formData.get('accountHolderName'),
+                  accountNumber: formData.get('accountNumber'),
+                  ifscCode: formData.get('ifscCode'),
+                  bankName: formData.get('bankName'),
+                  governmentIdType: formData.get('governmentIdType'),
+                  governmentIdNumber: formData.get('governmentIdNumber'),
+                };
+                editUserMutation.mutate({ userId: editingUser.id, userData });
+              }}
+              className="space-y-4"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="firstName">First Name</Label>
+                  <Input
+                    id="firstName"
+                    name="firstName"
+                    defaultValue={editingUser.firstName || ''}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    id="lastName"
+                    name="lastName"
+                    defaultValue={editingUser.lastName || ''}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    defaultValue={editingUser.email || ''}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phoneNumber">Phone Number</Label>
+                  <Input
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    defaultValue={editingUser.phoneNumber || ''}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                  <Input
+                    id="dateOfBirth"
+                    name="dateOfBirth"
+                    type="date"
+                    defaultValue={editingUser.dateOfBirth || ''}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="governmentIdType">Government ID Type</Label>
+                  <Select name="governmentIdType" defaultValue={editingUser.governmentIdType || ''}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select ID Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="aadhaar">Aadhaar Card</SelectItem>
+                      <SelectItem value="pan">PAN Card</SelectItem>
+                      <SelectItem value="voter">Voter ID</SelectItem>
+                      <SelectItem value="driving_license">Driving License</SelectItem>
+                      <SelectItem value="passport">Passport</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="governmentIdNumber">Government ID Number</Label>
+                <Input
+                  id="governmentIdNumber"
+                  name="governmentIdNumber"
+                  defaultValue={editingUser.governmentIdNumber || ''}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="address">Address</Label>
+                <Textarea
+                  id="address"
+                  name="address"
+                  defaultValue={editingUser.address || ''}
+                  rows={2}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="city">City</Label>
+                  <Input
+                    id="city"
+                    name="city"
+                    defaultValue={editingUser.city || ''}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="state">State</Label>
+                  <Input
+                    id="state"
+                    name="state"
+                    defaultValue={editingUser.state || ''}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="pinCode">PIN Code</Label>
+                  <Input
+                    id="pinCode"
+                    name="pinCode"
+                    defaultValue={editingUser.pinCode || ''}
+                  />
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h4 className="font-medium text-gray-900 mb-4">Bank Details</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="accountHolderName">Account Holder Name</Label>
+                    <Input
+                      id="accountHolderName"
+                      name="accountHolderName"
+                      defaultValue={editingUser.accountHolderName || ''}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="accountNumber">Account Number</Label>
+                    <Input
+                      id="accountNumber"
+                      name="accountNumber"
+                      defaultValue={editingUser.accountNumber || ''}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ifscCode">IFSC Code</Label>
+                    <Input
+                      id="ifscCode"
+                      name="ifscCode"
+                      defaultValue={editingUser.ifscCode || ''}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="bankName">Bank Name</Label>
+                    <Input
+                      id="bankName"
+                      name="bankName"
+                      defaultValue={editingUser.bankName || ''}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsEditDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={editUserMutation.isPending}
+                >
+                  {editUserMutation.isPending ? 'Saving...' : 'Save Changes'}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
