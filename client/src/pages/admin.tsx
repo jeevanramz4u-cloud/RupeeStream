@@ -51,6 +51,25 @@ export default function Admin() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [editingVideo, setEditingVideo] = useState<any>(null);
   const [showNewVideoForm, setShowNewVideoForm] = useState(false);
+  const [kycFilter, setKycFilter] = useState<'all' | 'unpaid' | 'verification' | 'verified'>('all');
+  const [activeTab, setActiveTab] = useState('users');
+
+  // Filter users based on KYC status
+  const getFilteredUsers = () => {
+    if (!users) return [];
+    const userList = users as any[];
+    
+    switch (kycFilter) {
+      case 'unpaid':
+        return userList.filter(u => !u.kycFeePaid);
+      case 'verification':
+        return userList.filter(u => u.kycFeePaid && u.kycStatus !== 'approved');
+      case 'verified':
+        return userList.filter(u => u.kycStatus === 'approved');
+      default:
+        return userList;
+    }
+  };
 
   // Check admin authentication
   useEffect(() => {
@@ -348,7 +367,7 @@ export default function Admin() {
           <p className="text-sm sm:text-base text-gray-600">Manage users, videos, and platform operations.</p>
         </div>
 
-        <Tabs defaultValue="users" className="space-y-4 sm:space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
           <TabsList className="grid w-full grid-cols-5 h-auto p-1">
             <TabsTrigger value="users" className="text-xs sm:text-sm px-2 py-2">
               <span className="hidden sm:inline">User Verification</span>
@@ -1019,6 +1038,40 @@ export default function Admin() {
 
           <TabsContent value="kyc">
             <div className="space-y-6">
+              {/* KYC Filters */}
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={kycFilter === 'all' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setKycFilter('all')}
+                  >
+                    All Users ({(users as any[]).length})
+                  </Button>
+                  <Button
+                    variant={kycFilter === 'unpaid' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setKycFilter('unpaid')}
+                  >
+                    Unpaid ({(users as any[]).filter((u: any) => !u.kycFeePaid).length})
+                  </Button>
+                  <Button
+                    variant={kycFilter === 'verification' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setKycFilter('verification')}
+                  >
+                    Under Verification ({(users as any[]).filter((u: any) => u.kycFeePaid && u.kycStatus !== 'approved').length})
+                  </Button>
+                  <Button
+                    variant={kycFilter === 'verified' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setKycFilter('verified')}
+                  >
+                    Verified ({(users as any[]).filter((u: any) => u.kycStatus === 'approved').length})
+                  </Button>
+                </div>
+              </div>
+
               {/* KYC Fee Payment Statistics */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card>
@@ -1085,15 +1138,23 @@ export default function Admin() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {(users as any[]).length === 0 ? (
+                  {getFilteredUsers().length === 0 ? (
                     <div className="text-center py-8">
                       <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-500">No users found</p>
+                      <p className="text-gray-500">
+                        {kycFilter === 'all' ? 'No users found' : `No users found with ${kycFilter} status`}
+                      </p>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {(users as any[]).map((user: any) => (
-                        <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      {getFilteredUsers().map((user: any) => (
+                        <div 
+                          key={user.id} 
+                          className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                          onClick={() => {
+                            setSelectedUser(user);
+                          }}
+                        >
                           <div className="flex-1">
                             <div className="flex items-center gap-3">
                               <div>
@@ -1131,6 +1192,21 @@ export default function Admin() {
                                 </Badge>
                               )}
                             </div>
+                            
+                            {/* View Profile Button */}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedUser(user);
+                                // Switch to Users tab to show user details
+                                setActiveTab('users');
+                              }}
+                            >
+                              <Eye className="w-4 h-4 mr-1" />
+                              View Profile
+                            </Button>
                           </div>
                         </div>
                       ))}
