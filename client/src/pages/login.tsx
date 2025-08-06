@@ -34,9 +34,8 @@ export default function Login() {
       });
 
       if (response.ok) {
-        // Invalidate auth queries to refetch user data
+        // Invalidate auth query to refetch user data
         queryClient.invalidateQueries({ queryKey: ["/api/auth/check"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
         
         // Redirect to dashboard after successful login
         window.location.href = '/dashboard';

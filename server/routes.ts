@@ -177,6 +177,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const isTraditionallyAuthenticated = async (req: any, res: any, next: any) => {
     try {
       const userId = req.session?.userId;
+      
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
       }
@@ -436,9 +437,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/earnings/stats', isAuthenticated, async (req: any, res) => {
+  app.get('/api/earnings/stats', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id; // Use traditional auth user ID
       const totalEarnings = await storage.getTotalEarnings(userId);
       const todayEarnings = await storage.getTodayEarnings(userId);
       const dailyWatchTime = await storage.getDailyWatchTime(userId);
