@@ -24,10 +24,12 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { useLocation } from "wouter";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
 
@@ -68,6 +70,68 @@ export default function Dashboard() {
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Welcome back, {(user as any)?.firstName}!</h1>
           <p className="text-sm sm:text-base text-gray-600">Here's your profile dashboard</p>
+        </div>
+
+        {/* Earnings Quick Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+          <Card className="cursor-pointer hover:shadow-md transition-shadow touch-manipulation" onClick={() => setLocation("/earnings-history")}>
+            <CardContent className="pt-4">
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <span className="text-green-600 font-semibold text-lg">₹</span>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-500">Total Earnings</p>
+                  <p className="text-xl font-bold text-gray-900 hover:text-green-600">₹{stats?.totalEarnings || 0}</p>
+                  <p className="text-xs text-gray-400">Click to view history</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4">
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-500">Today's Earnings</p>
+                  <p className="text-xl font-bold text-gray-900">₹{stats?.todayEarnings || 0}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4">
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-purple-600" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-500">Watch Time Today</p>
+                  <p className="text-xl font-bold text-gray-900">{watchedHours.toFixed(1)}h</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4">
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-orange-600" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-500">Account Status</p>
+                  <p className="text-sm font-bold text-gray-900">
+                    {(user as any)?.verificationStatus === 'verified' ? 'Verified' : 'Pending'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Daily Target Reminder - Top Priority */}

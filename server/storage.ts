@@ -273,17 +273,34 @@ export class DatabaseStorage implements IStorage {
     const existing = await this.getVideoProgress(userId, videoId);
     if (!existing) return undefined;
 
-    const [completed] = await db
+    // Check if already completed
+    if (existing.isCompleted) return existing;
+
+    const [updated] = await db
       .update(videoProgress)
-      .set({ 
-        isCompleted: true, 
-        completedAt: new Date(),
-        isEarningCredited: true 
-      })
+      .set({ isCompleted: true, completedAt: new Date() })
       .where(eq(videoProgress.id, existing.id))
       .returning();
-    
-    return completed;
+
+    // Create earning record when video is completed
+    const video = await this.getVideo(videoId);
+    if (video && !existing.isEarningCredited) {
+      await this.createEarning({
+        userId,
+        videoId,
+        type: "video",
+        amount: video.earning.toString(),
+        description: `Completed video: ${video.title}`,
+      });
+
+      // Mark earning as credited
+      await db
+        .update(videoProgress)
+        .set({ isEarningCredited: true })
+        .where(eq(videoProgress.id, updated.id));
+    }
+
+    return updated;
   }
 
   // Earnings operations

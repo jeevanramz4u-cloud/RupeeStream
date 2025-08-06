@@ -22,6 +22,10 @@ export default function VideoPlayer() {
   const [watchedSeconds, setWatchedSeconds] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasCompleted, setHasCompleted] = useState(false);
+  const [youtubeWatchStartTime, setYoutubeWatchStartTime] = useState<Date | null>(null);
+  const [isWatchingOnYoutube, setIsWatchingOnYoutube] = useState(false);
+  const [requiredWatchTime, setRequiredWatchTime] = useState(0);
+  const [currentWatchTime, setCurrentWatchTime] = useState(0);
 
   const { data: video, isLoading } = useQuery<any>({
     queryKey: ["/api/videos", id],
@@ -83,7 +87,28 @@ export default function VideoPlayer() {
       setWatchedSeconds(progressWatchedSeconds);
       setHasCompleted(progressIsCompleted);
     }
-  }, [progress]);
+  }, [progress, progressWatchedSeconds, progressIsCompleted]);
+
+  useEffect(() => {
+    // Set required watch time based on video duration (minimum 80% of video duration)
+    if (video && videoDuration > 0) {
+      setRequiredWatchTime(Math.floor(videoDuration * 0.8));
+    }
+  }, [video, videoDuration]);
+
+  // Real-time timer for YouTube watch time
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isWatchingOnYoutube && youtubeWatchStartTime) {
+      interval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - youtubeWatchStartTime.getTime()) / 1000);
+        setCurrentWatchTime(elapsed);
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isWatchingOnYoutube, youtubeWatchStartTime]);
 
   // Safe accessors
   const videoTitle = video?.title || 'Loading...';
@@ -240,13 +265,32 @@ export default function VideoPlayer() {
                       <div className="text-center space-y-3 mb-6">
                         <p className="text-gray-300">Watch this video on YouTube to earn ₹{videoEarning}</p>
                         <p className="text-sm text-yellow-400">
+                          Required watch time: {Math.floor(requiredWatchTime / 60)}:{(requiredWatchTime % 60).toString().padStart(2, '0')} minutes
+                        </p>
+                        {isWatchingOnYoutube && youtubeWatchStartTime && (
+                          <div className="text-sm text-green-400 bg-green-900/20 px-3 py-1 rounded">
+                            ⏱️ Watching for: {Math.floor(currentWatchTime / 60)}:{(currentWatchTime % 60).toString().padStart(2, '0')}
+                            {currentWatchTime >= requiredWatchTime && (
+                              <span className="ml-2 text-green-300">✓ Eligible to complete!</span>
+                            )}
+                          </div>
+                        )}
+                        <p className="text-xs text-yellow-400">
                           Note: If ad blockers prevent embedded playback, click "Open on YouTube" below
                         </p>
                       </div>
 
                       <div className="flex flex-col sm:flex-row gap-3">
                         <Button
-                          onClick={() => window.open(videoUrl, '_blank')}
+                          onClick={() => {
+                            window.open(videoUrl, '_blank');
+                            setYoutubeWatchStartTime(new Date());
+                            setIsWatchingOnYoutube(true);
+                            toast({
+                              title: "YouTube Video Opened",
+                              description: `Watch for at least ${Math.floor(requiredWatchTime / 60)} minutes to earn money.`,
+                            });
+                          }}
                           className="bg-red-600 hover:bg-red-700 text-white px-6 py-2"
                         >
                           <Play className="w-4 h-4 mr-2" />
@@ -256,6 +300,27 @@ export default function VideoPlayer() {
                         {!hasCompleted && (
                           <Button
                             onClick={() => {
+                              // Verify user has watched for required time
+                              if (!youtubeWatchStartTime) {
+                                toast({
+                                  title: "Watch Required",
+                                  description: "Please click 'Open on YouTube' and watch the video first.",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
+
+                              if (currentWatchTime < requiredWatchTime) {
+                                const remainingTime = Math.floor((requiredWatchTime - currentWatchTime) / 60);
+                                const remainingSeconds = (requiredWatchTime - currentWatchTime) % 60;
+                                toast({
+                                  title: "Insufficient Watch Time",
+                                  description: `You need to watch for ${remainingTime}:${remainingSeconds.toString().padStart(2, '0')} more to earn money.`,
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
+
                               completeVideoMutation.mutate();
                             }}
                             className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"

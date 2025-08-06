@@ -20,6 +20,7 @@ import AdminLogin from "./pages/admin-login";
 import PrivacyPolicy from "./pages/privacy-policy";
 import TermsConditions from "./pages/terms-conditions";
 import HowToEarn from "./pages/how-to-earn";
+import EarningsHistory from "./pages/earnings-history";
 
 function AdminRoute() {
   const { isAuthenticated: isAdminAuth } = useAdminAuth();
@@ -56,6 +57,7 @@ function Router() {
           <Route path="/videos" component={Videos} />
           <Route path="/video/:id" component={VideoPlayer} />
           <Route path="/earnings" component={Earnings} />
+          <Route path="/earnings-history" component={EarningsHistory} />
           <Route path="/referrals" component={Referrals} />
           <Route path="/support" component={Support} />
           <Route path="/privacy-policy" component={PrivacyPolicy} />

@@ -425,12 +425,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Earnings routes
-  app.get('/api/earnings', isAuthenticated, async (req: any, res) => {
+  // Earnings routes (traditional auth)
+  app.get('/api/earnings', async (req, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const earnings = await storage.getEarnings(userId);
-      res.json(earnings);
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const userEarnings = await storage.getEarnings(userId);
+      res.json(userEarnings);
     } catch (error) {
       console.error("Error fetching earnings:", error);
       res.status(500).json({ message: "Failed to fetch earnings" });
