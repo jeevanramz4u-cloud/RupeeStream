@@ -999,33 +999,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Admin - Get detailed user profile with referral history
   app.get('/api/admin/users/:userId/profile', async (req: any, res) => {
+    console.log('Profile endpoint hit, session:', !!req.session.adminUser);
     try {
       if (!req.session.adminUser) {
+        console.log('Admin authentication failed');
         return res.status(401).json({ message: "Admin authentication required" });
       }
       
       const { userId } = req.params;
+      console.log(`Fetching profile for user ID: ${userId}`);
+      
+      if (!userId || userId === 'undefined') {
+        console.log('Invalid user ID:', userId);
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+      
       const user = await storage.getUser(userId);
+      console.log('Found user:', user ? 'YES' : 'NO', user ? user.email : 'N/A');
       
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
       // Get user's referral history (people they referred)
-      const referrals = await storage.getReferrals(userId);
+      let referrals = [];
+      try {
+        referrals = await storage.getReferrals(userId);
+      } catch (error) {
+        console.log('Error getting referrals:', error);
+        referrals = [];
+      }
       
       // Get user's earnings history
-      const earnings = await storage.getEarnings(userId);
+      let earnings = [];
+      try {
+        earnings = await storage.getEarnings(userId);
+      } catch (error) {
+        console.log('Error getting earnings:', error);
+        earnings = [];
+      }
       
       // Get all users to match referral details
-      const allUsers = await storage.getAllUsers();
+      let allUsers = [];
+      try {
+        allUsers = await storage.getAllUsers();
+      } catch (error) {
+        console.log('Error getting all users:', error);
+        allUsers = [];
+      }
       
       // Find who referred this user
       const referredByUser = allUsers.find(u => u.referralCode && u.referralCode === user.referredBy);
 
       const { password: _, ...userProfile } = user;
       
-      res.json({
+      const response = {
         user: userProfile,
         referrals: referrals.map(r => {
           const referredUser = allUsers.find(u => u.id === r.referredId);
@@ -1049,7 +1077,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         } : null,
         earnings: earnings,
         totalEarnings: earnings.reduce((sum, e) => sum + parseFloat(e.amount), 0)
-      });
+      };
+      
+      console.log('Sending profile response:', JSON.stringify(response, null, 2));
+      res.json(response);
     } catch (error) {
       console.error("Error fetching user profile:", error);
       res.status(500).json({ message: "Failed to fetch user profile" });
@@ -1126,7 +1157,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               await storage.createEarning({
                 userId: referrer.id,
                 amount: bonusAmount.toString(),
-                source: "referral_bonus",
+                type: "referral_bonus",
                 description: `Referral bonus for ${verifiedUser.firstName} ${verifiedUser.lastName}`,
                 videoId: null
               });

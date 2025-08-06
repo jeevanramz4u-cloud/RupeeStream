@@ -197,11 +197,33 @@ export default function Admin() {
   });
 
   // User profile query (only fetch when needed)  
-  const { data: userProfile, isLoading: isLoadingProfile } = useQuery({
-    queryKey: ["/api/admin/users", selectedUserProfile?.id, "profile"],
+  const { data: userProfile, isLoading: isLoadingProfile, error } = useQuery({
+    queryKey: ["user-profile", selectedUserProfile?.id],
     queryFn: async () => {
-      const response = await apiRequest("GET", `/api/admin/users/${selectedUserProfile?.id}/profile`);
-      return response as any; // Type assertion to fix TypeScript errors
+      if (!selectedUserProfile?.id) {
+        throw new Error('No user ID provided');
+      }
+      
+      try {
+        const response = await fetch(`/api/admin/users/${selectedUserProfile.id}/profile`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Profile API response:', data);
+        return data;
+      } catch (error) {
+        console.error('Profile API error:', error);
+        throw error;
+      }
     },
     enabled: !!selectedUserProfile?.id,
   });
@@ -438,6 +460,7 @@ export default function Admin() {
 
   // Function to open user profile dialog
   const openUserProfile = (user: any) => {
+    console.log('Opening user profile for:', user);
     setSelectedUserProfile(user);
     setUserProfileDialogOpen(true);
   };
@@ -2106,6 +2129,7 @@ export default function Admin() {
           {isLoadingProfile ? (
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              <p className="ml-2 text-gray-600">Loading profile...</p>
             </div>
           ) : userProfile ? (
             <div className="space-y-6">
@@ -2262,6 +2286,11 @@ export default function Admin() {
           ) : (
             <div className="py-8 text-center text-gray-500">
               <p>Unable to load user profile</p>
+              <p className="text-xs mt-2">Selected user: {selectedUserProfile?.email}</p>
+              <p className="text-xs">Loading state: {isLoadingProfile ? 'loading' : 'not loading'}</p>
+              {error && (
+                <p className="text-xs text-red-600 mt-2">Error: {(error as any)?.message || 'Unknown error'}</p>
+              )}
             </div>
           )}
         </DialogContent>
