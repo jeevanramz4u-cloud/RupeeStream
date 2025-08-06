@@ -556,7 +556,8 @@ export default function Admin() {
                         title: "Logged out",
                         description: "You have been logged out successfully",
                       });
-                      setLocation("/admin-login");
+                      // Force page reload to clear auth state
+                      window.location.href = "/admin-login";
                     });
                 }}
               >

@@ -34,7 +34,8 @@ export default function AdminLogin() {
         title: "Success",
         description: "Admin login successful",
       });
-      navigate("/admin");
+      // Force a page reload to trigger auth state refresh
+      window.location.href = "/admin";
     },
     onError: (error: any) => {
       toast({
@@ -112,14 +113,20 @@ export default function AdminLogin() {
           
           <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Default Admin Credentials:
+              Admin Credentials:
             </h4>
             <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
               <div><strong>Username:</strong> admin</div>
               <div><strong>Password:</strong> admin123</div>
             </div>
-            <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
-              ⚠ Please change these credentials after first login
+            <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+              ℹ Use these credentials to access the admin dashboard
+            </p>
+          </div>
+          
+          <div className="mt-4 text-center">
+            <p className="text-xs text-gray-500">
+              Having trouble? Contact system administrator for support.
             </p>
           </div>
         </CardContent>
