@@ -27,7 +27,7 @@ export default function VideoPlayer() {
   const [requiredWatchTime, setRequiredWatchTime] = useState(0);
   const [currentWatchTime, setCurrentWatchTime] = useState(0);
   const [timerStarted, setTimerStarted] = useState(false);
-  const [totalWatchTime, setTotalWatchTime] = useState(0);
+  const [timerSeconds, setTimerSeconds] = useState(0);
 
   const { data: video, isLoading } = useQuery<any>({
     queryKey: ["/api/videos", id],
@@ -92,22 +92,21 @@ export default function VideoPlayer() {
   }, [progress]);
 
   useEffect(() => {
-    // Set required watch time based on video duration (100% for timer-based watching)
+    // Reset timer when video changes
     if (video && video.duration > 0) {
       setRequiredWatchTime(video.duration);
-      setTotalWatchTime(0);
+      setTimerSeconds(0);
       setTimerStarted(false);
     }
   }, [video]);
 
-  // Universal timer that works for both YouTube and regular videos
+  // Timer that runs for exact video duration
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (timerStarted && !hasCompleted) {
+    if (timerStarted && !hasCompleted && timerSeconds < videoDuration) {
       interval = setInterval(() => {
-        setTotalWatchTime(prev => {
+        setTimerSeconds(prev => {
           const newTime = prev + 1;
-          // Update currentWatchTime for YouTube compatibility
           setCurrentWatchTime(newTime);
           return newTime;
         });
@@ -116,7 +115,7 @@ export default function VideoPlayer() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [timerStarted, hasCompleted]);
+  }, [timerStarted, hasCompleted, timerSeconds, videoDuration]);
 
   // Safe accessors
   const videoTitle = video?.title || 'Loading...';
@@ -428,26 +427,26 @@ export default function VideoPlayer() {
                       <div className="text-sm text-gray-700 text-center bg-gray-100 px-3 py-2 rounded-lg">
                         <div className="font-semibold">Watch Timer</div>
                         <div className="text-lg font-mono">
-                          {Math.floor(totalWatchTime / 60)}:{(totalWatchTime % 60).toString().padStart(2, '0')} / {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
+                          {Math.floor(timerSeconds / 60)}:{(timerSeconds % 60).toString().padStart(2, '0')} / {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
                         </div>
                         <div className="text-xs text-gray-600">
-                          {Math.floor((totalWatchTime / videoDuration) * 100)}% complete
+                          {videoDuration > 0 ? Math.floor((timerSeconds / videoDuration) * 100) : 0}% complete
                         </div>
                       </div>
                       <Button
                         onClick={() => completeVideoMutation.mutate()}
                         className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
-                        disabled={completeVideoMutation.isPending || totalWatchTime < requiredWatchTime}
+                        disabled={completeVideoMutation.isPending || timerSeconds < videoDuration}
                       >
                         <Coins className="w-4 h-4 mr-2" />
                         {completeVideoMutation.isPending ? 'Processing...' : 
-                         totalWatchTime < requiredWatchTime ? 
-                         `Watch ${requiredWatchTime - totalWatchTime}s more to complete` : 
+                         timerSeconds < videoDuration ? 
+                         `Watch ${videoDuration - timerSeconds}s more to complete` : 
                          'Mark as Completed'}
                       </Button>
-                      {totalWatchTime < requiredWatchTime && (
+                      {timerSeconds < videoDuration && (
                         <div className="text-xs text-orange-600 text-center font-medium">
-                          You must watch the complete video to earn ₹{videoEarning}
+                          Timer must reach {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')} to earn ₹{videoEarning}
                         </div>
                       )}
                     </div>
@@ -470,10 +469,10 @@ export default function VideoPlayer() {
                   <div className="text-center">
                     <div className="text-xs text-gray-600 mb-1">Watch Timer</div>
                     <div className="text-lg font-mono font-semibold text-gray-800">
-                      {Math.floor(totalWatchTime / 60)}:{(totalWatchTime % 60).toString().padStart(2, '0')} / {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
+                      {Math.floor(timerSeconds / 60)}:{(timerSeconds % 60).toString().padStart(2, '0')} / {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
                     </div>
                     <div className="text-xs text-gray-500 mt-1">
-                      {Math.floor((totalWatchTime / videoDuration) * 100)}% complete
+                      {videoDuration > 0 ? Math.floor((timerSeconds / videoDuration) * 100) : 0}% complete
                     </div>
                   </div>
                 </div>
@@ -489,17 +488,17 @@ export default function VideoPlayer() {
                     <Button
                       onClick={() => completeVideoMutation.mutate()}
                       className="w-full bg-green-600 hover:bg-green-700 text-white font-medium touch-manipulation"
-                      disabled={completeVideoMutation.isPending || totalWatchTime < requiredWatchTime}
+                      disabled={completeVideoMutation.isPending || timerSeconds < videoDuration}
                     >
                       <Coins className="w-4 h-4 mr-2" />
                       {completeVideoMutation.isPending ? 'Processing...' : 
-                       totalWatchTime < requiredWatchTime ? 
-                       `Watch ${requiredWatchTime - totalWatchTime}s more to complete` : 
+                       timerSeconds < videoDuration ? 
+                       `Timer: ${videoDuration - timerSeconds}s remaining` : 
                        'Mark as Completed'}
                     </Button>
-                    {totalWatchTime < requiredWatchTime && (
+                    {timerSeconds < videoDuration && (
                       <div className="text-xs text-orange-600 text-center font-medium mt-2">
-                        You must watch the complete video to earn ₹{videoEarning}
+                        Timer must reach full duration to earn ₹{videoEarning}
                       </div>
                     )}
                   </div>
