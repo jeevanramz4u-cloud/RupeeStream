@@ -740,6 +740,45 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(users.id, userId))
       .returning();
+
+    // Process referral bonus if user has a referrer
+    if (user && user.referredBy) {
+      try {
+        console.log(`Processing referral bonus for KYC completion: ${user.email} (referred by: ${user.referredBy})`);
+        
+        // Check if referral bonus has already been credited
+        const referralRecord = await this.getReferralByReferredId(user.id);
+        if (referralRecord && !referralRecord.isEarningCredited) {
+          // Credit ₹49 to the referrer
+          const referrer = await this.getUser(user.referredBy);
+          if (referrer) {
+            const currentBalance = parseFloat(referrer.balance as string) || 0;
+            const bonusAmount = 49;
+            const newBalance = currentBalance + bonusAmount;
+            
+            // Update referrer's balance
+            await this.updateUser(referrer.id, { balance: newBalance.toString() });
+            
+            // Add earning record for the referrer
+            await this.createEarning({
+              userId: referrer.id,
+              amount: bonusAmount.toString(),
+              type: "referral",
+              description: `Referral bonus for ${user.firstName} ${user.lastName} completing KYC`,
+            });
+            
+            // Mark referral as earning credited
+            await this.updateReferralEarningStatus(referralRecord.id, true);
+            
+            console.log(`✅ KYC Referral bonus paid: ₹${bonusAmount} to ${referrer.email} for referring ${user.email}`);
+          }
+        }
+      } catch (error) {
+        console.error("❌ Error processing KYC referral bonus:", error);
+        // Don't fail the KYC completion if referral bonus fails
+      }
+    }
+
     return user;
   }
 }
