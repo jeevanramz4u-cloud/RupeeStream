@@ -57,12 +57,6 @@ export default function Header() {
 
           {/* User Section */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Earnings Display */}
-            <div className="flex items-center space-x-1.5 sm:space-x-2 bg-accent/10 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg">
-              <Coins className="text-accent w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span className="font-semibold text-gray-900 text-sm sm:text-base">₹{(user as any)?.balance || '0.00'}</span>
-            </div>
-            
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
