@@ -100,6 +100,18 @@ export default function VideoPlayer() {
     }
   }, [video]);
 
+  // Safe accessors - moved before useEffects to avoid hoisting issues
+  const videoTitle = video?.title || 'Loading...';
+  const videoEarning = video?.earning || '0';
+  const videoUrl = video?.url || '';
+  const videoThumbnail = video?.thumbnailUrl || null;
+  const videoDuration = video?.duration || 0;
+  const videoViews = video?.views || 0;
+  const videoDescription = video?.description || '';
+  
+  // Progress accessors
+  const hasEarnings = progress?.isEarningCredited || false;
+
   // Timer that runs for exact video duration
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -116,18 +128,6 @@ export default function VideoPlayer() {
       if (interval) clearInterval(interval);
     };
   }, [timerStarted, hasCompleted, timerSeconds, videoDuration]);
-
-  // Safe accessors
-  const videoTitle = video?.title || 'Loading...';
-  const videoEarning = video?.earning || '0';
-  const videoUrl = video?.url || '';
-  const videoThumbnail = video?.thumbnailUrl || null;
-  const videoDuration = video?.duration || 0;
-  const videoViews = video?.views || 0;
-  const videoDescription = video?.description || '';
-  
-  // Progress accessors
-  const hasEarnings = progress?.isEarningCredited || false;
 
   // Check if this is a YouTube video
   const isYouTubeVideo = videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'));
