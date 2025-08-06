@@ -32,10 +32,18 @@ export default function Earnings() {
 
   // Force refetch when user becomes available
   useEffect(() => {
-    if (user && isAuthenticated) {
+    if (user && !authLoading) {
       queryClient.invalidateQueries({ queryKey: ["/api/payouts"] });
+      console.log("Invalidating payouts query because user is loaded");
     }
-  }, [user, isAuthenticated, queryClient]);
+  }, [user, authLoading, queryClient]);
+
+  // Manual trigger for payouts query
+  const triggerPayoutsRefetch = () => {
+    console.log("Manual payouts refetch triggered");
+    queryClient.invalidateQueries({ queryKey: ["/api/payouts"] });
+    refetchPayouts();
+  };
 
   const { data: earnings = [] } = useQuery({
     queryKey: ["/api/earnings"],
@@ -54,7 +62,7 @@ export default function Earnings() {
   });
 
   // Debug logging for payouts
-  console.log("Payouts query status:", { payouts, isPayoutsLoading, payoutsError, enabled: !!user });
+  console.log("Payouts query status:", { payouts, isPayoutsLoading, payoutsError, enabled: !!user && !authLoading, userExists: !!user });
 
   // Check if user needs account suspension for not meeting daily target
   useEffect(() => {
@@ -132,6 +140,8 @@ export default function Earnings() {
         return <Coins className="w-4 h-4 text-accent" />;
       case 'referral':
         return <TrendingUp className="w-4 h-4 text-purple-600" />;
+      case 'signup_bonus':
+        return <TrendingUp className="w-4 h-4 text-green-600" />;
       default:
         return <Coins className="w-4 h-4 text-gray-500" />;
     }
@@ -146,6 +156,15 @@ export default function Earnings() {
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Earnings Dashboard</h1>
           <p className="text-gray-600">Track your earnings, watch time, and payout history.</p>
         </div>
+
+        {/* Signup Bonus Alert */}
+        <Alert className="mb-6 border-green-200 bg-green-50">
+          <TrendingUp className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-800">
+            <strong>Welcome Bonus:</strong> New users receive ₹1,000 signup bonus automatically credited to their account. 
+            Check your earnings history below to see all credited amounts.
+          </AlertDescription>
+        </Alert>
 
         {/* Daily Target Alert */}
         {remainingHours > 0 && (
@@ -326,7 +345,7 @@ export default function Earnings() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => refetchPayouts()}
+                onClick={triggerPayoutsRefetch}
                 disabled={isPayoutsLoading}
               >
                 {isPayoutsLoading ? "Loading..." : "Refresh"}
