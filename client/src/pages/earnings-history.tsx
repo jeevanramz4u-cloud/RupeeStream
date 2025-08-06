@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import { ArrowLeft, Calendar, Coins, Video, Users } from "lucide-react";
+import { ArrowLeft, Calendar, Coins, Video, Users, Clock, Wallet } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 
@@ -22,6 +22,37 @@ export default function EarningsHistory() {
     queryKey: ["/api/earnings/stats"],
     enabled: !!user,
   });
+
+  const { data: payouts = [] } = useQuery({
+    queryKey: ["/api/payouts"],
+    enabled: !!user,
+  });
+
+  // Calculate next payout date (every Tuesday)
+  const getNextTuesday = () => {
+    const now = new Date();
+    const nextTuesday = new Date(now);
+    const dayOfWeek = now.getDay();
+    const daysUntilTuesday = dayOfWeek === 2 ? 7 : (2 - dayOfWeek + 7) % 7;
+    
+    if (daysUntilTuesday === 0) {
+      const processingHour = 14;
+      if (now.getHours() >= processingHour) {
+        nextTuesday.setDate(now.getDate() + 7);
+      }
+    } else {
+      nextTuesday.setDate(now.getDate() + daysUntilTuesday);
+    }
+    
+    return nextTuesday.toLocaleDateString('en-IN', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  const nextPayoutDate = getNextTuesday();
 
 
 
@@ -69,7 +100,7 @@ export default function EarningsHistory() {
         </div>
 
         {/* Earnings Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-8">
           <Card className="touch-manipulation">
             <CardContent className="pt-4">
               <div className="flex items-center">
@@ -117,7 +148,58 @@ export default function EarningsHistory() {
               </div>
             </CardContent>
           </Card>
+
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4">
+              <div className="flex items-center">
+                <Clock className="h-8 w-8 text-blue-600" />
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-500">Next Payout</p>
+                  <p className="text-lg font-bold text-blue-900">{nextPayoutDate}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Payout History */}
+        <Card className="touch-manipulation mb-8">
+          <CardHeader>
+            <CardTitle className="text-base sm:text-lg">Payout History</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {(payouts as any[]).length === 0 ? (
+              <div className="text-center py-6">
+                <Wallet className="h-10 w-10 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500">No payout requests yet</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {(payouts as any[]).map((payout: any) => (
+                  <div key={payout.id} className="flex items-center justify-between p-4 rounded-lg border bg-white">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">Payout Request</p>
+                      <p className="text-xs text-gray-500">
+                        {format(new Date(payout.requestedAt || payout.requested_at), 'MMM d, yyyy h:mm a')}
+                      </p>
+                      {payout.processedAt || payout.processed_at ? (
+                        <p className="text-xs text-green-600">
+                          Processed: {format(new Date(payout.processedAt || payout.processed_at), 'MMM d, yyyy')}
+                        </p>
+                      ) : payout.status === 'pending' ? (
+                        <p className="text-xs text-blue-600">Expected: {nextPayoutDate}</p>
+                      ) : null}
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-gray-900">₹{payout.amount}</p>
+                      <p className="text-xs text-gray-500 capitalize">{payout.status}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Earnings List */}
         <Card className="touch-manipulation">
