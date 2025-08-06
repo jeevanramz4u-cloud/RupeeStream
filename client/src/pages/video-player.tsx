@@ -422,34 +422,17 @@ export default function VideoPlayer() {
                   )}
                   
                   {!hasCompleted && (
-                    <div className="flex flex-col items-center gap-2">
-                      {/* Universal Timer Display */}
-                      <div className="text-sm text-gray-700 text-center bg-gray-100 px-3 py-2 rounded-lg">
-                        <div className="font-semibold">Watch Timer</div>
-                        <div className="text-lg font-mono">
-                          {Math.floor(timerSeconds / 60)}:{(timerSeconds % 60).toString().padStart(2, '0')} / {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
-                        </div>
-                        <div className="text-xs text-gray-600">
-                          {videoDuration > 0 ? Math.floor((timerSeconds / videoDuration) * 100) : 0}% complete
-                        </div>
-                      </div>
-                      <Button
-                        onClick={() => completeVideoMutation.mutate()}
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
-                        disabled={completeVideoMutation.isPending || timerSeconds < videoDuration}
-                      >
-                        <Coins className="w-4 h-4 mr-2" />
-                        {completeVideoMutation.isPending ? 'Processing...' : 
-                         timerSeconds < videoDuration ? 
-                         `Watch ${videoDuration - timerSeconds}s more to complete` : 
-                         'Mark as Completed'}
-                      </Button>
-                      {timerSeconds < videoDuration && (
-                        <div className="text-xs text-orange-600 text-center font-medium">
-                          Timer must reach {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')} to earn ₹{videoEarning}
-                        </div>
-                      )}
-                    </div>
+                    <Button
+                      onClick={() => completeVideoMutation.mutate()}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
+                      disabled={completeVideoMutation.isPending || timerSeconds < videoDuration}
+                    >
+                      <Coins className="w-4 h-4 mr-2" />
+                      {completeVideoMutation.isPending ? 'Processing...' : 
+                       timerSeconds < videoDuration ? 
+                       `Watch ${videoDuration - timerSeconds}s more to complete` : 
+                       'Mark as Completed'}
+                    </Button>
                   )}
                 </div>
               </div>
@@ -464,18 +447,7 @@ export default function VideoPlayer() {
                 </div>
                 <Progress value={progressPercentage} className="h-2 mb-4" />
                 
-                {/* Timer Display for Regular Videos */}
-                <div className="bg-gray-50 p-3 rounded-lg mb-3">
-                  <div className="text-center">
-                    <div className="text-xs text-gray-600 mb-1">Watch Timer</div>
-                    <div className="text-lg font-mono font-semibold text-gray-800">
-                      {Math.floor(timerSeconds / 60)}:{(timerSeconds % 60).toString().padStart(2, '0')} / {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {videoDuration > 0 ? Math.floor((timerSeconds / videoDuration) * 100) : 0}% complete
-                    </div>
-                  </div>
-                </div>
+
                 
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <span>Video: {Math.floor(watchedSeconds / 60)}:{(watchedSeconds % 60).toString().padStart(2, '0')}</span>
@@ -496,11 +468,7 @@ export default function VideoPlayer() {
                        `Timer: ${videoDuration - timerSeconds}s remaining` : 
                        'Mark as Completed'}
                     </Button>
-                    {timerSeconds < videoDuration && (
-                      <div className="text-xs text-orange-600 text-center font-medium mt-2">
-                        Timer must reach full duration to earn ₹{videoEarning}
-                      </div>
-                    )}
+
                   </div>
                 )}
               </div>
