@@ -204,7 +204,7 @@ export default function VideoPlayer() {
 
   const progressPercentage = videoDuration > 0 ? (watchedSeconds / videoDuration) * 100 : 0;
   const remainingTime = Math.max(videoDuration - watchedSeconds, 0);
-  const canEarn = !hasCompleted && !progressIsEarningCredited;
+  const canEarn = !hasCompleted && !hasEarnings;
 
   return (
     <div className="min-h-screen bg-neutral-50">

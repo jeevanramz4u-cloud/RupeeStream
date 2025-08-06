@@ -82,7 +82,12 @@ export default function Dashboard() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-500">Total Earnings</p>
-                  <p className="text-xl font-bold text-gray-900 hover:text-green-600">₹{stats?.totalEarnings || 0}</p>
+                  <button
+                    onClick={() => setLocation("/earnings-history")}
+                    className="text-xl font-bold text-gray-900 hover:text-green-600 underline-offset-2 hover:underline text-left"
+                  >
+                    ₹{stats?.totalEarnings || 0}
+                  </button>
                   <p className="text-xs text-gray-400">Click to view history</p>
                 </div>
               </div>
