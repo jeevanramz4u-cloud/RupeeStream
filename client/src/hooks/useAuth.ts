@@ -6,10 +6,13 @@ export function useAuth() {
   const { toast } = useToast();
   const toastShownRef = useRef(false);
   
-  // Use traditional auth for our demo login system
+  // Use traditional auth for our demo login system with retry disabled to prevent infinite loops
   const { data: user, isLoading } = useQuery({
     queryKey: ["/api/auth/check"],
     retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Show hourly bonus toast when user receives it
