@@ -84,17 +84,17 @@ export default function VideoPlayer() {
 
   useEffect(() => {
     if (progress) {
-      setWatchedSeconds(progressWatchedSeconds);
-      setHasCompleted(progressIsCompleted);
+      setWatchedSeconds(progress.watchedSeconds || 0);
+      setHasCompleted(progress.isCompleted || false);
     }
-  }, [progress, progressWatchedSeconds, progressIsCompleted]);
+  }, [progress]);
 
   useEffect(() => {
     // Set required watch time based on video duration (minimum 80% of video duration)
-    if (video && videoDuration > 0) {
-      setRequiredWatchTime(Math.floor(videoDuration * 0.8));
+    if (video && video.duration > 0) {
+      setRequiredWatchTime(Math.floor(video.duration * 0.8));
     }
-  }, [video, videoDuration]);
+  }, [video]);
 
   // Real-time timer for YouTube watch time
   useEffect(() => {
@@ -118,9 +118,9 @@ export default function VideoPlayer() {
   const videoDuration = video?.duration || 0;
   const videoViews = video?.views || 0;
   const videoDescription = video?.description || '';
-  const progressWatchedSeconds = progress?.watchedSeconds || 0;
-  const progressIsCompleted = progress?.isCompleted || false;
-  const progressIsEarningCredited = progress?.isEarningCredited || false;
+  
+  // Progress accessors
+  const hasEarnings = progress?.isEarningCredited || false;
 
   // Check if this is a YouTube video
   const isYouTubeVideo = videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'));
