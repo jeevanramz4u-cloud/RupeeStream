@@ -406,10 +406,10 @@ export default function Admin() {
       const response = await apiRequest("POST", "/api/admin/process-pending-referrals");
       return response;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       toast({
         title: "Success",
-        description: `Processed ${data.processed} referral bonuses successfully`,
+        description: `Processed ${data.processed || 0} referral bonuses successfully`,
       });
       // Refresh relevant queries
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });

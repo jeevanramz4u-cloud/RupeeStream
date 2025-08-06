@@ -6,12 +6,14 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { ObjectPermission } from "./objectAcl";
 import { SuspensionSystem } from "./suspensionSystem";
-import { and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { 
   insertVideoSchema, 
   insertVideoProgressSchema, 
   insertPayoutRequestSchema,
-  insertChatMessageSchema 
+  insertChatMessageSchema,
+  users,
+  referrals
 } from "@shared/schema";
 
 // Extend session interface
@@ -1032,77 +1034,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log("🔄 Processing all pending referral bonuses...");
 
-      // Get all referrals that should be credited but aren't yet
-      const pendingReferrals = await db
-        .select({
-          referralId: referrals.id,
-          referrerId: referrals.referrerId,
-          referredId: referrals.referredId,
-          referredUser: {
-            firstName: users.firstName,
-            lastName: users.lastName,
-            email: users.email
-          }
-        })
-        .from(referrals)
-        .innerJoin(users, eq(referrals.referredId, users.id))
-        .where(and(
-          eq(referrals.isEarningCredited, false),
-          eq(users.verificationStatus, 'verified'),
-          eq(users.kycStatus, 'approved')
-        ));
-
+      // Get all verified users and process their referrals
+      const allUsers = await storage.getAllUsers();
+      const verifiedUsers = allUsers.filter(u => 
+        u.verificationStatus === 'verified' && u.kycStatus === 'approved'
+      );
+      
       let processedCount = 0;
       const results = [];
 
-      for (const pending of pendingReferrals) {
+      // Process each verified user's referrals
+      for (const verifiedUser of verifiedUsers) {
         try {
-          // Get referrer details
-          const referrer = await storage.getUser(pending.referrerId);
-          if (referrer) {
-            const currentBalance = parseFloat(referrer.balance as string) || 0;
-            const bonusAmount = 49;
-            const newBalance = currentBalance + bonusAmount;
+          // Check if they were referred by someone
+          const userReferrals = await storage.getReferrals(verifiedUser.id);
+          const referralRecord = userReferrals.find(r => r.referredId === verifiedUser.id);
+          
+          if (referralRecord && !referralRecord.isEarningCredited) {
+            // Get referrer details
+            const referrer = await storage.getUser(referralRecord.referrerId);
+            if (referrer) {
+              const currentBalance = parseFloat(referrer.balance as string) || 0;
+              const bonusAmount = 49;
+              const newBalance = currentBalance + bonusAmount;
 
-            // Update referrer's balance
-            await storage.updateUser(referrer.id, { balance: newBalance.toString() });
+              // Update referrer's balance
+              await storage.updateUser(referrer.id, { balance: newBalance.toString() });
 
-            // Add earning record for the referrer
-            await storage.createEarning({
-              userId: referrer.id,
-              amount: bonusAmount.toString(),
-              type: "referral",
-              description: `Referral bonus for ${pending.referredUser.firstName} ${pending.referredUser.lastName} (retroactive processing)`,
-            });
+              // Add earning record for the referrer
+              await storage.createEarning({
+                userId: referrer.id,
+                amount: bonusAmount,
+                source: "referral_bonus",
+                description: `Referral bonus for ${verifiedUser.firstName} ${verifiedUser.lastName}`,
+                videoId: null
+              });
 
-            // Mark referral as earning credited
-            await storage.updateReferralEarningStatus(pending.referralId, true);
+              // Mark referral as earning credited
+              await storage.creditReferralEarning(referralRecord.id);
 
-            processedCount++;
-            results.push({
-              referrer: referrer.email,
-              referred: pending.referredUser.email,
-              amount: bonusAmount,
-              success: true
-            });
+              processedCount++;
+              results.push({
+                referrer: referrer.email,
+                referred: verifiedUser.email,
+                amount: bonusAmount,
+                success: true
+              });
 
-            console.log(`✅ Processed referral bonus: ₹${bonusAmount} to ${referrer.email} for referring ${pending.referredUser.email}`);
+              console.log(`✅ Processed referral bonus: ₹${bonusAmount} to ${referrer.email} for referring ${verifiedUser.email}`);
+            }
           }
-        } catch (error) {
-          console.error(`❌ Failed to process referral for ${pending.referredUser.email}:`, error);
+        } catch (error: any) {
+          console.error(`❌ Failed to process referral for ${verifiedUser.email}:`, error);
           results.push({
             referrer: 'Unknown',
-            referred: pending.referredUser.email,
+            referred: verifiedUser.email,
             amount: 0,
             success: false,
-            error: error.message
+            error: error.message || 'Unknown error'
           });
         }
       }
 
       res.json({
         message: `Processed ${processedCount} pending referral bonuses`,
-        totalFound: pendingReferrals.length,
+        totalFound: verifiedUsers.length,
         processed: processedCount,
         results
       });
