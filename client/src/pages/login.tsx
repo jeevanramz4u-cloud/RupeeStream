@@ -67,6 +67,28 @@ export default function Login() {
           <p className="text-gray-600 mt-2">Sign in to your EarnPay account</p>
         </div>
 
+        {/* Demo Login Info */}
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="pt-6">
+            <div className="text-center space-y-2">
+              <h3 className="font-semibold text-blue-900">Demo Login</h3>
+              <div className="text-sm text-blue-700">
+                <p><strong>Email:</strong> demo@earnpay.com</p>
+                <p><strong>Password:</strong> demo123</p>
+              </div>
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setFormData({ email: 'demo@earnpay.com', password: 'demo123' })}
+                className="text-blue-700 border-blue-300 hover:bg-blue-100"
+              >
+                Use Demo Login
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Login Form */}
         <Card>
           <CardHeader>
