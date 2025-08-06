@@ -16,8 +16,10 @@ import {
   Wallet, 
   TrendingUp,
   Calendar,
-  TriangleAlert
+  TriangleAlert,
+  Info
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 
 export default function Earnings() {
@@ -248,9 +250,12 @@ export default function Earnings() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Next Payout</p>
-                  <p className="text-lg font-bold text-gray-900">{nextPayoutDate}</p>
-                  <p className="text-xs text-gray-500 mt-1">Payouts processed weekly</p>
+                  <p className="text-sm font-medium text-gray-600">Next Payout Date</p>
+                  <p className="text-lg font-bold text-blue-900">{nextPayoutDate}</p>
+                  <p className="text-xs text-blue-600 mt-1 flex items-center">
+                    <Info className="w-3 h-3 mr-1" />
+                    Payouts processed every Tuesday
+                  </p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                   <Calendar className="text-purple-600 w-6 h-6" />
@@ -393,22 +398,49 @@ export default function Earnings() {
               ) : (
                 <div className="space-y-4">
                   {(payouts as any[]).map((payout: any) => (
-                    <div key={payout.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          Payout Request
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {formatDate(payout.requested_at)}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-semibold text-gray-900">
+                    <div key={payout.id} className="p-4 bg-gray-50 rounded-lg border">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <p className="text-sm font-medium text-gray-900">
+                            Payout Request
+                          </p>
+                          <Badge 
+                            variant={payout.status === 'completed' ? 'default' : 
+                                   payout.status === 'failed' || payout.status === 'declined' ? 'destructive' : 
+                                   payout.status === 'processing' ? 'secondary' : 'outline'}
+                            className="text-xs"
+                          >
+                            {payout.status.charAt(0).toUpperCase() + payout.status.slice(1)}
+                          </Badge>
+                        </div>
+                        <p className="text-lg font-semibold text-gray-900">
                           ₹{payout.amount}
                         </p>
-                        <p className="text-xs text-gray-500 capitalize">
-                          {payout.status}
-                        </p>
+                      </div>
+                      
+                      <div className="space-y-1 text-xs text-gray-600">
+                        <div className="flex items-center justify-between">
+                          <span>Requested:</span>
+                          <span className="font-mono">{formatDate(payout.requested_at || payout.requestedAt)}</span>
+                        </div>
+                        
+                        {payout.processed_at || payout.processedAt ? (
+                          <div className="flex items-center justify-between">
+                            <span>Processed:</span>
+                            <span className="font-mono text-green-600">{formatDate(payout.processed_at || payout.processedAt)}</span>
+                          </div>
+                        ) : payout.status === 'pending' ? (
+                          <div className="flex items-center justify-between">
+                            <span>Expected:</span>
+                            <span className="font-mono text-blue-600">{nextPayoutDate}</span>
+                          </div>
+                        ) : null}
+                        
+                        {payout.reason && (
+                          <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-800">
+                            <p className="text-xs"><strong>Reason:</strong> {payout.reason}</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
