@@ -212,6 +212,14 @@ export default function KYC() {
   };
 
   const handleSubmitKyc = () => {
+    console.log("handleSubmitKyc called with data:", {
+      govIdType,
+      govIdNumber,
+      govIdFrontUrl: govIdFrontUrl ? "✓" : "✗",
+      govIdBackUrl: govIdBackUrl ? "✓" : "✗",
+      selfieWithIdUrl: selfieWithIdUrl ? "✓" : "✗"
+    });
+    
     if (!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) {
       toast({
         title: "Incomplete Information",
@@ -221,6 +229,7 @@ export default function KYC() {
       return;
     }
 
+    console.log("Submitting KYC with mutation...");
     submitKycMutation.mutate({
       governmentIdType: govIdType,
       governmentIdNumber: govIdNumber,
@@ -315,7 +324,11 @@ export default function KYC() {
                   <p className="text-sm text-gray-600 mb-3">One-time ₹99 verification fee</p>
                   <Button
                     onClick={() => {
+                      console.log("Pay Fee button clicked");
+                      console.log("Form data:", { govIdType, govIdNumber, govIdFrontUrl, govIdBackUrl, selfieWithIdUrl });
+                      
                       if (!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) {
+                        console.log("Missing required fields");
                         toast({
                           title: "Documents Required",
                           description: "Please upload all documents first before paying the fee.",
@@ -324,8 +337,13 @@ export default function KYC() {
                         document.getElementById('kyc-form')?.scrollIntoView({ behavior: 'smooth' });
                         return;
                       }
+                      
+                      console.log("All fields complete, submitting KYC...");
                       handleSubmitKyc();
-                      setTimeout(() => payFeeMutation.mutate(), 500);
+                      setTimeout(() => {
+                        console.log("Initiating payment...");
+                        payFeeMutation.mutate();
+                      }, 500);
                     }}
                     disabled={submitKycMutation.isPending || payFeeMutation.isPending}
                     className="w-full bg-green-600 hover:bg-green-700"
