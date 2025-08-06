@@ -63,6 +63,18 @@ export default function KYC() {
     gcTime: 0,
   });
 
+  // Initialize form state from KYC data when available
+  useEffect(() => {
+    if (kycData) {
+      const data = kycData as any;
+      if (data.governmentIdType && !govIdType) setGovIdType(data.governmentIdType);
+      if (data.governmentIdNumber && !govIdNumber) setGovIdNumber(data.governmentIdNumber);
+      if (data.govIdFrontUrl && !govIdFrontUrl) setGovIdFrontUrl(data.govIdFrontUrl);
+      if (data.govIdBackUrl && !govIdBackUrl) setGovIdBackUrl(data.govIdBackUrl);
+      if (data.selfieWithIdUrl && !selfieWithIdUrl) setSelfieWithIdUrl(data.selfieWithIdUrl);
+    }
+  }, [kycData, govIdType, govIdNumber, govIdFrontUrl, govIdBackUrl, selfieWithIdUrl]);
+
   // Auto-refresh KYC status every 10 seconds when submitted or waiting for approval
   useEffect(() => {
     if ((kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid) {
@@ -193,10 +205,13 @@ export default function KYC() {
       // Update the appropriate state
       if (documentType === 'front') {
         setGovIdFrontUrl(documentUrl);
+        console.log("Set govIdFrontUrl to:", documentUrl);
       } else if (documentType === 'back') {
         setGovIdBackUrl(documentUrl);
+        console.log("Set govIdBackUrl to:", documentUrl);
       } else if (documentType === 'selfie') {
         setSelfieWithIdUrl(documentUrl);
+        console.log("Set selfieWithIdUrl to:", documentUrl);
       }
 
       // Save to backend
@@ -209,8 +224,8 @@ export default function KYC() {
           description: `Your ${documentType === 'front' ? 'ID front' : documentType === 'back' ? 'ID back' : 'selfie'} has been uploaded successfully.`,
         });
         
-        // Refresh KYC data to get latest state
-        refetchKycData();
+        // Don't refetch KYC data immediately to avoid clearing form state
+        console.log("Document saved to backend successfully");
       }).catch((error) => {
         console.error("Error saving document:", error);
         toast({
