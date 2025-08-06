@@ -224,21 +224,7 @@ export default function VideoPlayer() {
       </header>
 
       <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-6 pb-20">
-        {/* Instructions for YouTube videos - Top */}
-        {isYouTubeVideo && (
-          <Card className="mb-3 touch-manipulation">
-            <CardContent className="p-3 bg-blue-50">
-              <div className="text-center">
-                <p className="text-xs text-blue-800 mb-1">
-                  <strong>How to earn:</strong> Watch embedded video or use YouTube app → Return & complete
-                </p>
-                <p className="text-xs text-blue-600">
-                  Status: {hasCompleted ? '✅ Completed' : '⏳ Pending completion'}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+
 
         {/* Earning Status - Before Player */}
         {canEarn ? (
@@ -320,42 +306,7 @@ export default function VideoPlayer() {
                       }}
                     />
                     
-                    {/* Timer overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
-                      <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-                        <div className="text-white text-xs sm:text-sm">
-                          {isWatchingOnYoutube && youtubeWatchStartTime && (
-                            <div className="flex items-center gap-2">
-                              <span>⏱️ {Math.floor(currentWatchTime / 60)}:{(currentWatchTime % 60).toString().padStart(2, '0')}</span>
-                              {currentWatchTime >= requiredWatchTime && (
-                                <span className="text-green-300">✓ Ready!</span>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                        
-                        <div className="flex gap-2">
-                          {!hasCompleted && currentWatchTime >= requiredWatchTime && (
-                            <Button
-                              size="sm"
-                              onClick={() => completeVideoMutation.mutate()}
-                              className="bg-green-600 hover:bg-green-700 text-white text-xs"
-                              disabled={completeVideoMutation.isPending}
-                            >
-                              <Coins className="w-3 h-3 mr-1" />
-                              {completeVideoMutation.isPending ? 'Processing...' : 'Complete'}
-                            </Button>
-                          )}
-                          
-                          {hasCompleted && (
-                            <div className="bg-green-800 text-green-200 px-2 py-1 rounded text-xs flex items-center">
-                              <Coins className="w-3 h-3 mr-1" />
-                              Completed!
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+
                   </div>
                 ) : (
                   // Regular video player for direct video files
@@ -393,7 +344,7 @@ export default function VideoPlayer() {
                     Open in YouTube App
                   </Button>
                   
-                  {!hasCompleted && currentWatchTime >= requiredWatchTime && (
+                  {!hasCompleted && (
                     <Button
                       onClick={() => completeVideoMutation.mutate()}
                       className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"

@@ -225,7 +225,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const { bankDetails } = req.body;
       
-      const user = await storage.updateUser(userId, { bankDetails });
+      const user = await storage.updateUser(userId, req.body);
       res.json(user);
     } catch (error) {
       console.error("Error updating bank details:", error);
@@ -414,6 +414,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: `Earned from watching: ${video.title}`,
         });
 
+        // Update user balance
+        const user = await storage.getUser(userId);
+        if (user) {
+          const currentBalance = parseFloat(user.balance.toString());
+          const newBalance = currentBalance + parseFloat(video.earning.toString());
+          await storage.updateUser(userId, { balance: newBalance.toFixed(2) });
+        }
+
         // Increment video views
         await storage.incrementVideoViews(videoId);
       }
@@ -548,7 +556,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
 
-      if (!user.bankDetails) {
+      if (!user.accountHolderName || !user.accountNumber || !user.ifscCode || !user.bankName) {
         return res.status(400).json({ message: "Bank details not provided" });
       }
 
@@ -560,7 +568,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const payout = await storage.createPayoutRequest({
         ...requestData,
         userId,
-        bankDetails: user.bankDetails,
+        accountHolderName: user.accountHolderName,
+        accountNumber: user.accountNumber,
+        ifscCode: user.ifscCode,
+        bankName: user.bankName,
       });
 
       res.json(payout);
@@ -582,7 +593,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         storage.getUsersForVerification(),
         storage.getVideos(),
         storage.getPayoutRequests(),
-        storage.getTotalEarnings()
+        storage.getTotalEarnings("")
       ]);
 
       const analytics = {
@@ -912,10 +923,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "User not found" });
       }
       
-      const currentBalance = currentUser.balance || 0;
+      const currentBalance = parseFloat(currentUser.balance.toString());
       const newBalance = Math.max(0, currentBalance + amount); // Don't allow negative balance
       
-      const user = await storage.updateUser(id, { balance: newBalance });
+      const user = await storage.updateUser(id, { balance: newBalance.toFixed(2) });
       res.json(user);
     } catch (error) {
       console.error("Error updating user balance:", error);
