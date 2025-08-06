@@ -270,21 +270,39 @@ export class DatabaseStorage implements IStorage {
   }
 
   async completeVideo(userId: string, videoId: string): Promise<VideoProgress | undefined> {
-    const existing = await this.getVideoProgress(userId, videoId);
-    if (!existing) return undefined;
+    // Get or create progress record
+    let existing = await this.getVideoProgress(userId, videoId);
+    if (!existing) {
+      // Create initial progress record
+      const [newProgress] = await db
+        .insert(videoProgress)
+        .values({ userId, videoId, watchedSeconds: 0 })
+        .returning();
+      existing = newProgress;
+    }
 
-    // Check if already completed
-    if (existing.isCompleted) return existing;
+    // Check if already completed and credited
+    if (existing.isCompleted && existing.isEarningCredited) {
+      return existing;
+    }
 
+    // Get video info for earnings
+    const video = await this.getVideo(videoId);
+    if (!video) return existing;
+
+    // Mark as completed
     const [updated] = await db
       .update(videoProgress)
-      .set({ isCompleted: true, completedAt: new Date() })
+      .set({ 
+        isCompleted: true, 
+        completedAt: new Date(),
+        isEarningCredited: true 
+      })
       .where(eq(videoProgress.id, existing.id))
       .returning();
 
-    // Create earning record when video is completed
-    const video = await this.getVideo(videoId);
-    if (video && !existing.isEarningCredited) {
+    // Create earning record only if not already credited
+    if (!existing.isEarningCredited) {
       await this.createEarning({
         userId,
         videoId,
@@ -293,15 +311,14 @@ export class DatabaseStorage implements IStorage {
         description: `Completed video: ${video.title}`,
       });
 
-      // Mark earning as credited and update the returned progress
+      // Increment video views
       await db
-        .update(videoProgress)
-        .set({ isEarningCredited: true })
-        .where(eq(videoProgress.id, updated.id));
-        
-      updated.isEarningCredited = true;
+        .update(videos)
+        .set({ views: sql`${videos.views} + 1` })
+        .where(eq(videos.id, videoId));
     }
 
+    updated.isEarningCredited = true;
     return updated;
   }
 

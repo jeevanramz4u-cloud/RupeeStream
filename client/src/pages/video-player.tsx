@@ -130,18 +130,60 @@ export default function VideoPlayer() {
     const videoElement = videoRef.current;
     if (!videoElement || isYouTubeVideo) return;
 
-    const handleTimeUpdate = () => {
-      const currentTime = Math.floor(videoElement.currentTime);
-      setWatchedSeconds(currentTime);
-      
-      // Update progress every 30 seconds
-      if (currentTime % 30 === 0 && currentTime > 0) {
-        updateProgressMutation.mutate(currentTime);
+    let lastValidTime = 0;
+
+    const handleLoadedData = () => {
+      // Set video to start from last watched position
+      if (watchedSeconds > 0) {
+        videoElement.currentTime = watchedSeconds;
+        lastValidTime = watchedSeconds;
       }
     };
 
+    const handleTimeUpdate = () => {
+      const currentTime = Math.floor(videoElement.currentTime);
+      
+      // Prevent seeking forward - only allow natural progression
+      if (currentTime > lastValidTime + 2) {
+        videoElement.currentTime = lastValidTime;
+        toast({
+          title: "Seeking Disabled",
+          description: "You cannot skip forward in the video.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Prevent seeking backward beyond 5 seconds
+      if (currentTime < lastValidTime - 5) {
+        videoElement.currentTime = lastValidTime;
+        toast({
+          title: "Seeking Disabled", 
+          description: "You cannot rewind the video.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Update progress
+      if (currentTime > lastValidTime) {
+        lastValidTime = currentTime;
+        setWatchedSeconds(currentTime);
+        
+        // Update progress every 10 seconds
+        if (currentTime % 10 === 0 && currentTime > 0) {
+          updateProgressMutation.mutate(currentTime);
+        }
+      }
+    };
+
+    const handleSeeking = (e: Event) => {
+      e.preventDefault();
+      videoElement.currentTime = lastValidTime;
+    };
+
     const handleEnded = () => {
-      if (!hasCompleted) {
+      if (!hasCompleted && lastValidTime >= videoDuration - 10) {
         completeVideoMutation.mutate();
       }
     };
@@ -149,30 +191,29 @@ export default function VideoPlayer() {
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
 
-    // Disable seeking
-    const handleSeeking = () => {
-      videoElement.currentTime = watchedSeconds;
-      toast({
-        title: "Seeking Disabled",
-        description: "You cannot skip or rewind the video.",
-        variant: "destructive",
-      });
+    // Disable right-click context menu to prevent controls access
+    const handleContextMenu = (e: Event) => {
+      e.preventDefault();
     };
 
+    videoElement.addEventListener('loadeddata', handleLoadedData);
     videoElement.addEventListener('timeupdate', handleTimeUpdate);
+    videoElement.addEventListener('seeking', handleSeeking);
     videoElement.addEventListener('ended', handleEnded);
     videoElement.addEventListener('play', handlePlay);
     videoElement.addEventListener('pause', handlePause);
-    videoElement.addEventListener('seeking', handleSeeking);
+    videoElement.addEventListener('contextmenu', handleContextMenu);
 
     return () => {
+      videoElement.removeEventListener('loadeddata', handleLoadedData);
       videoElement.removeEventListener('timeupdate', handleTimeUpdate);
+      videoElement.removeEventListener('seeking', handleSeeking);
       videoElement.removeEventListener('ended', handleEnded);
       videoElement.removeEventListener('play', handlePlay);
       videoElement.removeEventListener('pause', handlePause);
-      videoElement.removeEventListener('seeking', handleSeeking);
+      videoElement.removeEventListener('contextmenu', handleContextMenu);
     };
-  }, [watchedSeconds, hasCompleted, updateProgressMutation, completeVideoMutation, toast, isYouTubeVideo]);
+  }, [watchedSeconds, hasCompleted, updateProgressMutation, completeVideoMutation, toast, isYouTubeVideo, videoDuration]);
 
   if (isLoading) {
     return (
@@ -289,8 +330,8 @@ export default function VideoPlayer() {
                           const videoId = embedUrl.split('youtu.be/')[1]?.split('?')[0];
                           embedUrl = `https://www.youtube.com/embed/${videoId}`;
                         }
-                        // Add parameters for better embedding
-                        embedUrl += '?autoplay=0&controls=1&modestbranding=1&rel=0&playsinline=1';
+                        // Add parameters for better embedding with restricted controls
+                        embedUrl += '?autoplay=0&controls=1&modestbranding=1&rel=0&playsinline=1&fs=0&disablekb=1';
                         return embedUrl;
                       })()}
                       title={videoTitle}
@@ -314,8 +355,9 @@ export default function VideoPlayer() {
                     ref={videoRef}
                     className="w-full h-full rounded-t-lg object-contain"
                     controls
-                    controlsList="nodownload nofullscreen noremoteplayback"
+                    controlsList="nodownload nofullscreen noremoteplayback noseek"
                     disablePictureInPicture
+                    disableRemotePlayback
                     playsInline
                     onContextMenu={(e) => e.preventDefault()}
                   >
@@ -345,14 +387,28 @@ export default function VideoPlayer() {
                   </Button>
                   
                   {!hasCompleted && (
-                    <Button
-                      onClick={() => completeVideoMutation.mutate()}
-                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
-                      disabled={completeVideoMutation.isPending}
-                    >
-                      <Coins className="w-4 h-4 mr-2" />
-                      {completeVideoMutation.isPending ? 'Processing...' : 'Mark as Completed'}
-                    </Button>
+                    <div className="flex flex-col items-center gap-2">
+                      {/* Watch Time Requirement for YouTube */}
+                      <div className="text-xs text-gray-600 text-center">
+                        Watch Time: {Math.floor(currentWatchTime / 60)}:{(currentWatchTime % 60).toString().padStart(2, '0')} / {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
+                      </div>
+                      <Button
+                        onClick={() => completeVideoMutation.mutate()}
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
+                        disabled={completeVideoMutation.isPending || currentWatchTime < Math.floor(videoDuration * 0.9)}
+                      >
+                        <Coins className="w-4 h-4 mr-2" />
+                        {completeVideoMutation.isPending ? 'Processing...' : 
+                         currentWatchTime < Math.floor(videoDuration * 0.9) ? 
+                         `Watch ${Math.floor(videoDuration * 0.9 - currentWatchTime)}s more to complete` : 
+                         'Mark as Completed'}
+                      </Button>
+                      {currentWatchTime < Math.floor(videoDuration * 0.9) && (
+                        <div className="text-xs text-orange-600 text-center font-medium">
+                          You must watch at least 90% of the video to earn
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
