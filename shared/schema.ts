@@ -57,7 +57,7 @@ export const adminUsers = pgTable("admin_users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Users table
+// Users table - Optimized for 200k+ user scale
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   email: varchar("email").unique(),
@@ -110,7 +110,15 @@ export const users = pgTable("users", {
   hourlyBonusCount: integer("hourly_bonus_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  // Indexes for performance at scale
+  index("idx_users_email").on(table.email),
+  index("idx_users_referral_code").on(table.referralCode),
+  index("idx_users_referred_by").on(table.referredBy),
+  index("idx_users_kyc_status").on(table.kycStatus),
+  index("idx_users_verification_status").on(table.verificationStatus),
+  index("idx_users_created_at").on(table.createdAt),
+]);
 
 // Videos table
 export const videos = pgTable("videos", {
@@ -128,7 +136,7 @@ export const videos = pgTable("videos", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Video watch progress
+// Video watch progress - Optimized for large scale tracking
 export const videoProgress = pgTable("video_progress", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id).notNull(),
@@ -138,18 +146,29 @@ export const videoProgress = pgTable("video_progress", {
   isEarningCredited: boolean("is_earning_credited").default(false).notNull(),
   startedAt: timestamp("started_at").defaultNow(),
   completedAt: timestamp("completed_at"),
-});
+}, (table) => [
+  // Composite index for user-video lookup (most common query)
+  index("idx_video_progress_user_video").on(table.userId, table.videoId),
+  index("idx_video_progress_user_id").on(table.userId),
+  index("idx_video_progress_completed").on(table.isCompleted),
+]);
 
-// Earnings table
+// Earnings table - Optimized for 200k+ users with permanent history
 export const earnings = pgTable("earnings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id).notNull(),
   videoId: varchar("video_id").references(() => videos.id),
-  type: varchar("type").notNull(), // "video", "referral"
+  type: varchar("type").notNull(), // "video", "referral", "hourly_bonus", "signup_bonus"
   amount: decimal("amount", { precision: 8, scale: 2 }).notNull(),
   description: varchar("description"),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => [
+  // Indexes for performance with large user base
+  index("idx_earnings_user_id").on(table.userId),
+  index("idx_earnings_created_at").on(table.createdAt),
+  index("idx_earnings_user_date").on(table.userId, table.createdAt),
+  index("idx_earnings_type").on(table.type),
+]);
 
 // Referrals table
 export const referrals = pgTable("referrals", {
@@ -160,7 +179,7 @@ export const referrals = pgTable("referrals", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Payout requests
+// Payout requests - Optimized for admin processing and user history
 export const payoutRequests = pgTable("payout_requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id).notNull(),
@@ -170,7 +189,13 @@ export const payoutRequests = pgTable("payout_requests", {
   reason: text("reason"), // reason for decline or other status updates
   requestedAt: timestamp("requested_at").defaultNow(),
   processedAt: timestamp("processed_at"),
-});
+}, (table) => [
+  // Indexes for efficient admin processing and user history
+  index("idx_payout_user_id").on(table.userId),
+  index("idx_payout_status").on(table.status),
+  index("idx_payout_requested_at").on(table.requestedAt),
+  index("idx_payout_user_status").on(table.userId, table.status),
+]);
 
 // Chat messages
 export const chatMessages = pgTable("chat_messages", {
