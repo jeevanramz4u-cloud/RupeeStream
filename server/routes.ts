@@ -997,6 +997,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin - Get detailed user profile with referral history
+  app.get('/api/admin/users/:userId/profile', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+      
+      const { userId } = req.params;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Get user's referral history (people they referred)
+      const referrals = await storage.getReferrals(userId);
+      
+      // Get user's earnings history
+      const earnings = await storage.getEarnings(userId);
+      
+      // Get all users to match referral details
+      const allUsers = await storage.getAllUsers();
+      
+      // Find who referred this user
+      const referredByUser = allUsers.find(u => u.referralCode && u.referralCode === user.referredBy);
+
+      const { password: _, ...userProfile } = user;
+      
+      res.json({
+        user: userProfile,
+        referrals: referrals.map(r => {
+          const referredUser = allUsers.find(u => u.id === r.referredId);
+          return {
+            ...r,
+            referredUser: referredUser ? {
+              id: referredUser.id,
+              email: referredUser.email,
+              firstName: referredUser.firstName,
+              lastName: referredUser.lastName,
+              verificationStatus: referredUser.verificationStatus,
+              kycStatus: referredUser.kycStatus
+            } : null
+          };
+        }),
+        referredBy: referredByUser ? {
+          id: referredByUser.id,
+          email: referredByUser.email,
+          firstName: referredByUser.firstName,
+          lastName: referredByUser.lastName
+        } : null,
+        earnings: earnings,
+        totalEarnings: earnings.reduce((sum, e) => sum + parseFloat(e.amount), 0)
+      });
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      res.status(500).json({ message: "Failed to fetch user profile" });
+    }
+  });
+
   // Admin - Update user balance
   app.put("/api/admin/users/:id/balance", async (req: any, res) => {
     try {

@@ -55,6 +55,8 @@ export default function Admin() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [editingVideo, setEditingVideo] = useState<any>(null);
   const [showNewVideoForm, setShowNewVideoForm] = useState(false);
+  const [userProfileDialogOpen, setUserProfileDialogOpen] = useState(false);
+  const [selectedUserProfile, setSelectedUserProfile] = useState<any>(null);
   const [kycFilter, setKycFilter] = useState<'all' | 'unpaid' | 'verification' | 'verified'>('all');
   const [activeTab, setActiveTab] = useState('users');
   const [searchTerm, setSearchTerm] = useState('');
@@ -192,6 +194,16 @@ export default function Admin() {
   const { data: analytics = {} } = useQuery({
     queryKey: ["/api/admin/analytics"],
     enabled: isAuthenticated,
+  });
+
+  // User profile query (only fetch when needed)  
+  const { data: userProfile, isLoading: isLoadingProfile } = useQuery({
+    queryKey: ["/api/admin/users", selectedUserProfile?.id, "profile"],
+    queryFn: async () => {
+      const response = await apiRequest("GET", `/api/admin/users/${selectedUserProfile?.id}/profile`);
+      return response as any; // Type assertion to fix TypeScript errors
+    },
+    enabled: !!selectedUserProfile?.id,
   });
 
   const verifyUserMutation = useMutation({
@@ -424,6 +436,12 @@ export default function Admin() {
     },
   });
 
+  // Function to open user profile dialog
+  const openUserProfile = (user: any) => {
+    setSelectedUserProfile(user);
+    setUserProfileDialogOpen(true);
+  };
+
   // Function to extract YouTube video ID from URL
   const extractYouTubeId = (url: string): string | null => {
     const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
@@ -532,25 +550,7 @@ export default function Admin() {
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Admin Dashboard</h1>
           <p className="text-sm sm:text-base text-gray-600">Manage users, videos, and platform operations.</p>
           
-          {/* Quick Actions Section */}
-          <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">Quick Actions</h2>
-            <div className="flex flex-wrap gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => processReferralsMutation.mutate()}
-                disabled={processReferralsMutation.isPending}
-                className="flex items-center gap-2"
-              >
-                <Users className="w-4 h-4" />
-                {processReferralsMutation.isPending ? "Processing..." : "Process Pending Referrals"}
-              </Button>
-            </div>
-            <p className="text-xs text-gray-500 mt-2">
-              Process any missing referral bonuses for users who completed KYC verification
-            </p>
-          </div>
+          {/* Quick Actions Section removed as requested by user */}
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
@@ -1015,6 +1015,14 @@ export default function Admin() {
                             <Badge variant={user.status === 'suspended' ? 'destructive' : 'default'}>
                               {user.status === 'suspended' ? 'Suspended' : 'Active'}
                             </Badge>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openUserProfile(user)}
+                            >
+                              <Eye className="w-4 h-4 mr-1" />
+                              View Profile
+                            </Button>
                             <Button
                               variant="outline"
                               size="sm"
@@ -2077,6 +2085,185 @@ export default function Admin() {
               {updatePayoutMutation.isPending ? 'Processing...' : 'Decline Payout'}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* User Profile Dialog with Referral History */}
+      <Dialog open={userProfileDialogOpen} onOpenChange={setUserProfileDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              User Profile Details
+              {selectedUserProfile && (
+                <Badge variant={selectedUserProfile.verificationStatus === 'verified' ? 'default' : 'secondary'}>
+                  {selectedUserProfile.verificationStatus}
+                </Badge>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {isLoadingProfile ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            </div>
+          ) : userProfile ? (
+            <div className="space-y-6">
+              {/* Basic User Info */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Personal Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Full Name</Label>
+                      <p className="text-sm font-medium">{userProfile.user.firstName} {userProfile.user.lastName}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Email</Label>
+                      <p className="text-sm font-medium">{userProfile.user.email}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Phone Number</Label>
+                      <p className="text-sm font-medium">{userProfile.user.phoneNumber || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Current Balance</Label>
+                      <p className="text-sm font-medium text-green-600">₹{userProfile.user.balance || '0.00'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Total Earnings</Label>
+                      <p className="text-sm font-medium text-blue-600">₹{userProfile.totalEarnings.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">KYC Status</Label>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={userProfile.user.kycStatus === 'approved' ? 'default' : 'secondary'}>
+                          {userProfile.user.kycStatus}
+                        </Badge>
+                        {userProfile.user.kycFeePaid && (
+                          <Badge className="bg-green-100 text-green-800">Fee Paid</Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Referral Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Users className="w-5 h-5" />
+                    Referral History
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {/* Who referred this user */}
+                  {userProfile.referredBy ? (
+                    <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                      <Label className="text-sm font-medium text-blue-800">Referred By</Label>
+                      <p className="text-sm text-blue-700">
+                        {userProfile.referredBy.firstName} {userProfile.referredBy.lastName} ({userProfile.referredBy.email})
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                      <Label className="text-sm font-medium text-gray-600">Referral Status</Label>
+                      <p className="text-sm text-gray-500">This user was not referred by anyone</p>
+                    </div>
+                  )}
+
+                  {/* People this user has referred */}
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                      Users Referred by This User ({userProfile.referrals.length})
+                    </Label>
+                    {userProfile.referrals.length > 0 ? (
+                      <div className="space-y-2">
+                        {userProfile.referrals.map((referral: any, index: number) => (
+                          <div key={index} className="p-3 border rounded-lg">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="text-sm font-medium">
+                                  {referral.referredUser ? 
+                                    `${referral.referredUser.firstName} ${referral.referredUser.lastName}` : 
+                                    'Unknown User'
+                                  }
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  {referral.referredUser?.email || 'Email not available'}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <div className="flex items-center gap-2">
+                                  <Badge variant={
+                                    referral.referredUser?.verificationStatus === 'verified' ? 'default' : 'secondary'
+                                  }>
+                                    {referral.referredUser?.verificationStatus || 'pending'}
+                                  </Badge>
+                                  {referral.isEarningCredited ? (
+                                    <Badge className="bg-green-100 text-green-800">
+                                      <Coins className="w-3 h-3 mr-1" />
+                                      Earned ₹49
+                                    </Badge>
+                                  ) : (
+                                    <Badge variant="outline">Pending</Badge>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-4 text-center text-gray-500">
+                        <Users className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                        <p className="text-sm">No referrals yet</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Recent Earnings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <DollarSign className="w-5 h-5" />
+                    Recent Earnings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {userProfile.earnings.length > 0 ? (
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {userProfile.earnings.slice(0, 10).map((earning: any, index: number) => (
+                        <div key={index} className="flex items-center justify-between py-2 border-b">
+                          <div>
+                            <p className="text-sm font-medium">{earning.description || earning.source}</p>
+                            <p className="text-xs text-gray-500">{formatDate(earning.createdAt)}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-medium text-green-600">+₹{earning.amount}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">
+                      <DollarSign className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                      <p className="text-sm">No earnings yet</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            <div className="py-8 text-center text-gray-500">
+              <p>Unable to load user profile</p>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
