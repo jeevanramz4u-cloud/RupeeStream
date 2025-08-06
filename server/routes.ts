@@ -611,11 +611,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Referral routes
-  app.get('/api/referrals', isAuthenticated, async (req: any, res) => {
+  app.get('/api/referrals', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const referrals = await storage.getReferrals(userId);
-      res.json(referrals);
+      res.json(referrals || []);
     } catch (error) {
       console.error("Error fetching referrals:", error);
       res.status(500).json({ message: "Failed to fetch referrals" });

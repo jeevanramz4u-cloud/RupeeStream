@@ -23,7 +23,7 @@ export default function Referrals() {
   const { toast } = useToast();
   const [copySuccess, setCopySuccess] = useState(false);
 
-  const { data: referrals = [] } = useQuery({
+  const { data: referrals = [], error, isLoading } = useQuery({
     queryKey: ["/api/referrals"],
     enabled: !!user,
     retry: false,
@@ -284,7 +284,15 @@ export default function Referrals() {
               <CardTitle>Referral History</CardTitle>
             </CardHeader>
             <CardContent>
-              {(referrals as any[]).length === 0 ? (
+              {isLoading ? (
+                <div className="text-center py-12">
+                  <p>Loading referrals...</p>
+                </div>
+              ) : error ? (
+                <div className="text-center py-12">
+                  <p className="text-red-600">Failed to load referrals</p>
+                </div>
+              ) : !referrals || referrals.length === 0 ? (
                 <div className="text-center py-12">
                   <UserPlus className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No Referrals Yet</h3>
@@ -298,7 +306,7 @@ export default function Referrals() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {(referrals as any[]).map((referral: any) => (
+                  {(referrals || []).map((referral: any) => (
                     <div 
                       key={referral.id}
                       className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
