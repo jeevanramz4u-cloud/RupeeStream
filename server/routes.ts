@@ -360,20 +360,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Video progress routes
-  app.get('/api/video-progress/:videoId', isAuthenticated, async (req: any, res) => {
+  app.get('/api/video-progress/:videoId', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const progress = await storage.getVideoProgress(userId, req.params.videoId);
-      res.json(progress);
+      res.json(progress || { watchedSeconds: 0, isCompleted: false });
     } catch (error) {
       console.error("Error fetching video progress:", error);
       res.status(500).json({ message: "Failed to fetch video progress" });
     }
   });
 
-  app.put('/api/video-progress/:videoId', isAuthenticated, async (req: any, res) => {
+  app.put('/api/video-progress/:videoId', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { watchedSeconds } = req.body;
       
       const progress = await storage.updateVideoProgress(userId, req.params.videoId, watchedSeconds);
@@ -392,9 +392,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/video-progress/:videoId/complete', isAuthenticated, async (req: any, res) => {
+  app.post('/api/video-progress/:videoId/complete', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const videoId = req.params.videoId;
       
       const video = await storage.getVideo(videoId);
