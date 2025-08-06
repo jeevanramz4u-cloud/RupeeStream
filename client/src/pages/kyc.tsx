@@ -525,7 +525,7 @@ export default function KYC() {
                 </div>
               </div>
 
-              {/* Submit and Payment Section */}
+              {/* Submit and Payment Section - Always show when documents are uploaded */}
               {govIdType && govIdNumber && govIdFrontUrl && govIdBackUrl && selfieWithIdUrl && (
                 <div className="space-y-4">
                   <div className="flex items-center mb-4">
@@ -535,7 +535,8 @@ export default function KYC() {
                     <h3 className="text-lg font-semibold text-gray-800">Complete Verification</h3>
                   </div>
                   
-                  {(kycData as any)?.kycStatus === 'pending' && (
+                  {/* Submit button for pending status */}
+                  {(!kycData || (kycData as any)?.kycStatus === 'pending') && !(kycData as any)?.kycSubmittedAt && (
                     <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                       <div className="flex items-center mb-3">
                         <Info className="w-5 h-5 text-blue-600 mr-2" />
@@ -545,26 +546,49 @@ export default function KYC() {
                       <Button
                         onClick={handleSubmitKyc}
                         disabled={submitKycMutation.isPending}
-                        className="w-full"
+                        className="w-full bg-blue-600 hover:bg-blue-700"
                       >
                         {submitKycMutation.isPending ? "Submitting..." : "Submit for Review"}
                       </Button>
                     </div>
                   )}
 
+                  {/* Payment button for submitted but unpaid status */}
                   {(kycData as any)?.kycStatus === 'submitted' && !(kycData as any)?.kycFeePaid && (
                     <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <div className="flex items-center mb-3">
                         <CreditCard className="w-5 h-5 text-yellow-600 mr-2" />
                         <span className="font-semibold text-yellow-900">Payment Required</span>
                       </div>
-                      <p className="text-yellow-700 mb-4">Documents submitted! Pay the ₹99 processing fee to complete verification.</p>
+                      <p className="text-yellow-700 mb-4">Documents submitted! Pay the one-time ₹99 processing fee to complete verification.</p>
                       <Button
                         onClick={() => payFeeMutation.mutate()}
                         disabled={payFeeMutation.isPending}
                         className="w-full bg-green-600 hover:bg-green-700"
                       >
                         {payFeeMutation.isPending ? "Processing Payment..." : "Pay ₹99 Processing Fee"}
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {/* Direct payment option if all documents are ready but no submission yet */}
+                  {(!kycData || (kycData as any)?.kycStatus === 'pending') && !(kycData as any)?.kycSubmittedAt && (
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center mb-3">
+                        <CreditCard className="w-5 h-5 text-green-600 mr-2" />
+                        <span className="font-semibold text-green-900">Quick Complete</span>
+                      </div>
+                      <p className="text-green-700 mb-4">Skip review and pay the one-time ₹99 processing fee now to complete verification instantly.</p>
+                      <Button
+                        onClick={() => {
+                          // First submit, then pay
+                          handleSubmitKyc();
+                          setTimeout(() => payFeeMutation.mutate(), 500);
+                        }}
+                        disabled={submitKycMutation.isPending || payFeeMutation.isPending}
+                        className="w-full bg-green-600 hover:bg-green-700"
+                      >
+                        {(submitKycMutation.isPending || payFeeMutation.isPending) ? "Processing..." : "Complete KYC + Pay ₹99 Fee"}
                       </Button>
                     </div>
                   )}
