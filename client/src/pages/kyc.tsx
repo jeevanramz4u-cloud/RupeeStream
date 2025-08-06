@@ -169,7 +169,7 @@ export default function KYC() {
     };
   };
 
-  const handleUploadComplete = (documentType: 'front' | 'back' | 'selfie') => (result: UploadResult) => {
+  const handleUploadComplete = (documentType: 'front' | 'back' | 'selfie') => (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
     if (result.successful && result.successful.length > 0) {
       const uploadedFile = result.successful[0];
       const documentUrl = uploadedFile.uploadURL;
@@ -234,9 +234,9 @@ export default function KYC() {
 
   const getProgressPercentage = () => {
     if (!kycData) return 0;
-    if (kycData.kycStatus === 'approved') return 100;
-    if (kycData.kycFeePaid) return 80;
-    if (kycData.kycStatus === 'submitted') return 60;
+    if ((kycData as any).kycStatus === 'approved') return 100;
+    if ((kycData as any).kycFeePaid) return 80;
+    if ((kycData as any).kycStatus === 'submitted') return 60;
     if (govIdFrontUrl && govIdBackUrl && selfieWithIdUrl) return 40;
     if (govIdType && govIdNumber) return 20;
     return 0;
@@ -275,7 +275,7 @@ export default function KYC() {
                 <Shield className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-600" />
                 Verification Status
               </CardTitle>
-              {kycData && getKycStatusBadge(kycData.kycStatus)}
+              {kycData && getKycStatusBadge((kycData as any).kycStatus)}
             </div>
           </CardHeader>
           <CardContent className="pt-0">
@@ -288,20 +288,29 @@ export default function KYC() {
                 <Progress value={getProgressPercentage()} className="h-2" />
               </div>
               
-              {kycData?.kycStatus === 'approved' && (
+              {(kycData as any)?.kycStatus === 'approved' && (
                 <Alert className="bg-green-50 border-green-200">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <AlertDescription className="text-green-800">
-                    Your KYC verification is complete! You can now receive payouts.
+                    <strong>KYC Completed!</strong> Your verification is complete. You can now receive payouts and access premium features.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {(kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid && (
+                <Alert className="bg-blue-50 border-blue-200">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-blue-800">
+                    <strong>Waiting for Approval</strong> - Your documents and payment have been received. Our team is reviewing your verification. You'll be notified once approved.
                   </AlertDescription>
                 </Alert>
               )}
               
-              {kycData?.kycStatus === 'rejected' && (
+              {(kycData as any)?.kycStatus === 'rejected' && (
                 <Alert className="bg-red-50 border-red-200">
                   <XCircle className="h-4 w-4 text-red-600" />
                   <AlertDescription className="text-red-800">
-                    Your KYC verification was rejected. Please contact support for assistance.
+                    Your KYC verification was rejected. Please re-upload your documents and contact support for assistance.
                   </AlertDescription>
                 </Alert>
               )}
@@ -324,7 +333,7 @@ export default function KYC() {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="govIdType" className="text-sm font-medium">Government ID Type</Label>
-                  <Select value={govIdType} onValueChange={setGovIdType} disabled={kycData?.kycStatus === 'approved'}>
+                  <Select value={govIdType} onValueChange={setGovIdType} disabled={(kycData as any)?.kycStatus === 'approved'}>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select ID type" />
                     </SelectTrigger>
@@ -346,7 +355,7 @@ export default function KYC() {
                     onChange={(e) => setGovIdNumber(e.target.value)}
                     placeholder="Enter your ID number"
                     className="mt-1"
-                    disabled={kycData?.kycStatus === 'approved'}
+                    disabled={(kycData as any)?.kycStatus === 'approved'}
                   />
                 </div>
 
@@ -372,13 +381,33 @@ export default function KYC() {
               <div className="space-y-4">
                 <p className="text-sm text-gray-600">Upload a clear photo of the front side of your government ID.</p>
                 
-                {kycData?.kycStatus === 'approved' ? (
+                {(kycData as any)?.kycStatus === 'approved' ? (
                   <div className="flex items-center justify-center p-4 border-2 border-green-200 border-dashed rounded-lg bg-green-50">
                     <div className="text-center">
                       <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
                       <p className="text-sm text-green-700">Document verified</p>
                     </div>
                   </div>
+                ) : (kycData as any)?.kycStatus === 'submitted' || (kycData as any)?.kycFeePaid ? (
+                  <div className="flex items-center justify-center p-4 border-2 border-blue-200 border-dashed rounded-lg bg-blue-50">
+                    <div className="text-center">
+                      <Clock className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <p className="text-sm text-blue-700">Document submitted - Under review</p>
+                    </div>
+                  </div>
+                ) : (kycData as any)?.kycStatus === 'rejected' ? (
+                  <ObjectUploader
+                    maxNumberOfFiles={1}
+                    maxFileSize={10485760}
+                    onGetUploadParameters={() => handleFileUpload('front')}
+                    onComplete={handleUploadComplete('front')}
+                    buttonClassName="w-full"
+                  >
+                    <div className="flex items-center justify-center">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Re-upload Front Side
+                    </div>
+                  </ObjectUploader>
                 ) : (
                   <ObjectUploader
                     maxNumberOfFiles={1}
@@ -394,7 +423,7 @@ export default function KYC() {
                   </ObjectUploader>
                 )}
 
-                {govIdFrontUrl && kycData?.kycStatus !== 'approved' && (
+                {govIdFrontUrl && (kycData as any)?.kycStatus === 'pending' && (
                   <div className="flex items-center text-green-600 text-sm">
                     <CheckCircle className="w-4 h-4 mr-1" />
                     Front side uploaded
@@ -416,13 +445,33 @@ export default function KYC() {
               <div className="space-y-4">
                 <p className="text-sm text-gray-600">Upload a clear photo of the back side of your government ID.</p>
                 
-                {kycData?.kycStatus === 'approved' ? (
+                {(kycData as any)?.kycStatus === 'approved' ? (
                   <div className="flex items-center justify-center p-4 border-2 border-green-200 border-dashed rounded-lg bg-green-50">
                     <div className="text-center">
                       <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
                       <p className="text-sm text-green-700">Document verified</p>
                     </div>
                   </div>
+                ) : (kycData as any)?.kycStatus === 'submitted' || (kycData as any)?.kycFeePaid ? (
+                  <div className="flex items-center justify-center p-4 border-2 border-blue-200 border-dashed rounded-lg bg-blue-50">
+                    <div className="text-center">
+                      <Clock className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <p className="text-sm text-blue-700">Document submitted - Under review</p>
+                    </div>
+                  </div>
+                ) : (kycData as any)?.kycStatus === 'rejected' ? (
+                  <ObjectUploader
+                    maxNumberOfFiles={1}
+                    maxFileSize={10485760}
+                    onGetUploadParameters={() => handleFileUpload('back')}
+                    onComplete={handleUploadComplete('back')}
+                    buttonClassName="w-full"
+                  >
+                    <div className="flex items-center justify-center">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Re-upload Back Side
+                    </div>
+                  </ObjectUploader>
                 ) : (
                   <ObjectUploader
                     maxNumberOfFiles={1}
@@ -438,7 +487,7 @@ export default function KYC() {
                   </ObjectUploader>
                 )}
 
-                {govIdBackUrl && kycData?.kycStatus !== 'approved' && (
+                {govIdBackUrl && (kycData as any)?.kycStatus === 'pending' && (
                   <div className="flex items-center text-green-600 text-sm">
                     <CheckCircle className="w-4 h-4 mr-1" />
                     Back side uploaded
@@ -460,13 +509,33 @@ export default function KYC() {
               <div className="space-y-4">
                 <p className="text-sm text-gray-600">Take a selfie holding your government ID next to your face.</p>
                 
-                {kycData?.kycStatus === 'approved' ? (
+                {(kycData as any)?.kycStatus === 'approved' ? (
                   <div className="flex items-center justify-center p-4 border-2 border-green-200 border-dashed rounded-lg bg-green-50">
                     <div className="text-center">
                       <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
                       <p className="text-sm text-green-700">Selfie verified</p>
                     </div>
                   </div>
+                ) : (kycData as any)?.kycStatus === 'submitted' || (kycData as any)?.kycFeePaid ? (
+                  <div className="flex items-center justify-center p-4 border-2 border-blue-200 border-dashed rounded-lg bg-blue-50">
+                    <div className="text-center">
+                      <Clock className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <p className="text-sm text-blue-700">Selfie submitted - Under review</p>
+                    </div>
+                  </div>
+                ) : (kycData as any)?.kycStatus === 'rejected' ? (
+                  <ObjectUploader
+                    maxNumberOfFiles={1}
+                    maxFileSize={10485760}
+                    onGetUploadParameters={() => handleFileUpload('selfie')}
+                    onComplete={handleUploadComplete('selfie')}
+                    buttonClassName="w-full"
+                  >
+                    <div className="flex items-center justify-center">
+                      <Camera className="w-4 h-4 mr-2" />
+                      Re-upload Selfie
+                    </div>
+                  </ObjectUploader>
                 ) : (
                   <ObjectUploader
                     maxNumberOfFiles={1}
@@ -482,7 +551,7 @@ export default function KYC() {
                   </ObjectUploader>
                 )}
 
-                {selfieWithIdUrl && kycData?.kycStatus !== 'approved' && (
+                {selfieWithIdUrl && (kycData as any)?.kycStatus === 'pending' && (
                   <div className="flex items-center text-green-600 text-sm">
                     <CheckCircle className="w-4 h-4 mr-1" />
                     Selfie uploaded
@@ -504,7 +573,7 @@ export default function KYC() {
               <div className="space-y-4">
                 <p className="text-sm text-gray-600">Submit your documents for admin review.</p>
                 
-                {kycData?.kycStatus === 'pending' ? (
+                {(kycData as any)?.kycStatus === 'pending' ? (
                   <Button 
                     onClick={handleSubmitKyc}
                     disabled={!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl || submitKycMutation.isPending}
@@ -539,12 +608,17 @@ export default function KYC() {
               <div className="space-y-4">
                 <p className="text-sm text-gray-600">Pay ₹99 one-time processing fee to complete verification.</p>
                 
-                {kycData?.kycFeePaid ? (
+                {(kycData as any)?.kycStatus === 'approved' ? (
                   <div className="flex items-center justify-center p-3 bg-green-50 rounded-lg">
                     <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                    <span className="text-sm text-green-700">Fee paid</span>
+                    <span className="text-sm text-green-700">Verification complete</span>
                   </div>
-                ) : kycData?.kycStatus === 'submitted' ? (
+                ) : (kycData as any)?.kycFeePaid ? (
+                  <div className="flex items-center justify-center p-3 bg-blue-50 rounded-lg">
+                    <Clock className="w-4 h-4 text-blue-600 mr-2" />
+                    <span className="text-sm text-blue-700">Payment received - Under review</span>
+                  </div>
+                ) : (kycData as any)?.kycStatus === 'submitted' ? (
                   <Button 
                     onClick={() => payFeeMutation.mutate()}
                     disabled={payFeeMutation.isPending}

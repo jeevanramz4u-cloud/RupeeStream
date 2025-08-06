@@ -144,7 +144,7 @@ export default function Dashboard() {
         </div>
 
         {/* KYC Status Alert - Highest Priority */}
-        {user && ((user as any).kycStatus !== 'approved' || !(user as any).kycFeePaid) && (
+        {user && (user as any).kycStatus === 'pending' && (
           <Alert className="mb-6 border-red-200 bg-red-50">
             <Shield className="h-4 w-4 text-red-600" />
             <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -158,6 +158,76 @@ export default function Dashboard() {
               </div>
               <Button asChild size="sm" className="bg-red-600 hover:bg-red-700">
                 <Link href="/kyc">Complete KYC Now</Link>
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {user && (user as any).kycStatus === 'submitted' && !(user as any).kycFeePaid && (
+          <Alert className="mb-6 border-blue-200 bg-blue-50">
+            <Clock className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-sm sm:text-base text-blue-800">
+                  KYC Payment Pending
+                </p>
+                <p className="text-sm text-blue-700">
+                  Your documents have been submitted. Please pay the ₹99 processing fee to complete verification.
+                </p>
+              </div>
+              <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Link href="/kyc">Pay Fee</Link>
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {user && (user as any).kycStatus === 'submitted' && (user as any).kycFeePaid && (
+          <Alert className="mb-6 border-blue-200 bg-blue-50">
+            <Clock className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-sm sm:text-base text-blue-800">
+                  Waiting for Approval
+                </p>
+                <p className="text-sm text-blue-700">
+                  Your KYC documents and payment have been received. Our team is reviewing your verification. You'll be notified once approved.
+                </p>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {user && (user as any).kycStatus === 'approved' && (
+          <Alert className="mb-6 border-green-200 bg-green-50">
+            <CheckCircle className="h-4 w-4 text-green-600" />
+            <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-sm sm:text-base text-green-800">
+                  KYC Completed
+                </p>
+                <p className="text-sm text-green-700">
+                  Your verification is complete! You can now receive payouts and access premium features.
+                </p>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {user && (user as any).kycStatus === 'rejected' && (
+          <Alert className="mb-6 border-red-200 bg-red-50">
+            <XCircle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-sm sm:text-base text-red-800">
+                  KYC Verification Rejected
+                </p>
+                <p className="text-sm text-red-700">
+                  Your KYC verification was rejected. Please re-upload your documents and contact support.
+                </p>
+              </div>
+              <Button asChild size="sm" className="bg-red-600 hover:bg-red-700">
+                <Link href="/kyc">Resubmit KYC</Link>
               </Button>
             </AlertDescription>
           </Alert>
