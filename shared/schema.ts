@@ -163,8 +163,9 @@ export const payoutRequests = pgTable("payout_requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id).notNull(),
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
-  status: varchar("status").default("pending").notNull(), // "pending", "processing", "completed", "failed"
+  status: varchar("status").default("pending").notNull(), // "pending", "processing", "completed", "failed", "declined"
   bankDetails: text("bank_details").notNull(),
+  reason: text("reason"), // reason for decline or other status updates
   requestedAt: timestamp("requested_at").defaultNow(),
   processedAt: timestamp("processed_at"),
 });

@@ -230,8 +230,8 @@ export class DatabaseStorage implements IStorage {
       await db.delete(earnings).where(eq(earnings.userId, id));
       
       // Delete referrals (both referring and referred)
-      await db.delete(referrals).where(eq(referrals.referredUserId, id));
-      await db.delete(referrals).where(eq(referrals.referringUserId, id));
+      await db.delete(referrals).where(eq(referrals.referredId, id));
+      await db.delete(referrals).where(eq(referrals.referrerId, id));
       
       // Delete payout requests
       await db.delete(payoutRequests).where(eq(payoutRequests.userId, id));
@@ -482,10 +482,15 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(payoutRequests.requestedAt));
   }
 
-  async updatePayoutStatus(id: string, status: string): Promise<PayoutRequest | undefined> {
+  async updatePayoutStatus(id: string, status: string, reason?: string): Promise<PayoutRequest | undefined> {
+    const updateData: any = { status, processedAt: new Date() };
+    if (reason) {
+      updateData.reason = reason;
+    }
+    
     const [request] = await db
       .update(payoutRequests)
-      .set({ status, processedAt: new Date() })
+      .set(updateData)
       .where(eq(payoutRequests.id, id))
       .returning();
     return request;
@@ -613,7 +618,8 @@ export class DatabaseStorage implements IStorage {
       .set({
         kycFeePaid: true,
         kycFeePaymentId: paymentId,
-        kycFeePaidAt: new Date(),
+        kycStatus: 'approved',
+        verificationStatus: 'verified',
       })
       .where(eq(users.id, userId))
       .returning();

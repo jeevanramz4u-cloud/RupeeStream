@@ -591,8 +591,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Admin authentication required" });
       }
 
-      const { status } = req.body;
-      const payout = await storage.updatePayoutStatus(req.params.id, status);
+      const { status, reason } = req.body;
+      const payout = await storage.updatePayoutStatus(req.params.id, status, reason);
       res.json(payout);
     } catch (error) {
       console.error("Error updating payout:", error);

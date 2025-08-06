@@ -27,6 +27,7 @@ import {
   XCircle, 
   Clock,
   Eye,
+  EyeOff,
   FileText,
   DollarSign,
   Plus,
@@ -36,7 +37,8 @@ import {
   Ban,
   RotateCcw,
   LogOut,
-  CreditCard
+  CreditCard,
+  Building2
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -60,6 +62,10 @@ export default function Admin() {
   const [kycFeeFilter, setKycFeeFilter] = useState("all");
   const [editingUser, setEditingUser] = useState<any>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedPayout, setSelectedPayout] = useState<any>(null);
+  const [isPayoutDialogOpen, setIsPayoutDialogOpen] = useState(false);
+  const [declineReason, setDeclineReason] = useState("");
+  const [showBankDetails, setShowBankDetails] = useState<Record<string, boolean>>({});
 
   // Filter users based on KYC status
   const getFilteredUsers = () => {
@@ -282,6 +288,41 @@ export default function Admin() {
       toast({
         title: "Error",
         description: "Failed to update user profile",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Payout management mutations
+  const updatePayoutMutation = useMutation({
+    mutationFn: async ({ id, status, reason }: { id: string; status: string; reason?: string }) => {
+      await apiRequest("PUT", `/api/admin/payouts/${id}`, { status, reason });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Payout Updated",
+        description: "Payout status has been updated successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/payouts"] });
+      setIsPayoutDialogOpen(false);
+      setSelectedPayout(null);
+      setDeclineReason("");
+    },
+    onError: (error: any) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/admin-login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Update Failed",
+        description: error.message || "Failed to update payout status",
         variant: "destructive",
       });
     },
@@ -1375,7 +1416,12 @@ export default function Admin() {
           <TabsContent value="payouts">
             <Card>
               <CardHeader>
-                <CardTitle>Payout Requests</CardTitle>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Payout Requests</span>
+                  <Badge variant="secondary">
+                    {(payouts as any[]).length} Total
+                  </Badge>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 {(payouts as any[]).length === 0 ? (
@@ -1385,28 +1431,123 @@ export default function Admin() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {(payouts as any[]).map((payout: any) => (
-                      <div key={payout.id} className="p-4 border border-gray-200 rounded-lg">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-medium text-gray-900">₹{payout.amount}</p>
-                            <p className="text-sm text-gray-600">
-                              User ID: {payout.userId}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              Requested: {formatDate(payout.requestedAt)}
-                            </p>
+                    {(payouts as any[]).map((payout: any) => {
+                      const bankDetails = payout.bankDetails ? JSON.parse(payout.bankDetails) : {};
+                      const isShowingBankDetails = showBankDetails[payout.id];
+                      
+                      return (
+                        <div key={payout.id} className="p-6 border border-gray-200 rounded-lg bg-white shadow-sm">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <h3 className="text-lg font-semibold text-gray-900">₹{payout.amount}</h3>
+                                <Badge className={
+                                  payout.status === 'completed' ? 'bg-green-500 hover:bg-green-600' :
+                                  payout.status === 'failed' || payout.status === 'declined' ? 'bg-red-500 hover:bg-red-600' :
+                                  payout.status === 'processing' ? 'bg-blue-500 hover:bg-blue-600' :
+                                  'bg-yellow-500 hover:bg-yellow-600'
+                                }>
+                                  {payout.status.charAt(0).toUpperCase() + payout.status.slice(1)}
+                                </Badge>
+                              </div>
+                              
+                              <div className="text-sm text-gray-600 space-y-1">
+                                <p><strong>User ID:</strong> {payout.userId}</p>
+                                <p><strong>Requested:</strong> {formatDate(payout.requestedAt)}</p>
+                                {payout.processedAt && (
+                                  <p><strong>Processed:</strong> {formatDate(payout.processedAt)}</p>
+                                )}
+                              </div>
+                            </div>
                           </div>
-                          <Badge className={
-                            payout.status === 'completed' ? 'bg-secondary text-white' :
-                            payout.status === 'failed' ? 'bg-destructive text-white' :
-                            'bg-accent text-white'
-                          }>
-                            {payout.status}
-                          </Badge>
+
+                          {/* Bank Details Section */}
+                          <div className="border-t pt-4 mt-4">
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="text-md font-medium text-gray-800 flex items-center gap-2">
+                                <Building2 className="w-4 h-4" />
+                                Bank Details
+                              </h4>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setShowBankDetails(prev => ({
+                                  ...prev,
+                                  [payout.id]: !isShowingBankDetails
+                                }))}
+                              >
+                                {isShowingBankDetails ? (
+                                  <>
+                                    <EyeOff className="w-4 h-4 mr-2" />
+                                    Hide Details
+                                  </>
+                                ) : (
+                                  <>
+                                    <Eye className="w-4 h-4 mr-2" />
+                                    View Details
+                                  </>
+                                )}
+                              </Button>
+                            </div>
+
+                            {isShowingBankDetails && (
+                              <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div>
+                                    <p className="font-medium text-gray-700">Account Holder Name</p>
+                                    <p className="text-gray-900">{bankDetails.accountHolderName || 'N/A'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-medium text-gray-700">Account Number</p>
+                                    <p className="text-gray-900 font-mono">{bankDetails.accountNumber || 'N/A'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-medium text-gray-700">IFSC Code</p>
+                                    <p className="text-gray-900 font-mono">{bankDetails.ifscCode || 'N/A'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-medium text-gray-700">Bank Name</p>
+                                    <p className="text-gray-900">{bankDetails.bankName || 'N/A'}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Action Buttons */}
+                          {payout.status === 'pending' && (
+                            <div className="flex justify-end space-x-2 mt-4 pt-4 border-t">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedPayout(payout);
+                                  setIsPayoutDialogOpen(true);
+                                }}
+                                className="text-red-600 border-red-200 hover:bg-red-50"
+                              >
+                                <XCircle className="w-4 h-4 mr-2" />
+                                Decline
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  updatePayoutMutation.mutate({
+                                    id: payout.id,
+                                    status: 'completed'
+                                  });
+                                }}
+                                disabled={updatePayoutMutation.isPending}
+                                className="bg-green-600 hover:bg-green-700"
+                              >
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                {updatePayoutMutation.isPending ? 'Processing...' : 'Approve'}
+                              </Button>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>
@@ -1793,6 +1934,78 @@ export default function Admin() {
               </DialogFooter>
             </form>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Payout Decline Dialog */}
+      <Dialog open={isPayoutDialogOpen} onOpenChange={setIsPayoutDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Decline Payout Request</DialogTitle>
+          </DialogHeader>
+          
+          {selectedPayout && (
+            <div className="space-y-4">
+              <div className="bg-red-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-red-800 mb-2">Payout Details</h3>
+                <p className="text-sm text-red-700">
+                  <strong>Amount:</strong> ₹{selectedPayout.amount}
+                </p>
+                <p className="text-sm text-red-700">
+                  <strong>User ID:</strong> {selectedPayout.userId}
+                </p>
+                <p className="text-sm text-red-700">
+                  <strong>Requested:</strong> {formatDate(selectedPayout.requestedAt)}
+                </p>
+              </div>
+              
+              <div>
+                <Label htmlFor="declineReason">Reason for Decline (Required)</Label>
+                <Textarea
+                  id="declineReason"
+                  value={declineReason}
+                  onChange={(e) => setDeclineReason(e.target.value)}
+                  placeholder="Please provide a clear reason for declining this payout request..."
+                  rows={4}
+                  className="mt-2"
+                />
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsPayoutDialogOpen(false);
+                setSelectedPayout(null);
+                setDeclineReason("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (!declineReason.trim()) {
+                  toast({
+                    title: "Reason Required",
+                    description: "Please provide a reason for declining the payout.",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                updatePayoutMutation.mutate({
+                  id: selectedPayout.id,
+                  status: 'declined',
+                  reason: declineReason
+                });
+              }}
+              disabled={updatePayoutMutation.isPending || !declineReason.trim()}
+            >
+              {updatePayoutMutation.isPending ? 'Processing...' : 'Decline Payout'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
