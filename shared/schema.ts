@@ -45,6 +45,18 @@ export const userRoleEnum = pgEnum("user_role", [
   "admin"
 ]);
 
+// Admin users table (separate from regular users)
+export const adminUsers = pgTable("admin_users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  username: varchar("username").unique().notNull(),
+  password: varchar("password").notNull(), // Will store hashed password
+  name: varchar("name").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  lastLoginAt: timestamp("last_login_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Users table
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -248,6 +260,19 @@ export const insertChatMessageSchema = createInsertSchema(chatMessages).omit({
   createdAt: true,
 });
 
+export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  lastLoginAt: true,
+});
+
+// Admin login schema
+export const adminLoginSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
 // Upsert user schema for auth
 export const upsertUserSchema = createInsertSchema(users).pick({
   id: true,
@@ -261,6 +286,9 @@ export const upsertUserSchema = createInsertSchema(users).pick({
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type AdminUser = typeof adminUsers.$inferSelect;
+export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
+export type AdminLogin = z.infer<typeof adminLoginSchema>;
 export type Video = typeof videos.$inferSelect;
 export type InsertVideo = z.infer<typeof insertVideoSchema>;
 export type VideoProgress = typeof videoProgress.$inferSelect;

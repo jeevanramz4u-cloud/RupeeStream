@@ -123,15 +123,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/videos', isAuthenticated, async (req: any, res) => {
+  // Admin video management routes (moved to separate admin endpoints)
+  app.post('/api/admin/videos', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
       }
 
+      const { insertVideoSchema } = await import('@shared/schema');
       const videoData = insertVideoSchema.parse(req.body);
       const video = await storage.createVideo(videoData);
       res.json(video);
@@ -141,13 +140,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/videos/:id', isAuthenticated, async (req: any, res) => {
+  app.put('/api/admin/videos/:id', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
       }
 
       const video = await storage.updateVideo(req.params.id, req.body);
@@ -158,13 +154,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/videos/:id', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/admin/videos/:id', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
       }
 
       const success = await storage.deleteVideo(req.params.id);
@@ -309,19 +302,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Payout routes
+  // Admin payout management routes
+  app.get('/api/admin/payouts', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+      
+      const payouts = await storage.getPayoutRequests();
+      res.json(payouts);
+    } catch (error) {
+      console.error("Error fetching payouts:", error);
+      res.status(500).json({ message: "Failed to fetch payouts" });
+    }
+  });
+
+  app.put('/api/admin/payouts/:id', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { status } = req.body;
+      const payout = await storage.updatePayoutStatus(req.params.id, status);
+      res.json(payout);
+    } catch (error) {
+      console.error("Error updating payout:", error);
+      res.status(500).json({ message: "Failed to update payout" });
+    }
+  });
+
+  // Regular user payout routes
   app.get('/api/payouts', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (user?.role === 'admin') {
-        const payouts = await storage.getPayoutRequests();
-        res.json(payouts);
-      } else {
-        const payouts = await storage.getPayoutRequests(userId);
-        res.json(payouts);
-      }
+      const payouts = await storage.getPayoutRequests(userId);
+      res.json(payouts);
     } catch (error) {
       console.error("Error fetching payouts:", error);
       res.status(500).json({ message: "Failed to fetch payouts" });
@@ -359,14 +375,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin routes
-  app.get('/api/admin/users', isAuthenticated, async (req: any, res) => {
+  // Admin analytics routes
+  app.get('/api/admin/analytics', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      // Get comprehensive analytics for admin dashboard
+      const [users, videos, payouts, totalEarnings] = await Promise.all([
+        storage.getUsersForVerification(),
+        storage.getVideos(),
+        storage.getPayoutRequests(),
+        storage.getTotalEarnings()
+      ]);
+
+      const analytics = {
+        totalUsers: users.length,
+        verifiedUsers: users.filter(u => u.verificationStatus === 'verified').length,
+        pendingVerifications: users.filter(u => u.verificationStatus === 'pending').length,
+        totalVideos: videos.length,
+        totalPayouts: payouts.length,
+        pendingPayouts: payouts.filter(p => p.status === 'pending').length,
+        completedPayouts: payouts.filter(p => p.status === 'completed').length,
+        totalEarnings: totalEarnings || 0,
+        totalPayoutAmount: payouts
+          .filter(p => p.status === 'completed')
+          .reduce((sum, p) => sum + parseFloat(p.amount || '0'), 0)
+      };
+
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      res.status(500).json({ message: "Failed to fetch analytics" });
+    }
+  });
+
+  // Admin authentication routes
+  app.post('/api/admin/login', async (req, res) => {
+    try {
+      const { adminLoginSchema } = await import('@shared/schema');
+      const { authenticateAdmin } = await import('./adminAuth');
       
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
+      const { username, password } = adminLoginSchema.parse(req.body);
+      
+      const admin = await authenticateAdmin(username, password);
+      if (!admin) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      req.session.adminUser = admin;
+      res.json({ 
+        id: admin.id, 
+        username: admin.username, 
+        name: admin.name 
+      });
+    } catch (error) {
+      console.error("Admin login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  app.post('/api/admin/logout', async (req, res) => {
+    try {
+      const { logoutAdmin } = await import('./adminAuth');
+      logoutAdmin(req);
+      res.json({ message: "Logged out successfully" });
+    } catch (error) {
+      console.error("Admin logout error:", error);
+      res.status(500).json({ message: "Logout failed" });
+    }
+  });
+
+  app.get('/api/admin/auth/user', async (req, res) => {
+    if (req.session.adminUser) {
+      res.json({
+        id: req.session.adminUser.id,
+        username: req.session.adminUser.username,
+        name: req.session.adminUser.name
+      });
+    } else {
+      res.status(401).json({ message: "Not authenticated" });
+    }
+  });
+
+  // Admin routes (updated to use admin authentication)
+  app.get('/api/admin/users', async (req: any, res) => {
+    try {
+      const { isAdminAuthenticated } = await import('./adminAuth');
+      
+      // Check admin authentication
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
       }
 
       const users = await storage.getUsersForVerification();
@@ -377,13 +477,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/admin/users/:id/verify', isAuthenticated, async (req: any, res) => {
+  app.put('/api/admin/users/:id/verify', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (user?.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
+      // Check admin authentication
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
       }
 
       const { status } = req.body;

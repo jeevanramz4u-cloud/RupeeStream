@@ -54,18 +54,7 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-            {user?.role === 'admin' && (
-              <Link
-                href="/admin"
-                className={`font-medium ${
-                  location === "/admin" 
-                    ? "text-primary" 
-                    : "text-gray-600 hover:text-primary"
-                }`}
-              >
-                Admin
-              </Link>
-            )}
+
           </nav>
 
           {/* User Section */}
@@ -73,7 +62,7 @@ export default function Header() {
             {/* Balance */}
             <div className="flex items-center space-x-2 bg-accent/10 px-3 py-2 rounded-lg">
               <Coins className="text-accent w-4 h-4" />
-              <span className="font-semibold text-gray-900">₹{user?.balance || '0.00'}</span>
+              <span className="font-semibold text-gray-900">₹{user && typeof user === 'object' && 'balance' in user ? user.balance : '0.00'}</span>
             </div>
             
             {/* User Menu */}
@@ -82,12 +71,12 @@ export default function Header() {
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
                     <AvatarImage 
-                      src={user?.profileImageUrl} 
-                      alt={user?.firstName || 'User'} 
+                      src={user && typeof user === 'object' && 'profileImageUrl' in user ? user.profileImageUrl as string : ''} 
+                      alt={user && typeof user === 'object' && 'firstName' in user ? user.firstName as string || 'User' : 'User'} 
                       className="object-cover"
                     />
                     <AvatarFallback>
-                      {user?.firstName ? user.firstName[0] : 'U'}
+                      {user && typeof user === 'object' && 'firstName' in user && user.firstName ? (user.firstName as string)[0] : 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -95,8 +84,12 @@ export default function Header() {
               <DropdownMenuContent className="w-56" align="end">
                 <div className="flex items-center justify-start gap-2 p-2">
                   <div className="flex flex-col space-y-1 leading-none">
-                    <p className="font-medium">{user?.firstName} {user?.lastName}</p>
-                    <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    <p className="font-medium">
+                      {user && typeof user === 'object' && 'firstName' in user ? user.firstName as string : ''} {user && typeof user === 'object' && 'lastName' in user ? user.lastName as string : ''}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {user && typeof user === 'object' && 'email' in user ? user.email as string : ''}
+                    </p>
                   </div>
                 </div>
                 <DropdownMenuSeparator />
@@ -143,18 +136,7 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
-          {user?.role === 'admin' && (
-            <Link
-              href="/admin"
-              className={`whitespace-nowrap py-2 px-3 rounded-lg text-sm font-medium ${
-                location === "/admin"
-                  ? "bg-primary text-white"
-                  : "text-gray-600 hover:text-primary hover:bg-primary/10"
-              }`}
-            >
-              Admin
-            </Link>
-          )}
+
         </div>
       </div>
     </header>
