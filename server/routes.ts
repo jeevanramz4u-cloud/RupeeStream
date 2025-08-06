@@ -504,13 +504,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.id;
       const { watchedSeconds } = req.body;
       
+      // Get current progress to calculate incremental time
+      const currentProgress = await storage.getVideoProgress(userId, req.params.videoId);
+      const previousWatchedSeconds = currentProgress?.watchedSeconds || 0;
+      
       const progress = await storage.updateVideoProgress(userId, req.params.videoId, watchedSeconds);
       
-      // Update daily watch time
+      // Update daily watch time with only the additional time watched
       const video = await storage.getVideo(req.params.videoId);
-      if (video && watchedSeconds > 0) {
-        const minutes = Math.floor(watchedSeconds / 60);
-        await storage.updateDailyWatchTime(userId, minutes);
+      if (video && watchedSeconds > previousWatchedSeconds) {
+        const additionalSeconds = watchedSeconds - previousWatchedSeconds;
+        const additionalMinutes = Math.floor(additionalSeconds / 60);
+        if (additionalMinutes > 0) {
+          await storage.updateDailyWatchTime(userId, additionalMinutes);
+        }
       }
       
       res.json(progress);
