@@ -239,11 +239,16 @@ export default function Admin() {
   });
 
   const onSubmitVideo = (data: any) => {
-    // Convert duration and earning to numbers
+    // Prepare video data with default values
     const videoData = {
-      ...data,
-      duration: parseInt(data.duration) || 0,
-      earning: parseFloat(data.earning) || 0
+      title: data.title || "Untitled Video",
+      description: data.description || "",
+      url: data.url || "",
+      thumbnailUrl: null, // Not used anymore
+      duration: 300, // Default 5 minutes - will be auto-detected later
+      category: null, // Not used anymore  
+      earning: data.earning || "0.00",
+      isActive: true
     };
 
     if (editingVideo) {
@@ -792,22 +797,14 @@ export default function Admin() {
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                          <Label htmlFor="url" className="text-sm">Video URL</Label>
+                          <Label htmlFor="url" className="text-sm">YouTube Video URL</Label>
                           <Input
                             {...register("url", { required: true })}
                             defaultValue={editingVideo?.url}
                             className="text-sm"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="duration" className="text-sm">Duration (seconds)</Label>
-                          <Input
-                            type="number"
-                            {...register("duration", { required: true })}
-                            defaultValue={editingVideo?.duration}
-                            className="text-sm"
+                            placeholder="https://www.youtube.com/watch?v=..."
                           />
                         </div>
                         <div>
@@ -818,6 +815,7 @@ export default function Admin() {
                             {...register("earning", { required: true })}
                             defaultValue={editingVideo?.earning}
                             className="text-sm"
+                            placeholder="5.00"
                           />
                         </div>
                       </div>
