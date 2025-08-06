@@ -26,7 +26,7 @@ export default function Landing() {
             </nav>
 
             <Button 
-              onClick={() => window.location.href = '/api/login'} 
+              onClick={() => window.location.href = '/login'} 
               className="bg-primary hover:bg-primary/90 h-8 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm touch-manipulation"
             >
               Sign In
