@@ -26,6 +26,8 @@ export default function VideoPlayer() {
   const [isWatchingOnYoutube, setIsWatchingOnYoutube] = useState(false);
   const [requiredWatchTime, setRequiredWatchTime] = useState(0);
   const [currentWatchTime, setCurrentWatchTime] = useState(0);
+  const [timerStarted, setTimerStarted] = useState(false);
+  const [totalWatchTime, setTotalWatchTime] = useState(0);
 
   const { data: video, isLoading } = useQuery<any>({
     queryKey: ["/api/videos", id],
@@ -90,25 +92,31 @@ export default function VideoPlayer() {
   }, [progress]);
 
   useEffect(() => {
-    // Set required watch time based on video duration (minimum 80% of video duration)
+    // Set required watch time based on video duration (100% for timer-based watching)
     if (video && video.duration > 0) {
-      setRequiredWatchTime(Math.floor(video.duration * 0.8));
+      setRequiredWatchTime(video.duration);
+      setTotalWatchTime(0);
+      setTimerStarted(false);
     }
   }, [video]);
 
-  // Real-time timer for YouTube watch time
+  // Universal timer that works for both YouTube and regular videos
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (isWatchingOnYoutube && youtubeWatchStartTime) {
+    if (timerStarted && !hasCompleted) {
       interval = setInterval(() => {
-        const elapsed = Math.floor((Date.now() - youtubeWatchStartTime.getTime()) / 1000);
-        setCurrentWatchTime(elapsed);
+        setTotalWatchTime(prev => {
+          const newTime = prev + 1;
+          // Update currentWatchTime for YouTube compatibility
+          setCurrentWatchTime(newTime);
+          return newTime;
+        });
       }, 1000);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isWatchingOnYoutube, youtubeWatchStartTime]);
+  }, [timerStarted, hasCompleted]);
 
   // Safe accessors
   const videoTitle = video?.title || 'Loading...';
@@ -188,7 +196,12 @@ export default function VideoPlayer() {
       }
     };
 
-    const handlePlay = () => setIsPlaying(true);
+    const handlePlay = () => {
+      setIsPlaying(true);
+      if (!timerStarted) {
+        setTimerStarted(true);
+      }
+    };
     const handlePause = () => setIsPlaying(false);
 
     // Disable right-click context menu to prevent controls access
@@ -267,12 +280,22 @@ export default function VideoPlayer() {
       <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-6 pb-20">
 
 
-        {/* Earning Status - Before Player */}
-        {canEarn ? (
+        {/* Timer Status Alert */}
+        {!hasCompleted && !timerStarted && (
+          <Alert className="mb-3 border-blue-200 bg-blue-50 touch-manipulation">
+            <Clock className="h-3 w-3 text-blue-600" />
+            <AlertDescription className="text-blue-700 text-xs">
+              <strong>Ready to Watch</strong> - Click play to start earning timer
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {/* Earning Status */}
+        {canEarn && timerStarted ? (
           <Alert className="mb-3 border-orange-200 bg-orange-50 touch-manipulation">
             <Coins className="h-3 w-3 text-orange-600" />
             <AlertDescription className="text-orange-700 text-xs">
-              <strong>Earn ₹{videoEarning}</strong> - Watch completely without skipping
+              <strong>Timer Active</strong> - Watch {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')} to earn ₹{videoEarning}
             </AlertDescription>
           </Alert>
         ) : hasCompleted ? (
@@ -282,14 +305,14 @@ export default function VideoPlayer() {
               <strong>Completed!</strong> You earned ₹{videoEarning}
             </AlertDescription>
           </Alert>
-        ) : (
+        ) : hasEarnings ? (
           <Alert className="mb-3 touch-manipulation">
             <Info className="h-3 w-3" />
             <AlertDescription className="text-xs">
               Already earned from this video
             </AlertDescription>
           </Alert>
-        )}
+        ) : null}
 
         {/* Video Header */}
         <div className="mb-4 sm:mb-6">
@@ -339,9 +362,9 @@ export default function VideoPlayer() {
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                       onLoad={() => {
-                        // Start tracking when video loads
-                        if (!youtubeWatchStartTime) {
-                          setYoutubeWatchStartTime(new Date());
+                        // Start timer when video loads
+                        if (!timerStarted) {
+                          setTimerStarted(true);
                           setIsWatchingOnYoutube(true);
                         }
                       }}
@@ -378,34 +401,53 @@ export default function VideoPlayer() {
             {isYouTubeVideo && (
               <div className="p-4 border-t border-gray-200">
                 <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
-                  <Button
-                    onClick={() => window.open(videoUrl, '_blank')}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
-                  >
-                    <Play className="w-4 h-4 mr-2" />
-                    Open in YouTube App
-                  </Button>
+                  {!timerStarted ? (
+                    <Button
+                      onClick={() => {
+                        setTimerStarted(true);
+                        setIsWatchingOnYoutube(true);
+                      }}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
+                    >
+                      <Clock className="w-4 h-4 mr-2" />
+                      Start Watch Timer
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => window.open(videoUrl, '_blank')}
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
+                    >
+                      <Play className="w-4 h-4 mr-2" />
+                      Open in YouTube App
+                    </Button>
+                  )}
                   
                   {!hasCompleted && (
                     <div className="flex flex-col items-center gap-2">
-                      {/* Watch Time Requirement for YouTube */}
-                      <div className="text-xs text-gray-600 text-center">
-                        Watch Time: {Math.floor(currentWatchTime / 60)}:{(currentWatchTime % 60).toString().padStart(2, '0')} / {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
+                      {/* Universal Timer Display */}
+                      <div className="text-sm text-gray-700 text-center bg-gray-100 px-3 py-2 rounded-lg">
+                        <div className="font-semibold">Watch Timer</div>
+                        <div className="text-lg font-mono">
+                          {Math.floor(totalWatchTime / 60)}:{(totalWatchTime % 60).toString().padStart(2, '0')} / {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          {Math.floor((totalWatchTime / videoDuration) * 100)}% complete
+                        </div>
                       </div>
                       <Button
                         onClick={() => completeVideoMutation.mutate()}
                         className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
-                        disabled={completeVideoMutation.isPending || currentWatchTime < Math.floor(videoDuration * 0.9)}
+                        disabled={completeVideoMutation.isPending || totalWatchTime < requiredWatchTime}
                       >
                         <Coins className="w-4 h-4 mr-2" />
                         {completeVideoMutation.isPending ? 'Processing...' : 
-                         currentWatchTime < Math.floor(videoDuration * 0.9) ? 
-                         `Watch ${Math.floor(videoDuration * 0.9 - currentWatchTime)}s more to complete` : 
+                         totalWatchTime < requiredWatchTime ? 
+                         `Watch ${requiredWatchTime - totalWatchTime}s more to complete` : 
                          'Mark as Completed'}
                       </Button>
-                      {currentWatchTime < Math.floor(videoDuration * 0.9) && (
+                      {totalWatchTime < requiredWatchTime && (
                         <div className="text-xs text-orange-600 text-center font-medium">
-                          You must watch at least 90% of the video to earn
+                          You must watch the complete video to earn ₹{videoEarning}
                         </div>
                       )}
                     </div>
@@ -414,19 +456,54 @@ export default function VideoPlayer() {
               </div>
             )}
             
-            {/* Progress Bar - Only for non-YouTube videos */}
+            {/* Progress Bar and Timer - For non-YouTube videos */}
             {!isYouTubeVideo && (
               <div className="p-4">
                 <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-                  <span>Progress</span>
-                  <span>{Math.round(progressPercentage)}% watched</span>
+                  <span>Video Progress</span>
+                  <span>{Math.round(progressPercentage)}% played</span>
                 </div>
                 <Progress value={progressPercentage} className="h-2 mb-4" />
                 
+                {/* Timer Display for Regular Videos */}
+                <div className="bg-gray-50 p-3 rounded-lg mb-3">
+                  <div className="text-center">
+                    <div className="text-xs text-gray-600 mb-1">Watch Timer</div>
+                    <div className="text-lg font-mono font-semibold text-gray-800">
+                      {Math.floor(totalWatchTime / 60)}:{(totalWatchTime % 60).toString().padStart(2, '0')} / {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {Math.floor((totalWatchTime / videoDuration) * 100)}% complete
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>Watched: {Math.floor(watchedSeconds / 60)}:{(watchedSeconds % 60).toString().padStart(2, '0')}</span>
+                  <span>Video: {Math.floor(watchedSeconds / 60)}:{(watchedSeconds % 60).toString().padStart(2, '0')}</span>
                   <span>Remaining: {Math.floor(remainingTime / 60)}:{(remainingTime % 60).toString().padStart(2, '0')}</span>
                 </div>
+                
+                {/* Completion Button for Regular Videos */}
+                {!hasCompleted && (
+                  <div className="mt-4">
+                    <Button
+                      onClick={() => completeVideoMutation.mutate()}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium touch-manipulation"
+                      disabled={completeVideoMutation.isPending || totalWatchTime < requiredWatchTime}
+                    >
+                      <Coins className="w-4 h-4 mr-2" />
+                      {completeVideoMutation.isPending ? 'Processing...' : 
+                       totalWatchTime < requiredWatchTime ? 
+                       `Watch ${requiredWatchTime - totalWatchTime}s more to complete` : 
+                       'Mark as Completed'}
+                    </Button>
+                    {totalWatchTime < requiredWatchTime && (
+                      <div className="text-xs text-orange-600 text-center font-medium mt-2">
+                        You must watch the complete video to earn ₹{videoEarning}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
             
