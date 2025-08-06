@@ -765,23 +765,25 @@ export default function KYC() {
           </Card>
         )}
 
-        {/* Info Card */}
-        <Card className="mt-6">
-          <CardContent className="pt-6">
-            <div className="flex items-start space-x-3">
-              <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Verification Process</h4>
-                <ul className="space-y-1 text-sm text-gray-600">
-                  <li>• Document review: 24-48 hours</li>
-                  <li>• Processing fee: ₹99 (one-time)</li>
-                  <li>• Verification result via email</li>
-                  <li>• Contact support if needed</li>
-                </ul>
+        {/* Info Card - Only show if KYC not completed */}
+        {!(kycData as any)?.kycStatus || (kycData as any)?.kycStatus !== 'approved' || (kycData as any)?.verificationStatus !== 'verified' ? (
+          <Card className="mt-6">
+            <CardContent className="pt-6">
+              <div className="flex items-start space-x-3">
+                <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Verification Process</h4>
+                  <ul className="space-y-1 text-sm text-gray-600">
+                    <li>• Document review: 24-48 hours</li>
+                    <li>• Processing fee: ₹99 (one-time)</li>
+                    <li>• Verification result via email</li>
+                    <li>• Contact support if needed</li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        ) : null}
       </main>
     </div>
   );
