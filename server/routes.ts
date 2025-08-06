@@ -55,15 +55,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { password: _, ...userWithoutPassword } = user;
       
-      // Include bonus info in response
-      res.json({ 
-        ...userWithoutPassword, 
-        hourlyBonus: bonusResult.awarded ? { 
+      // Only include bonus info in response if actually awarded
+      const response: any = { ...userWithoutPassword };
+      if (bonusResult.awarded) {
+        response.hourlyBonus = { 
           awarded: true, 
           amount: bonusResult.amount,
           message: "You've earned ₹10 hourly login bonus!"
-        } : null
-      });
+        };
+      }
+      
+      res.json(response);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });

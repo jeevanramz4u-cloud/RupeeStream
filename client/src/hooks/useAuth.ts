@@ -14,13 +14,12 @@ export function useAuth() {
 
   // Show hourly bonus toast when user receives it
   useEffect(() => {
-    if (user && (user as any).hourlyBonus && (user as any).hourlyBonus.awarded && !toastShownRef.current) {
+    if (user && (user as any).hourlyBonus && (user as any).hourlyBonus.awarded) {
       toast({
         title: "Hourly Login Bonus! 🎉",
         description: (user as any).hourlyBonus.message,
         duration: 5000,
       });
-      toastShownRef.current = true;
     }
   }, [user, toast]);
 
