@@ -6,6 +6,7 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { ObjectPermission } from "./objectAcl";
 import { SuspensionSystem } from "./suspensionSystem";
+import { and } from "drizzle-orm";
 import { 
   insertVideoSchema, 
   insertVideoProgressSchema, 
@@ -93,7 +94,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         bankName,
         governmentIdType,
         governmentIdNumber,
-        governmentIdUrl
+        governmentIdUrl,
+        referralCode
       } = req.body;
 
       // Check if user already exists
@@ -141,6 +143,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         type: "signup_bonus",
         description: "Welcome bonus for new account",
       });
+
+      // Process referral if provided
+      if (referralCode) {
+        try {
+          const referrer = await storage.getUserByReferralCode(referralCode);
+          if (referrer) {
+            // Create referral record
+            await storage.createReferral({
+              referrerId: referrer.id,
+              referredId: newUser.id,
+              isEarningCredited: false
+            });
+            
+            // Update the new user's referredBy field
+            await storage.updateUser(newUser.id, { referredBy: referrer.id });
+            
+            console.log(`Referral created: ${referrer.id} referred ${newUser.id}`);
+          }
+        } catch (error) {
+          console.error("Error processing referral:", error);
+          // Don't fail signup if referral processing fails
+        }
+      }
 
       // Create session for the new user
       req.session.userId = newUser.id;

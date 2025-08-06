@@ -38,6 +38,11 @@ export default function Signup() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [governmentIdUrl, setGovernmentIdUrl] = useState("");
+  
+  // Get referral code from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const referralCode = urlParams.get('ref');
+  const [referralInfo, setReferralInfo] = useState<string | null>(referralCode);
 
   const [formData, setFormData] = useState({
     // Personal Information
@@ -103,6 +108,7 @@ export default function Signup() {
         body: JSON.stringify({
           ...formData,
           governmentIdUrl,
+          referralCode: referralInfo, // Include referral code
         }),
       });
 

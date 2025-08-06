@@ -176,6 +176,22 @@ export class DatabaseStorage implements IStorage {
     // Set approval timestamp if verified
     if (status === "verified") {
       updateData.kycApprovedAt = new Date();
+      
+      // Credit referral earning when user gets verified
+      const userRecord = await db.select().from(users).where(eq(users.id, id));
+      if (userRecord.length > 0 && userRecord[0].referredBy) {
+        const referralRecord = await db
+          .select()
+          .from(referrals)
+          .where(and(
+            eq(referrals.referrerId, userRecord[0].referredBy),
+            eq(referrals.referredId, id)
+          ));
+        
+        if (referralRecord.length > 0 && !referralRecord[0].isEarningCredited) {
+          await this.creditReferralEarning(referralRecord[0].id);
+        }
+      }
     }
 
     const [user] = await db
