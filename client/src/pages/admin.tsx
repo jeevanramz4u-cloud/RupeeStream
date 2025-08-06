@@ -692,10 +692,10 @@ export default function Admin() {
                           {/* Government ID Front */}
                           <div className="p-3 border rounded-lg">
                             <h4 className="font-medium text-sm text-gray-700 mb-2">ID Front</h4>
-                            {selectedUser.governmentIdFrontUrl ? (
+                            {selectedUser.govIdFrontUrl ? (
                               <div className="space-y-2">
                                 <img 
-                                  src={selectedUser.governmentIdFrontUrl} 
+                                  src={selectedUser.govIdFrontUrl} 
                                   alt="Government ID Front"
                                   className="w-full h-32 object-cover rounded border"
                                   onError={(e) => {
@@ -710,7 +710,7 @@ export default function Admin() {
                                   <span className="text-gray-500 text-sm">Image not available</span>
                                 </div>
                                 <a 
-                                  href={selectedUser.governmentIdFrontUrl}
+                                  href={selectedUser.govIdFrontUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-primary hover:underline text-sm block"
@@ -728,10 +728,10 @@ export default function Admin() {
                           {/* Government ID Back */}
                           <div className="p-3 border rounded-lg">
                             <h4 className="font-medium text-sm text-gray-700 mb-2">ID Back</h4>
-                            {selectedUser.governmentIdBackUrl ? (
+                            {selectedUser.govIdBackUrl ? (
                               <div className="space-y-2">
                                 <img 
-                                  src={selectedUser.governmentIdBackUrl} 
+                                  src={selectedUser.govIdBackUrl} 
                                   alt="Government ID Back"
                                   className="w-full h-32 object-cover rounded border"
                                   onError={(e) => {
@@ -746,7 +746,7 @@ export default function Admin() {
                                   <span className="text-gray-500 text-sm">Image not available</span>
                                 </div>
                                 <a 
-                                  href={selectedUser.governmentIdBackUrl}
+                                  href={selectedUser.govIdBackUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-primary hover:underline text-sm block"

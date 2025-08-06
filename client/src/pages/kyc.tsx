@@ -335,47 +335,53 @@ export default function KYC() {
           </CardContent>
         </Card>
 
-        {/* KYC Steps - Hide if submitted/approved, show only if pending/rejected */}
-        {((kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid) || (kycData as any)?.kycStatus === 'approved' ? (
-          // Show completion status instead of steps when fully submitted or approved
-          <Card className="col-span-full">
-            <CardContent className="pt-6">
-              <div className="text-center py-8">
-                {(kycData as any)?.kycStatus === 'approved' ? (
-                  <>
-                    <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">KYC Verification Complete!</h3>
-                    <p className="text-gray-600">Your documents have been verified successfully. You can now receive payouts.</p>
-                  </>
-                ) : (
-                  <>
-                    <Clock className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Under Review</h3>
-                    <p className="text-gray-600">Your documents and payment have been received. Our team is reviewing your verification.</p>
-                  </>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          // Show KYC steps for pending/rejected status
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* KYC Steps - Show all steps with better styling */}
+        <div className="space-y-6">
+          {/* Completion Status for Approved/Submitted */}
+          {(kycData as any)?.kycStatus === 'approved' && (
+            <Card className="border-green-200 bg-green-50">
+              <CardContent className="pt-6">
+                <div className="text-center py-4">
+                  <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-3" />
+                  <h3 className="text-lg font-semibold text-green-900 mb-2">KYC Verification Complete!</h3>
+                  <p className="text-green-700">Your documents have been verified successfully. You can now receive payouts.</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          {(kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid && (
+            <Card className="border-blue-200 bg-blue-50">
+              <CardContent className="pt-6">
+                <div className="text-center py-4">
+                  <Clock className="w-12 h-12 text-blue-600 mx-auto mb-3" />
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2">Under Review</h3>
+                  <p className="text-blue-700">Your documents and payment have been received. Our team is reviewing your verification.</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* KYC Steps */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           
           {/* Step 1: Personal Information */}
-          <Card className="touch-manipulation">
-            <CardHeader>
-              <CardTitle className="text-base flex items-center">
-                <User className="w-4 h-4 mr-2 text-blue-600" />
-                1. Personal Information
+          <Card className="shadow-sm border-l-4 border-l-blue-500">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center text-gray-800">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                  <User className="w-4 h-4 text-blue-600" />
+                </div>
+                Step 1: Personal Information
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="govIdType" className="text-sm font-medium">Government ID Type</Label>
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="govIdType" className="text-sm font-semibold text-gray-700">Government ID Type</Label>
                   <Select value={govIdType} onValueChange={setGovIdType} disabled={(kycData as any)?.kycStatus === 'approved'}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select ID type" />
+                    <SelectTrigger className="h-11 border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                      <SelectValue placeholder="Select your ID type" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="aadhaar">Aadhaar Card</SelectItem>
@@ -387,22 +393,22 @@ export default function KYC() {
                   </Select>
                 </div>
                 
-                <div>
-                  <Label htmlFor="govIdNumber" className="text-sm font-medium">ID Number</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="govIdNumber" className="text-sm font-semibold text-gray-700">ID Number</Label>
                   <Input
                     id="govIdNumber"
                     value={govIdNumber}
                     onChange={(e) => setGovIdNumber(e.target.value)}
                     placeholder="Enter your ID number"
-                    className="mt-1"
+                    className="h-11 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     disabled={(kycData as any)?.kycStatus === 'approved'}
                   />
                 </div>
 
                 {govIdType && govIdNumber && (
-                  <div className="flex items-center text-green-600 text-sm">
-                    <CheckCircle className="w-4 h-4 mr-1" />
-                    Information saved
+                  <div className="flex items-center p-3 bg-green-50 text-green-700 rounded-lg border border-green-200">
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    <span className="text-sm font-medium">Information saved successfully</span>
                   </div>
                 )}
               </div>
@@ -410,11 +416,13 @@ export default function KYC() {
           </Card>
 
           {/* Step 2: ID Front Upload */}
-          <Card className="touch-manipulation">
-            <CardHeader>
-              <CardTitle className="text-base flex items-center">
-                <IdCard className="w-4 h-4 mr-2 text-blue-600" />
-                2. ID Front Side
+          <Card className="shadow-sm border-l-4 border-l-green-500">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center text-gray-800">
+                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3">
+                  <IdCard className="w-4 h-4 text-green-600" />
+                </div>
+                Step 2: ID Front Side
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -474,11 +482,13 @@ export default function KYC() {
           </Card>
 
           {/* Step 3: ID Back Upload */}
-          <Card className="touch-manipulation">
-            <CardHeader>
-              <CardTitle className="text-base flex items-center">
-                <IdCard className="w-4 h-4 mr-2 text-blue-600" />
-                3. ID Back Side
+          <Card className="shadow-sm border-l-4 border-l-orange-500">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center text-gray-800">
+                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center mr-3">
+                  <IdCard className="w-4 h-4 text-orange-600" />
+                </div>
+                Step 3: ID Back Side
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -538,11 +548,13 @@ export default function KYC() {
           </Card>
 
           {/* Step 4: Selfie Upload */}
-          <Card className="touch-manipulation">
-            <CardHeader>
-              <CardTitle className="text-base flex items-center">
-                <CameraIcon className="w-4 h-4 mr-2 text-blue-600" />
-                4. Selfie with ID
+          <Card className="shadow-sm border-l-4 border-l-purple-500">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center text-gray-800">
+                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                  <CameraIcon className="w-4 h-4 text-purple-600" />
+                </div>
+                Step 4: Selfie with ID
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -602,11 +614,13 @@ export default function KYC() {
           </Card>
 
           {/* Step 5: Submit for Review */}
-          <Card className="touch-manipulation">
-            <CardHeader>
-              <CardTitle className="text-base flex items-center">
-                <FileText className="w-4 h-4 mr-2 text-blue-600" />
-                5. Submit for Review
+          <Card className="shadow-sm border-l-4 border-l-indigo-500">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center text-gray-800">
+                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
+                  <FileText className="w-4 h-4 text-indigo-600" />
+                </div>
+                Step 5: Submit for Review
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -637,11 +651,13 @@ export default function KYC() {
           </Card>
 
           {/* Step 6: Processing Fee */}
-          <Card className="touch-manipulation">
-            <CardHeader>
-              <CardTitle className="text-base flex items-center">
-                <CreditCard className="w-4 h-4 mr-2 text-blue-600" />
-                6. Processing Fee
+          <Card className="shadow-sm border-l-4 border-l-red-500">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center text-gray-800">
+                <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                  <CreditCard className="w-4 h-4 text-red-600" />
+                </div>
+                Step 6: Processing Fee
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -680,7 +696,7 @@ export default function KYC() {
             </CardContent>
           </Card>
           </div>
-        )}
+        </div>
 
         {/* Help Section */}
         <Card className="mt-6 sm:mt-8 touch-manipulation">
