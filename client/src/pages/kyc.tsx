@@ -157,8 +157,26 @@ export default function KYC() {
     
     if (result.successful && result.successful.length > 0) {
       const uploadedFile = result.successful[0];
-      // Get the actual upload URL - this might be in different properties
-      const documentUrl = uploadedFile.uploadURL || uploadedFile.url || uploadedFile.response?.uploadURL;
+      
+      // The document URL should be extracted from the upload response
+      // Based on the Google Cloud Storage response, we need to reconstruct the URL
+      let documentUrl = uploadedFile.uploadURL;
+      
+      // If uploadURL is not available, try to construct it from the PUT response
+      if (!documentUrl && uploadedFile.response && uploadedFile.response.uploadURL) {
+        documentUrl = uploadedFile.response.uploadURL.split('?')[0]; // Remove query parameters
+      }
+      
+      // If still no URL, try to get it from the successful upload response
+      if (!documentUrl && uploadedFile.response && uploadedFile.response.body) {
+        // For Google Cloud Storage, the URL pattern is known
+        const bucketMatch = uploadedFile.response.uploadURL?.match(/googleapis\.com\/upload\/storage\/v1\/b\/([^\/]+)/);
+        if (bucketMatch) {
+          const bucketName = bucketMatch[1];
+          const fileName = uploadedFile.name || `upload_${Date.now()}`;
+          documentUrl = `https://storage.googleapis.com/${bucketName}/.private/uploads/${fileName}`;
+        }
+      }
       
       console.log("Document URL extracted:", documentUrl);
       
@@ -600,6 +618,9 @@ export default function KYC() {
                 </div>
               </div>
 
+              {/* Debug: Log current state */}
+              {console.log("Current form state:", { govIdType, govIdNumber, govIdFrontUrl, govIdBackUrl, selfieWithIdUrl })}
+              
               {/* Complete KYC Section - Show after document upload */}
               {govIdType && govIdNumber && govIdFrontUrl && govIdBackUrl && selfieWithIdUrl && (
                 <div className="space-y-4">
@@ -643,6 +664,17 @@ export default function KYC() {
               )}
               
               {/* Show message for incomplete documents */}
+              {(!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) && (
+                <div>
+                  {console.log("Missing fields:", { 
+                    govIdType: !govIdType, 
+                    govIdNumber: !govIdNumber, 
+                    govIdFrontUrl: !govIdFrontUrl, 
+                    govIdBackUrl: !govIdBackUrl, 
+                    selfieWithIdUrl: !selfieWithIdUrl 
+                  })}
+              </div>
+              )}
               {(!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) && (
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <div className="flex items-center mb-3">
