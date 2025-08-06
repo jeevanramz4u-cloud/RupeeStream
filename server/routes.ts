@@ -304,6 +304,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         kycFeePaid: user.kycFeePaid,
         kycSubmittedAt: user.kycSubmittedAt,
         kycApprovedAt: user.kycApprovedAt,
+        verificationStatus: user.verificationStatus,
       });
     } catch (error) {
       console.error("Error fetching KYC status:", error);
