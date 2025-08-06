@@ -45,12 +45,12 @@ export default function Dashboard() {
   });
 
   const targetHours = 8;
-  const watchedHours = stats?.dailyWatchTime ? stats.dailyWatchTime / 60 : 0;
+  const watchedHours = (stats as any)?.dailyWatchTime ? (stats as any).dailyWatchTime / 60 : 0;
   const progressPercentage = Math.min((watchedHours / targetHours) * 100, 100);
   const remainingHours = Math.max(targetHours - watchedHours, 0);
 
   const handleEditProfile = () => {
-    setEditingUser({...user});
+    setEditingUser({...(user as any)});
     setIsEditingProfile(true);
   };
 
@@ -92,7 +92,7 @@ export default function Dashboard() {
                     onClick={() => setLocation("/earnings-history")}
                     className="text-xl font-bold text-gray-900 hover:text-green-600 underline-offset-2 hover:underline text-left"
                   >
-                    ₹{stats?.totalEarnings || 0}
+                    ₹{(stats as any)?.totalEarnings || 0}
                   </button>
                   <p className="text-xs text-gray-400">Click to view history</p>
                 </div>
@@ -108,7 +108,7 @@ export default function Dashboard() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-500">Today's Earnings</p>
-                  <p className="text-xl font-bold text-gray-900">₹{stats?.todayEarnings || 0}</p>
+                  <p className="text-xl font-bold text-gray-900">₹{(stats as any)?.todayEarnings || 0}</p>
                 </div>
               </div>
             </CardContent>
@@ -235,9 +235,9 @@ export default function Dashboard() {
           </Alert>
         )}
 
-        {/* Daily Target Reminder */}
-        <Alert className={`mb-6 ${remainingHours > 0 ? 'border-orange-200 bg-orange-50' : 'border-green-200 bg-green-50'}`}>
-          <Clock className={`h-4 w-4 ${remainingHours > 0 ? 'text-orange-600' : 'text-green-600'}`} />
+        {/* Daily Target Warning - Red for remaining hours */}
+        <Alert className={`mb-6 ${remainingHours > 0 ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'}`}>
+          <Clock className={`h-4 w-4 ${remainingHours > 0 ? 'text-red-600' : 'text-green-600'}`} />
           <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex-1">
               <p className="font-semibold mb-1 text-sm sm:text-base">

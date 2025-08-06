@@ -140,6 +140,15 @@ export default function Admin() {
     }
   }, [isAuthenticated, isAdminLoading, toast, setLocation]);
 
+  // Show loading spinner while checking authentication
+  if (isAdminLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
   // Show loading or redirect if not authenticated
   if (isAdminLoading) {
     return (
