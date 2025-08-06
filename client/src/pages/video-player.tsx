@@ -85,12 +85,16 @@ export default function VideoPlayer() {
     }
   }, [progress]);
 
+  // Check if this is a YouTube video
+  const isYouTubeVideo = video?.url && (video.url.includes('youtube.com') || video.url.includes('youtu.be'));
+
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    // Only add event listeners for direct video files, not YouTube iframes
+    const videoElement = videoRef.current;
+    if (!videoElement || isYouTubeVideo) return;
 
     const handleTimeUpdate = () => {
-      const currentTime = Math.floor(video.currentTime);
+      const currentTime = Math.floor(videoElement.currentTime);
       setWatchedSeconds(currentTime);
       
       // Update progress every 30 seconds
@@ -110,7 +114,7 @@ export default function VideoPlayer() {
 
     // Disable seeking
     const handleSeeking = () => {
-      video.currentTime = watchedSeconds;
+      videoElement.currentTime = watchedSeconds;
       toast({
         title: "Seeking Disabled",
         description: "You cannot skip or rewind the video.",
@@ -118,20 +122,20 @@ export default function VideoPlayer() {
       });
     };
 
-    video.addEventListener('timeupdate', handleTimeUpdate);
-    video.addEventListener('ended', handleEnded);
-    video.addEventListener('play', handlePlay);
-    video.addEventListener('pause', handlePause);
-    video.addEventListener('seeking', handleSeeking);
+    videoElement.addEventListener('timeupdate', handleTimeUpdate);
+    videoElement.addEventListener('ended', handleEnded);
+    videoElement.addEventListener('play', handlePlay);
+    videoElement.addEventListener('pause', handlePause);
+    videoElement.addEventListener('seeking', handleSeeking);
 
     return () => {
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('ended', handleEnded);
-      video.removeEventListener('play', handlePlay);
-      video.removeEventListener('pause', handlePause);
-      video.removeEventListener('seeking', handleSeeking);
+      videoElement.removeEventListener('timeupdate', handleTimeUpdate);
+      videoElement.removeEventListener('ended', handleEnded);
+      videoElement.removeEventListener('play', handlePlay);
+      videoElement.removeEventListener('pause', handlePause);
+      videoElement.removeEventListener('seeking', handleSeeking);
     };
-  }, [watchedSeconds, hasCompleted, updateProgressMutation, completeVideoMutation, toast]);
+  }, [watchedSeconds, hasCompleted, updateProgressMutation, completeVideoMutation, toast, isYouTubeVideo]);
 
   if (isLoading) {
     return (
@@ -207,25 +211,43 @@ export default function VideoPlayer() {
           <CardContent className="p-0">
             <div className="bg-gray-900 rounded-t-lg aspect-video flex items-center justify-center relative">
               {video.url ? (
-                video.url.includes('youtube.com') || video.url.includes('youtu.be') ? (
-                  // YouTube embed player
-                  <iframe
-                    className="w-full h-full rounded-t-lg"
-                    src={(() => {
-                      let embedUrl = video.url;
-                      if (embedUrl.includes('youtube.com/watch?v=')) {
-                        embedUrl = embedUrl.replace('youtube.com/watch?v=', 'youtube.com/embed/');
-                      } else if (embedUrl.includes('youtu.be/')) {
-                        embedUrl = embedUrl.replace('youtu.be/', 'youtube.com/embed/');
-                      }
-                      return embedUrl;
-                    })()}
-                    title={video.title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    onContextMenu={(e) => e.preventDefault()}
-                  />
+                isYouTubeVideo ? (
+                  // YouTube embed player with manual completion
+                  <div className="w-full h-full relative">
+                    <iframe
+                      className="w-full h-full rounded-t-lg"
+                      src={(() => {
+                        let embedUrl = video.url;
+                        if (embedUrl.includes('youtube.com/watch?v=')) {
+                          embedUrl = embedUrl.replace('youtube.com/watch?v=', 'youtube.com/embed/');
+                        } else if (embedUrl.includes('youtu.be/')) {
+                          embedUrl = embedUrl.replace('youtu.be/', 'youtube.com/embed/');
+                        }
+                        // Add autoplay and other parameters
+                        embedUrl += embedUrl.includes('?') ? '&' : '?';
+                        embedUrl += 'autoplay=0&controls=1&disablekb=1&fs=0&modestbranding=1&rel=0';
+                        return embedUrl;
+                      })()}
+                      title={video.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                    {/* Manual completion button for YouTube videos */}
+                    {!hasCompleted && (
+                      <div className="absolute bottom-4 right-4">
+                        <Button
+                          onClick={() => {
+                            completeVideoMutation.mutate();
+                          }}
+                          className="bg-green-600 hover:bg-green-700 text-white"
+                          disabled={completeVideoMutation.isPending}
+                        >
+                          Mark as Completed
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   // Regular video player for direct video files
                   <video
@@ -244,24 +266,41 @@ export default function VideoPlayer() {
                 <div className="text-center text-white">
                   <Play className="w-16 h-16 mb-4 opacity-50 mx-auto" />
                   <p className="text-sm opacity-75">Video Player</p>
-                  <p className="text-xs opacity-50 mt-1">Forward/Skip controls disabled</p>
+                  <p className="text-xs opacity-50 mt-1">Watch completely to earn</p>
                 </div>
               )}
             </div>
             
-            {/* Progress Bar */}
-            <div className="p-4">
-              <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-                <span>Progress</span>
-                <span>{Math.round(progressPercentage)}% watched</span>
+            {/* Progress Bar - Only for non-YouTube videos */}
+            {!isYouTubeVideo && (
+              <div className="p-4">
+                <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                  <span>Progress</span>
+                  <span>{Math.round(progressPercentage)}% watched</span>
+                </div>
+                <Progress value={progressPercentage} className="h-2 mb-4" />
+                
+                <div className="flex items-center justify-between text-xs text-gray-500">
+                  <span>Watched: {Math.floor(watchedSeconds / 60)}:{(watchedSeconds % 60).toString().padStart(2, '0')}</span>
+                  <span>Remaining: {Math.floor(remainingTime / 60)}:{(remainingTime % 60).toString().padStart(2, '0')}</span>
+                </div>
               </div>
-              <Progress value={progressPercentage} className="h-2 mb-4" />
-              
-              <div className="flex items-center justify-between text-xs text-gray-500">
-                <span>Watched: {Math.floor(watchedSeconds / 60)}:{(watchedSeconds % 60).toString().padStart(2, '0')}</span>
-                <span>Remaining: {Math.floor(remainingTime / 60)}:{(remainingTime % 60).toString().padStart(2, '0')}</span>
+            )}
+            
+            {/* YouTube video info */}
+            {isYouTubeVideo && (
+              <div className="p-4">
+                <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                  <span>YouTube Video</span>
+                  <span className={`font-medium ${hasCompleted ? 'text-green-600' : 'text-orange-600'}`}>
+                    {hasCompleted ? 'Completed' : 'Click "Mark as Completed" after watching'}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500">
+                  Earning: ₹{video?.earning} • Duration: {Math.floor((video?.duration || 0) / 60)}:{((video?.duration || 0) % 60).toString().padStart(2, '0')}
+                </div>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 
