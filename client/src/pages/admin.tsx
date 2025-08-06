@@ -516,7 +516,7 @@ export default function Admin() {
 
                       <div>
                         <h3 className="font-medium text-gray-900 mb-2">KYC Information</h3>
-                        <div className="p-3 bg-gray-50 rounded-lg text-sm space-y-2">
+                        <div className="p-3 bg-gray-50 rounded-lg text-sm space-y-3">
                           <div className="flex justify-between items-center">
                             <span><strong>KYC Status:</strong></span>
                             <Badge variant={selectedUser.kycStatus === 'approved' ? 'default' : 'outline'}>
@@ -536,27 +536,115 @@ export default function Admin() {
                               </Badge>
                             )}
                           </div>
-                          <p><strong>ID Type:</strong> {selectedUser.governmentIdType || 'Not provided'}</p>
-                          <p><strong>ID Number:</strong> {selectedUser.governmentIdNumber ? `****${selectedUser.governmentIdNumber.slice(-4)}` : 'Not provided'}</p>
+                          <div className="border-t pt-2">
+                            <p><strong>ID Type:</strong> {selectedUser.governmentIdType || 'Not provided'}</p>
+                            <p><strong>ID Number:</strong> {selectedUser.governmentIdNumber ? `****${selectedUser.governmentIdNumber.slice(-4)}` : 'Not provided'}</p>
+                          </div>
                         </div>
                       </div>
 
                       <div>
-                        <h3 className="font-medium text-gray-900 mb-2">Government ID</h3>
-                        {selectedUser.governmentIdUrl ? (
-                          <div className="p-3 bg-gray-50 rounded-lg">
-                            <a 
-                              href={selectedUser.governmentIdUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary hover:underline"
-                            >
-                              View Government ID Document
-                            </a>
+                        <h3 className="font-medium text-gray-900 mb-2">KYC Documents</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {/* Government ID Front */}
+                          <div className="p-3 border rounded-lg">
+                            <h4 className="font-medium text-sm text-gray-700 mb-2">ID Front</h4>
+                            {selectedUser.governmentIdFrontUrl ? (
+                              <div className="space-y-2">
+                                <img 
+                                  src={selectedUser.governmentIdFrontUrl} 
+                                  alt="Government ID Front"
+                                  className="w-full h-32 object-cover rounded border"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                    e.currentTarget.nextElementSibling.style.display = 'block';
+                                  }}
+                                />
+                                <div style={{ display: 'none' }} className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                                  <span className="text-gray-500 text-sm">Image not available</span>
+                                </div>
+                                <a 
+                                  href={selectedUser.governmentIdFrontUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-primary hover:underline text-sm block"
+                                >
+                                  View Full Size
+                                </a>
+                              </div>
+                            ) : (
+                              <div className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                                <span className="text-gray-500 text-sm">Not uploaded</span>
+                              </div>
+                            )}
                           </div>
-                        ) : (
-                          <p className="text-gray-500">No ID document uploaded</p>
-                        )}
+
+                          {/* Government ID Back */}
+                          <div className="p-3 border rounded-lg">
+                            <h4 className="font-medium text-sm text-gray-700 mb-2">ID Back</h4>
+                            {selectedUser.governmentIdBackUrl ? (
+                              <div className="space-y-2">
+                                <img 
+                                  src={selectedUser.governmentIdBackUrl} 
+                                  alt="Government ID Back"
+                                  className="w-full h-32 object-cover rounded border"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                    e.currentTarget.nextElementSibling.style.display = 'block';
+                                  }}
+                                />
+                                <div style={{ display: 'none' }} className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                                  <span className="text-gray-500 text-sm">Image not available</span>
+                                </div>
+                                <a 
+                                  href={selectedUser.governmentIdBackUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-primary hover:underline text-sm block"
+                                >
+                                  View Full Size
+                                </a>
+                              </div>
+                            ) : (
+                              <div className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                                <span className="text-gray-500 text-sm">Not uploaded</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Selfie with ID */}
+                          <div className="p-3 border rounded-lg">
+                            <h4 className="font-medium text-sm text-gray-700 mb-2">Selfie with ID</h4>
+                            {selectedUser.selfieWithIdUrl ? (
+                              <div className="space-y-2">
+                                <img 
+                                  src={selectedUser.selfieWithIdUrl} 
+                                  alt="Selfie with ID"
+                                  className="w-full h-32 object-cover rounded border"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                    e.currentTarget.nextElementSibling.style.display = 'block';
+                                  }}
+                                />
+                                <div style={{ display: 'none' }} className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                                  <span className="text-gray-500 text-sm">Image not available</span>
+                                </div>
+                                <a 
+                                  href={selectedUser.selfieWithIdUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-primary hover:underline text-sm block"
+                                >
+                                  View Full Size
+                                </a>
+                              </div>
+                            ) : (
+                              <div className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                                <span className="text-gray-500 text-sm">Not uploaded</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
 
                       {selectedUser.verificationStatus === 'pending' && (
@@ -714,22 +802,121 @@ export default function Admin() {
                           )}
                         </div>
 
-                        {/* Government ID Section */}
+                        {/* KYC Documents Section */}
                         <div className="mb-4">
-                          <h4 className="font-medium text-gray-900 mb-2 text-sm">Government ID</h4>
-                          {user.governmentIdUrl ? (
-                            <div className="p-3 bg-gray-50 rounded-lg">
-                              <a 
-                                href={user.governmentIdUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-primary hover:underline text-sm"
-                              >
-                                View Government ID Document
-                              </a>
+                          <h4 className="font-medium text-gray-900 mb-2 text-sm">KYC Documents</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            {/* Government ID Front */}
+                            <div className="p-2 border rounded-lg">
+                              <h5 className="font-medium text-xs text-gray-600 mb-2">ID Front</h5>
+                              {user.governmentIdFrontUrl ? (
+                                <div className="space-y-2">
+                                  <img 
+                                    src={user.governmentIdFrontUrl} 
+                                    alt="Government ID Front"
+                                    className="w-full h-20 object-cover rounded border cursor-pointer"
+                                    onClick={() => window.open(user.governmentIdFrontUrl, '_blank')}
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none';
+                                      e.currentTarget.nextElementSibling.style.display = 'flex';
+                                    }}
+                                  />
+                                  <div style={{ display: 'none' }} className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
+                                    <span className="text-gray-500 text-xs">Image unavailable</span>
+                                  </div>
+                                  <a 
+                                    href={user.governmentIdFrontUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-primary hover:underline text-xs block"
+                                  >
+                                    View Full Size
+                                  </a>
+                                </div>
+                              ) : (
+                                <div className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
+                                  <span className="text-gray-500 text-xs">Not uploaded</span>
+                                </div>
+                              )}
                             </div>
-                          ) : (
-                            <p className="text-xs text-gray-500 italic">No ID document uploaded</p>
+
+                            {/* Government ID Back */}
+                            <div className="p-2 border rounded-lg">
+                              <h5 className="font-medium text-xs text-gray-600 mb-2">ID Back</h5>
+                              {user.governmentIdBackUrl ? (
+                                <div className="space-y-2">
+                                  <img 
+                                    src={user.governmentIdBackUrl} 
+                                    alt="Government ID Back"
+                                    className="w-full h-20 object-cover rounded border cursor-pointer"
+                                    onClick={() => window.open(user.governmentIdBackUrl, '_blank')}
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none';
+                                      e.currentTarget.nextElementSibling.style.display = 'flex';
+                                    }}
+                                  />
+                                  <div style={{ display: 'none' }} className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
+                                    <span className="text-gray-500 text-xs">Image unavailable</span>
+                                  </div>
+                                  <a 
+                                    href={user.governmentIdBackUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-primary hover:underline text-xs block"
+                                  >
+                                    View Full Size
+                                  </a>
+                                </div>
+                              ) : (
+                                <div className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
+                                  <span className="text-gray-500 text-xs">Not uploaded</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Selfie with ID */}
+                            <div className="p-2 border rounded-lg">
+                              <h5 className="font-medium text-xs text-gray-600 mb-2">Selfie with ID</h5>
+                              {user.selfieWithIdUrl ? (
+                                <div className="space-y-2">
+                                  <img 
+                                    src={user.selfieWithIdUrl} 
+                                    alt="Selfie with ID"
+                                    className="w-full h-20 object-cover rounded border cursor-pointer"
+                                    onClick={() => window.open(user.selfieWithIdUrl, '_blank')}
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none';
+                                      e.currentTarget.nextElementSibling.style.display = 'flex';
+                                    }}
+                                  />
+                                  <div style={{ display: 'none' }} className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
+                                    <span className="text-gray-500 text-xs">Image unavailable</span>
+                                  </div>
+                                  <a 
+                                    href={user.selfieWithIdUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-primary hover:underline text-xs block"
+                                  >
+                                    View Full Size
+                                  </a>
+                                </div>
+                              ) : (
+                                <div className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
+                                  <span className="text-gray-500 text-xs">Not uploaded</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {/* KYC Status Information */}
+                          {(user.governmentIdType || user.governmentIdNumber) && (
+                            <div className="mt-3 p-2 bg-blue-50 rounded-lg">
+                              <p className="text-xs text-blue-800">
+                                <strong>ID Type:</strong> {user.governmentIdType || 'Not specified'} | 
+                                <strong> ID Number:</strong> {user.governmentIdNumber ? `****${user.governmentIdNumber.slice(-4)}` : 'Not provided'}
+                              </p>
+                            </div>
                           )}
                         </div>
 
