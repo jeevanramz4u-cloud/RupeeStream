@@ -320,24 +320,27 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="users" className="space-y-4 sm:space-y-6">
-          {/* Mobile: Scrollable tabs */}
-          <div className="sm:hidden">
-            <div className="flex overflow-x-auto space-x-2 px-1 pb-2 scrollbar-hide">
-              <TabsTrigger value="users" className="text-xs whitespace-nowrap">Users</TabsTrigger>
-              <TabsTrigger value="profiles" className="text-xs whitespace-nowrap">Profiles</TabsTrigger>
-              <TabsTrigger value="videos" className="text-xs whitespace-nowrap">Videos</TabsTrigger>
-              <TabsTrigger value="payouts" className="text-xs whitespace-nowrap">Payouts</TabsTrigger>
-              <TabsTrigger value="analytics" className="text-xs whitespace-nowrap">Analytics</TabsTrigger>
-            </div>
-          </div>
-          
-          {/* Desktop: Grid tabs */}
-          <TabsList className="hidden sm:grid w-full grid-cols-5">
-            <TabsTrigger value="users">User Verification</TabsTrigger>
-            <TabsTrigger value="profiles">User Profiles</TabsTrigger>
-            <TabsTrigger value="videos">Video Management</TabsTrigger>
-            <TabsTrigger value="payouts">Payouts</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5 h-auto p-1">
+            <TabsTrigger value="users" className="text-xs sm:text-sm px-2 py-2">
+              <span className="hidden sm:inline">User Verification</span>
+              <span className="sm:hidden">Users</span>
+            </TabsTrigger>
+            <TabsTrigger value="profiles" className="text-xs sm:text-sm px-2 py-2">
+              <span className="hidden sm:inline">User Profiles</span>
+              <span className="sm:hidden">Profiles</span>
+            </TabsTrigger>
+            <TabsTrigger value="videos" className="text-xs sm:text-sm px-2 py-2">
+              <span className="hidden sm:inline">Video Management</span>
+              <span className="sm:hidden">Videos</span>
+            </TabsTrigger>
+            <TabsTrigger value="payouts" className="text-xs sm:text-sm px-2 py-2">
+              <span className="hidden sm:inline">Payouts</span>
+              <span className="sm:hidden">Payouts</span>
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 py-2">
+              <span className="hidden sm:inline">Analytics</span>
+              <span className="sm:hidden">Analytics</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users">
