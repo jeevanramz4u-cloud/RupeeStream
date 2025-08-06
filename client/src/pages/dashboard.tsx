@@ -200,7 +200,7 @@ export default function Dashboard() {
           </Alert>
         )}
 
-        {user && (user as any).kycStatus === 'approved' && (
+        {user && (user as any).kycStatus === 'approved' && (user as any).verificationStatus === 'verified' && (
           <Alert className="mb-6 border-green-200 bg-green-50">
             <CheckCircle className="h-4 w-4 text-green-600" />
             <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -212,6 +212,25 @@ export default function Dashboard() {
                   Your verification is complete! You can now receive payouts and access premium features.
                 </p>
               </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {user && (user as any).kycStatus === 'pending' && (user as any).kycFeePaid && (
+          <Alert className="mb-6 border-orange-200 bg-orange-50">
+            <Shield className="h-4 w-4 text-orange-600" />
+            <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-sm sm:text-base text-orange-800">
+                  Re-verification Required
+                </p>
+                <p className="text-sm text-orange-700">
+                  Our team has requested additional verification. Please re-upload your documents to complete the process.
+                </p>
+              </div>
+              <Button asChild size="sm" className="bg-orange-600 hover:bg-orange-700">
+                <Link href="/kyc">Update Documents</Link>
+              </Button>
             </AlertDescription>
           </Alert>
         )}
