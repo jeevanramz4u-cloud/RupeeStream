@@ -399,7 +399,7 @@ export default function Earnings() {
                           Payout Request
                         </p>
                         <p className="text-xs text-gray-500">
-                          {formatDate(payout.requestedAt)}
+                          {formatDate(payout.requested_at)}
                         </p>
                       </div>
                       <div className="text-right">
