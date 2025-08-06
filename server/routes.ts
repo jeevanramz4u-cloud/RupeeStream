@@ -111,11 +111,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         governmentIdUrl,
         verificationStatus: 'pending',
         status: 'active',
-        balance: 0,
+        balance: "1000.00", // ₹1000 signup bonus
         referralCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
       };
 
       const newUser = await storage.createUserWithTraditionalAuth(userData);
+
+      // Create signup bonus earning record
+      await storage.createEarning({
+        userId: newUser.id,
+        amount: "1000.00",
+        type: "signup_bonus",
+        description: "Welcome bonus for new account",
+      });
 
       // Create session for the new user
       req.session.userId = newUser.id;

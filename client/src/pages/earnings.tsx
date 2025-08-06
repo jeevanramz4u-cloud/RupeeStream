@@ -30,6 +30,13 @@ export default function Earnings() {
   // Debug logging
   console.log("Earnings page - Auth status:", { user, authLoading, isAuthenticated });
 
+  // Force refetch when user becomes available
+  useEffect(() => {
+    if (user && isAuthenticated) {
+      queryClient.invalidateQueries({ queryKey: ["/api/payouts"] });
+    }
+  }, [user, isAuthenticated, queryClient]);
+
   const { data: earnings = [] } = useQuery({
     queryKey: ["/api/earnings"],
     enabled: !!user,
@@ -40,13 +47,14 @@ export default function Earnings() {
     enabled: !!user,
   });
 
-  const { data: payouts = [], isLoading: isPayoutsLoading, error: payoutsError } = useQuery({
+  const { data: payouts = [], isLoading: isPayoutsLoading, error: payoutsError, refetch: refetchPayouts } = useQuery({
     queryKey: ["/api/payouts"],
-    enabled: !!user && isAuthenticated,
+    enabled: !!user && !authLoading,
+    retry: 3,
   });
 
   // Debug logging for payouts
-  console.log("Payouts query status:", { payouts, isPayoutsLoading, payoutsError, enabled: !!user && isAuthenticated });
+  console.log("Payouts query status:", { payouts, isPayoutsLoading, payoutsError, enabled: !!user });
 
   // Check if user needs account suspension for not meeting daily target
   useEffect(() => {
@@ -313,8 +321,16 @@ export default function Earnings() {
 
           {/* Payout History */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle>Payout History</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refetchPayouts()}
+                disabled={isPayoutsLoading}
+              >
+                {isPayoutsLoading ? "Loading..." : "Refresh"}
+              </Button>
             </CardHeader>
             <CardContent>
               {isPayoutsLoading ? (
