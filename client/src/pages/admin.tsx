@@ -1,8 +1,8 @@
-import { useAuth } from "@/hooks/useAuth";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import Header from "@/components/Header";
+// Admin page uses its own header, not the regular user header
 import { ObjectUploader } from "../components/ObjectUploader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { useForm } from "react-hook-form";
 
 export default function Admin() {
-  const { user } = useAuth();
+  const { adminUser, isLoading: isAdminLoading, isAuthenticated } = useAdminAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -48,26 +48,63 @@ export default function Admin() {
   const [editingVideo, setEditingVideo] = useState<any>(null);
   const [showNewVideoForm, setShowNewVideoForm] = useState(false);
 
-  // Check if user is admin
+  // Check admin authentication
   useEffect(() => {
-    if (user && (user as any).role !== 'admin') {
-      setLocation('/dashboard');
+    if (!isAdminLoading && !isAuthenticated) {
+      toast({
+        title: "Access Denied",
+        description: "You need admin privileges to access this page.",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        setLocation('/admin-login');
+      }, 1000);
     }
-  }, [user, setLocation]);
+  }, [isAuthenticated, isAdminLoading, toast, setLocation]);
+
+  // Show loading or redirect if not authenticated
+  if (isAdminLoading) {
+    return (
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Checking admin access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+        <div className="text-center">
+          <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
+          <p className="text-gray-600 mb-4">You need admin privileges to access this page.</p>
+          <p className="text-sm text-gray-500">Redirecting to admin login...</p>
+        </div>
+      </div>
+    );
+  }
 
   const { data: users = [] } = useQuery({
     queryKey: ["/api/admin/users"],
-    enabled: (user as any)?.role === 'admin',
+    enabled: isAuthenticated,
   });
 
   const { data: videos = [] } = useQuery({
     queryKey: ["/api/videos"],
-    enabled: (user as any)?.role === 'admin',
+    enabled: isAuthenticated,
   });
 
   const { data: payouts = [] } = useQuery({
-    queryKey: ["/api/payouts"],
-    enabled: (user as any)?.role === 'admin',
+    queryKey: ["/api/admin/payouts"],
+    enabled: isAuthenticated,
+  });
+
+  const { data: analytics = {} } = useQuery({
+    queryKey: ["/api/admin/analytics"],
+    enabled: isAuthenticated,
   });
 
   const verifyUserMutation = useMutation({
@@ -83,22 +120,11 @@ export default function Admin() {
       setSelectedUser(null);
     },
     onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to update user verification",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Error", 
+        description: "Failed to update user verification",
+        variant: "destructive",
+      });
     },
   });
 
@@ -118,22 +144,11 @@ export default function Admin() {
       reset();
     },
     onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to create video",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Error",
+        description: "Failed to create video",
+        variant: "destructive",
+      });
     },
   });
 
@@ -150,22 +165,11 @@ export default function Admin() {
       setEditingVideo(null);
     },
     onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to update video",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Error",
+        description: "Failed to update video",
+        variant: "destructive",
+      });
     },
   });
 
@@ -181,22 +185,11 @@ export default function Admin() {
       queryClient.invalidateQueries({ queryKey: ["/api/videos"] });
     },
     onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to delete video",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Error",
+        description: "Failed to delete video",
+        variant: "destructive",
+      });
     },
   });
 
@@ -232,23 +225,45 @@ export default function Admin() {
     }
   };
 
-  if ((user as any)?.role !== 'admin') {
-    return (
-      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardContent className="pt-6 text-center">
-            <Shield className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
-            <p className="text-gray-600">You need admin privileges to access this page.</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // Admin authentication is handled above - this check is no longer needed
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      <Header />
+      {/* Admin Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <Shield className="text-white w-5 h-5" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">EarnPay Admin</span>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">
+                Welcome, {adminUser?.name}
+              </span>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  // Logout functionality
+                  fetch("/api/admin/logout", { method: "POST", credentials: "include" })
+                    .then(() => {
+                      toast({
+                        title: "Logged out",
+                        description: "You have been logged out successfully",
+                      });
+                      setLocation("/admin-login");
+                    });
+                }}
+              >
+                Logout
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
