@@ -3,6 +3,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Clock, Ban } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 
 interface SuspensionStatus {
   isSuspended: boolean;
@@ -15,26 +16,25 @@ interface SuspensionStatus {
 }
 
 export default function SuspensionAlert() {
-  const [suspensionStatus, setSuspensionStatus] = useState<SuspensionStatus | null>(null);
+  // Temporarily disable this component to stop infinite API calls
+  // TODO: Properly implement this with correct caching
+  return null;
+
+  /*
   const [isPayingFee, setIsPayingFee] = useState(false);
   const { toast } = useToast();
   const hasShownToast = useRef(false); // Prevent duplicate toast notifications
 
-  useEffect(() => {
-    fetchSuspensionStatus();
-  }, []);
+  // Use React Query to prevent infinite API calls
+  const { data: suspensionStatus, refetch } = useQuery<SuspensionStatus>({
+    queryKey: ['/api/user/suspension-status'],
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    refetchOnWindowFocus: false, // Don't refetch when user focuses window
+    refetchInterval: false, // Don't auto-refetch
+    retry: false, // Don't retry on error
+  });
 
-  const fetchSuspensionStatus = async () => {
-    try {
-      const response = await fetch('/api/user/suspension-status');
-      if (response.ok) {
-        const data = await response.json();
-        setSuspensionStatus(data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch suspension status:', error);
-    }
-  };
+
 
   const handlePayReactivationFee = async () => {
     setIsPayingFee(true);
@@ -55,7 +55,7 @@ export default function SuspensionAlert() {
           });
           hasShownToast.current = true;
         }
-        fetchSuspensionStatus(); // Refresh status
+        refetch(); // Refresh status
       } else {
         toast({
           title: "Payment Failed",
@@ -76,7 +76,8 @@ export default function SuspensionAlert() {
     }
   };
 
-  if (!suspensionStatus) return null;
+  // Don't render anything if there's no suspension status or user is not eligible for suspension
+  if (!suspensionStatus || !suspensionStatus.eligibleForSuspension) return null;
 
   // Account is suspended
   if (suspensionStatus.isSuspended) {
@@ -148,4 +149,5 @@ export default function SuspensionAlert() {
   }
 
   return null;
+  */
 }
