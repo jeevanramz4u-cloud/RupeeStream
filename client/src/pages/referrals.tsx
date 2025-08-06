@@ -26,6 +26,7 @@ export default function Referrals() {
   const { data: referrals = [] } = useQuery({
     queryKey: ["/api/referrals"],
     enabled: !!user,
+    retry: false,
   });
 
   const referralLink = `${window.location.origin}?ref=${(user as any)?.referralCode}`;

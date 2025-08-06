@@ -153,17 +153,32 @@ export default function KYC() {
   };
 
   const handleUploadComplete = (documentType: 'front' | 'back' | 'selfie') => (result: any) => {
+    console.log("Upload complete result:", result);
+    
     if (result.successful && result.successful.length > 0) {
       const uploadedFile = result.successful[0];
-      const documentUrl = uploadedFile.uploadURL;
+      // Get the actual upload URL - this might be in different properties
+      const documentUrl = uploadedFile.uploadURL || uploadedFile.url || uploadedFile.response?.uploadURL;
+      
+      console.log("Document URL extracted:", documentUrl);
+      
+      if (!documentUrl) {
+        console.error("No document URL found in upload result:", uploadedFile);
+        toast({
+          title: "Upload Error",
+          description: "Upload completed but couldn't get document URL. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
       
       // Update the appropriate state
       if (documentType === 'front') {
-        setGovIdFrontUrl(documentUrl || "");
+        setGovIdFrontUrl(documentUrl);
       } else if (documentType === 'back') {
-        setGovIdBackUrl(documentUrl || "");
+        setGovIdBackUrl(documentUrl);
       } else if (documentType === 'selfie') {
-        setSelfieWithIdUrl(documentUrl || "");
+        setSelfieWithIdUrl(documentUrl);
       }
 
       // Save to backend
@@ -175,15 +190,19 @@ export default function KYC() {
           title: "Document Uploaded",
           description: `Your ${documentType === 'front' ? 'ID front' : documentType === 'back' ? 'ID back' : 'selfie'} has been uploaded successfully.`,
         });
+        
+        // Refresh KYC data to get latest state
+        refetchKycData();
       }).catch((error) => {
         console.error("Error saving document:", error);
         toast({
-          title: "Save Error",
+          title: "Save Error", 
           description: "Document uploaded but failed to save. Please try again.",
           variant: "destructive",
         });
       });
     } else {
+      console.error("Upload failed, result:", result);
       toast({
         title: "Upload Failed",
         description: "Failed to upload document. Please try again.",
@@ -346,6 +365,17 @@ export default function KYC() {
                 Complete KYC Verification
               </CardTitle>
               <p className="text-gray-600">Fill out all information and upload required documents to verify your identity.</p>
+              
+              {/* Prominent Processing Fee Notice */}
+              <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="flex items-center mb-2">
+                  <CreditCard className="w-5 h-5 text-yellow-600 mr-2" />
+                  <span className="font-semibold text-yellow-900">Processing Fee Required</span>
+                </div>
+                <p className="text-sm text-yellow-700">
+                  <span className="font-semibold">Processing fee: ₹99 (one-time)</span> - Required to complete KYC verification and unlock payout features.
+                </p>
+              </div>
             </CardHeader>
             <CardContent className="space-y-8">
               
