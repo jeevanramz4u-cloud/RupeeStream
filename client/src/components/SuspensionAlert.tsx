@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Clock, Ban } from "lucide-react";
@@ -18,6 +18,7 @@ export default function SuspensionAlert() {
   const [suspensionStatus, setSuspensionStatus] = useState<SuspensionStatus | null>(null);
   const [isPayingFee, setIsPayingFee] = useState(false);
   const { toast } = useToast();
+  const hasShownToast = useRef(false); // Prevent duplicate toast notifications
 
   useEffect(() => {
     fetchSuspensionStatus();
@@ -46,18 +47,21 @@ export default function SuspensionAlert() {
       const data = await response.json();
       
       if (data.success) {
-        toast({
-          title: "Account Reactivated",
-          description: data.message,
-          duration: 5000
-        });
+        if (!hasShownToast.current) {
+          toast({
+            title: "Account Reactivated",
+            description: data.message,
+            duration: 3000
+          });
+          hasShownToast.current = true;
+        }
         fetchSuspensionStatus(); // Refresh status
       } else {
         toast({
           title: "Payment Failed",
           description: data.message,
           variant: "destructive",
-          duration: 5000
+          duration: 3000
         });
       }
     } catch (error) {
@@ -65,7 +69,7 @@ export default function SuspensionAlert() {
         title: "Error",
         description: "Failed to process reactivation fee",
         variant: "destructive",
-        duration: 5000
+        duration: 3000
       });
     } finally {
       setIsPayingFee(false);

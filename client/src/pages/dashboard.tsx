@@ -201,21 +201,7 @@ export default function Dashboard() {
           </Alert>
         )}
 
-        {user && (user as any).kycStatus === 'approved' && (user as any).verificationStatus === 'verified' && (
-          <Alert className="mb-6 border-green-200 bg-green-50">
-            <CheckCircle className="h-4 w-4 text-green-600" />
-            <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex-1">
-                <p className="font-semibold mb-1 text-sm sm:text-base text-green-800">
-                  KYC Completed
-                </p>
-                <p className="text-sm text-green-700">
-                  Your verification is complete! You can now receive payouts and access premium features.
-                </p>
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
+
 
         {user && (user as any).kycStatus === 'pending' && (user as any).kycFeePaid && (
           <Alert className="mb-6 border-orange-200 bg-orange-50">
@@ -258,26 +244,26 @@ export default function Dashboard() {
         {/* Suspension Alert - Only shows for KYC-completed users */}
         <SuspensionAlert />
 
-        {/* Daily Target Warning - Red for remaining hours */}
-        <Alert className={`mb-6 ${remainingHours > 0 ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'}`}>
-          <Clock className={`h-4 w-4 ${remainingHours > 0 ? 'text-red-600' : 'text-green-600'}`} />
-          <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex-1">
-              <p className="font-semibold mb-1 text-sm sm:text-base">
-                {remainingHours > 0 ? `${remainingHours.toFixed(1)} hours remaining today` : 'Daily target completed! 🎉'}
-              </p>
-              <div className="flex items-center gap-2 mb-2">
-                <Progress value={progressPercentage} className="flex-1 max-w-xs h-2" />
-                <span className="text-sm text-gray-600 font-medium">{watchedHours.toFixed(1)}/{targetHours}h</span>
+        {/* Daily Target Warning - Only show if remaining hours > 0 to reduce notification fatigue */}
+        {remainingHours > 0 && (
+          <Alert className="mb-6 border-red-200 bg-red-50">
+            <Clock className="h-4 w-4 text-red-600" />
+            <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-sm sm:text-base">
+                  {remainingHours.toFixed(1)} hours remaining today
+                </p>
+                <div className="flex items-center gap-2 mb-2">
+                  <Progress value={progressPercentage} className="flex-1 max-w-xs h-2" />
+                  <span className="text-sm text-gray-600 font-medium">{watchedHours.toFixed(1)}/{targetHours}h</span>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Complete your daily target to maintain account status and maximize earnings.
+                </p>
               </div>
-              <p className="text-sm text-gray-600">
-                {remainingHours > 0 
-                  ? 'Complete your daily target to maintain account status and maximize earnings.' 
-                  : 'Great job! You can continue watching videos for extra earnings.'}
-              </p>
-            </div>
-          </AlertDescription>
-        </Alert>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Profile Information Card */}
         <Card className="mb-6 sm:mb-8">
