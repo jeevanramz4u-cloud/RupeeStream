@@ -106,6 +106,8 @@ export const users = pgTable("users", {
   status: accountStatusEnum("status").default("active").notNull(),
   dailyWatchTime: integer("daily_watch_time").default(0).notNull(), // in minutes
   lastWatchDate: timestamp("last_watch_date"),
+  lastHourlyBonusAt: timestamp("last_hourly_bonus_at"),
+  hourlyBonusCount: integer("hourly_bonus_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

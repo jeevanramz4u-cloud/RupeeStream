@@ -400,6 +400,40 @@ export class DatabaseStorage implements IStorage {
     return newEarning;
   }
 
+  async checkAndAwardHourlyBonus(userId: string): Promise<{ awarded: boolean; amount?: string }> {
+    const user = await this.getUser(userId);
+    if (!user) return { awarded: false };
+
+    const now = new Date();
+    const lastBonus = user.lastHourlyBonusAt;
+    
+    // Check if user is eligible for hourly bonus (1 hour since last bonus)
+    if (!lastBonus || (now.getTime() - new Date(lastBonus).getTime()) >= 3600000) { // 1 hour = 3600000ms
+      const bonusAmount = "10.00";
+      
+      // Create earning record
+      await this.createEarning({
+        userId: userId,
+        amount: bonusAmount,
+        type: "hourly_bonus",
+        description: "🎁 Hourly Login Bonus"
+      });
+      
+      // Update user's last bonus time and count
+      await db
+        .update(users)
+        .set({ 
+          lastHourlyBonusAt: now,
+          hourlyBonusCount: user.hourlyBonusCount + 1
+        })
+        .where(eq(users.id, userId));
+      
+      return { awarded: true, amount: bonusAmount };
+    }
+    
+    return { awarded: false };
+  }
+
   async getTotalEarnings(userId: string): Promise<number> {
     const result = await db
       .select({ total: sql<number>`COALESCE(SUM(${earnings.amount}), 0)` })

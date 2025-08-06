@@ -160,6 +160,8 @@ export default function Earnings() {
         return <TrendingUp className="w-4 h-4 text-purple-600" />;
       case 'signup_bonus':
         return <TrendingUp className="w-4 h-4 text-green-600" />;
+      case 'hourly_bonus':
+        return <Clock className="w-4 h-4 text-blue-600" />;
       default:
         return <Coins className="w-4 h-4 text-gray-500" />;
     }

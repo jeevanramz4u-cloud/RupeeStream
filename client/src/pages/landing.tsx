@@ -41,10 +41,28 @@ export default function Landing() {
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
             Earn Money by Watching Videos
           </h1>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 max-w-2xl mx-auto leading-relaxed">
             Turn your free time into income. Watch entertaining videos, complete daily targets, 
             and earn real money with our trusted platform.
           </p>
+          
+          {/* Bonus Features */}
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 max-w-2xl mx-auto">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <Coins className="w-4 h-4 text-green-600" />
+                </div>
+                <span className="font-semibold text-green-700">₹1,000 Signup Bonus</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-blue-600" />
+                </div>
+                <span className="font-semibold text-blue-700">₹10 Every Hour Login Bonus</span>
+              </div>
+            </div>
+          </div>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-2xl mx-auto">
             <Button 
               size="lg" 

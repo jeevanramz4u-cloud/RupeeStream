@@ -49,8 +49,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/auth/user', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
       const user = req.user;
+      
+      // Check and award hourly bonus when user authenticates
+      const bonusResult = await storage.checkAndAwardHourlyBonus(user.id);
+      
       const { password: _, ...userWithoutPassword } = user;
-      res.json(userWithoutPassword);
+      
+      // Include bonus info in response
+      res.json({ 
+        ...userWithoutPassword, 
+        hourlyBonus: bonusResult.awarded ? { 
+          awarded: true, 
+          amount: bonusResult.amount,
+          message: "You've earned ₹10 hourly login bonus!"
+        } : null
+      });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
