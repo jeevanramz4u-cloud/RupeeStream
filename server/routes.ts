@@ -23,12 +23,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // Traditional auth middleware
+  const isTraditionallyAuthenticated = async (req: any, res: any, next: any) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
       const user = await storage.getUser(userId);
-      res.json(user);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+      
+      req.user = user;
+      next();
+    } catch (error) {
+      console.error("Auth middleware error:", error);
+      res.status(401).json({ message: "Unauthorized" });
+    }
+  };
+
+  // Auth routes
+  app.get('/api/auth/user', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const user = req.user;
+      const { password: _, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
@@ -172,28 +194,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Logged out successfully" });
     });
   });
-
-  // Traditional auth middleware
-  const isTraditionallyAuthenticated = async (req: any, res: any, next: any) => {
-    try {
-      const userId = req.session?.userId;
-      
-      if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-      
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(401).json({ message: "User not found" });
-      }
-      
-      req.user = user;
-      next();
-    } catch (error) {
-      console.error("Auth middleware error:", error);
-      res.status(401).json({ message: "Unauthorized" });
-    }
-  };
 
   // The endpoint for getting the upload URL for an object entity (authenticated users)
   app.post("/api/objects/upload", isTraditionallyAuthenticated, async (req, res) => {

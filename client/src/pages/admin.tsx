@@ -1373,7 +1373,7 @@ export default function Admin() {
                                     {video.views} views
                                   </span>
                                   <span className="flex items-center">
-                                    <DollarSign className="w-3 h-3 mr-1" />
+                                    <Coins className="w-3 h-3 mr-1" />
                                     ₹{video.earning}
                                   </span>
                                 </div>
