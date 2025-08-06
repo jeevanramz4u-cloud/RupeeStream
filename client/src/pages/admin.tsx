@@ -731,23 +731,7 @@ export default function Admin() {
                             </Button>
                           )}
 
-                          {/* Balance Management */}
-                          <Button 
-                            size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              const amount = prompt('Enter amount to add/subtract (use negative for deduction):');
-                              if (amount) {
-                                updateBalanceMutation.mutate({
-                                  userId: user.id,
-                                  amount: parseFloat(amount)
-                                });
-                              }
-                            }}
-                          >
-                            <DollarSign className="w-3 h-3 mr-1" />
-                            Adjust Balance
-                          </Button>
+
 
                           {/* Reset Verification */}
                           {user.verificationStatus !== 'pending' && (
