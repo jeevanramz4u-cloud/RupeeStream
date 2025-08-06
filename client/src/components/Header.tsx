@@ -57,6 +57,12 @@ export default function Header() {
 
           {/* User Section */}
           <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Earnings Display - Desktop/Laptop Only */}
+            <div className="hidden md:flex items-center space-x-1.5 sm:space-x-2 bg-accent/10 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg">
+              <Coins className="text-accent w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="font-semibold text-gray-900 text-sm sm:text-base">₹{(user as any)?.balance || '0.00'}</span>
+            </div>
+            
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -109,11 +115,6 @@ export default function Header() {
       {/* Mobile Navigation */}
       <div className="md:hidden border-t border-gray-200">
         <div className="flex overflow-x-auto space-x-3 px-3 py-2 scrollbar-hide">
-          {/* Mobile earnings display */}
-          <div className="flex items-center space-x-1.5 bg-accent/10 px-2 py-1.5 rounded-lg flex-shrink-0">
-            <Coins className="text-accent w-3.5 h-3.5" />
-            <span className="font-semibold text-gray-900 text-xs">₹{(user as any)?.balance || '0.00'}</span>
-          </div>
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -127,7 +128,6 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
-
         </div>
       </div>
     </header>

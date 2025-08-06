@@ -33,7 +33,8 @@ import {
   Trash2,
   Shield,
   Ban,
-  RotateCcw
+  RotateCcw,
+  LogOut
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -274,22 +275,24 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* Admin Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <Shield className="text-white w-5 h-5" />
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            <div className="flex items-center space-x-1.5 sm:space-x-2">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
+                <Shield className="text-white w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="text-xl font-bold text-gray-900">EarnPay Admin</span>
+              <span className="text-lg sm:text-xl font-bold text-gray-900">EarnPay Admin</span>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
-                Welcome, {adminUser?.name}
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <span className="hidden sm:block text-sm text-gray-600">
+                Welcome, {(adminUser as any)?.name}
               </span>
               <Button 
                 variant="outline" 
+                size="sm"
+                className="text-xs sm:text-sm"
                 onClick={() => {
                   // Logout functionality
                   fetch("/api/admin/logout", { method: "POST", credentials: "include" })
@@ -302,21 +305,34 @@ export default function Admin() {
                     });
                 }}
               >
-                Logout
+                <LogOut className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Logout</span>
               </Button>
             </div>
           </div>
         </div>
       </header>
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Admin Dashboard</h1>
-          <p className="text-gray-600">Manage users, videos, and platform operations.</p>
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Admin Dashboard</h1>
+          <p className="text-sm sm:text-base text-gray-600">Manage users, videos, and platform operations.</p>
         </div>
 
-        <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+        <Tabs defaultValue="users" className="space-y-4 sm:space-y-6">
+          {/* Mobile: Scrollable tabs */}
+          <div className="sm:hidden">
+            <div className="flex overflow-x-auto space-x-2 px-1 pb-2 scrollbar-hide">
+              <TabsTrigger value="users" className="text-xs whitespace-nowrap">Users</TabsTrigger>
+              <TabsTrigger value="profiles" className="text-xs whitespace-nowrap">Profiles</TabsTrigger>
+              <TabsTrigger value="videos" className="text-xs whitespace-nowrap">Videos</TabsTrigger>
+              <TabsTrigger value="payouts" className="text-xs whitespace-nowrap">Payouts</TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs whitespace-nowrap">Analytics</TabsTrigger>
+            </div>
+          </div>
+          
+          {/* Desktop: Grid tabs */}
+          <TabsList className="hidden sm:grid w-full grid-cols-5">
             <TabsTrigger value="users">User Verification</TabsTrigger>
             <TabsTrigger value="profiles">User Profiles</TabsTrigger>
             <TabsTrigger value="videos">Video Management</TabsTrigger>
@@ -325,7 +341,7 @@ export default function Admin() {
           </TabsList>
 
           <TabsContent value="users">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {/* Users List */}
               <Card>
                 <CardHeader>
@@ -342,24 +358,26 @@ export default function Admin() {
                       {(users as any[]).map((user: any) => (
                         <div 
                           key={user.id}
-                          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                          className={`p-3 sm:p-4 border rounded-lg cursor-pointer transition-colors ${
                             selectedUser?.id === user.id 
                               ? 'border-primary bg-primary/5' 
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                           onClick={() => setSelectedUser(user)}
                         >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="font-medium text-gray-900">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
                                 {user.firstName} {user.lastName}
                               </p>
-                              <p className="text-sm text-gray-600">{user.email}</p>
+                              <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
                               <p className="text-xs text-gray-500">
-                                Registered: {formatDate(user.createdAt)}
+                                {formatDate(user.createdAt)}
                               </p>
                             </div>
-                            {getStatusBadge(user.verificationStatus)}
+                            <div className="flex-shrink-0">
+                              {getStatusBadge(user.verificationStatus)}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -566,24 +584,24 @@ export default function Admin() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
                           <div>
                             <Label className="text-xs font-medium text-gray-500">Account Status</Label>
-                            <p className="text-sm font-medium">
+                            <p className="text-xs sm:text-sm font-medium">
                               {user.status === 'suspended' ? 'Suspended' : 'Active'}
                             </p>
                           </div>
                           <div>
                             <Label className="text-xs font-medium text-gray-500">Verification</Label>
-                            <p className="text-sm font-medium capitalize">{user.verificationStatus}</p>
+                            <p className="text-xs sm:text-sm font-medium capitalize">{user.verificationStatus}</p>
                           </div>
                           <div>
                             <Label className="text-xs font-medium text-gray-500">Balance</Label>
-                            <p className="text-sm font-medium">₹{user.balance || 0}</p>
+                            <p className="text-xs sm:text-sm font-medium">₹{user.balance || 0}</p>
                           </div>
                           <div>
                             <Label className="text-xs font-medium text-gray-500">Joined Date</Label>
-                            <p className="text-sm font-medium">{formatDate(user.createdAt)}</p>
+                            <p className="text-xs sm:text-sm font-medium">{formatDate(user.createdAt)}</p>
                           </div>
                         </div>
 
@@ -619,33 +637,34 @@ export default function Admin() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex flex-wrap gap-2 pt-4 border-t">
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t">
                           {/* Verification Actions */}
                           {user.verificationStatus === 'pending' && (
                             <>
                               <Button 
                                 size="sm"
-                                className="bg-secondary hover:bg-secondary/90 text-white"
+                                className="bg-secondary hover:bg-secondary/90 text-white text-xs"
                                 onClick={() => verifyUserMutation.mutate({
                                   userId: user.id,
                                   status: 'verified'
                                 })}
                                 disabled={verifyUserMutation.isPending}
                               >
-                                <CheckCircle className="w-3 h-3 mr-1" />
-                                Approve
+                                <CheckCircle className="w-3 h-3 sm:mr-1" />
+                                <span className="hidden sm:inline">Approve</span>
                               </Button>
                               <Button 
                                 size="sm"
                                 variant="destructive"
+                                className="text-xs"
                                 onClick={() => verifyUserMutation.mutate({
                                   userId: user.id,
                                   status: 'rejected'
                                 })}
                                 disabled={verifyUserMutation.isPending}
                               >
-                                <XCircle className="w-3 h-3 mr-1" />
-                                Reject
+                                <XCircle className="w-3 h-3 sm:mr-1" />
+                                <span className="hidden sm:inline">Reject</span>
                               </Button>
                             </>
                           )}
@@ -655,27 +674,29 @@ export default function Admin() {
                             <Button 
                               size="sm"
                               variant="destructive"
+                              className="text-xs"
                               onClick={() => suspendUserMutation.mutate({
                                 userId: user.id,
                                 status: 'suspended'
                               })}
                               disabled={suspendUserMutation.isPending}
                             >
-                              <Ban className="w-3 h-3 mr-1" />
-                              Suspend User
+                              <Ban className="w-3 h-3 sm:mr-1" />
+                              <span className="hidden sm:inline">Suspend</span>
                             </Button>
                           ) : (
                             <Button 
                               size="sm"
                               variant="outline"
+                              className="text-xs"
                               onClick={() => suspendUserMutation.mutate({
                                 userId: user.id,
                                 status: 'active'
                               })}
                               disabled={suspendUserMutation.isPending}
                             >
-                              <CheckCircle className="w-3 h-3 mr-1" />
-                              Unsuspend User
+                              <CheckCircle className="w-3 h-3 sm:mr-1" />
+                              <span className="hidden sm:inline">Unsuspend</span>
                             </Button>
                           )}
 
@@ -722,13 +743,14 @@ export default function Admin() {
           </TabsContent>
 
           <TabsContent value="videos">
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Video Management Header */}
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">Video Management</h2>
-                <Button onClick={() => setShowNewVideoForm(true)}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Video
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Video Management</h2>
+                <Button size="sm" onClick={() => setShowNewVideoForm(true)}>
+                  <Plus className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Add Video</span>
+                  <span className="sm:hidden">Add</span>
                 </Button>
               </div>
 
@@ -741,74 +763,80 @@ export default function Admin() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <form onSubmit={handleSubmit(onSubmitVideo)} className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
+                    <form onSubmit={handleSubmit(onSubmitVideo)} className="space-y-3 sm:space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                          <Label htmlFor="title">Title</Label>
+                          <Label htmlFor="title" className="text-sm">Title</Label>
                           <Input
                             {...register("title", { required: true })}
                             defaultValue={editingVideo?.title}
+                            className="text-sm"
                           />
                         </div>
                         <div>
-                          <Label htmlFor="category">Category</Label>
+                          <Label htmlFor="category" className="text-sm">Category</Label>
                           <Input
                             {...register("category")}
                             defaultValue={editingVideo?.category}
+                            className="text-sm"
                           />
                         </div>
                       </div>
 
                       <div>
-                        <Label htmlFor="description">Description</Label>
+                        <Label htmlFor="description" className="text-sm">Description</Label>
                         <Textarea
                           {...register("description")}
                           defaultValue={editingVideo?.description}
+                          className="text-sm"
                         />
                       </div>
 
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                         <div>
-                          <Label htmlFor="url">Video URL</Label>
+                          <Label htmlFor="url" className="text-sm">Video URL</Label>
                           <Input
                             {...register("url", { required: true })}
                             defaultValue={editingVideo?.url}
+                            className="text-sm"
                           />
                         </div>
                         <div>
-                          <Label htmlFor="duration">Duration (seconds)</Label>
+                          <Label htmlFor="duration" className="text-sm">Duration (seconds)</Label>
                           <Input
                             type="number"
                             {...register("duration", { required: true })}
                             defaultValue={editingVideo?.duration}
+                            className="text-sm"
                           />
                         </div>
                         <div>
-                          <Label htmlFor="earning">Earning Amount (₹)</Label>
+                          <Label htmlFor="earning" className="text-sm">Earning Amount (₹)</Label>
                           <Input
                             type="number"
                             step="0.01"
                             {...register("earning", { required: true })}
                             defaultValue={editingVideo?.earning}
+                            className="text-sm"
                           />
                         </div>
                       </div>
 
                       <div>
-                        <Label htmlFor="thumbnailUrl">Thumbnail URL</Label>
+                        <Label htmlFor="thumbnailUrl" className="text-sm">Thumbnail URL</Label>
                         <Input
                           {...register("thumbnailUrl")}
                           defaultValue={editingVideo?.thumbnailUrl}
+                          className="text-sm"
                         />
                       </div>
 
-                      <div className="flex space-x-2">
-                        <Button type="submit" disabled={createVideoMutation.isPending || updateVideoMutation.isPending}>
-                          {editingVideo ? 'Update Video' : 'Create Video'}
-                        </Button>
+                      <div className="flex flex-col-reverse sm:flex-row gap-2 sm:space-x-2">
                         <Button 
                           type="button" 
                           variant="outline"
+                          size="sm"
+                          className="text-xs sm:text-sm"
                           onClick={() => {
                             setShowNewVideoForm(false);
                             setEditingVideo(null);
@@ -816,6 +844,14 @@ export default function Admin() {
                           }}
                         >
                           Cancel
+                        </Button>
+                        <Button 
+                          type="submit" 
+                          size="sm"
+                          className="text-xs sm:text-sm"
+                          disabled={createVideoMutation.isPending || updateVideoMutation.isPending}
+                        >
+                          {editingVideo ? 'Update Video' : 'Create Video'}
                         </Button>
                       </div>
                     </form>
@@ -837,12 +873,12 @@ export default function Admin() {
                   ) : (
                     <div className="space-y-4">
                       {(videos as any[]).map((video: any) => (
-                        <div key={video.id} className="p-4 border border-gray-200 rounded-lg">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-medium text-gray-900">{video.title}</h3>
-                              <p className="text-sm text-gray-600 mt-1">{video.description}</p>
-                              <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                        <div key={video.id} className="p-3 sm:p-4 border border-gray-200 rounded-lg">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">{video.title}</h3>
+                              <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{video.description}</p>
+                              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-xs text-gray-500">
                                 <span className="flex items-center">
                                   <Clock className="w-3 h-3 mr-1" />
                                   {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
@@ -863,7 +899,7 @@ export default function Admin() {
                               </div>
                             </div>
                             
-                            <div className="flex space-x-2">
+                            <div className="flex flex-row sm:flex-col gap-1.5 sm:gap-2 flex-shrink-0">
                               <Button
                                 size="sm"
                                 variant="outline"
