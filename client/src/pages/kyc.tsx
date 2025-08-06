@@ -59,21 +59,23 @@ export default function KYC() {
     queryKey: ["/api/kyc/status"],
     retry: false,
     enabled: !!user,
-    staleTime: 0,
-    gcTime: 0,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to prevent constant refetching
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
-  // Initialize form state from KYC data when available
+  // Initialize form state from KYC data only once when data first becomes available
+  const [formInitialized, setFormInitialized] = useState(false);
   useEffect(() => {
-    if (kycData) {
+    if (kycData && !formInitialized) {
       const data = kycData as any;
-      if (data.governmentIdType && !govIdType) setGovIdType(data.governmentIdType);
-      if (data.governmentIdNumber && !govIdNumber) setGovIdNumber(data.governmentIdNumber);
-      if (data.govIdFrontUrl && !govIdFrontUrl) setGovIdFrontUrl(data.govIdFrontUrl);
-      if (data.govIdBackUrl && !govIdBackUrl) setGovIdBackUrl(data.govIdBackUrl);
-      if (data.selfieWithIdUrl && !selfieWithIdUrl) setSelfieWithIdUrl(data.selfieWithIdUrl);
+      if (data.governmentIdType) setGovIdType(data.governmentIdType);
+      if (data.governmentIdNumber) setGovIdNumber(data.governmentIdNumber);
+      if (data.govIdFrontUrl) setGovIdFrontUrl(data.govIdFrontUrl);
+      if (data.govIdBackUrl) setGovIdBackUrl(data.govIdBackUrl);
+      if (data.selfieWithIdUrl) setSelfieWithIdUrl(data.selfieWithIdUrl);
+      setFormInitialized(true);
     }
-  }, [kycData, govIdType, govIdNumber, govIdFrontUrl, govIdBackUrl, selfieWithIdUrl]);
+  }, [kycData, formInitialized]);
 
   // Auto-refresh KYC status every 10 seconds when submitted or waiting for approval
   useEffect(() => {
@@ -224,8 +226,13 @@ export default function KYC() {
           description: `Your ${documentType === 'front' ? 'ID front' : documentType === 'back' ? 'ID back' : 'selfie'} has been uploaded successfully.`,
         });
         
-        // Don't refetch KYC data immediately to avoid clearing form state
+        // Document saved successfully - form state is preserved
         console.log("Document saved to backend successfully");
+        
+        // Force a small delay to ensure state is preserved, then refresh
+        setTimeout(() => {
+          console.log("State after timeout:", { govIdType, govIdNumber, govIdFrontUrl, govIdBackUrl, selfieWithIdUrl });
+        }, 100);
       }).catch((error) => {
         console.error("Error saving document:", error);
         toast({
