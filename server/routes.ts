@@ -1,0 +1,476 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
+import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
+import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+import { ObjectPermission } from "./objectAcl";
+import { 
+  insertVideoSchema, 
+  insertVideoProgressSchema, 
+  insertPayoutRequestSchema,
+  insertChatMessageSchema 
+} from "@shared/schema";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // User routes
+  app.put('/api/user/bank-details', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { bankDetails } = req.body;
+      
+      const user = await storage.updateUser(userId, { bankDetails });
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating bank details:", error);
+      res.status(500).json({ message: "Failed to update bank details" });
+    }
+  });
+
+  app.put('/api/user/government-id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { governmentIdURL } = req.body;
+      
+      if (!governmentIdURL) {
+        return res.status(400).json({ error: "governmentIdURL is required" });
+      }
+
+      const objectStorageService = new ObjectStorageService();
+      const objectPath = await objectStorageService.trySetObjectEntityAclPolicy(
+        governmentIdURL,
+        {
+          owner: userId,
+          visibility: "private",
+        }
+      );
+
+      const user = await storage.updateUser(userId, { governmentIdUrl: objectPath });
+      res.json({ user, objectPath });
+    } catch (error) {
+      console.error("Error updating government ID:", error);
+      res.status(500).json({ message: "Failed to update government ID" });
+    }
+  });
+
+  // Object storage routes for file uploads
+  app.post("/api/objects/upload", isAuthenticated, async (req, res) => {
+    const objectStorageService = new ObjectStorageService();
+    const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+    res.json({ uploadURL });
+  });
+
+  app.get("/objects/:objectPath(*)", isAuthenticated, async (req, res) => {
+    const userId = req.user?.claims?.sub;
+    const objectStorageService = new ObjectStorageService();
+    try {
+      const objectFile = await objectStorageService.getObjectEntityFile(req.path);
+      const canAccess = await objectStorageService.canAccessObjectEntity({
+        objectFile,
+        userId: userId,
+        requestedPermission: ObjectPermission.READ,
+      });
+      if (!canAccess) {
+        return res.sendStatus(401);
+      }
+      objectStorageService.downloadObject(objectFile, res);
+    } catch (error) {
+      console.error("Error checking object access:", error);
+      if (error instanceof ObjectNotFoundError) {
+        return res.sendStatus(404);
+      }
+      return res.sendStatus(500);
+    }
+  });
+
+  // Video routes
+  app.get('/api/videos', async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+      const videos = await storage.getVideos(limit);
+      res.json(videos);
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+      res.status(500).json({ message: "Failed to fetch videos" });
+    }
+  });
+
+  app.get('/api/videos/:id', async (req, res) => {
+    try {
+      const video = await storage.getVideo(req.params.id);
+      if (!video) {
+        return res.status(404).json({ message: "Video not found" });
+      }
+      res.json(video);
+    } catch (error) {
+      console.error("Error fetching video:", error);
+      res.status(500).json({ message: "Failed to fetch video" });
+    }
+  });
+
+  app.post('/api/videos', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const videoData = insertVideoSchema.parse(req.body);
+      const video = await storage.createVideo(videoData);
+      res.json(video);
+    } catch (error) {
+      console.error("Error creating video:", error);
+      res.status(500).json({ message: "Failed to create video" });
+    }
+  });
+
+  app.put('/api/videos/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const video = await storage.updateVideo(req.params.id, req.body);
+      res.json(video);
+    } catch (error) {
+      console.error("Error updating video:", error);
+      res.status(500).json({ message: "Failed to update video" });
+    }
+  });
+
+  app.delete('/api/videos/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const success = await storage.deleteVideo(req.params.id);
+      res.json({ success });
+    } catch (error) {
+      console.error("Error deleting video:", error);
+      res.status(500).json({ message: "Failed to delete video" });
+    }
+  });
+
+  // Video progress routes
+  app.get('/api/video-progress/:videoId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const progress = await storage.getVideoProgress(userId, req.params.videoId);
+      res.json(progress);
+    } catch (error) {
+      console.error("Error fetching video progress:", error);
+      res.status(500).json({ message: "Failed to fetch video progress" });
+    }
+  });
+
+  app.put('/api/video-progress/:videoId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { watchedSeconds } = req.body;
+      
+      const progress = await storage.updateVideoProgress(userId, req.params.videoId, watchedSeconds);
+      
+      // Update daily watch time
+      const video = await storage.getVideo(req.params.videoId);
+      if (video && watchedSeconds > 0) {
+        const minutes = Math.floor(watchedSeconds / 60);
+        await storage.updateDailyWatchTime(userId, minutes);
+      }
+      
+      res.json(progress);
+    } catch (error) {
+      console.error("Error updating video progress:", error);
+      res.status(500).json({ message: "Failed to update video progress" });
+    }
+  });
+
+  app.post('/api/video-progress/:videoId/complete', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const videoId = req.params.videoId;
+      
+      const video = await storage.getVideo(videoId);
+      if (!video) {
+        return res.status(404).json({ message: "Video not found" });
+      }
+
+      const progress = await storage.completeVideo(userId, videoId);
+      
+      if (progress && !progress.isEarningCredited) {
+        // Credit earnings
+        await storage.createEarning({
+          userId,
+          videoId,
+          type: "video",
+          amount: video.earning,
+          description: `Earned from watching: ${video.title}`,
+        });
+
+        // Increment video views
+        await storage.incrementVideoViews(videoId);
+      }
+      
+      res.json(progress);
+    } catch (error) {
+      console.error("Error completing video:", error);
+      res.status(500).json({ message: "Failed to complete video" });
+    }
+  });
+
+  // Earnings routes
+  app.get('/api/earnings', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const earnings = await storage.getEarnings(userId);
+      res.json(earnings);
+    } catch (error) {
+      console.error("Error fetching earnings:", error);
+      res.status(500).json({ message: "Failed to fetch earnings" });
+    }
+  });
+
+  app.get('/api/earnings/stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const totalEarnings = await storage.getTotalEarnings(userId);
+      const todayEarnings = await storage.getTodayEarnings(userId);
+      const dailyWatchTime = await storage.getDailyWatchTime(userId);
+      
+      res.json({
+        totalEarnings,
+        todayEarnings,
+        dailyWatchTime,
+        targetWatchTime: 480, // 8 hours in minutes
+      });
+    } catch (error) {
+      console.error("Error fetching earnings stats:", error);
+      res.status(500).json({ message: "Failed to fetch earnings stats" });
+    }
+  });
+
+  // Referral routes
+  app.get('/api/referrals', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const referrals = await storage.getReferrals(userId);
+      res.json(referrals);
+    } catch (error) {
+      console.error("Error fetching referrals:", error);
+      res.status(500).json({ message: "Failed to fetch referrals" });
+    }
+  });
+
+  app.post('/api/referrals/signup', async (req, res) => {
+    try {
+      const { referralCode, newUserId } = req.body;
+      
+      if (!referralCode || !newUserId) {
+        return res.status(400).json({ message: "Referral code and new user ID are required" });
+      }
+
+      const referrer = await storage.getUserByReferralCode(referralCode);
+      if (!referrer) {
+        return res.status(404).json({ message: "Invalid referral code" });
+      }
+
+      const referral = await storage.createReferral({
+        referrerId: referrer.id,
+        referredId: newUserId,
+      });
+
+      res.json(referral);
+    } catch (error) {
+      console.error("Error creating referral:", error);
+      res.status(500).json({ message: "Failed to create referral" });
+    }
+  });
+
+  // Payout routes
+  app.get('/api/payouts', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (user?.role === 'admin') {
+        const payouts = await storage.getPayoutRequests();
+        res.json(payouts);
+      } else {
+        const payouts = await storage.getPayoutRequests(userId);
+        res.json(payouts);
+      }
+    } catch (error) {
+      console.error("Error fetching payouts:", error);
+      res.status(500).json({ message: "Failed to fetch payouts" });
+    }
+  });
+
+  app.post('/api/payouts', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (!user.bankDetails) {
+        return res.status(400).json({ message: "Bank details not provided" });
+      }
+
+      if (user.verificationStatus !== 'verified') {
+        return res.status(400).json({ message: "Account not verified" });
+      }
+
+      const requestData = insertPayoutRequestSchema.parse(req.body);
+      const payout = await storage.createPayoutRequest({
+        ...requestData,
+        userId,
+        bankDetails: user.bankDetails,
+      });
+
+      res.json(payout);
+    } catch (error) {
+      console.error("Error creating payout request:", error);
+      res.status(500).json({ message: "Failed to create payout request" });
+    }
+  });
+
+  // Admin routes
+  app.get('/api/admin/users', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const users = await storage.getUsersForVerification();
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching users for verification:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.put('/api/admin/users/:id/verify', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { status } = req.body;
+      const updatedUser = await storage.updateUserVerification(req.params.id, status);
+      
+      // If user is verified and was referred, credit referral earning
+      if (status === 'verified' && updatedUser?.referredBy) {
+        const referrals = await storage.getReferrals(updatedUser.referredBy);
+        const referral = referrals.find(r => r.referredId === updatedUser.id);
+        if (referral && !referral.isEarningCredited) {
+          await storage.creditReferralEarning(referral.id);
+        }
+      }
+      
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user verification:", error);
+      res.status(500).json({ message: "Failed to update user verification" });
+    }
+  });
+
+  // Chat routes
+  app.get('/api/chat/messages', isAuthenticated, async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+      const messages = await storage.getChatMessages(limit);
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
+      res.status(500).json({ message: "Failed to fetch chat messages" });
+    }
+  });
+
+  app.post('/api/chat/messages', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      const messageData = insertChatMessageSchema.parse({
+        ...req.body,
+        userId,
+        isAdmin: user?.role === 'admin',
+      });
+      
+      const message = await storage.createChatMessage(messageData);
+      
+      // Broadcast to all connected WebSocket clients
+      wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify({
+            type: 'new_message',
+            data: message
+          }));
+        }
+      });
+      
+      res.json(message);
+    } catch (error) {
+      console.error("Error creating chat message:", error);
+      res.status(500).json({ message: "Failed to create chat message" });
+    }
+  });
+
+  const httpServer = createServer(app);
+  
+  // WebSocket server for live chat
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  wss.on('connection', (ws) => {
+    console.log('Client connected to WebSocket');
+    
+    ws.on('message', async (data) => {
+      try {
+        const message = JSON.parse(data.toString());
+        
+        if (message.type === 'ping') {
+          ws.send(JSON.stringify({ type: 'pong' }));
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+    });
+    
+    ws.on('close', () => {
+      console.log('Client disconnected from WebSocket');
+    });
+  });
+
+  return httpServer;
+}
