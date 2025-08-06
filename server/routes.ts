@@ -503,6 +503,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update user status (active/suspended)
+  app.put("/api/admin/users/:id/status", async (req: any, res) => {
+    try {
+      // Check admin authentication
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      const { status } = req.body;
+      
+      if (!status || !["active", "suspended"].includes(status)) {
+        return res.status(400).json({ error: "Valid status is required (active or suspended)" });
+      }
+      
+      const user = await storage.updateUser(id, { status });
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating user status:", error);
+      res.status(500).json({ error: "Failed to update user status" });
+    }
+  });
+
+  // Update user balance
+  app.put("/api/admin/users/:id/balance", async (req: any, res) => {
+    try {
+      // Check admin authentication
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      const { amount } = req.body;
+      
+      if (typeof amount !== 'number' || isNaN(amount)) {
+        return res.status(400).json({ error: "Valid amount is required" });
+      }
+      
+      // Get current user to calculate new balance
+      const currentUser = await storage.getUser(id);
+      if (!currentUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      const currentBalance = currentUser.balance || 0;
+      const newBalance = Math.max(0, currentBalance + amount); // Don't allow negative balance
+      
+      const user = await storage.updateUser(id, { balance: newBalance });
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating user balance:", error);
+      res.status(500).json({ error: "Failed to update user balance" });
+    }
+  });
+
   // Chat routes
   app.get('/api/chat/messages', isAuthenticated, async (req, res) => {
     try {

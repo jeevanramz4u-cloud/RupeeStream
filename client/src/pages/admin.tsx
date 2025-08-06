@@ -31,7 +31,9 @@ import {
   Plus,
   Edit,
   Trash2,
-  Shield
+  Shield,
+  Ban,
+  RotateCcw
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -129,6 +131,48 @@ export default function Admin() {
   });
 
   const { register, handleSubmit, reset, setValue } = useForm();
+
+  // User suspension/unsuspension mutation
+  const suspendUserMutation = useMutation({
+    mutationFn: async ({ userId, status }: { userId: string; status: string }) => {
+      await apiRequest("PUT", `/api/admin/users/${userId}/status`, { status });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "User status updated successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update user status",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Balance update mutation
+  const updateBalanceMutation = useMutation({
+    mutationFn: async ({ userId, amount }: { userId: string; amount: number }) => {
+      await apiRequest("PUT", `/api/admin/users/${userId}/balance`, { amount });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "User balance updated successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update user balance",
+        variant: "destructive",
+      });
+    },
+  });
 
   const createVideoMutation = useMutation({
     mutationFn: async (videoData: any) => {
@@ -272,8 +316,9 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="users">User Verification</TabsTrigger>
+            <TabsTrigger value="profiles">User Profiles</TabsTrigger>
             <TabsTrigger value="videos">Video Management</TabsTrigger>
             <TabsTrigger value="payouts">Payouts</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
@@ -420,6 +465,208 @@ export default function Admin() {
                   )}
                 </CardContent>
               </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="profiles">
+            <div className="space-y-6">
+              {/* User Profiles Management Header */}
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">User Profile Management</h2>
+                <div className="flex space-x-2">
+                  <Input
+                    placeholder="Search users by email or name..."
+                    className="w-80"
+                    onChange={(e) => {
+                      // Add search functionality here if needed
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Users Grid */}
+              <div className="grid grid-cols-1 gap-6">
+                {(users as any[]).length === 0 ? (
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-center py-8">
+                        <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-500">No users found</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  (users as any[]).map((user: any) => (
+                    <Card key={user.id}>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <CardTitle className="flex items-center space-x-2">
+                              <span>{user.firstName} {user.lastName}</span>
+                              {getStatusBadge(user.verificationStatus)}
+                            </CardTitle>
+                            <p className="text-sm text-gray-600 mt-1">{user.email}</p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Badge variant={user.status === 'suspended' ? 'destructive' : 'default'}>
+                              {user.status === 'suspended' ? 'Suspended' : 'Active'}
+                            </Badge>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                          <div>
+                            <Label className="text-xs font-medium text-gray-500">Account Status</Label>
+                            <p className="text-sm font-medium">
+                              {user.status === 'suspended' ? 'Suspended' : 'Active'}
+                            </p>
+                          </div>
+                          <div>
+                            <Label className="text-xs font-medium text-gray-500">Verification</Label>
+                            <p className="text-sm font-medium capitalize">{user.verificationStatus}</p>
+                          </div>
+                          <div>
+                            <Label className="text-xs font-medium text-gray-500">Balance</Label>
+                            <p className="text-sm font-medium">₹{user.balance || 0}</p>
+                          </div>
+                          <div>
+                            <Label className="text-xs font-medium text-gray-500">Joined Date</Label>
+                            <p className="text-sm font-medium">{formatDate(user.createdAt)}</p>
+                          </div>
+                        </div>
+
+                        {/* Bank Details Section */}
+                        <div className="mb-4">
+                          <h4 className="font-medium text-gray-900 mb-2 text-sm">Bank Details</h4>
+                          {user.bankDetails ? (
+                            <div className="p-3 bg-gray-50 rounded-lg">
+                              <pre className="text-xs text-gray-700 whitespace-pre-wrap">{user.bankDetails}</pre>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-gray-500 italic">No bank details provided</p>
+                          )}
+                        </div>
+
+                        {/* Government ID Section */}
+                        <div className="mb-4">
+                          <h4 className="font-medium text-gray-900 mb-2 text-sm">Government ID</h4>
+                          {user.governmentIdUrl ? (
+                            <div className="p-3 bg-gray-50 rounded-lg">
+                              <a 
+                                href={user.governmentIdUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline text-sm"
+                              >
+                                View Government ID Document
+                              </a>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-gray-500 italic">No ID document uploaded</p>
+                          )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-wrap gap-2 pt-4 border-t">
+                          {/* Verification Actions */}
+                          {user.verificationStatus === 'pending' && (
+                            <>
+                              <Button 
+                                size="sm"
+                                className="bg-secondary hover:bg-secondary/90 text-white"
+                                onClick={() => verifyUserMutation.mutate({
+                                  userId: user.id,
+                                  status: 'verified'
+                                })}
+                                disabled={verifyUserMutation.isPending}
+                              >
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                                Approve
+                              </Button>
+                              <Button 
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => verifyUserMutation.mutate({
+                                  userId: user.id,
+                                  status: 'rejected'
+                                })}
+                                disabled={verifyUserMutation.isPending}
+                              >
+                                <XCircle className="w-3 h-3 mr-1" />
+                                Reject
+                              </Button>
+                            </>
+                          )}
+
+                          {/* Suspension Actions */}
+                          {user.status !== 'suspended' ? (
+                            <Button 
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => suspendUserMutation.mutate({
+                                userId: user.id,
+                                status: 'suspended'
+                              })}
+                              disabled={suspendUserMutation.isPending}
+                            >
+                              <Ban className="w-3 h-3 mr-1" />
+                              Suspend User
+                            </Button>
+                          ) : (
+                            <Button 
+                              size="sm"
+                              variant="outline"
+                              onClick={() => suspendUserMutation.mutate({
+                                userId: user.id,
+                                status: 'active'
+                              })}
+                              disabled={suspendUserMutation.isPending}
+                            >
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Unsuspend User
+                            </Button>
+                          )}
+
+                          {/* Balance Management */}
+                          <Button 
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              const amount = prompt('Enter amount to add/subtract (use negative for deduction):');
+                              if (amount) {
+                                updateBalanceMutation.mutate({
+                                  userId: user.id,
+                                  amount: parseFloat(amount)
+                                });
+                              }
+                            }}
+                          >
+                            <DollarSign className="w-3 h-3 mr-1" />
+                            Adjust Balance
+                          </Button>
+
+                          {/* Reset Verification */}
+                          {user.verificationStatus !== 'pending' && (
+                            <Button 
+                              size="sm"
+                              variant="outline"
+                              onClick={() => verifyUserMutation.mutate({
+                                userId: user.id,
+                                status: 'pending'
+                              })}
+                              disabled={verifyUserMutation.isPending}
+                            >
+                              <RotateCcw className="w-3 h-3 mr-1" />
+                              Reset Verification
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
             </div>
           </TabsContent>
 
