@@ -1,10 +1,15 @@
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Coins, 
   Clock, 
@@ -13,10 +18,14 @@ import {
   Calendar,
   TriangleAlert
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Earnings() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [isPayoutDialogOpen, setIsPayoutDialogOpen] = useState(false);
+  const [payoutAmount, setPayoutAmount] = useState("");
 
   const { data: earnings = [] } = useQuery({
     queryKey: ["/api/earnings"],
@@ -54,6 +63,53 @@ export default function Earnings() {
       hour: '2-digit',
       minute: '2-digit',
     });
+  };
+
+  // Payout request mutation
+  const createPayoutMutation = useMutation({
+    mutationFn: async (amount: number) => {
+      await apiRequest("POST", "/api/payouts", { amount });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Payout Requested",
+        description: "Your payout request has been submitted successfully. You'll receive payment on Tuesday.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/payouts"] });
+      setIsPayoutDialogOpen(false);
+      setPayoutAmount("");
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Payout Request Failed",
+        description: error.message || "Failed to create payout request. Please check your bank details and verification status.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handlePayoutSubmit = () => {
+    const amount = parseFloat(payoutAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid payout amount.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const userBalance = parseFloat((user as any)?.balance || "0");
+    if (amount > userBalance) {
+      toast({
+        title: "Insufficient Balance",
+        description: "Payout amount cannot exceed your current balance.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    createPayoutMutation.mutate(amount);
   };
 
   const getEarningIcon = (type: string) => {
@@ -147,9 +203,57 @@ export default function Earnings() {
                 </div>
               </div>
               <div className="mt-4">
-                <Button className="w-full" size="sm">
-                  Request Payout
-                </Button>
+                <Dialog open={isPayoutDialogOpen} onOpenChange={setIsPayoutDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="w-full" size="sm">
+                      Request Payout
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Request Payout</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <p className="text-sm text-blue-800">
+                          <strong>Current Balance:</strong> ₹{(user as any)?.balance || '0.00'}
+                        </p>
+                        <p className="text-xs text-blue-600 mt-1">
+                          Payouts are processed every Tuesday. Make sure your bank details are complete and your account is verified.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="amount">Payout Amount (₹)</Label>
+                        <Input
+                          id="amount"
+                          type="number"
+                          placeholder="Enter amount to withdraw"
+                          value={payoutAmount}
+                          onChange={(e) => setPayoutAmount(e.target.value)}
+                          min="1"
+                          max={(user as any)?.balance || "0"}
+                          step="0.01"
+                        />
+                      </div>
+                      
+                      <div className="flex justify-end space-x-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => setIsPayoutDialogOpen(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handlePayoutSubmit}
+                          disabled={createPayoutMutation.isPending}
+                        >
+                          {createPayoutMutation.isPending ? 'Processing...' : 'Request Payout'}
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </CardContent>
           </Card>
