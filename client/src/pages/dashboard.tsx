@@ -143,7 +143,27 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        {/* Daily Target Reminder - Top Priority */}
+        {/* KYC Status Alert - Highest Priority */}
+        {user && ((user as any).kycStatus !== 'approved' || !(user as any).kycFeePaid) && (
+          <Alert className="mb-6 border-red-200 bg-red-50">
+            <Shield className="h-4 w-4 text-red-600" />
+            <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-sm sm:text-base text-red-800">
+                  Complete KYC Verification Required
+                </p>
+                <p className="text-sm text-red-700">
+                  You must complete KYC verification with ₹99 processing fee to unlock payouts and maintain account status.
+                </p>
+              </div>
+              <Button asChild size="sm" className="bg-red-600 hover:bg-red-700">
+                <Link href="/kyc">Complete KYC Now</Link>
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Daily Target Reminder */}
         <Alert className={`mb-6 ${remainingHours > 0 ? 'border-orange-200 bg-orange-50' : 'border-green-200 bg-green-50'}`}>
           <Clock className={`h-4 w-4 ${remainingHours > 0 ? 'text-orange-600' : 'text-green-600'}`} />
           <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

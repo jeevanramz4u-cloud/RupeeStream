@@ -13,6 +13,12 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Enhanced video player to handle ad blocker restrictions with alternative viewing options
 - Fixed authentication issues by switching video progress APIs to traditional auth
 - Video completion system working with manual completion for YouTube videos
+- **Added comprehensive KYC verification system with ₹99 processing fee**
+- Created 5-step KYC process: ID info → Document upload → Review → Fee payment → Approval
+- Integrated ObjectUploader component for secure document uploads via object storage
+- Added KYC navigation to header and prominent alerts on dashboard for incomplete users
+- Database includes KYC fields: status, fee payment tracking, and document URLs
+- KYC routes and storage methods implemented for document management
 
 # User Preferences
 
