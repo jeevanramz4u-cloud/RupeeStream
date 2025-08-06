@@ -32,6 +32,29 @@ function AdminRoute() {
   }
 }
 
+function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!isAuthenticated) {
+    // Redirect to login instead of 404
+    window.location.href = "/login";
+    return null;
+  }
+  
+  return <Component />;
+}
+
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -41,30 +64,37 @@ function Router() {
       <Route path="/admin" component={AdminRoute} />
       <Route path="/admin-login" component={AdminLogin} />
       
-      {isLoading || !isAuthenticated ? (
-        <>
-          <Route path="/" component={Landing} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-          <Route path="/privacy-policy" component={PrivacyPolicy} />
-          <Route path="/terms-conditions" component={TermsConditions} />
-          <Route path="/how-to-earn" component={HowToEarn} />
-        </>
-      ) : (
-        <>
-          <Route path="/" component={Dashboard} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/videos" component={Videos} />
-          <Route path="/video/:id" component={VideoPlayer} />
-          <Route path="/earnings" component={Earnings} />
-          <Route path="/earnings-history" component={EarningsHistory} />
-          <Route path="/referrals" component={Referrals} />
-          <Route path="/support" component={Support} />
-          <Route path="/privacy-policy" component={PrivacyPolicy} />
-          <Route path="/terms-conditions" component={TermsConditions} />
-          <Route path="/how-to-earn" component={HowToEarn} />
-        </>
-      )}
+      {/* Public routes - always accessible */}
+      <Route path="/login" component={Login} />
+      <Route path="/signup" component={Signup} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-conditions" component={TermsConditions} />
+      <Route path="/how-to-earn" component={HowToEarn} />
+      
+      {/* Home route - conditional based on auth */}
+      <Route path="/" component={() => {
+        if (isLoading) {
+          return (
+            <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <p>Loading...</p>
+              </div>
+            </div>
+          );
+        }
+        return isAuthenticated ? <Dashboard /> : <Landing />;
+      }} />
+      
+      {/* Protected routes - redirect to login if not authenticated */}
+      <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
+      <Route path="/videos" component={() => <ProtectedRoute component={Videos} />} />
+      <Route path="/video/:id" component={() => <ProtectedRoute component={VideoPlayer} />} />
+      <Route path="/earnings" component={() => <ProtectedRoute component={Earnings} />} />
+      <Route path="/earnings-history" component={() => <ProtectedRoute component={EarningsHistory} />} />
+      <Route path="/referrals" component={() => <ProtectedRoute component={Referrals} />} />
+      <Route path="/support" component={() => <ProtectedRoute component={Support} />} />
+      
       <Route component={NotFound} />
     </Switch>
   );
