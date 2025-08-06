@@ -87,6 +87,16 @@ export const users = pgTable("users", {
   governmentIdNumber: varchar("government_id_number"),
   governmentIdUrl: varchar("government_id_url"), // Object storage path
   
+  // KYC fields
+  kycStatus: varchar("kyc_status", { enum: ["pending", "submitted", "approved", "rejected"] }).default("pending"),
+  kycFeePaid: boolean("kyc_fee_paid").default(false),
+  kycFeePaymentId: varchar("kyc_fee_payment_id"),
+  govIdFrontUrl: varchar("gov_id_front_url"),
+  govIdBackUrl: varchar("gov_id_back_url"),
+  selfieWithIdUrl: varchar("selfie_with_id_url"),
+  kycSubmittedAt: timestamp("kyc_submitted_at"),
+  kycApprovedAt: timestamp("kyc_approved_at"),
+  
   // System fields
   role: userRoleEnum("role").default("user").notNull(),
   balance: decimal("balance", { precision: 10, scale: 2 }).default("0.00").notNull(),

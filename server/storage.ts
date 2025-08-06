@@ -73,6 +73,10 @@ export interface IStorage {
   
   // Chat operations
   getChatMessages(limit?: number): Promise<ChatMessage[]>;
+  
+  // KYC operations
+  updateUserKycDocuments(userId: string, kycData: any): Promise<void>;
+  updateUserKycPayment(userId: string, paymentData: any): Promise<void>;
   createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
   
   // Daily tracking
@@ -451,6 +455,21 @@ export class DatabaseStorage implements IStorage {
   async createChatMessage(message: InsertChatMessage): Promise<ChatMessage> {
     const [newMessage] = await db.insert(chatMessages).values(message).returning();
     return newMessage;
+  }
+
+  // KYC operations
+  async updateUserKycDocuments(userId: string, kycData: any): Promise<void> {
+    await db
+      .update(users)
+      .set(kycData)
+      .where(eq(users.id, userId));
+  }
+
+  async updateUserKycPayment(userId: string, paymentData: any): Promise<void> {
+    await db
+      .update(users)
+      .set(paymentData)
+      .where(eq(users.id, userId));
   }
 
   // Daily tracking

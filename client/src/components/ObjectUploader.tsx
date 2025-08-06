@@ -73,17 +73,12 @@ export function ObjectUploader({
       })
       .on("complete", (result) => {
         onComplete?.(result);
-        setShowModal(false);
       })
   );
 
   return (
     <div>
-      <Button 
-        type="button"
-        onClick={() => setShowModal(true)} 
-        className={buttonClassName}
-      >
+      <Button onClick={() => setShowModal(true)} className={buttonClassName}>
         {children}
       </Button>
 

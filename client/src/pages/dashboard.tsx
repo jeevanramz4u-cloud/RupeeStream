@@ -20,8 +20,12 @@ import {
   Mail,
   Edit,
   Save,
-  X
+  X,
+  Shield,
+  Play,
+  Users
 } from "lucide-react";
+import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useLocation } from "wouter";

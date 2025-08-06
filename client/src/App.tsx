@@ -21,6 +21,7 @@ import PrivacyPolicy from "./pages/privacy-policy";
 import TermsConditions from "./pages/terms-conditions";
 import HowToEarn from "./pages/how-to-earn";
 import EarningsHistory from "./pages/earnings-history";
+import KYC from "./pages/kyc";
 
 function AdminRoute() {
   const { isAuthenticated: isAdminAuth } = useAdminAuth();
@@ -94,6 +95,7 @@ function Router() {
       <Route path="/earnings-history" component={() => <ProtectedRoute component={EarningsHistory} />} />
       <Route path="/referrals" component={() => <ProtectedRoute component={Referrals} />} />
       <Route path="/support" component={() => <ProtectedRoute component={Support} />} />
+      <Route path="/kyc" component={() => <ProtectedRoute component={KYC} />} />
       
       <Route component={NotFound} />
     </Switch>

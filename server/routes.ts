@@ -259,6 +259,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // KYC routes for traditional auth users
+  app.get("/api/kyc/status", isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const user = req.user;
+      res.json({
+        kycStatus: user.kycStatus,
+        kycFeePaid: user.kycFeePaid,
+        kycSubmittedAt: user.kycSubmittedAt,
+        kycApprovedAt: user.kycApprovedAt,
+      });
+    } catch (error) {
+      console.error("Error fetching KYC status:", error);
+      res.status(500).json({ message: "Failed to fetch KYC status" });
+    }
+  });
+
+  app.post("/api/kyc/submit", isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { governmentIdType, governmentIdNumber, govIdFrontUrl, govIdBackUrl, selfieWithIdUrl } = req.body;
+      
+      if (!governmentIdType || !governmentIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) {
+        return res.status(400).json({ message: "All KYC fields are required" });
+      }
+
+      await storage.updateUserKycDocuments(userId, {
+        governmentIdType,
+        governmentIdNumber,
+        govIdFrontUrl,
+        govIdBackUrl,
+        selfieWithIdUrl,
+        kycStatus: "submitted",
+        kycSubmittedAt: new Date(),
+      });
+
+      res.json({ message: "KYC documents submitted successfully" });
+    } catch (error) {
+      console.error("Error submitting KYC:", error);
+      res.status(500).json({ message: "Failed to submit KYC documents" });
+    }
+  });
+
+  app.put("/api/kyc/document", isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const { documentUrl, documentType } = req.body;
+      const userId = req.user.id;
+      
+      const objectStorageService = new ObjectStorageService();
+      const objectPath = await objectStorageService.trySetObjectEntityAclPolicy(
+        documentUrl,
+        {
+          owner: userId,
+          visibility: "private", // KYC documents should be private
+        },
+      );
+
+      res.json({ objectPath });
+    } catch (error) {
+      console.error("Error setting document ACL:", error);
+      res.status(500).json({ message: "Failed to process document" });
+    }
+  });
+
+  app.post("/api/kyc/pay-fee", isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      
+      // For demo purposes, we'll simulate payment success
+      // In production, this would integrate with a real payment gateway
+      const paymentId = `kyc_payment_${Date.now()}_${userId}`;
+      
+      await storage.updateUserKycPayment(userId, {
+        kycFeePaid: true,
+        kycFeePaymentId: paymentId,
+      });
+
+      res.json({ 
+        message: "KYC fee payment successful",
+        paymentId: paymentId 
+      });
+    } catch (error) {
+      console.error("Error processing KYC fee payment:", error);
+      res.status(500).json({ message: "Failed to process payment" });
+    }
+  });
+
   // Object storage routes for file uploads
   app.post("/api/objects/upload", isAuthenticated, async (req, res) => {
     const objectStorageService = new ObjectStorageService();
@@ -538,14 +624,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Account not verified" });
       }
 
-      const requestData = insertPayoutRequestSchema.parse(req.body);
-      const payout = await storage.createPayoutRequest({
-        ...requestData,
-        userId,
+      const { amount } = req.body;
+      const bankDetails = JSON.stringify({
         accountHolderName: user.accountHolderName,
         accountNumber: user.accountNumber,
         ifscCode: user.ifscCode,
         bankName: user.bankName,
+      });
+      
+      const payout = await storage.createPayoutRequest({
+        userId,
+        amount,
+        bankDetails,
       });
 
       res.json(payout);
