@@ -34,11 +34,22 @@ export default function KYC() {
   const queryClient = useQueryClient();
   const { user, isLoading: isAuthLoading, isAuthenticated } = useAuth();
   
-  const [govIdType, setGovIdType] = useState("");
-  const [govIdNumber, setGovIdNumber] = useState("");
-  const [govIdFrontUrl, setGovIdFrontUrl] = useState("");
-  const [govIdBackUrl, setGovIdBackUrl] = useState("");
-  const [selfieWithIdUrl, setSelfieWithIdUrl] = useState("");
+  // Use localStorage to persist form state across re-renders
+  const [govIdType, setGovIdType] = useState(() => 
+    typeof window !== 'undefined' ? localStorage.getItem('kyc_govIdType') || "" : ""
+  );
+  const [govIdNumber, setGovIdNumber] = useState(() => 
+    typeof window !== 'undefined' ? localStorage.getItem('kyc_govIdNumber') || "" : ""
+  );
+  const [govIdFrontUrl, setGovIdFrontUrl] = useState(() => 
+    typeof window !== 'undefined' ? localStorage.getItem('kyc_govIdFrontUrl') || "" : ""
+  );
+  const [govIdBackUrl, setGovIdBackUrl] = useState(() => 
+    typeof window !== 'undefined' ? localStorage.getItem('kyc_govIdBackUrl') || "" : ""
+  );
+  const [selfieWithIdUrl, setSelfieWithIdUrl] = useState(() => 
+    typeof window !== 'undefined' ? localStorage.getItem('kyc_selfieWithIdUrl') || "" : ""
+  );
 
   // Check authentication
   useEffect(() => {
@@ -63,19 +74,22 @@ export default function KYC() {
     gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
-  // Initialize form state from KYC data only once when data first becomes available
-  const [formInitialized, setFormInitialized] = useState(false);
+  // Clear localStorage when KYC is approved or handle re-verification
   useEffect(() => {
-    if (kycData && !formInitialized) {
+    if (kycData) {
       const data = kycData as any;
-      if (data.governmentIdType) setGovIdType(data.governmentIdType);
-      if (data.governmentIdNumber) setGovIdNumber(data.governmentIdNumber);
-      if (data.govIdFrontUrl) setGovIdFrontUrl(data.govIdFrontUrl);
-      if (data.govIdBackUrl) setGovIdBackUrl(data.govIdBackUrl);
-      if (data.selfieWithIdUrl) setSelfieWithIdUrl(data.selfieWithIdUrl);
-      setFormInitialized(true);
+      // If KYC is approved, clear the localStorage
+      if (data.kycStatus === 'approved') {
+        localStorage.removeItem('kyc_govIdType');
+        localStorage.removeItem('kyc_govIdNumber');
+        localStorage.removeItem('kyc_govIdFrontUrl');
+        localStorage.removeItem('kyc_govIdBackUrl');
+        localStorage.removeItem('kyc_selfieWithIdUrl');
+      }
+      // If KYC was rejected, allow user to re-enter data by not clearing localStorage
+      // This allows users to re-verify after admin rejection
     }
-  }, [kycData, formInitialized]);
+  }, [kycData]);
 
   // Auto-refresh KYC status every 10 seconds when submitted or waiting for approval
   useEffect(() => {
@@ -204,15 +218,18 @@ export default function KYC() {
         return;
       }
       
-      // Update the appropriate state
+      // Update the appropriate state and persist to localStorage
       if (documentType === 'front') {
         setGovIdFrontUrl(documentUrl);
+        localStorage.setItem('kyc_govIdFrontUrl', documentUrl);
         console.log("Set govIdFrontUrl to:", documentUrl);
       } else if (documentType === 'back') {
         setGovIdBackUrl(documentUrl);
+        localStorage.setItem('kyc_govIdBackUrl', documentUrl);
         console.log("Set govIdBackUrl to:", documentUrl);
       } else if (documentType === 'selfie') {
         setSelfieWithIdUrl(documentUrl);
+        localStorage.setItem('kyc_selfieWithIdUrl', documentUrl);
         console.log("Set selfieWithIdUrl to:", documentUrl);
       }
 
@@ -441,8 +458,8 @@ export default function KYC() {
           </Card>
         )}
 
-        {/* Show KYC form only if not completed */}
-        {!((kycData as any)?.kycStatus === 'approved' || ((kycData as any)?.kycFeePaid && (kycData as any)?.verificationStatus === 'verified')) && (
+        {/* Show KYC form for pending users or re-verification after rejection */}
+        {(!kycData || (kycData as any)?.kycStatus === 'pending' || (kycData as any)?.kycStatus === 'rejected' || ((kycData as any)?.kycStatus === 'submitted' && !(kycData as any)?.kycFeePaid)) && (
           <Card className="shadow-sm" id="kyc-form">
             <CardHeader>
               <CardTitle className="text-xl flex items-center text-gray-800">
@@ -476,7 +493,10 @@ export default function KYC() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="govIdType" className="text-sm font-semibold text-gray-700">Government ID Type *</Label>
-                    <Select value={govIdType} onValueChange={setGovIdType}>
+                    <Select value={govIdType} onValueChange={(value) => {
+                    setGovIdType(value);
+                    localStorage.setItem('kyc_govIdType', value);
+                  }}>
                       <SelectTrigger className="h-11 border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                         <SelectValue placeholder="Select your ID type" />
                       </SelectTrigger>
@@ -495,7 +515,10 @@ export default function KYC() {
                     <Input
                       id="govIdNumber"
                       value={govIdNumber}
-                      onChange={(e) => setGovIdNumber(e.target.value)}
+                      onChange={(e) => {
+                        setGovIdNumber(e.target.value);
+                        localStorage.setItem('kyc_govIdNumber', e.target.value);
+                      }}
                       placeholder="Enter your ID number"
                       className="h-11 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     />
@@ -528,7 +551,10 @@ export default function KYC() {
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => setGovIdFrontUrl("")}
+                          onClick={() => {
+                            setGovIdFrontUrl("");
+                            localStorage.removeItem('kyc_govIdFrontUrl');
+                          }}
                           className="text-red-600 hover:text-red-700"
                         >
                           Replace
@@ -570,7 +596,10 @@ export default function KYC() {
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => setGovIdBackUrl("")}
+                          onClick={() => {
+                            setGovIdBackUrl("");
+                            localStorage.removeItem('kyc_govIdBackUrl');
+                          }}
                           className="text-red-600 hover:text-red-700"
                         >
                           Replace
@@ -612,7 +641,10 @@ export default function KYC() {
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => setSelfieWithIdUrl("")}
+                          onClick={() => {
+                            setSelfieWithIdUrl("");
+                            localStorage.removeItem('kyc_selfieWithIdUrl');
+                          }}
                           className="text-red-600 hover:text-red-700"
                         >
                           Replace
