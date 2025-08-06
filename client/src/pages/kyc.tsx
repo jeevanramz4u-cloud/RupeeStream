@@ -256,7 +256,7 @@ export default function KYC() {
 
   const getProgressPercentage = () => {
     if (!kycData) return 0;
-    if ((kycData as any).kycStatus === 'approved') return 100;
+    if ((kycData as any).kycStatus === 'approved' || ((kycData as any).kycFeePaid && (kycData as any).verificationStatus === 'verified')) return 100;
     if ((kycData as any).kycFeePaid) return 80;
     if ((kycData as any).kycStatus === 'submitted') return 60;
     if (govIdFrontUrl && govIdBackUrl && selfieWithIdUrl) return 40;
@@ -290,7 +290,7 @@ export default function KYC() {
         </div>
 
         {/* Quick Actions for Pending Users */}
-        {(!kycData || (kycData as any)?.kycStatus === 'pending') && !(kycData as any)?.kycFeePaid && (
+        {(!kycData || ((kycData as any)?.kycStatus === 'pending' && !(kycData as any)?.kycFeePaid)) && (
           <Card className="mb-6 sm:mb-8 border-orange-200 bg-orange-50">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center text-orange-900">
@@ -377,7 +377,7 @@ export default function KYC() {
                 <Progress value={getProgressPercentage()} className="h-2" />
               </div>
               
-              {(kycData as any)?.kycStatus === 'approved' && (
+              {((kycData as any)?.kycStatus === 'approved' || ((kycData as any)?.kycFeePaid && (kycData as any)?.verificationStatus === 'verified')) && (
                 <Alert className="bg-green-50 border-green-200">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <AlertDescription className="text-green-800">
@@ -432,8 +432,8 @@ export default function KYC() {
           </Card>
         )}
 
-        {/* Show KYC form only if not approved */}
-        {(kycData as any)?.kycStatus !== 'approved' && (
+        {/* Show KYC form only if not completed */}
+        {!((kycData as any)?.kycStatus === 'approved' || ((kycData as any)?.kycFeePaid && (kycData as any)?.verificationStatus === 'verified')) && (
           <Card className="shadow-sm" id="kyc-form">
             <CardHeader>
               <CardTitle className="text-xl flex items-center text-gray-800">
