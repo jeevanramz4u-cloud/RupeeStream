@@ -480,7 +480,7 @@ export default function KYC() {
         )}
 
         {/* Show KYC form for users who need verification or re-verification */}
-        {(!kycData || (kycData as any)?.kycStatus !== 'approved' || (kycData as any)?.verificationStatus !== 'verified') && (
+        {(!kycData || !((kycData as any)?.kycStatus === 'approved' && (kycData as any)?.verificationStatus === 'verified')) && (
           <Card className="shadow-sm" id="kyc-form">
             <CardHeader>
               <CardTitle className="text-xl flex items-center text-gray-800">
