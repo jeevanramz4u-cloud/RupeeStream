@@ -70,6 +70,13 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Progressive warning system alerts users at risk (1-2 missed days)
 - Admin panel includes suspension management tools and compliance checking
 - Automatic daily compliance monitoring for all eligible users
+- **Fixed referral system with automatic payment processing (August 2025)**
+- Referral signup process working correctly with proper code tracking
+- Admin verification now automatically pays ₹49 to referrers when users get verified
+- Referral history displays actual user names instead of generic IDs
+- Enhanced status tracking: "Earned ₹49", "Verified", "KYC Pending", "Pending Verification"
+- Referral links format corrected to `/signup?ref=CODE` for proper code application
+- Complete end-to-end referral flow tested and operational
 
 # User Preferences
 
