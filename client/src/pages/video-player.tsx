@@ -223,44 +223,44 @@ export default function VideoPlayer() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
         {/* Video Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{videoTitle}</h1>
-          <div className="flex items-center space-x-6 text-sm text-gray-500">
-            <span className="flex items-center">
-              <Clock className="w-4 h-4 mr-1" />
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">{videoTitle}</h1>
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-500">
+            <span className="flex items-center flex-shrink-0">
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
               {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
             </span>
-            <span className="flex items-center">
-              <Eye className="w-4 h-4 mr-1" />
+            <span className="flex items-center flex-shrink-0">
+              <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
               {videoViews.toLocaleString()} views
             </span>
-            <span className="flex items-center text-accent font-semibold">
-              <Coins className="w-4 h-4 mr-1" />
+            <span className="flex items-center text-green-600 font-semibold flex-shrink-0">
+              <Coins className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
               ₹{videoEarning}
             </span>
           </div>
         </div>
 
         {/* Video Player */}
-        <Card className="mb-6">
+        <Card className="mb-4 sm:mb-6 touch-manipulation">
           <CardContent className="p-0">
-            <div className="bg-gray-900 rounded-t-lg aspect-video flex items-center justify-center relative">
+            <div className="bg-gray-900 rounded-t-lg aspect-video flex items-center justify-center relative overflow-hidden">
               {videoUrl ? (
                 isYouTubeVideo ? (
                   // YouTube viewing options with ad blocker awareness
                   <div className="w-full h-full relative bg-gray-800 rounded-t-lg flex flex-col">
                     {/* YouTube thumbnail and play instructions */}
-                    <div className="flex-1 flex flex-col items-center justify-center text-white p-8">
+                    <div className="flex-1 flex flex-col items-center justify-center text-white p-4 sm:p-8">
                       {videoThumbnail && (
                         <img 
                           src={videoThumbnail} 
                           alt={videoTitle}
-                          className="w-48 h-36 object-cover rounded mb-4 shadow-lg"
+                          className="w-32 h-24 sm:w-48 sm:h-36 object-cover rounded mb-3 sm:mb-4 shadow-lg"
                         />
                       )}
-                      <h3 className="text-xl font-semibold mb-4 text-center">{videoTitle}</h3>
+                      <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center px-2">{videoTitle}</h3>
                       
                       <div className="text-center space-y-3 mb-6">
                         <p className="text-gray-300">Watch this video on YouTube to earn ₹{videoEarning}</p>
@@ -280,7 +280,7 @@ export default function VideoPlayer() {
                         </p>
                       </div>
 
-                      <div className="flex flex-col sm:flex-row gap-3">
+                      <div className="flex flex-col gap-3 w-full max-w-sm px-2">
                         <Button
                           onClick={() => {
                             window.open(videoUrl, '_blank');
@@ -291,7 +291,7 @@ export default function VideoPlayer() {
                               description: `Watch for at least ${Math.floor(requiredWatchTime / 60)} minutes to earn money.`,
                             });
                           }}
-                          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2"
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 text-sm sm:text-base font-medium touch-manipulation"
                         >
                           <Play className="w-4 h-4 mr-2" />
                           Open on YouTube
@@ -323,7 +323,7 @@ export default function VideoPlayer() {
 
                               completeVideoMutation.mutate();
                             }}
-                            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 text-sm sm:text-base font-medium touch-manipulation"
                             disabled={completeVideoMutation.isPending}
                           >
                             <Coins className="w-4 h-4 mr-2" />
@@ -332,7 +332,7 @@ export default function VideoPlayer() {
                         )}
                         
                         {hasCompleted && (
-                          <div className="flex items-center bg-green-800 text-green-200 px-4 py-2 rounded">
+                          <div className="flex items-center justify-center bg-green-800 text-green-200 px-4 py-3 rounded text-sm sm:text-base font-medium">
                             <Coins className="w-4 h-4 mr-2" />
                             Video Completed!
                           </div>
@@ -373,10 +373,11 @@ export default function VideoPlayer() {
                   // Regular video player for direct video files
                   <video
                     ref={videoRef}
-                    className="w-full h-full rounded-t-lg"
+                    className="w-full h-full rounded-t-lg object-contain"
                     controls
                     controlsList="nodownload nofullscreen noremoteplayback"
                     disablePictureInPicture
+                    playsInline
                     onContextMenu={(e) => e.preventDefault()}
                   >
                     <source src={videoUrl} type="video/mp4" />
