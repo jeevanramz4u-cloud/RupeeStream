@@ -18,7 +18,6 @@ export default function Header() {
   const navItems = [
     { href: "/dashboard", label: "Dashboard", active: location === "/" || location === "/dashboard" },
     { href: "/videos", label: "Videos", active: location === "/videos" },
-    { href: "/earnings", label: "Earnings", active: location === "/earnings" },
     { href: "/referrals", label: "Referrals", active: location === "/referrals" },
     { href: "/support", label: "Support", active: location === "/support" },
   ];
@@ -58,8 +57,8 @@ export default function Header() {
 
           {/* User Section */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Balance */}
-            <div className="hidden sm:flex items-center space-x-1.5 sm:space-x-2 bg-accent/10 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg">
+            {/* Earnings Display */}
+            <div className="flex items-center space-x-1.5 sm:space-x-2 bg-accent/10 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg">
               <Coins className="text-accent w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="font-semibold text-gray-900 text-sm sm:text-base">₹{(user as any)?.balance || '0.00'}</span>
             </div>
@@ -98,12 +97,6 @@ export default function Header() {
                     Profile
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/earnings" className="flex items-center text-sm touch-manipulation">
-                    <Coins className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    Earnings
-                  </Link>
-                </DropdownMenuItem>
                 <DropdownMenuItem className="text-sm touch-manipulation">
                   <Settings className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   Settings
@@ -122,7 +115,7 @@ export default function Header() {
       {/* Mobile Navigation */}
       <div className="md:hidden border-t border-gray-200">
         <div className="flex overflow-x-auto space-x-3 px-3 py-2 scrollbar-hide">
-          {/* Mobile balance display */}
+          {/* Mobile earnings display */}
           <div className="flex items-center space-x-1.5 bg-accent/10 px-2 py-1.5 rounded-lg flex-shrink-0">
             <Coins className="text-accent w-3.5 h-3.5" />
             <span className="font-semibold text-gray-900 text-xs">₹{(user as any)?.balance || '0.00'}</span>
