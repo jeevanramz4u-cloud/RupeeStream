@@ -330,14 +330,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // In production, this would integrate with a real payment gateway
       const paymentId = `kyc_payment_${Date.now()}_${userId}`;
       
-      await storage.updateUserKycPayment(userId, {
+      // Update payment status and automatically approve KYC
+      await storage.updateUserKycPaymentAndApprove(userId, {
         kycFeePaid: true,
         kycFeePaymentId: paymentId,
+        kycStatus: "approved",
+        verificationStatus: "verified",
+        kycApprovedAt: new Date(),
       });
 
       res.json({ 
-        message: "KYC fee payment successful",
-        paymentId: paymentId 
+        message: "KYC fee payment successful - Verification completed!",
+        paymentId: paymentId,
+        kycStatus: "approved"
       });
     } catch (error) {
       console.error("Error processing KYC fee payment:", error);

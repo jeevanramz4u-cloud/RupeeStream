@@ -146,12 +146,16 @@ export default function KYC() {
       const response = await apiRequest("POST", "/api/kyc/pay-fee");
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Payment Successful",
-        description: "KYC processing fee paid successfully. Your documents will be reviewed soon.",
+        description: "KYC processing fee paid successfully. Your verification is now approved!",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/kyc/status"] });
+      // Force immediate refresh to show approved status
+      setTimeout(() => {
+        refetchKycData();
+      }, 1000);
       setCurrentStep(5);
     },
     onError: (error) => {

@@ -490,6 +490,15 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId));
   }
 
+  async updateUserKycPaymentAndApprove(userId: string, approvalData: any): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({ ...approvalData, updatedAt: new Date() })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
   // Daily tracking
   async updateDailyWatchTime(userId: string, additionalMinutes: number): Promise<void> {
     const today = new Date().toDateString();
