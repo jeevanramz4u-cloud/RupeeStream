@@ -15,16 +15,8 @@ export function useAuth() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Show hourly bonus toast when user receives it
-  useEffect(() => {
-    if (user && (user as any).hourlyBonus && (user as any).hourlyBonus.awarded) {
-      toast({
-        title: "Hourly Login Bonus! 🎉",
-        description: (user as any).hourlyBonus.message,
-        duration: 5000,
-      });
-    }
-  }, [user, toast]);
+  // Removed persistent hourly bonus notification to prevent spam
+  // The bonus is still awarded automatically, but won't show repeated notifications
 
   return {
     user,

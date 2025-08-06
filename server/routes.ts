@@ -54,20 +54,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const user = req.user;
       
-      // Check and award hourly bonus when user authenticates
+      // Check and award hourly bonus when user authenticates (but don't spam notifications)
       const bonusResult = await storage.checkAndAwardHourlyBonus(user.id);
       
       const { password: _, ...userWithoutPassword } = user;
       
-      // Only include bonus info in response if actually awarded
+      // Only include bonus info in response if actually awarded (prevent repeated notifications)
       const response: any = { ...userWithoutPassword };
-      if (bonusResult.awarded) {
-        response.hourlyBonus = { 
-          awarded: true, 
-          amount: bonusResult.amount,
-          message: "You've earned ₹10 hourly login bonus!"
-        };
-      }
+      // Remove automatic bonus notification to prevent spam
+      // Bonus will still be credited, but won't show persistent notification
+      // if (bonusResult.awarded) {
+      //   response.hourlyBonus = { 
+      //     awarded: true, 
+      //     amount: bonusResult.amount,
+      //     message: "You've earned ₹10 hourly login bonus!"
+      //   };
+      // }
       
       res.json(response);
     } catch (error) {
@@ -1064,7 +1066,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               // Add earning record for the referrer
               await storage.createEarning({
                 userId: referrer.id,
-                amount: bonusAmount,
+                amount: bonusAmount.toString(),
                 source: "referral_bonus",
                 description: `Referral bonus for ${verifiedUser.firstName} ${verifiedUser.lastName}`,
                 videoId: null
