@@ -55,7 +55,7 @@ export const users = pgTable("users", {
   role: userRoleEnum("role").default("user").notNull(),
   balance: decimal("balance", { precision: 10, scale: 2 }).default("0.00").notNull(),
   referralCode: varchar("referral_code").unique(),
-  referredBy: varchar("referred_by").references(() => users.id),
+  referredBy: varchar("referred_by"),
   verificationStatus: verificationStatusEnum("verification_status").default("pending").notNull(),
   accountStatus: accountStatusEnum("account_status").default("active").notNull(),
   bankDetails: text("bank_details"), // JSON string for bank details

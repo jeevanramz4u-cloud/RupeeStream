@@ -50,24 +50,24 @@ export default function Admin() {
 
   // Check if user is admin
   useEffect(() => {
-    if (user && user.role !== 'admin') {
+    if (user && (user as any).role !== 'admin') {
       setLocation('/dashboard');
     }
   }, [user, setLocation]);
 
   const { data: users = [] } = useQuery({
     queryKey: ["/api/admin/users"],
-    enabled: user?.role === 'admin',
+    enabled: (user as any)?.role === 'admin',
   });
 
   const { data: videos = [] } = useQuery({
     queryKey: ["/api/videos"],
-    enabled: user?.role === 'admin',
+    enabled: (user as any)?.role === 'admin',
   });
 
   const { data: payouts = [] } = useQuery({
     queryKey: ["/api/payouts"],
-    enabled: user?.role === 'admin',
+    enabled: (user as any)?.role === 'admin',
   });
 
   const verifyUserMutation = useMutation({
@@ -232,7 +232,7 @@ export default function Admin() {
     }
   };
 
-  if (user?.role !== 'admin') {
+  if ((user as any)?.role !== 'admin') {
     return (
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
         <Card className="max-w-md">
@@ -272,14 +272,14 @@ export default function Admin() {
                   <CardTitle>Pending Verifications</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {users.length === 0 ? (
+                  {(users as any[]).length === 0 ? (
                     <div className="text-center py-8">
                       <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-500">No pending verifications</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {users.map((user: any) => (
+                      {(users as any[]).map((user: any) => (
                         <div 
                           key={user.id}
                           className={`p-4 border rounded-lg cursor-pointer transition-colors ${
@@ -516,14 +516,14 @@ export default function Admin() {
                   <CardTitle>All Videos</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {videos.length === 0 ? (
+                  {(videos as any[]).length === 0 ? (
                     <div className="text-center py-8">
                       <Video className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-500">No videos added yet</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {videos.map((video: any) => (
+                      {(videos as any[]).map((video: any) => (
                         <div key={video.id} className="p-4 border border-gray-200 rounded-lg">
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
@@ -589,14 +589,14 @@ export default function Admin() {
                 <CardTitle>Payout Requests</CardTitle>
               </CardHeader>
               <CardContent>
-                {payouts.length === 0 ? (
+                {(payouts as any[]).length === 0 ? (
                   <div className="text-center py-8">
                     <DollarSign className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-500">No payout requests</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {payouts.map((payout: any) => (
+                    {(payouts as any[]).map((payout: any) => (
                       <div key={payout.id} className="p-4 border border-gray-200 rounded-lg">
                         <div className="flex items-center justify-between">
                           <div>
@@ -631,7 +631,7 @@ export default function Admin() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Total Users</p>
-                      <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+                      <p className="text-2xl font-bold text-gray-900">{(users as any[]).length}</p>
                     </div>
                     <Users className="w-8 h-8 text-primary" />
                   </div>
@@ -643,7 +643,7 @@ export default function Admin() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Total Videos</p>
-                      <p className="text-2xl font-bold text-gray-900">{videos.length}</p>
+                      <p className="text-2xl font-bold text-gray-900">{(videos as any[]).length}</p>
                     </div>
                     <Video className="w-8 h-8 text-secondary" />
                   </div>
@@ -656,7 +656,7 @@ export default function Admin() {
                     <div>
                       <p className="text-sm font-medium text-gray-600">Pending Verifications</p>
                       <p className="text-2xl font-bold text-gray-900">
-                        {users.filter((u: any) => u.verificationStatus === 'pending').length}
+                        {(users as any[]).filter((u: any) => u.verificationStatus === 'pending').length}
                       </p>
                     </div>
                     <Clock className="w-8 h-8 text-accent" />
@@ -669,7 +669,7 @@ export default function Admin() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Payout Requests</p>
-                      <p className="text-2xl font-bold text-gray-900">{payouts.length}</p>
+                      <p className="text-2xl font-bold text-gray-900">{(payouts as any[]).length}</p>
                     </div>
                     <DollarSign className="w-8 h-8 text-purple-600" />
                   </div>
