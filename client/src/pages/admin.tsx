@@ -53,6 +53,7 @@ export default function Admin() {
   const [showNewVideoForm, setShowNewVideoForm] = useState(false);
   const [kycFilter, setKycFilter] = useState<'all' | 'unpaid' | 'verification' | 'verified'>('all');
   const [activeTab, setActiveTab] = useState('users');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Filter users based on KYC status
   const getFilteredUsers = () => {
@@ -69,6 +70,27 @@ export default function Admin() {
       default:
         return userList;
     }
+  };
+
+  // Filter users based on search term
+  const getSearchFilteredUsers = () => {
+    if (!users) return [];
+    const userList = users as any[];
+    
+    if (!searchTerm.trim()) {
+      return userList;
+    }
+    
+    return userList.filter(user => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        (user.firstName && user.firstName.toLowerCase().includes(searchLower)) ||
+        (user.lastName && user.lastName.toLowerCase().includes(searchLower)) ||
+        (user.email && user.email.toLowerCase().includes(searchLower)) ||
+        (user.phone && user.phone.includes(searchTerm)) ||
+        (user.governmentIdNumber && user.governmentIdNumber.includes(searchTerm))
+      );
+    });
   };
 
   // Check admin authentication
@@ -685,57 +707,59 @@ export default function Admin() {
             <div className="space-y-6">
               {/* User Profiles Management Header */}
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">User Profile Management</h2>
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">User Profile Management</h2>
+                  {searchTerm.trim() && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      {getSearchFilteredUsers().length} user{getSearchFilteredUsers().length !== 1 ? 's' : ''} found for "{searchTerm}"
+                    </p>
+                  )}
+                </div>
                 <div className="flex space-x-2">
-                  <Button 
-                    variant="outline"
-                    onClick={async () => {
-                      try {
-                        const response = await fetch("/api/admin/create-demo-users", {
-                          method: "POST",
-                          credentials: "include"
-                        });
-                        const result = await response.json();
-                        toast({
-                          title: "Success",
-                          description: "Demo users created successfully",
-                        });
-                        queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
-                      } catch (error) {
-                        toast({
-                          title: "Error",
-                          description: "Failed to create demo users",
-                          variant: "destructive",
-                        });
-                      }
-                    }}
-                  >
-                    <Users className="w-4 h-4 mr-2" />
-                    Create Demo Users
-                  </Button>
                   <Input
                     placeholder="Search users by email or name..."
                     className="w-80"
-                    onChange={(e) => {
-                      // Add search functionality here if needed
-                    }}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
+                  {searchTerm.trim() && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setSearchTerm('')}
+                      className="px-3"
+                    >
+                      Clear
+                    </Button>
+                  )}
                 </div>
               </div>
 
               {/* Users Grid */}
               <div className="grid grid-cols-1 gap-6">
-                {(users as any[]).length === 0 ? (
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="text-center py-8">
-                        <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-500">No users found</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  (users as any[]).map((user: any) => (
+                {(() => {
+                  const filteredUsers = getSearchFilteredUsers();
+                  return filteredUsers.length === 0 ? (
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="text-center py-8">
+                          <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                          <p className="text-gray-500">
+                            {searchTerm.trim() ? `No users found matching "${searchTerm}"` : 'No users found'}
+                          </p>
+                          {searchTerm.trim() && (
+                            <Button 
+                              variant="outline" 
+                              className="mt-2"
+                              onClick={() => setSearchTerm('')}
+                            >
+                              Clear Search
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    filteredUsers.map((user: any) => (
                     <Card key={user.id}>
                       <CardHeader>
                         <div className="flex items-center justify-between">
@@ -1005,7 +1029,8 @@ export default function Admin() {
                       </CardContent>
                     </Card>
                   ))
-                )}
+                  );
+                })()}
               </div>
             </div>
           </TabsContent>
