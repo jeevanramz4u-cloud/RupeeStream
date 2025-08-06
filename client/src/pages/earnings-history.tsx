@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import { ArrowLeft, Calendar, Coins, Video, Users } from "lucide-react";
+import { ArrowLeft, Calendar, Coins, Video, Users, Clock, Info, Wallet } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 
@@ -22,6 +22,48 @@ export default function EarningsHistory() {
     queryKey: ["/api/earnings/stats"],
     enabled: !!user,
   });
+
+  const { data: payouts = [], isLoading: payoutsLoading } = useQuery({
+    queryKey: ["/api/payouts"],
+    enabled: !!user,
+  });
+
+  // Calculate next payout date (every Tuesday)
+  const getNextTuesday = () => {
+    const now = new Date();
+    const nextTuesday = new Date(now);
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const daysUntilTuesday = dayOfWeek === 2 ? 7 : (2 - dayOfWeek + 7) % 7; // Tuesday is day 2
+    
+    if (daysUntilTuesday === 0) {
+      // Today is Tuesday, check if it's past processing time (assume 2 PM)
+      const processingHour = 14; // 2 PM
+      if (now.getHours() >= processingHour) {
+        nextTuesday.setDate(now.getDate() + 7);
+      }
+    } else {
+      nextTuesday.setDate(now.getDate() + daysUntilTuesday);
+    }
+    
+    return nextTuesday.toLocaleDateString('en-IN', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  const nextPayoutDate = getNextTuesday();
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   if (isLoading) {
     return (
@@ -67,7 +109,7 @@ export default function EarningsHistory() {
         </div>
 
         {/* Earnings Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-8">
           <Card className="touch-manipulation">
             <CardContent className="pt-4">
               <div className="flex items-center">
@@ -115,12 +157,100 @@ export default function EarningsHistory() {
               </div>
             </CardContent>
           </Card>
+
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4">
+              <div className="flex items-center">
+                <Clock className="h-8 w-8 text-blue-600" />
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-500">Next Payout</p>
+                  <p className="text-sm font-bold text-blue-900">{nextPayoutDate}</p>
+                  <p className="text-xs text-blue-600 flex items-center mt-1">
+                    <Info className="w-3 h-3 mr-1" />
+                    Weekly on Tuesdays
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Payout History */}
+        <Card className="touch-manipulation mb-8">
+          <CardHeader>
+            <CardTitle className="text-base sm:text-lg flex items-center">
+              <Wallet className="w-5 h-5 mr-2" />
+              Payout History
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {(payouts as any[]).length === 0 ? (
+              <div className="text-center py-6">
+                <Wallet className="h-10 w-10 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500 text-sm">No payout requests yet</p>
+                <p className="text-xs text-gray-400">Request your first payout when ready!</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {(payouts as any[]).map((payout: any) => (
+                  <div key={payout.id} className="p-4 bg-gray-50 rounded-lg border">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <p className="text-sm font-medium text-gray-900">
+                          Payout Request
+                        </p>
+                        <Badge 
+                          variant={payout.status === 'completed' ? 'default' : 
+                                 payout.status === 'failed' || payout.status === 'declined' ? 'destructive' : 
+                                 payout.status === 'processing' ? 'secondary' : 'outline'}
+                          className="text-xs"
+                        >
+                          {payout.status.charAt(0).toUpperCase() + payout.status.slice(1)}
+                        </Badge>
+                      </div>
+                      <p className="text-lg font-semibold text-gray-900">
+                        ₹{payout.amount}
+                      </p>
+                    </div>
+                    
+                    <div className="space-y-1 text-xs text-gray-600">
+                      <div className="flex items-center justify-between">
+                        <span>Requested:</span>
+                        <span className="font-mono">{formatDate(payout.requested_at || payout.requestedAt)}</span>
+                      </div>
+                      
+                      {payout.processed_at || payout.processedAt ? (
+                        <div className="flex items-center justify-between">
+                          <span>Processed:</span>
+                          <span className="font-mono text-green-600">{formatDate(payout.processed_at || payout.processedAt)}</span>
+                        </div>
+                      ) : payout.status === 'pending' ? (
+                        <div className="flex items-center justify-between">
+                          <span>Expected:</span>
+                          <span className="font-mono text-blue-600">{nextPayoutDate}</span>
+                        </div>
+                      ) : null}
+                      
+                      {payout.reason && (
+                        <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-800">
+                          <p className="text-xs"><strong>Reason:</strong> {payout.reason}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Earnings List */}
         <Card className="touch-manipulation">
           <CardHeader>
-            <CardTitle className="text-base sm:text-lg">All Earnings</CardTitle>
+            <CardTitle className="text-base sm:text-lg flex items-center">
+              <Coins className="w-5 h-5 mr-2" />
+              All Earnings
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {(earnings as any[]).length === 0 ? (
