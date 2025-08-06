@@ -224,6 +224,22 @@ export default function VideoPlayer() {
       </header>
 
       <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-6 pb-20">
+        {/* Instructions for YouTube videos - Top */}
+        {isYouTubeVideo && (
+          <Card className="mb-3 touch-manipulation">
+            <CardContent className="p-3 bg-blue-50">
+              <div className="text-center">
+                <p className="text-xs text-blue-800 mb-1">
+                  <strong>How to earn:</strong> Open YouTube → Watch video → Return & complete
+                </p>
+                <p className="text-xs text-blue-600">
+                  Status: {hasCompleted ? '✅ Completed' : '⏳ Pending completion'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Video Header */}
         <div className="mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">{videoTitle}</h1>
@@ -385,21 +401,7 @@ export default function VideoPlayer() {
 
 
 
-        {/* Instructions for YouTube videos - Compact */}
-        {isYouTubeVideo && (
-          <Card className="mb-4 sm:mb-6 touch-manipulation">
-            <CardContent className="p-3 bg-blue-50">
-              <div className="text-center">
-                <p className="text-xs text-blue-800 mb-1">
-                  <strong>How to earn:</strong> Open YouTube → Watch video → Return & complete
-                </p>
-                <p className="text-xs text-blue-600">
-                  Status: {hasCompleted ? '✅ Completed' : '⏳ Pending completion'}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+
 
         {/* Earning Status */}
         {canEarn ? (
