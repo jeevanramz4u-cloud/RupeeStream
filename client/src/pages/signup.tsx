@@ -66,9 +66,7 @@ export default function Signup() {
     ifscCode: "",
     bankName: "",
     
-    // Government ID
-    governmentIdType: "",
-    governmentIdNumber: "",
+
     
     // Terms
     acceptTerms: false,
@@ -80,13 +78,12 @@ export default function Signup() {
     { number: 2, title: "Personal Info", icon: FileText },
     { number: 3, title: "Address", icon: MapPin },
     { number: 4, title: "Bank Details", icon: CreditCard },
-    { number: 5, title: "Verification", icon: Upload },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (currentStep < 5) {
+    if (currentStep < 4) {
       // Validate current step before proceeding
       if (validateCurrentStep()) {
         setCurrentStep(currentStep + 1);
@@ -107,7 +104,6 @@ export default function Signup() {
         credentials: 'include',
         body: JSON.stringify({
           ...formData,
-          governmentIdUrl,
           referralCode: referralInfo, // Include referral code
         }),
       });
@@ -169,12 +165,6 @@ export default function Signup() {
       case 4:
         if (!formData.accountHolderName || !formData.accountNumber || !formData.ifscCode || !formData.bankName) {
           setError("Please fill in all required fields");
-          return false;
-        }
-        break;
-      case 5:
-        if (!formData.governmentIdType || !formData.governmentIdNumber || !governmentIdUrl) {
-          setError("Please complete government ID verification");
           return false;
         }
         if (!formData.acceptTerms || !formData.acceptPrivacy) {
@@ -478,105 +468,40 @@ export default function Signup() {
                 />
               </div>
             </div>
-          </div>
-        );
 
-      case 5:
-        return (
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="governmentIdType">Government ID Type *</Label>
-                <Select onValueChange={(value) => handleSelectChange(value, 'governmentIdType')}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select ID type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="aadhaar">Aadhaar Card</SelectItem>
-                    <SelectItem value="passport">Passport</SelectItem>
-                    <SelectItem value="driving_license">Driving License</SelectItem>
-                    <SelectItem value="voter_id">Voter ID</SelectItem>
-                    <SelectItem value="pan_card">PAN Card</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="governmentIdNumber">ID Number *</Label>
-                <Input
-                  id="governmentIdNumber"
-                  name="governmentIdNumber"
-                  placeholder="Enter ID number"
-                  value={formData.governmentIdNumber}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label>Upload Government ID Document *</Label>
-                <div className="mt-2">
-                  {governmentIdUrl ? (
-                    <div className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                      <span className="text-sm text-green-700">Document uploaded successfully</span>
-                    </div>
-                  ) : (
-                    <ObjectUploader
-                      maxNumberOfFiles={1}
-                      maxFileSize={10485760} // 10MB
-                      onGetUploadParameters={handleGovernmentIdUpload}
-                      onComplete={handleUploadComplete}
-                      buttonClassName="w-full"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <Upload className="w-4 h-4" />
-                        <span>Upload Government ID</span>
-                      </div>
-                    </ObjectUploader>
-                  )}
-                </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  Upload a clear image of your government ID (JPG, PNG, PDF - Max 10MB)
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-4 pt-4 border-t">
-              <div className="flex items-start space-x-2">
-                <Checkbox
+            <div className="space-y-4 pt-6 border-t">
+              <h3 className="font-medium text-gray-900">Terms and Conditions</h3>
+              
+              <div className="flex items-start space-x-3">
+                <Checkbox 
                   id="acceptTerms"
                   checked={formData.acceptTerms}
                   onCheckedChange={(checked) => 
-                    setFormData({ ...formData, acceptTerms: checked as boolean })
+                    setFormData({ ...formData, acceptTerms: !!checked })
                   }
                 />
-                <div className="text-sm">
-                  <Label htmlFor="acceptTerms" className="cursor-pointer">
-                    I accept the{" "}
-                    <Link href="/terms-conditions">
-                      <span className="text-primary underline">Terms & Conditions</span>
-                    </Link>
-                  </Label>
-                </div>
+                <Label htmlFor="acceptTerms" className="text-sm leading-relaxed">
+                  I agree to the{" "}
+                  <Link to="/terms-conditions" className="text-primary hover:underline">
+                    Terms and Conditions
+                  </Link>
+                </Label>
               </div>
 
-              <div className="flex items-start space-x-2">
-                <Checkbox
+              <div className="flex items-start space-x-3">
+                <Checkbox 
                   id="acceptPrivacy"
                   checked={formData.acceptPrivacy}
                   onCheckedChange={(checked) => 
-                    setFormData({ ...formData, acceptPrivacy: checked as boolean })
+                    setFormData({ ...formData, acceptPrivacy: !!checked })
                   }
                 />
-                <div className="text-sm">
-                  <Label htmlFor="acceptPrivacy" className="cursor-pointer">
-                    I accept the{" "}
-                    <Link href="/privacy-policy">
-                      <span className="text-primary underline">Privacy Policy</span>
-                    </Link>
-                  </Label>
-                </div>
+                <Label htmlFor="acceptPrivacy" className="text-sm leading-relaxed">
+                  I agree to the{" "}
+                  <Link to="/privacy-policy" className="text-primary hover:underline">
+                    Privacy Policy
+                  </Link>
+                </Label>
               </div>
             </div>
           </div>
@@ -676,7 +601,7 @@ export default function Signup() {
                 >
                   {isLoading ? (
                     "Processing..."
-                  ) : currentStep === 5 ? (
+                  ) : currentStep === 4 ? (
                     "Create Account"
                   ) : (
                     <>

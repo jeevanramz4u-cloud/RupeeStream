@@ -92,9 +92,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         accountNumber,
         ifscCode,
         bankName,
-        governmentIdType,
-        governmentIdNumber,
-        governmentIdUrl,
         referralCode
       } = req.body;
 
@@ -124,9 +121,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         accountNumber,
         ifscCode,
         bankName,
-        governmentIdType,
-        governmentIdNumber,
-        governmentIdUrl,
+        governmentIdType: null,
+        governmentIdNumber: null,
+        governmentIdUrl: null,
         verificationStatus: 'pending',
         kycStatus: 'pending',
         status: 'active',
