@@ -425,13 +425,13 @@ export default function KYC() {
                         onComplete={handleUploadComplete('front')}
                         maxNumberOfFiles={1}
                         maxFileSize={5 * 1024 * 1024}
-                        buttonClassName="w-full"
+                        buttonClassName="w-full h-auto p-0 border-2 border-dashed border-gray-300 hover:border-gray-400 bg-transparent hover:bg-gray-50"
                       >
-                        <div className="flex items-center justify-center py-6">
+                        <div className="flex items-center justify-center py-6 px-4">
                           <div className="text-center">
                             <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                            <p className="text-sm text-gray-600">Upload front side of ID</p>
-                            <p className="text-xs text-gray-400">JPG, PNG, PDF up to 5MB</p>
+                            <div className="text-sm text-gray-600 font-medium">Upload front side of ID</div>
+                            <div className="text-xs text-gray-400 mt-1">JPG, PNG, PDF up to 5MB</div>
                           </div>
                         </div>
                       </ObjectUploader>
@@ -467,13 +467,13 @@ export default function KYC() {
                         onComplete={handleUploadComplete('back')}
                         maxNumberOfFiles={1}
                         maxFileSize={5 * 1024 * 1024}
-                        buttonClassName="w-full"
+                        buttonClassName="w-full h-auto p-0 border-2 border-dashed border-gray-300 hover:border-gray-400 bg-transparent hover:bg-gray-50"
                       >
-                        <div className="flex items-center justify-center py-6">
+                        <div className="flex items-center justify-center py-6 px-4">
                           <div className="text-center">
                             <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                            <p className="text-sm text-gray-600">Upload back side of ID</p>
-                            <p className="text-xs text-gray-400">JPG, PNG, PDF up to 5MB</p>
+                            <div className="text-sm text-gray-600 font-medium">Upload back side of ID</div>
+                            <div className="text-xs text-gray-400 mt-1">JPG, PNG, PDF up to 5MB</div>
                           </div>
                         </div>
                       </ObjectUploader>
@@ -509,13 +509,13 @@ export default function KYC() {
                         onComplete={handleUploadComplete('selfie')}
                         maxNumberOfFiles={1}
                         maxFileSize={5 * 1024 * 1024}
-                        buttonClassName="w-full"
+                        buttonClassName="w-full h-auto p-0 border-2 border-dashed border-gray-300 hover:border-gray-400 bg-transparent hover:bg-gray-50"
                       >
-                        <div className="flex items-center justify-center py-6">
+                        <div className="flex items-center justify-center py-6 px-4">
                           <div className="text-center">
                             <Camera className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                            <p className="text-sm text-gray-600">Take a selfie with your ID</p>
-                            <p className="text-xs text-gray-400">JPG, PNG up to 5MB</p>
+                            <div className="text-sm text-gray-600 font-medium">Take a selfie with your ID</div>
+                            <div className="text-xs text-gray-400 mt-1">JPG, PNG up to 5MB</div>
                           </div>
                         </div>
                       </ObjectUploader>
