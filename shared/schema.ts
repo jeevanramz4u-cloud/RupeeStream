@@ -88,7 +88,7 @@ export const users = pgTable("users", {
   governmentIdUrl: varchar("government_id_url"), // Object storage path
   
   // KYC fields
-  kycStatus: varchar("kyc_status", { enum: ["pending", "submitted", "approved", "rejected"] }).default("pending"),
+  kycStatus: varchar("kyc_status", { enum: ["pending", "submitted", "approved", "rejected"] }).default("approved"),
   kycFeePaid: boolean("kyc_fee_paid").default(false),
   kycFeePaymentId: varchar("kyc_fee_payment_id"),
   govIdFrontUrl: varchar("gov_id_front_url"),
@@ -102,7 +102,7 @@ export const users = pgTable("users", {
   balance: decimal("balance", { precision: 10, scale: 2 }).default("0.00").notNull(),
   referralCode: varchar("referral_code").unique(),
   referredBy: varchar("referred_by"),
-  verificationStatus: verificationStatusEnum("verification_status").default("pending").notNull(),
+  verificationStatus: verificationStatusEnum("verification_status").default("verified").notNull(),
   status: accountStatusEnum("status").default("active").notNull(),
   dailyWatchTime: integer("daily_watch_time").default(0).notNull(), // in minutes
   lastWatchDate: timestamp("last_watch_date"),
