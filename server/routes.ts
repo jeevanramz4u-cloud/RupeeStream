@@ -28,6 +28,140 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Traditional login/signup endpoints (alternative to Replit auth)
+  app.post('/api/auth/signup', async (req, res) => {
+    try {
+      const {
+        email,
+        password,
+        firstName,
+        lastName,
+        phoneNumber,
+        dateOfBirth,
+        address,
+        city,
+        state,
+        pincode,
+        accountHolderName,
+        accountNumber,
+        ifscCode,
+        bankName,
+        governmentIdType,
+        governmentIdNumber,
+        governmentIdUrl
+      } = req.body;
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists with this email" });
+      }
+
+      // Hash password
+      const bcrypt = await import('bcryptjs');
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      // Create user with all provided information
+      const userData = {
+        email,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        phoneNumber,
+        dateOfBirth,
+        address,
+        city,
+        state,
+        pincode,
+        accountHolderName,
+        accountNumber,
+        ifscCode,
+        bankName,
+        governmentIdType,
+        governmentIdNumber,
+        governmentIdUrl,
+        verificationStatus: 'pending',
+        status: 'active',
+        balance: 0,
+        referralCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
+      };
+
+      const newUser = await storage.createUserWithTraditionalAuth(userData);
+
+      // Create session for the new user
+      req.session.userId = newUser.id;
+      
+      res.json({ message: "Account created successfully", user: newUser });
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(500).json({ message: "Failed to create account" });
+    }
+  });
+
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      if (!user || !user.password) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      // Check if account is suspended
+      if (user.status === 'suspended') {
+        return res.status(403).json({ message: "Account is suspended. Please contact support." });
+      }
+
+      // Verify password
+      const bcrypt = await import('bcryptjs');
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      // Create session
+      req.session.userId = user.id;
+
+      // Return user without password
+      const { password: _, ...userWithoutPassword } = user;
+      res.json({ message: "Login successful", user: userWithoutPassword });
+    } catch (error) {
+      console.error("Error during login:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  app.post('/api/auth/logout', (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Could not log out" });
+      }
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+
+  // Alternative user auth check for traditional login
+  app.get('/api/auth/check', async (req: any, res) => {
+    try {
+      if (req.session.userId) {
+        const user = await storage.getUser(req.session.userId);
+        if (user) {
+          const { password: _, ...userWithoutPassword } = user;
+          return res.json(userWithoutPassword);
+        }
+      }
+      res.status(401).json({ message: "Not authenticated" });
+    } catch (error) {
+      console.error("Error checking auth:", error);
+      res.status(500).json({ message: "Authentication check failed" });
+    }
+  });
+
   // User routes
   app.put('/api/user/bank-details', isAuthenticated, async (req: any, res) => {
     try {

@@ -46,9 +46,16 @@ export default function Landing() {
             <Button 
               size="lg" 
               className="bg-primary hover:bg-primary/90"
-              onClick={() => window.location.href = '/api/login'}
+              onClick={() => window.location.href = '/signup'}
             >
-              Start Earning Now
+              Sign Up to Start Earning
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => window.location.href = '/login'}
+            >
+              Already Have Account?
             </Button>
             <Button size="lg" variant="outline">
               <a href="/how-to-earn">Learn How It Works</a>

@@ -29,6 +29,10 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   
+  // Traditional auth operations
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUserWithTraditionalAuth(userData: any): Promise<User>;
+  
   // User management
   updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
   updateUserVerification(id: string, status: "pending" | "verified" | "rejected"): Promise<User | undefined>;
@@ -96,6 +100,46 @@ export class DatabaseStorage implements IStorage {
           ...userData,
           updatedAt: new Date(),
         },
+      })
+      .returning();
+    return user;
+  }
+
+  // Traditional auth operations
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUserWithTraditionalAuth(userData: any): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        id: Math.random().toString(36).substring(2, 15),
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        profileImageUrl: null,
+        password: userData.password,
+        phoneNumber: userData.phoneNumber,
+        dateOfBirth: userData.dateOfBirth,
+        address: userData.address,
+        city: userData.city,
+        state: userData.state,
+        pincode: userData.pincode,
+        accountHolderName: userData.accountHolderName,
+        accountNumber: userData.accountNumber,
+        ifscCode: userData.ifscCode,
+        bankName: userData.bankName,
+        governmentIdType: userData.governmentIdType,
+        governmentIdNumber: userData.governmentIdNumber,
+        governmentIdUrl: userData.governmentIdUrl,
+        verificationStatus: userData.verificationStatus || 'pending',
+        status: userData.status || 'active',
+        balance: userData.balance || 0,
+        referralCode: userData.referralCode,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       })
       .returning();
     return user;

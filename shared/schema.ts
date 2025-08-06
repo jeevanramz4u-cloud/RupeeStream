@@ -64,14 +64,36 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  
+  // Traditional auth fields
+  password: varchar("password"), // For traditional login (hashed)
+  phoneNumber: varchar("phone_number"),
+  dateOfBirth: varchar("date_of_birth"),
+  
+  // Address fields
+  address: text("address"),
+  city: varchar("city"),
+  state: varchar("state"),
+  pincode: varchar("pincode"),
+  
+  // Bank details fields
+  accountHolderName: varchar("account_holder_name"),
+  accountNumber: varchar("account_number"),
+  ifscCode: varchar("ifsc_code"),
+  bankName: varchar("bank_name"),
+  
+  // Government ID fields
+  governmentIdType: varchar("government_id_type"),
+  governmentIdNumber: varchar("government_id_number"),
+  governmentIdUrl: varchar("government_id_url"), // Object storage path
+  
+  // System fields
   role: userRoleEnum("role").default("user").notNull(),
   balance: decimal("balance", { precision: 10, scale: 2 }).default("0.00").notNull(),
   referralCode: varchar("referral_code").unique(),
   referredBy: varchar("referred_by"),
   verificationStatus: verificationStatusEnum("verification_status").default("pending").notNull(),
-  accountStatus: accountStatusEnum("account_status").default("active").notNull(),
-  bankDetails: text("bank_details"), // JSON string for bank details
-  governmentIdUrl: varchar("government_id_url"), // Object storage path
+  status: accountStatusEnum("status").default("active").notNull(),
   dailyWatchTime: integer("daily_watch_time").default(0).notNull(), // in minutes
   lastWatchDate: timestamp("last_watch_date"),
   createdAt: timestamp("created_at").defaultNow(),
