@@ -77,6 +77,24 @@ export default function Earnings() {
   const progressPercentage = Math.min((watchedHours / targetHours) * 100, 100);
   const remainingHours = Math.max(targetHours - watchedHours, 0);
 
+  // Calculate next Tuesday for payout
+  const getNextTuesday = () => {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const daysUntilTuesday = dayOfWeek <= 2 ? (2 - dayOfWeek) : (9 - dayOfWeek); // 2 = Tuesday
+    const nextTuesday = new Date(today);
+    nextTuesday.setDate(today.getDate() + daysUntilTuesday);
+    
+    return nextTuesday.toLocaleDateString('en-IN', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long', 
+      day: 'numeric'
+    });
+  };
+
+  const nextPayoutDate = getNextTuesday();
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-IN', {
       year: 'numeric',
@@ -229,7 +247,8 @@ export default function Earnings() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Next Payout</p>
-                  <p className="text-2xl font-bold text-gray-900">Tuesday</p>
+                  <p className="text-lg font-bold text-gray-900">{nextPayoutDate}</p>
+                  <p className="text-xs text-gray-500 mt-1">Payouts processed weekly</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                   <Calendar className="text-purple-600 w-6 h-6" />
@@ -252,7 +271,7 @@ export default function Earnings() {
                           <strong>Current Balance:</strong> ₹{(user as any)?.balance || '0.00'}
                         </p>
                         <p className="text-xs text-blue-600 mt-1">
-                          Payouts are processed every Tuesday. Make sure your bank details are complete and your account is verified.
+                          Next payout: {nextPayoutDate}. Make sure your bank details are complete and your account is verified.
                         </p>
                       </div>
                       
