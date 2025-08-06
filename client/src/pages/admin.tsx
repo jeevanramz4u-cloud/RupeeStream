@@ -38,7 +38,8 @@ import {
   RotateCcw,
   LogOut,
   CreditCard,
-  Building2
+  Building2,
+  Coins
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -690,7 +691,10 @@ export default function Admin() {
                                   className="w-full h-32 object-cover rounded border"
                                   onError={(e) => {
                                     e.currentTarget.style.display = 'none';
-                                    e.currentTarget.nextElementSibling.style.display = 'block';
+                                    const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                    if (nextSibling) {
+                                      nextSibling.style.display = 'block';
+                                    }
                                   }}
                                 />
                                 <div style={{ display: 'none' }} className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
@@ -723,7 +727,10 @@ export default function Admin() {
                                   className="w-full h-32 object-cover rounded border"
                                   onError={(e) => {
                                     e.currentTarget.style.display = 'none';
-                                    e.currentTarget.nextElementSibling.style.display = 'block';
+                                    const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                    if (nextSibling) {
+                                      nextSibling.style.display = 'block';
+                                    }
                                   }}
                                 />
                                 <div style={{ display: 'none' }} className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
@@ -756,7 +763,10 @@ export default function Admin() {
                                   className="w-full h-32 object-cover rounded border"
                                   onError={(e) => {
                                     e.currentTarget.style.display = 'none';
-                                    e.currentTarget.nextElementSibling.style.display = 'block';
+                                    const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                    if (nextSibling) {
+                                      nextSibling.style.display = 'block';
+                                    }
                                   }}
                                 />
                                 <div style={{ display: 'none' }} className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
@@ -1032,7 +1042,10 @@ export default function Admin() {
                                     onClick={() => window.open(user.governmentIdFrontUrl, '_blank')}
                                     onError={(e) => {
                                       e.currentTarget.style.display = 'none';
-                                      e.currentTarget.nextElementSibling.style.display = 'flex';
+                                      const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                      if (nextSibling) {
+                                        nextSibling.style.display = 'flex';
+                                      }
                                     }}
                                   />
                                   <div style={{ display: 'none' }} className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
@@ -1066,7 +1079,10 @@ export default function Admin() {
                                     onClick={() => window.open(user.governmentIdBackUrl, '_blank')}
                                     onError={(e) => {
                                       e.currentTarget.style.display = 'none';
-                                      e.currentTarget.nextElementSibling.style.display = 'flex';
+                                      const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                      if (nextSibling) {
+                                        nextSibling.style.display = 'flex';
+                                      }
                                     }}
                                   />
                                   <div style={{ display: 'none' }} className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
@@ -1100,7 +1116,10 @@ export default function Admin() {
                                     onClick={() => window.open(user.selfieWithIdUrl, '_blank')}
                                     onError={(e) => {
                                       e.currentTarget.style.display = 'none';
-                                      e.currentTarget.nextElementSibling.style.display = 'flex';
+                                      const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                      if (nextSibling) {
+                                        nextSibling.style.display = 'flex';
+                                      }
                                     }}
                                   />
                                   <div style={{ display: 'none' }} className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
