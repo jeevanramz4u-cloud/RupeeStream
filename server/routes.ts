@@ -152,8 +152,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Create referral record
             const referralRecord = await storage.createReferral({
               referrerId: referrer.id,
-              referredId: newUser.id,
-              isEarningCredited: false
+              referredId: newUser.id
             });
             console.log(`Referral record created:`, referralRecord);
             
