@@ -430,6 +430,15 @@ export default function VideoPlayer() {
 
 
 
+        {/* Video Description */}
+        {video.description && (
+          <Card className="mt-4 touch-manipulation">
+            <CardContent className="p-3 sm:p-4">
+              <h3 className="text-sm font-medium text-gray-900 mb-2">About this video</h3>
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{video.description}</p>
+            </CardContent>
+          </Card>
+        )}
       </main>
     </div>
   );
