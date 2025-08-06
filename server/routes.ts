@@ -804,6 +804,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin - Delete user profile
+  app.delete("/api/admin/users/:id", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      
+      const success = await storage.deleteUser(id);
+      if (!success) {
+        return res.status(404).json({ message: "User not found or could not be deleted" });
+      }
+
+      res.json({ message: "User profile deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ message: "Failed to delete user" });
+    }
+  });
+
   // Admin - Update user balance
   app.put("/api/admin/users/:id/balance", async (req: any, res) => {
     try {

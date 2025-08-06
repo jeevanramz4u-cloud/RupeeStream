@@ -219,6 +219,36 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(users.createdAt));
   }
 
+  async deleteUser(id: string): Promise<boolean> {
+    try {
+      // Delete related data first to maintain referential integrity
+      
+      // Delete video progress
+      await db.delete(videoProgress).where(eq(videoProgress.userId, id));
+      
+      // Delete earnings
+      await db.delete(earnings).where(eq(earnings.userId, id));
+      
+      // Delete referrals (both referring and referred)
+      await db.delete(referrals).where(eq(referrals.referredUserId, id));
+      await db.delete(referrals).where(eq(referrals.referringUserId, id));
+      
+      // Delete payout requests
+      await db.delete(payoutRequests).where(eq(payoutRequests.userId, id));
+      
+      // Delete chat messages
+      await db.delete(chatMessages).where(eq(chatMessages.userId, id));
+      
+      // Finally delete the user
+      const result = await db.delete(users).where(eq(users.id, id));
+      
+      return (result.rowCount || 0) > 0;
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      return false;
+    }
+  }
+
   // Video operations
   async getVideos(limit = 50): Promise<Video[]> {
     return await db

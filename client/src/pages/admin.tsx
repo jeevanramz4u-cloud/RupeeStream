@@ -217,6 +217,27 @@ export default function Admin() {
     },
   });
 
+  // Delete user mutation
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      await apiRequest("DELETE", `/api/admin/users/${userId}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "User profile deleted successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to delete user profile",
+        variant: "destructive",
+      });
+    },
+  });
+
   const createVideoMutation = useMutation({
     mutationFn: async (videoData: any) => {
       await apiRequest("POST", "/api/admin/videos", videoData);
@@ -1025,6 +1046,22 @@ export default function Admin() {
                               Reset Verification
                             </Button>
                           )}
+
+                          {/* Delete Profile */}
+                          <Button 
+                            size="sm"
+                            variant="destructive"
+                            className="text-xs"
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to delete ${user.email}'s profile? This action cannot be undone and will remove all user data including earnings, videos progress, and payout history.`)) {
+                                deleteUserMutation.mutate(user.id);
+                              }
+                            }}
+                            disabled={deleteUserMutation.isPending}
+                          >
+                            <Trash2 className="w-3 h-3 sm:mr-1" />
+                            <span className="hidden sm:inline">Delete Profile</span>
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>

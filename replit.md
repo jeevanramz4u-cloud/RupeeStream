@@ -35,6 +35,11 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Eliminated manual admin approval step for streamlined user experience
 - Payment success immediately updates both kycStatus to 'approved' and verificationStatus to 'verified'
 - KYC page shows instant approval confirmation and enables payout access
+- **Added comprehensive user profile deletion functionality for administrators**
+- Admin panel now includes "Delete Profile" button for complete user account removal
+- Deletion process removes all associated data: earnings, video progress, referrals, payouts, and chat messages
+- Confirmation dialog warns administrators about permanent data deletion
+- Maintains database referential integrity during deletion process
 
 # User Preferences
 
