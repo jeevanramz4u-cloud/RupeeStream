@@ -122,8 +122,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         governmentIdType,
         governmentIdNumber,
         governmentIdUrl,
-        verificationStatus: 'verified',
-        kycStatus: 'approved',
+        verificationStatus: 'pending',
+        kycStatus: 'pending',
         status: 'active',
         balance: "0.00", // Base balance, signup bonus added separately
         referralCode: Math.random().toString(36).substring(2, 8).toUpperCase(),

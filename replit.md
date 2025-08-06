@@ -44,11 +44,11 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Corrected signup process that was awarding ₹2000 instead of ₹1000
 - Set initial user balance to ₹0.00 with ₹1000 added via earning record to prevent double bonus
 - Signup bonus now correctly awards exactly ₹1000 as intended
-- **Removed verification step from user signup (August 2025)**
-- Users are now automatically verified upon signup without admin approval
-- Default verification status changed from 'pending' to 'verified' 
-- Default KYC status changed from 'pending' to 'approved'
-- Users can immediately access all platform features after creating account
+- **Reverted to require KYC verification for users (August 2025)**
+- Users now start with 'pending' verification status requiring admin approval
+- Default verification status changed back to 'pending' 
+- Default KYC status changed back to 'pending'
+- Users must complete KYC verification process to access payout features
 
 # User Preferences
 
