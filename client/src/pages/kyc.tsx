@@ -74,20 +74,29 @@ export default function KYC() {
     gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
-  // Clear localStorage when KYC is approved or handle re-verification
+  // Handle localStorage based on KYC status changes
   useEffect(() => {
     if (kycData) {
       const data = kycData as any;
-      // If KYC is approved, clear the localStorage
-      if (data.kycStatus === 'approved') {
+      // If KYC is fully approved and verified, clear the localStorage
+      if (data.kycStatus === 'approved' && data.verificationStatus === 'verified') {
         localStorage.removeItem('kyc_govIdType');
         localStorage.removeItem('kyc_govIdNumber');
         localStorage.removeItem('kyc_govIdFrontUrl');
         localStorage.removeItem('kyc_govIdBackUrl');
         localStorage.removeItem('kyc_selfieWithIdUrl');
       }
-      // If KYC was rejected, allow user to re-enter data by not clearing localStorage
-      // This allows users to re-verify after admin rejection
+      // If admin requested re-verification (status changed back to pending), clear only document URLs
+      // This allows user to re-upload documents while keeping basic info
+      if (data.kycStatus === 'pending' && data.kycFeePaid) {
+        localStorage.removeItem('kyc_govIdFrontUrl');
+        localStorage.removeItem('kyc_govIdBackUrl');
+        localStorage.removeItem('kyc_selfieWithIdUrl');
+        // Clear the state as well for re-upload
+        setGovIdFrontUrl("");
+        setGovIdBackUrl("");
+        setSelfieWithIdUrl("");
+      }
     }
   }, [kycData]);
 
@@ -313,7 +322,10 @@ export default function KYC() {
 
   const getProgressPercentage = () => {
     if (!kycData) return 0;
-    if ((kycData as any).kycStatus === 'approved' || ((kycData as any).kycFeePaid && (kycData as any).verificationStatus === 'verified')) return 100;
+    // Only show 100% if KYC is approved AND user is verified (not under re-verification)
+    if ((kycData as any).kycStatus === 'approved' && (kycData as any).verificationStatus === 'verified') return 100;
+    // If admin requested re-verification (pending status with previous fee payment), reset progress
+    if ((kycData as any).kycStatus === 'pending' && (kycData as any).kycFeePaid) return 20;
     if ((kycData as any).kycFeePaid) return 80;
     if ((kycData as any).kycStatus === 'submitted') return 60;
     if (govIdFrontUrl && govIdBackUrl && selfieWithIdUrl) return 40;
@@ -346,8 +358,8 @@ export default function KYC() {
           <p className="text-sm sm:text-base text-gray-600">Complete your identity verification to start earning. One-time ₹99 processing fee required.</p>
         </div>
 
-        {/* Quick Guide for Pending Users */}
-        {(!kycData || ((kycData as any)?.kycStatus === 'pending' && !(kycData as any)?.kycFeePaid)) && (
+        {/* Quick Guide for Pending Users or Re-verification */}
+        {(!kycData || (kycData as any)?.kycStatus === 'pending' || (kycData as any)?.kycStatus === 'rejected') && (
           <Card className="mb-6 sm:mb-8 border-blue-200 bg-blue-50">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center text-blue-900">
@@ -403,11 +415,20 @@ export default function KYC() {
                 <Progress value={getProgressPercentage()} className="h-2" />
               </div>
               
-              {((kycData as any)?.kycStatus === 'approved' || ((kycData as any)?.kycFeePaid && (kycData as any)?.verificationStatus === 'verified')) && (
+              {(kycData as any)?.kycStatus === 'approved' && (kycData as any)?.verificationStatus === 'verified' && (
                 <Alert className="bg-green-50 border-green-200">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <AlertDescription className="text-green-800">
                     <strong>KYC Completed!</strong> Your verification is complete. You can now receive payouts and access premium features.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {(kycData as any)?.kycStatus === 'pending' && (kycData as any)?.kycFeePaid && (
+                <Alert className="bg-orange-50 border-orange-200">
+                  <Info className="h-4 w-4 text-orange-600" />
+                  <AlertDescription className="text-orange-800">
+                    <strong>Re-verification Required</strong> - Our team has requested additional verification. Please re-upload your documents below to complete the process.
                   </AlertDescription>
                 </Alert>
               )}
@@ -433,14 +454,14 @@ export default function KYC() {
           </CardContent>
         </Card>
 
-        {/* Completion Status for Approved */}
-        {(kycData as any)?.kycStatus === 'approved' && (
+        {/* Completion Status for Approved and Verified Users */}
+        {(kycData as any)?.kycStatus === 'approved' && (kycData as any)?.verificationStatus === 'verified' && (
           <Card className="border-green-200 bg-green-50">
             <CardContent className="pt-6">
               <div className="text-center py-4">
                 <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-3" />
                 <h3 className="text-lg font-semibold text-green-900 mb-2">KYC Verification Complete!</h3>
-                <p className="text-green-700">Your documents have been verified successfully. You can now receive payouts.</p>
+                <p className="text-green-700">Your documents have been verified successfully. You can now receive payouts and access all premium features.</p>
               </div>
             </CardContent>
           </Card>
@@ -458,8 +479,8 @@ export default function KYC() {
           </Card>
         )}
 
-        {/* Show KYC form for pending users or re-verification after rejection */}
-        {(!kycData || (kycData as any)?.kycStatus === 'pending' || (kycData as any)?.kycStatus === 'rejected' || ((kycData as any)?.kycStatus === 'submitted' && !(kycData as any)?.kycFeePaid)) && (
+        {/* Show KYC form for users who need verification or re-verification */}
+        {(!kycData || (kycData as any)?.kycStatus !== 'approved' || (kycData as any)?.verificationStatus !== 'verified') && (
           <Card className="shadow-sm" id="kyc-form">
             <CardHeader>
               <CardTitle className="text-xl flex items-center text-gray-800">
