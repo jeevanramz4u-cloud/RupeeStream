@@ -59,11 +59,24 @@ export default function KYC() {
   }, [isAuthenticated, isAuthLoading, toast, setLocation]);
 
   // Fetch user KYC status
-  const { data: kycData, isLoading: isKycLoading } = useQuery({
+  const { data: kycData, isLoading: isKycLoading, refetch: refetchKycData } = useQuery({
     queryKey: ["/api/kyc/status"],
     retry: false,
     enabled: !!user,
+    staleTime: 0, // Always fetch fresh data
+    cacheTime: 0, // Don't cache
   });
+
+  // Auto-refresh KYC status every 10 seconds when submitted or waiting for approval
+  useEffect(() => {
+    if ((kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid) {
+      const interval = setInterval(() => {
+        refetchKycData();
+      }, 10000); // Refresh every 10 seconds
+      
+      return () => clearInterval(interval);
+    }
+  }, [kycData, refetchKycData]);
 
   // Upload mutations
   const uploadMutation = useMutation({

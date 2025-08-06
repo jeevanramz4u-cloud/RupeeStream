@@ -160,9 +160,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUserVerification(id: string, status: "pending" | "verified" | "rejected"): Promise<User | undefined> {
+    // Map verification status to KYC status
+    const kycStatusMap = {
+      "pending": "pending" as const,
+      "verified": "approved" as const,
+      "rejected": "rejected" as const
+    };
+
+    const updateData: any = { 
+      verificationStatus: status, 
+      kycStatus: kycStatusMap[status],
+      updatedAt: new Date() 
+    };
+
+    // Set approval timestamp if verified
+    if (status === "verified") {
+      updateData.kycApprovedAt = new Date();
+    }
+
     const [user] = await db
       .update(users)
-      .set({ verificationStatus: status, updatedAt: new Date() })
+      .set(updateData)
       .where(eq(users.id, id))
       .returning();
     return user;
