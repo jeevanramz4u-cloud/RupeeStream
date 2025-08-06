@@ -1023,6 +1023,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoint to process all pending referral bonuses
+  app.post("/api/admin/process-pending-referrals", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      console.log("🔄 Processing all pending referral bonuses...");
+
+      // Get all referrals that should be credited but aren't yet
+      const pendingReferrals = await db
+        .select({
+          referralId: referrals.id,
+          referrerId: referrals.referrerId,
+          referredId: referrals.referredId,
+          referredUser: {
+            firstName: users.firstName,
+            lastName: users.lastName,
+            email: users.email
+          }
+        })
+        .from(referrals)
+        .innerJoin(users, eq(referrals.referredId, users.id))
+        .where(and(
+          eq(referrals.isEarningCredited, false),
+          eq(users.verificationStatus, 'verified'),
+          eq(users.kycStatus, 'approved')
+        ));
+
+      let processedCount = 0;
+      const results = [];
+
+      for (const pending of pendingReferrals) {
+        try {
+          // Get referrer details
+          const referrer = await storage.getUser(pending.referrerId);
+          if (referrer) {
+            const currentBalance = parseFloat(referrer.balance as string) || 0;
+            const bonusAmount = 49;
+            const newBalance = currentBalance + bonusAmount;
+
+            // Update referrer's balance
+            await storage.updateUser(referrer.id, { balance: newBalance.toString() });
+
+            // Add earning record for the referrer
+            await storage.createEarning({
+              userId: referrer.id,
+              amount: bonusAmount.toString(),
+              type: "referral",
+              description: `Referral bonus for ${pending.referredUser.firstName} ${pending.referredUser.lastName} (retroactive processing)`,
+            });
+
+            // Mark referral as earning credited
+            await storage.updateReferralEarningStatus(pending.referralId, true);
+
+            processedCount++;
+            results.push({
+              referrer: referrer.email,
+              referred: pending.referredUser.email,
+              amount: bonusAmount,
+              success: true
+            });
+
+            console.log(`✅ Processed referral bonus: ₹${bonusAmount} to ${referrer.email} for referring ${pending.referredUser.email}`);
+          }
+        } catch (error) {
+          console.error(`❌ Failed to process referral for ${pending.referredUser.email}:`, error);
+          results.push({
+            referrer: 'Unknown',
+            referred: pending.referredUser.email,
+            amount: 0,
+            success: false,
+            error: error.message
+          });
+        }
+      }
+
+      res.json({
+        message: `Processed ${processedCount} pending referral bonuses`,
+        totalFound: pendingReferrals.length,
+        processed: processedCount,
+        results
+      });
+    } catch (error) {
+      console.error("Error processing pending referrals:", error);
+      res.status(500).json({ message: "Failed to process pending referrals" });
+    }
+  });
+
   // Demo data creation endpoint (for development)
   app.post("/api/admin/create-demo-users", async (req: any, res) => {
     try {

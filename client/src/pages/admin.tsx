@@ -401,6 +401,29 @@ export default function Admin() {
     },
   });
 
+  const processReferralsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/process-pending-referrals");
+      return response;
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Success",
+        description: `Processed ${data.processed} referral bonuses successfully`,
+      });
+      // Refresh relevant queries
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/referrals"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to process referral bonuses",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Function to extract YouTube video ID from URL
   const extractYouTubeId = (url: string): string | null => {
     const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
@@ -508,6 +531,26 @@ export default function Admin() {
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Admin Dashboard</h1>
           <p className="text-sm sm:text-base text-gray-600">Manage users, videos, and platform operations.</p>
+          
+          {/* Quick Actions Section */}
+          <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Quick Actions</h2>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => processReferralsMutation.mutate()}
+                disabled={processReferralsMutation.isPending}
+                className="flex items-center gap-2"
+              >
+                <Users className="w-4 h-4" />
+                {processReferralsMutation.isPending ? "Processing..." : "Process Pending Referrals"}
+              </Button>
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              Process any missing referral bonuses for users who completed KYC verification
+            </p>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
