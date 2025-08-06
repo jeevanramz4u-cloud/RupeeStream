@@ -404,28 +404,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const progress = await storage.completeVideo(userId, videoId);
       
-      if (progress && !progress.isEarningCredited) {
-        // Credit earnings
-        await storage.createEarning({
-          userId,
-          videoId,
-          type: "video",
-          amount: video.earning,
-          description: `Earned from watching: ${video.title}`,
-        });
-
-        // Update user balance
-        const user = await storage.getUser(userId);
-        if (user) {
-          const currentBalance = parseFloat(user.balance.toString());
-          const newBalance = currentBalance + parseFloat(video.earning.toString());
-          await storage.updateUser(userId, { balance: newBalance.toFixed(2) });
-        }
-
-        // Increment video views
-        await storage.incrementVideoViews(videoId);
-      }
-      
       res.json(progress);
     } catch (error) {
       console.error("Error completing video:", error);
@@ -434,13 +412,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Earnings routes (traditional auth)
-  app.get('/api/earnings', async (req, res) => {
+  app.get('/api/earnings', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.session?.userId;
-      if (!userId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
-      
+      const userId = req.user.id;
       const userEarnings = await storage.getEarnings(userId);
       res.json(userEarnings);
     } catch (error) {

@@ -293,11 +293,13 @@ export class DatabaseStorage implements IStorage {
         description: `Completed video: ${video.title}`,
       });
 
-      // Mark earning as credited
+      // Mark earning as credited and update the returned progress
       await db
         .update(videoProgress)
         .set({ isEarningCredited: true })
         .where(eq(videoProgress.id, updated.id));
+        
+      updated.isEarningCredited = true;
     }
 
     return updated;
@@ -316,10 +318,15 @@ export class DatabaseStorage implements IStorage {
     const [newEarning] = await db.insert(earnings).values(earning).returning();
     
     // Update user balance
-    await db
-      .update(users)
-      .set({ balance: sql`${users.balance} + ${earning.amount}` })
-      .where(eq(users.id, earning.userId));
+    const currentUser = await this.getUser(earning.userId);
+    if (currentUser) {
+      const currentBalance = parseFloat(currentUser.balance.toString());
+      const newBalance = currentBalance + parseFloat(earning.amount.toString());
+      await db
+        .update(users)
+        .set({ balance: newBalance.toFixed(2) })
+        .where(eq(users.id, earning.userId));
+    }
     
     return newEarning;
   }
