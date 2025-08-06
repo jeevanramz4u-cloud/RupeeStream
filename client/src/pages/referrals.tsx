@@ -87,8 +87,8 @@ export default function Referrals() {
     }
   };
 
-  const verifiedReferrals = (referrals as any[]).filter((ref: any) => ref.isEarningCredited);
-  const pendingReferrals = (referrals as any[]).filter((ref: any) => !ref.isEarningCredited);
+  const verifiedReferrals = (referrals as any[] || []).filter((ref: any) => ref.isEarningCredited);
+  const pendingReferrals = (referrals as any[] || []).filter((ref: any) => !ref.isEarningCredited);
   const totalEarnings = verifiedReferrals.length * 49;
 
   const formatDate = (dateString: string) => {
@@ -119,7 +119,7 @@ export default function Referrals() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Referrals</p>
-                  <p className="text-2xl font-bold text-gray-900">{(referrals as any[]).length}</p>
+                  <p className="text-2xl font-bold text-gray-900">{(referrals as any[] || []).length}</p>
                 </div>
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                   <Users className="text-primary w-6 h-6" />
