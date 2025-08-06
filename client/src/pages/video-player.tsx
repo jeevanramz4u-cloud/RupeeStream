@@ -230,7 +230,7 @@ export default function VideoPlayer() {
             <CardContent className="p-3 bg-blue-50">
               <div className="text-center">
                 <p className="text-xs text-blue-800 mb-1">
-                  <strong>How to earn:</strong> Open YouTube → Watch video → Return & complete
+                  <strong>How to earn:</strong> Watch embedded video or use YouTube app → Return & complete
                 </p>
                 <p className="text-xs text-blue-600">
                   Status: {hasCompleted ? '✅ Completed' : '⏳ Pending completion'}
@@ -320,7 +320,7 @@ export default function VideoPlayer() {
                       }}
                     />
                     
-                    {/* Fallback controls overlay */}
+                    {/* Timer overlay */}
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                       <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
                         <div className="text-white text-xs sm:text-sm">
@@ -335,15 +335,6 @@ export default function VideoPlayer() {
                         </div>
                         
                         <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            onClick={() => window.open(videoUrl, '_blank')}
-                            className="bg-red-600 hover:bg-red-700 text-white text-xs"
-                          >
-                            <Play className="w-3 h-3 mr-1" />
-                            Open in YouTube
-                          </Button>
-                          
                           {!hasCompleted && currentWatchTime >= requiredWatchTime && (
                             <Button
                               size="sm"
@@ -389,6 +380,32 @@ export default function VideoPlayer() {
                 </div>
               )}
             </div>
+            
+            {/* YouTube Controls - Only for YouTube videos */}
+            {isYouTubeVideo && (
+              <div className="p-4 border-t border-gray-200">
+                <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+                  <Button
+                    onClick={() => window.open(videoUrl, '_blank')}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
+                  >
+                    <Play className="w-4 h-4 mr-2" />
+                    Open in YouTube App
+                  </Button>
+                  
+                  {!hasCompleted && currentWatchTime >= requiredWatchTime && (
+                    <Button
+                      onClick={() => completeVideoMutation.mutate()}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium touch-manipulation w-full sm:w-auto"
+                      disabled={completeVideoMutation.isPending}
+                    >
+                      <Coins className="w-4 h-4 mr-2" />
+                      {completeVideoMutation.isPending ? 'Processing...' : 'Mark as Completed'}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
             
             {/* Progress Bar - Only for non-YouTube videos */}
             {!isYouTubeVideo && (
