@@ -338,14 +338,15 @@ export default function VideoPlayer() {
                     </div>
 
                     {/* Optional: Try embedded player with error handling */}
-                    <div className="border-t border-gray-700 p-4">
+                    <div className="border-t border-gray-700 p-3 sm:p-4">
                       <details className="text-white">
-                        <summary className="cursor-pointer text-sm text-gray-400 hover:text-white">
+                        <summary className="cursor-pointer text-xs sm:text-sm text-gray-400 hover:text-white flex items-center gap-2 touch-manipulation">
+                          <Play className="w-3 h-3 sm:w-4 sm:h-4" />
                           Try Embedded Player (may not work with ad blockers)
                         </summary>
-                        <div className="mt-3 aspect-video">
+                        <div className="mt-3 aspect-video bg-black rounded overflow-hidden">
                           <iframe
-                            className="w-full h-full rounded"
+                            className="w-full h-full"
                             src={(() => {
                               let embedUrl = videoUrl;
                               if (embedUrl.includes('youtube.com/watch?v=')) {
@@ -354,14 +355,18 @@ export default function VideoPlayer() {
                                 embedUrl = embedUrl.replace('youtu.be/', 'youtube.com/embed/');
                               }
                               embedUrl += embedUrl.includes('?') ? '&' : '?';
-                              embedUrl += 'autoplay=0&controls=1&modestbranding=1&rel=0';
+                              embedUrl += 'autoplay=0&controls=1&modestbranding=1&rel=0&playsinline=1';
                               return embedUrl;
                             })()}
                             title={videoTitle}
                             frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowFullScreen
+                            loading="lazy"
                           />
+                        </div>
+                        <div className="mt-2 text-xs text-gray-400">
+                          Note: If the embedded player doesn't work, use "Open on YouTube" button above.
                         </div>
                       </details>
                     </div>
@@ -443,25 +448,25 @@ export default function VideoPlayer() {
 
         {/* Earning Status */}
         {canEarn ? (
-          <Alert className="mb-6 border-orange-200 bg-orange-50">
-            <Info className="h-4 w-4 text-orange-600" />
-            <AlertDescription className="text-orange-700">
-              <strong>Complete the video to earn ₹{video.earning}</strong>
+          <Alert className="mb-4 sm:mb-6 border-orange-200 bg-orange-50 touch-manipulation">
+            <Info className="h-3 w-3 sm:h-4 sm:w-4 text-orange-600" />
+            <AlertDescription className="text-orange-700 text-sm sm:text-base">
+              <strong>Complete the video to earn ₹{videoEarning}</strong>
               <br />
               You cannot skip or fast-forward. Watch the full video to receive your earnings.
             </AlertDescription>
           </Alert>
         ) : hasCompleted ? (
-          <Alert className="mb-6 border-green-200 bg-green-50">
-            <Coins className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-700">
-              <strong>Video completed!</strong> You have earned ₹{video.earning} for watching this video.
+          <Alert className="mb-4 sm:mb-6 border-green-200 bg-green-50 touch-manipulation">
+            <Coins className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
+            <AlertDescription className="text-green-700 text-sm sm:text-base">
+              <strong>Video completed!</strong> You have earned ₹{videoEarning} for watching this video.
             </AlertDescription>
           </Alert>
         ) : (
-          <Alert className="mb-6">
-            <Info className="h-4 w-4" />
-            <AlertDescription>
+          <Alert className="mb-4 sm:mb-6 touch-manipulation">
+            <Info className="h-3 w-3 sm:h-4 sm:w-4" />
+            <AlertDescription className="text-sm sm:text-base">
               You have already earned from this video.
             </AlertDescription>
           </Alert>
