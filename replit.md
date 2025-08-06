@@ -44,11 +44,12 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Corrected signup process that was awarding ₹2000 instead of ₹1000
 - Set initial user balance to ₹0.00 with ₹1000 added via earning record to prevent double bonus
 - Signup bonus now correctly awards exactly ₹1000 as intended
-- **Reverted to require KYC verification for users (August 2025)**
-- Users now start with 'pending' verification status requiring admin approval
-- Default verification status changed back to 'pending' 
-- Default KYC status changed back to 'pending'
-- Users must complete KYC verification process to access payout features
+- **Established clear KYC verification flow with payment requirement (August 2025)**
+- Users can sign up normally and access basic features immediately
+- All new users start with 'pending' KYC status requiring document upload + ₹99 fee payment
+- Users must complete KYC verification process (documents + payment) to access payout features
+- KYC completion flow: Upload documents → Submit → Pay ₹99 processing fee → Admin approval
+- Payment of ₹99 fee is mandatory for KYC completion and payout access
 
 # User Preferences
 
@@ -96,8 +97,12 @@ Preferred communication style: Simple, everyday language.
 - **Daily Targets**: 8-hour minimum daily watch time requirement
 - **Earnings System**: Per-video earnings with automatic credit after completion
 - **Referral Program**: Fixed ₹49 bonus for successful referrals
-- **Verification Process**: Manual admin review of government ID documents
-- **Payout System**: Weekly batch processing on Tuesdays
+- **KYC Verification Process**: 
+  - Upload government ID documents (front, back, selfie)
+  - Submit documents for review
+  - Pay mandatory ₹99 processing fee
+  - Admin approval required for payout access
+- **Payout System**: Weekly batch processing on Tuesdays (requires completed KYC)
 
 ## File Management
 - **Storage Backend**: Google Cloud Storage
