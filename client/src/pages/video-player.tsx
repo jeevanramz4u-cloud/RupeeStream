@@ -289,95 +289,82 @@ export default function VideoPlayer() {
             <div className="bg-gray-900 rounded-t-lg aspect-video flex items-center justify-center relative overflow-hidden">
               {videoUrl ? (
                 isYouTubeVideo ? (
-                  // YouTube viewing options with ad blocker awareness
-                  <div className="w-full h-full relative bg-gray-800 rounded-t-lg flex flex-col">
-                    {/* YouTube thumbnail and play instructions */}
-                    <div className="flex-1 flex flex-col items-center justify-center text-white p-4 sm:p-8">
-                      {videoThumbnail && (
-                        <img 
-                          src={videoThumbnail} 
-                          alt={videoTitle}
-                          className="w-32 h-24 sm:w-48 sm:h-36 object-cover rounded mb-3 sm:mb-4 shadow-lg"
-                        />
-                      )}
-                      <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center px-2">{videoTitle}</h3>
-                      
-                      <div className="text-center space-y-2 mb-4 px-2">
-                        <p className="text-gray-300 text-xs sm:text-sm">Earn ₹{videoEarning}</p>
-                        <p className="text-xs text-yellow-400">
-                          Watch {Math.floor(requiredWatchTime / 60)}:{(requiredWatchTime % 60).toString().padStart(2, '0')} min
-                        </p>
-                        {isWatchingOnYoutube && youtubeWatchStartTime && (
-                          <div className="text-xs text-green-400 bg-green-900/20 px-2 py-1 rounded inline-block">
-                            ⏱️ {Math.floor(currentWatchTime / 60)}:{(currentWatchTime % 60).toString().padStart(2, '0')}
-                            {currentWatchTime >= requiredWatchTime && (
-                              <span className="text-green-300"> ✓</span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex flex-col gap-2 w-full max-w-sm px-2">
-                        <Button
-                          onClick={() => {
-                            window.open(videoUrl, '_blank');
-                            setYoutubeWatchStartTime(new Date());
-                            setIsWatchingOnYoutube(true);
-                            toast({
-                              title: "YouTube Video Opened",
-                              description: `Watch for at least ${Math.floor(requiredWatchTime / 60)} minutes to earn money.`,
-                            });
-                          }}
-                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 text-sm font-medium touch-manipulation"
-                        >
-                          <Play className="w-4 h-4 mr-2" />
-                          Open on YouTube
-                        </Button>
+                  // YouTube embedded player
+                  <div className="w-full h-full relative bg-black rounded-t-lg">
+                    <iframe
+                      className="w-full h-full rounded-t-lg"
+                      src={(() => {
+                        let embedUrl = videoUrl;
+                        // Convert YouTube URL to embed format
+                        if (embedUrl.includes('youtube.com/watch?v=')) {
+                          const videoId = embedUrl.split('v=')[1]?.split('&')[0];
+                          embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                        } else if (embedUrl.includes('youtu.be/')) {
+                          const videoId = embedUrl.split('youtu.be/')[1]?.split('?')[0];
+                          embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                        }
+                        // Add parameters for better embedding
+                        embedUrl += '?autoplay=0&controls=1&modestbranding=1&rel=0&playsinline=1';
+                        return embedUrl;
+                      })()}
+                      title={videoTitle}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      onLoad={() => {
+                        // Start tracking when video loads
+                        if (!youtubeWatchStartTime) {
+                          setYoutubeWatchStartTime(new Date());
+                          setIsWatchingOnYoutube(true);
+                        }
+                      }}
+                    />
+                    
+                    {/* Fallback controls overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+                        <div className="text-white text-xs sm:text-sm">
+                          {isWatchingOnYoutube && youtubeWatchStartTime && (
+                            <div className="flex items-center gap-2">
+                              <span>⏱️ {Math.floor(currentWatchTime / 60)}:{(currentWatchTime % 60).toString().padStart(2, '0')}</span>
+                              {currentWatchTime >= requiredWatchTime && (
+                                <span className="text-green-300">✓ Ready!</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
                         
-                        {!hasCompleted && (
+                        <div className="flex gap-2">
                           <Button
-                            onClick={() => {
-                              // Verify user has watched for required time
-                              if (!youtubeWatchStartTime) {
-                                toast({
-                                  title: "Watch Required",
-                                  description: "Please click 'Open on YouTube' and watch the video first.",
-                                  variant: "destructive",
-                                });
-                                return;
-                              }
-
-                              if (currentWatchTime < requiredWatchTime) {
-                                const remainingTime = Math.floor((requiredWatchTime - currentWatchTime) / 60);
-                                const remainingSeconds = (requiredWatchTime - currentWatchTime) % 60;
-                                toast({
-                                  title: "Insufficient Watch Time",
-                                  description: `You need to watch for ${remainingTime}:${remainingSeconds.toString().padStart(2, '0')} more to earn money.`,
-                                  variant: "destructive",
-                                });
-                                return;
-                              }
-
-                              completeVideoMutation.mutate();
-                            }}
-                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 text-sm font-medium touch-manipulation"
-                            disabled={completeVideoMutation.isPending}
+                            size="sm"
+                            onClick={() => window.open(videoUrl, '_blank')}
+                            className="bg-red-600 hover:bg-red-700 text-white text-xs"
                           >
-                            <Coins className="w-4 h-4 mr-2" />
-                            {completeVideoMutation.isPending ? 'Processing...' : 'Mark as Completed'}
+                            <Play className="w-3 h-3 mr-1" />
+                            Open in YouTube
                           </Button>
-                        )}
-                        
-                        {hasCompleted && (
-                          <div className="flex items-center justify-center bg-green-800 text-green-200 px-3 py-2 rounded text-sm font-medium">
-                            <Coins className="w-4 h-4 mr-2" />
-                            Completed!
-                          </div>
-                        )}
+                          
+                          {!hasCompleted && currentWatchTime >= requiredWatchTime && (
+                            <Button
+                              size="sm"
+                              onClick={() => completeVideoMutation.mutate()}
+                              className="bg-green-600 hover:bg-green-700 text-white text-xs"
+                              disabled={completeVideoMutation.isPending}
+                            >
+                              <Coins className="w-3 h-3 mr-1" />
+                              {completeVideoMutation.isPending ? 'Processing...' : 'Complete'}
+                            </Button>
+                          )}
+                          
+                          {hasCompleted && (
+                            <div className="bg-green-800 text-green-200 px-2 py-1 rounded text-xs flex items-center">
+                              <Coins className="w-3 h-3 mr-1" />
+                              Completed!
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-
-
                   </div>
                 ) : (
                   // Regular video player for direct video files
