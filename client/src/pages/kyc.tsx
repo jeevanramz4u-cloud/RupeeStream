@@ -280,6 +280,64 @@ export default function KYC() {
           <p className="text-sm sm:text-base text-gray-600">Complete your identity verification to start earning. One-time ₹99 processing fee required.</p>
         </div>
 
+        {/* Quick Actions for Pending Users */}
+        {(!kycData || (kycData as any)?.kycStatus === 'pending') && !(kycData as any)?.kycFeePaid && (
+          <Card className="mb-6 sm:mb-8 border-orange-200 bg-orange-50">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center text-orange-900">
+                <CreditCard className="w-5 h-5 mr-2" />
+                Complete Your KYC Verification
+              </CardTitle>
+              <p className="text-orange-700">Two simple steps to unlock payouts and premium features:</p>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-white rounded-lg border border-orange-200">
+                  <div className="flex items-center mb-3">
+                    <Upload className="w-5 h-5 text-blue-600 mr-2" />
+                    <span className="font-semibold text-gray-900">Step 1: Upload Documents</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-3">Upload your government ID and selfie</p>
+                  <Button 
+                    onClick={() => document.getElementById('kyc-form')?.scrollIntoView({ behavior: 'smooth' })}
+                    variant="outline" 
+                    className="w-full border-blue-600 text-blue-600 hover:bg-blue-50"
+                  >
+                    Upload Documents
+                  </Button>
+                </div>
+                
+                <div className="p-4 bg-white rounded-lg border border-orange-200">
+                  <div className="flex items-center mb-3">
+                    <CreditCard className="w-5 h-5 text-green-600 mr-2" />
+                    <span className="font-semibold text-gray-900">Step 2: Pay Processing Fee</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-3">One-time ₹99 verification fee</p>
+                  <Button
+                    onClick={() => {
+                      if (!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) {
+                        toast({
+                          title: "Documents Required",
+                          description: "Please upload all documents first before paying the fee.",
+                          variant: "destructive",
+                        });
+                        document.getElementById('kyc-form')?.scrollIntoView({ behavior: 'smooth' });
+                        return;
+                      }
+                      handleSubmitKyc();
+                      setTimeout(() => payFeeMutation.mutate(), 500);
+                    }}
+                    disabled={submitKycMutation.isPending || payFeeMutation.isPending}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                  >
+                    {(submitKycMutation.isPending || payFeeMutation.isPending) ? "Processing..." : "Pay ₹99 Fee"}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Status Overview */}
         <Card className="mb-6 sm:mb-8">
           <CardHeader className="pb-3 sm:pb-4">
@@ -358,7 +416,7 @@ export default function KYC() {
 
         {/* Show KYC form only if not approved */}
         {(kycData as any)?.kycStatus !== 'approved' && (
-          <Card className="shadow-sm">
+          <Card className="shadow-sm" id="kyc-form">
             <CardHeader>
               <CardTitle className="text-xl flex items-center text-gray-800">
                 <Shield className="w-6 h-6 text-blue-600 mr-3" />
