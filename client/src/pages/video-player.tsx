@@ -262,22 +262,22 @@ export default function VideoPlayer() {
                       )}
                       <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center px-2">{videoTitle}</h3>
                       
-                      <div className="text-center space-y-2 sm:space-y-3 mb-4 sm:mb-6 px-2">
-                        <p className="text-gray-300 text-sm sm:text-base">Watch this video on YouTube to earn ₹{videoEarning}</p>
-                        <p className="text-xs sm:text-sm text-yellow-400">
-                          Required: {Math.floor(requiredWatchTime / 60)}:{(requiredWatchTime % 60).toString().padStart(2, '0')} min
+                      <div className="text-center space-y-2 mb-4 px-2">
+                        <p className="text-gray-300 text-xs sm:text-sm">Earn ₹{videoEarning}</p>
+                        <p className="text-xs text-yellow-400">
+                          Watch {Math.floor(requiredWatchTime / 60)}:{(requiredWatchTime % 60).toString().padStart(2, '0')} min
                         </p>
                         {isWatchingOnYoutube && youtubeWatchStartTime && (
-                          <div className="text-xs sm:text-sm text-green-400 bg-green-900/20 px-2 sm:px-3 py-1 sm:py-1.5 rounded max-w-xs mx-auto">
+                          <div className="text-xs text-green-400 bg-green-900/20 px-2 py-1 rounded inline-block">
                             ⏱️ {Math.floor(currentWatchTime / 60)}:{(currentWatchTime % 60).toString().padStart(2, '0')}
                             {currentWatchTime >= requiredWatchTime && (
-                              <div className="text-green-300 font-medium">✓ Ready!</div>
+                              <span className="text-green-300"> ✓</span>
                             )}
                           </div>
                         )}
                       </div>
 
-                      <div className="flex flex-col gap-3 w-full max-w-sm px-2">
+                      <div className="flex flex-col gap-2 w-full max-w-sm px-2">
                         <Button
                           onClick={() => {
                             window.open(videoUrl, '_blank');
@@ -288,7 +288,7 @@ export default function VideoPlayer() {
                               description: `Watch for at least ${Math.floor(requiredWatchTime / 60)} minutes to earn money.`,
                             });
                           }}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 text-sm sm:text-base font-medium touch-manipulation"
+                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 text-sm font-medium touch-manipulation"
                         >
                           <Play className="w-4 h-4 mr-2" />
                           Open on YouTube
@@ -320,7 +320,7 @@ export default function VideoPlayer() {
 
                               completeVideoMutation.mutate();
                             }}
-                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 text-sm sm:text-base font-medium touch-manipulation"
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 text-sm font-medium touch-manipulation"
                             disabled={completeVideoMutation.isPending}
                           >
                             <Coins className="w-4 h-4 mr-2" />
@@ -329,47 +329,15 @@ export default function VideoPlayer() {
                         )}
                         
                         {hasCompleted && (
-                          <div className="flex items-center justify-center bg-green-800 text-green-200 px-4 py-3 rounded text-sm sm:text-base font-medium">
+                          <div className="flex items-center justify-center bg-green-800 text-green-200 px-3 py-2 rounded text-sm font-medium">
                             <Coins className="w-4 h-4 mr-2" />
-                            Video Completed!
+                            Completed!
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* Optional: Try embedded player with error handling */}
-                    <div className="border-t border-gray-700 p-3 sm:p-4">
-                      <details className="text-white">
-                        <summary className="cursor-pointer text-xs sm:text-sm text-gray-400 hover:text-white flex items-center gap-2 touch-manipulation">
-                          <Play className="w-3 h-3 sm:w-4 sm:h-4" />
-                          Try Embedded Player (may not work with ad blockers)
-                        </summary>
-                        <div className="mt-3 aspect-video bg-black rounded overflow-hidden">
-                          <iframe
-                            className="w-full h-full"
-                            src={(() => {
-                              let embedUrl = videoUrl;
-                              if (embedUrl.includes('youtube.com/watch?v=')) {
-                                embedUrl = embedUrl.replace('youtube.com/watch?v=', 'youtube.com/embed/');
-                              } else if (embedUrl.includes('youtu.be/')) {
-                                embedUrl = embedUrl.replace('youtu.be/', 'youtube.com/embed/');
-                              }
-                              embedUrl += embedUrl.includes('?') ? '&' : '?';
-                              embedUrl += 'autoplay=0&controls=1&modestbranding=1&rel=0&playsinline=1';
-                              return embedUrl;
-                            })()}
-                            title={videoTitle}
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowFullScreen
-                            loading="lazy"
-                          />
-                        </div>
-                        <div className="mt-2 text-xs text-gray-400">
-                          Note: If the embedded player doesn't work, use "Open on YouTube" button above.
-                        </div>
-                      </details>
-                    </div>
+
                   </div>
                 ) : (
                   // Regular video player for direct video files
