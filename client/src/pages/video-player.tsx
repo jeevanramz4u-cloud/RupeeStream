@@ -223,7 +223,7 @@ export default function VideoPlayer() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
+      <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-6 pb-20">
         {/* Video Header */}
         <div className="mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">{videoTitle}</h1>
@@ -244,7 +244,7 @@ export default function VideoPlayer() {
         </div>
 
         {/* Video Player */}
-        <Card className="mb-4 sm:mb-6 touch-manipulation">
+        <Card className="mb-3 sm:mb-4 touch-manipulation">
           <CardContent className="p-0">
             <div className="bg-gray-900 rounded-t-lg aspect-video flex items-center justify-center relative overflow-hidden">
               {videoUrl ? (
@@ -383,36 +383,7 @@ export default function VideoPlayer() {
           </CardContent>
         </Card>
 
-        {/* Instructions for YouTube videos - Separate card */}
-        {isYouTubeVideo && (
-          <Card className="mb-4 sm:mb-6 touch-manipulation">
-            <CardContent className="p-3 sm:p-4 bg-blue-50">
-              <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
-                <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <h4 className="font-medium text-blue-900 mb-2 text-sm sm:text-base">How to earn:</h4>
-                  <div className="text-xs sm:text-sm text-blue-800 space-y-1">
-                    <div className="flex items-start gap-2">
-                      <span className="flex-shrink-0 w-4 h-4 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
-                      <span>Click "Open on YouTube"</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="flex-shrink-0 w-4 h-4 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
-                      <span>Watch complete video</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="flex-shrink-0 w-4 h-4 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
-                      <span>Return & click "Mark as Completed" to earn ₹{videoEarning}</span>
-                    </div>
-                  </div>
-                  <div className="mt-2 text-xs text-blue-600">
-                    Status: {hasCompleted ? '✅ Completed' : '⏳ Pending completion'}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+
 
         {/* Earning Status */}
         {canEarn ? (
@@ -440,14 +411,28 @@ export default function VideoPlayer() {
           </Alert>
         )}
 
+        {/* Instructions for YouTube videos - Compact */}
+        {isYouTubeVideo && (
+          <Card className="mb-4 sm:mb-6 touch-manipulation">
+            <CardContent className="p-3 bg-blue-50">
+              <div className="text-center">
+                <p className="text-xs text-blue-800 mb-1">
+                  <strong>How to earn:</strong> Open YouTube → Watch video → Return & complete
+                </p>
+                <p className="text-xs text-blue-600">
+                  Status: {hasCompleted ? '✅ Completed' : '⏳ Pending completion'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Video Description */}
-        {video.description && (
-          <Card>
-            <CardHeader>
-              <CardTitle>About this video</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-700">{video.description}</p>
+        {videoDescription && (
+          <Card className="touch-manipulation">
+            <CardContent className="p-3 sm:p-4">
+              <h3 className="text-sm font-medium text-gray-900 mb-2">About this video</h3>
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{videoDescription}</p>
             </CardContent>
           </Card>
         )}
