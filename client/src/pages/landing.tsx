@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Play, Users, Coins, Clock, CheckCircle, Shield } from "lucide-react";
 
 export default function Landing() {
@@ -19,6 +20,7 @@ export default function Landing() {
             <nav className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-600 hover:text-primary">Features</a>
               <a href="#how-it-works" className="text-gray-600 hover:text-primary">How it Works</a>
+              <a href="#faq" className="text-gray-600 hover:text-primary">FAQ</a>
               <a href="/privacy-policy" className="text-gray-600 hover:text-primary">Privacy</a>
               <a href="/terms-conditions" className="text-gray-600 hover:text-primary">Terms</a>
             </nav>
@@ -210,6 +212,120 @@ export default function Landing() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-16 px-4 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <p className="text-gray-600">
+              Get answers to common questions about earning money with EarnPay
+            </p>
+          </div>
+
+          <Accordion type="single" collapsible className="w-full space-y-4">
+            <AccordionItem value="item-1" className="bg-gray-50 px-6 rounded-lg">
+              <AccordionTrigger className="text-left">
+                How much can I earn per video?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pt-2">
+                Earnings per video vary based on video length and category. Typically, you can earn between ₹5-₹25 per video. 
+                Longer videos and premium content offer higher earnings. All earnings are credited immediately after completing the full video.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-2" className="bg-gray-50 px-6 rounded-lg">
+              <AccordionTrigger className="text-left">
+                What is the 8-hour daily requirement?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pt-2">
+                To maintain your account in good standing and maximize earnings, you need to watch videos for 8 hours daily. 
+                This can be spread throughout the day. Failing to meet this requirement may result in account suspension until you catch up.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-3" className="bg-gray-50 px-6 rounded-lg">
+              <AccordionTrigger className="text-left">
+                Can I skip or fast-forward videos?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pt-2">
+                No, you must watch videos completely without skipping or fast-forwarding. Our system monitors viewing behavior 
+                to ensure fair compensation. Attempting to skip content will not credit earnings and may result in account penalties.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-4" className="bg-gray-50 px-6 rounded-lg">
+              <AccordionTrigger className="text-left">
+                When do I get paid?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pt-2">
+                Payouts are processed every Tuesday. You can request a payout once your earnings reach the minimum threshold. 
+                Money is transferred directly to your verified bank account within 24-48 hours of payout processing.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-5" className="bg-gray-50 px-6 rounded-lg">
+              <AccordionTrigger className="text-left">
+                How does the referral program work?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pt-2">
+                Share your unique referral code with friends and family. When someone signs up using your code and gets verified 
+                (completes ID verification), you earn ₹49. There's no limit to how many people you can refer.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-6" className="bg-gray-50 px-6 rounded-lg">
+              <AccordionTrigger className="text-left">
+                Why do I need to verify my identity?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pt-2">
+                Identity verification ensures a safe and legitimate earning environment for all users. It prevents fraud and 
+                enables secure payouts. You need to upload a government-issued ID and bank details for verification before you can start earning.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-7" className="bg-gray-50 px-6 rounded-lg">
+              <AccordionTrigger className="text-left">
+                What happens if I miss the daily target?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pt-2">
+                If you don't meet the 8-hour daily target, your account may be suspended temporarily. You can reactivate it by 
+                completing the missed hours. Consistent non-compliance may result in permanent account suspension.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-8" className="bg-gray-50 px-6 rounded-lg">
+              <AccordionTrigger className="text-left">
+                Is there a minimum payout amount?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pt-2">
+                Yes, the minimum payout amount is ₹100. Once your earnings reach this threshold, you can request a weekly payout. 
+                This helps minimize transaction fees and ensures efficient payment processing.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-9" className="bg-gray-50 px-6 rounded-lg">
+              <AccordionTrigger className="text-left">
+                Can I use multiple devices?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pt-2">
+                You can access your account from multiple devices, but you can only watch videos on one device at a time. 
+                Our system tracks active sessions to prevent abuse and ensure fair earnings distribution.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-10" className="bg-gray-50 px-6 rounded-lg">
+              <AccordionTrigger className="text-left">
+                How do I contact support?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pt-2">
+                You can contact our support team through the live chat feature available in your dashboard, or send us a message 
+                through the Support page. Our team is available 24/7 to help with any questions or issues.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
 
