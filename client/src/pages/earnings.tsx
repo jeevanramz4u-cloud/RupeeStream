@@ -21,11 +21,14 @@ import {
 import { useEffect, useState } from "react";
 
 export default function Earnings() {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isPayoutDialogOpen, setIsPayoutDialogOpen] = useState(false);
   const [payoutAmount, setPayoutAmount] = useState("");
+
+  // Debug logging
+  console.log("Earnings page - Auth status:", { user, authLoading, isAuthenticated });
 
   const { data: earnings = [] } = useQuery({
     queryKey: ["/api/earnings"],
@@ -37,10 +40,13 @@ export default function Earnings() {
     enabled: !!user,
   });
 
-  const { data: payouts = [] } = useQuery({
+  const { data: payouts = [], isLoading: isPayoutsLoading, error: payoutsError } = useQuery({
     queryKey: ["/api/payouts"],
-    enabled: !!user,
+    enabled: !!user && isAuthenticated,
   });
+
+  // Debug logging for payouts
+  console.log("Payouts query status:", { payouts, isPayoutsLoading, payoutsError, enabled: !!user && isAuthenticated });
 
   // Check if user needs account suspension for not meeting daily target
   useEffect(() => {
@@ -311,7 +317,18 @@ export default function Earnings() {
               <CardTitle>Payout History</CardTitle>
             </CardHeader>
             <CardContent>
-              {(payouts as any[]).length === 0 ? (
+              {isPayoutsLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
+                  <p className="text-gray-500 mt-2">Loading payouts...</p>
+                </div>
+              ) : payoutsError ? (
+                <div className="text-center py-8">
+                  <Wallet className="w-12 h-12 text-red-400 mx-auto mb-4" />
+                  <p className="text-red-500">Error loading payouts</p>
+                  <p className="text-sm text-gray-400">Please try refreshing the page</p>
+                </div>
+              ) : (payouts as any[]).length === 0 ? (
                 <div className="text-center py-8">
                   <Wallet className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-500">No payouts yet</p>
