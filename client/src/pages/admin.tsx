@@ -111,7 +111,7 @@ export default function Admin() {
 
   const verifyUserMutation = useMutation({
     mutationFn: async ({ userId, status }: { userId: string; status: string }) => {
-      await apiRequest("PUT", `/api/admin/users/${userId}/verify`, { status });
+      await apiRequest("PUT", `/api/admin/users/${userId}/verification`, { status });
     },
     onSuccess: () => {
       toast({
@@ -499,6 +499,32 @@ export default function Admin() {
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">User Profile Management</h2>
                 <div className="flex space-x-2">
+                  <Button 
+                    variant="outline"
+                    onClick={async () => {
+                      try {
+                        const response = await fetch("/api/admin/create-demo-users", {
+                          method: "POST",
+                          credentials: "include"
+                        });
+                        const result = await response.json();
+                        toast({
+                          title: "Success",
+                          description: "Demo users created successfully",
+                        });
+                        queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+                      } catch (error) {
+                        toast({
+                          title: "Error",
+                          description: "Failed to create demo users",
+                          variant: "destructive",
+                        });
+                      }
+                    }}
+                  >
+                    <Users className="w-4 h-4 mr-2" />
+                    Create Demo Users
+                  </Button>
                   <Input
                     placeholder="Search users by email or name..."
                     className="w-80"

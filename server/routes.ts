@@ -660,11 +660,181 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Admin authentication required" });
       }
 
-      const users = await storage.getUsersForVerification();
+      const users = await storage.getAllUsers();
       res.json(users);
     } catch (error) {
-      console.error("Error fetching users for verification:", error);
+      console.error("Error fetching users:", error);
       res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  // Admin - Update user verification status
+  app.put("/api/admin/users/:id/verification", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      const { status } = req.body;
+      
+      if (!["pending", "verified", "rejected"].includes(status)) {
+        return res.status(400).json({ message: "Invalid verification status" });
+      }
+
+      const user = await storage.updateUserVerification(id, status);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating user verification:", error);
+      res.status(500).json({ message: "Failed to update user verification" });
+    }
+  });
+
+  // Admin - Update user account status (suspend/unsuspend)
+  app.put("/api/admin/users/:id/status", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      const { status } = req.body;
+      
+      if (!["active", "suspended", "banned"].includes(status)) {
+        return res.status(400).json({ message: "Invalid account status" });
+      }
+
+      const user = await storage.updateUserAccountStatus(id, status);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating user status:", error);
+      res.status(500).json({ message: "Failed to update user status" });
+    }
+  });
+
+  // Admin - Update user balance
+  app.put("/api/admin/users/:id/balance", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      const { amount } = req.body;
+      
+      if (typeof amount !== 'number') {
+        return res.status(400).json({ message: "Invalid amount" });
+      }
+
+      const user = await storage.getUser(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const currentBalance = parseFloat(user.balance as string) || 0;
+      const newBalance = currentBalance + amount;
+
+      const updatedUser = await storage.updateUser(id, { balance: newBalance.toString() });
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user balance:", error);
+      res.status(500).json({ message: "Failed to update user balance" });
+    }
+  });
+
+  // Demo data creation endpoint (for development)
+  app.post("/api/admin/create-demo-users", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const demoUsers = [
+        {
+          email: "user1@example.com",
+          firstName: "Rajesh",
+          lastName: "Kumar",
+          phoneNumber: "+91-9876543210",
+          dateOfBirth: "1995-06-15",
+          address: "123 MG Road",
+          city: "Mumbai",
+          state: "Maharashtra", 
+          pincode: "400001",
+          accountHolderName: "Rajesh Kumar",
+          accountNumber: "1234567890123456",
+          ifscCode: "HDFC0000123",
+          bankName: "HDFC Bank",
+          governmentIdType: "Aadhaar",
+          governmentIdNumber: "123456789012",
+          verificationStatus: "verified",
+          status: "active",
+          balance: 125.50
+        },
+        {
+          email: "user2@example.com",
+          firstName: "Priya",
+          lastName: "Sharma",
+          phoneNumber: "+91-9876543211",
+          dateOfBirth: "1992-03-22",
+          address: "456 Park Street",
+          city: "Delhi",
+          state: "Delhi",
+          pincode: "110001",
+          accountHolderName: "Priya Sharma",
+          accountNumber: "2345678901234567",
+          ifscCode: "ICIC0000456",
+          bankName: "ICICI Bank",
+          governmentIdType: "PAN",
+          governmentIdNumber: "ABCDE1234F",
+          verificationStatus: "pending",
+          status: "active",
+          balance: 87.25
+        },
+        {
+          email: "user3@example.com",
+          firstName: "Amit",
+          lastName: "Patel",
+          phoneNumber: "+91-9876543212",
+          dateOfBirth: "1988-11-10",
+          address: "789 Sardar Patel Road",
+          city: "Ahmedabad",
+          state: "Gujarat",
+          pincode: "380001",
+          accountHolderName: "Amit Patel",
+          accountNumber: "3456789012345678",
+          ifscCode: "SBIN0000789",
+          bankName: "State Bank of India",
+          governmentIdType: "Driving License",
+          governmentIdNumber: "GJ1420110012345",
+          verificationStatus: "rejected",
+          status: "suspended",
+          balance: 0.00
+        }
+      ];
+
+      const createdUsers = [];
+      for (const userData of demoUsers) {
+        try {
+          const user = await storage.createUserWithTraditionalAuth(userData);
+          createdUsers.push(user);
+        } catch (error) {
+          // User might already exist, skip
+          console.log(`Demo user ${userData.email} might already exist`);
+        }
+      }
+
+      res.json({ message: "Demo users created", users: createdUsers });
+    } catch (error) {
+      console.error("Error creating demo users:", error);
+      res.status(500).json({ message: "Failed to create demo users" });
     }
   });
 

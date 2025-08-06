@@ -40,6 +40,7 @@ export interface IStorage {
   generateReferralCode(): string;
   getUserByReferralCode(code: string): Promise<User | undefined>;
   getUsersForVerification(): Promise<User[]>;
+  getAllUsers(): Promise<User[]>;
   
   // Video operations
   getVideos(limit?: number): Promise<Video[]>;
@@ -166,7 +167,7 @@ export class DatabaseStorage implements IStorage {
   async updateUserAccountStatus(id: string, status: "active" | "suspended" | "banned"): Promise<User | undefined> {
     const [user] = await db
       .update(users)
-      .set({ accountStatus: status, updatedAt: new Date() })
+      .set({ status: status, updatedAt: new Date() })
       .where(eq(users.id, id))
       .returning();
     return user;
@@ -186,6 +187,13 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(users)
       .where(eq(users.verificationStatus, "pending"))
+      .orderBy(desc(users.createdAt));
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db
+      .select()
+      .from(users)
       .orderBy(desc(users.createdAt));
   }
 
