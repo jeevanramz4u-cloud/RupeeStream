@@ -239,13 +239,20 @@ export default function Admin() {
   });
 
   const onSubmitVideo = (data: any) => {
+    // Convert duration and earning to numbers
+    const videoData = {
+      ...data,
+      duration: parseInt(data.duration) || 0,
+      earning: parseFloat(data.earning) || 0
+    };
+
     if (editingVideo) {
       updateVideoMutation.mutate({
         videoId: editingVideo.id,
-        updates: data,
+        updates: videoData,
       });
     } else {
-      createVideoMutation.mutate(data);
+      createVideoMutation.mutate(videoData);
     }
   };
 
@@ -767,23 +774,13 @@ export default function Admin() {
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handleSubmit(onSubmitVideo)} className="space-y-3 sm:space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                        <div>
-                          <Label htmlFor="title" className="text-sm">Title</Label>
-                          <Input
-                            {...register("title", { required: true })}
-                            defaultValue={editingVideo?.title}
-                            className="text-sm"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="category" className="text-sm">Category</Label>
-                          <Input
-                            {...register("category")}
-                            defaultValue={editingVideo?.category}
-                            className="text-sm"
-                          />
-                        </div>
+                      <div>
+                        <Label htmlFor="title" className="text-sm">Title</Label>
+                        <Input
+                          {...register("title", { required: true })}
+                          defaultValue={editingVideo?.title}
+                          className="text-sm"
+                        />
                       </div>
 
                       <div>
@@ -823,15 +820,6 @@ export default function Admin() {
                             className="text-sm"
                           />
                         </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="thumbnailUrl" className="text-sm">Thumbnail URL</Label>
-                        <Input
-                          {...register("thumbnailUrl")}
-                          defaultValue={editingVideo?.thumbnailUrl}
-                          className="text-sm"
-                        />
                       </div>
 
                       <div className="flex flex-col-reverse sm:flex-row gap-2 sm:space-x-2">
@@ -894,11 +882,6 @@ export default function Admin() {
                                   <DollarSign className="w-3 h-3 mr-1" />
                                   ₹{video.earning}
                                 </span>
-                                {video.category && (
-                                  <Badge variant="outline" className="text-xs">
-                                    {video.category}
-                                  </Badge>
-                                )}
                               </div>
                             </div>
                             
