@@ -488,6 +488,46 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(referrals.createdAt));
   }
 
+  async getReferralsWithUserDetails(userId: string): Promise<any[]> {
+    const result = await db
+      .select({
+        id: referrals.id,
+        isEarningCredited: referrals.isEarningCredited,
+        createdAt: referrals.createdAt,
+        referredUser: {
+          id: users.id,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          email: users.email,
+          verificationStatus: users.verificationStatus,
+          kycStatus: users.kycStatus
+        }
+      })
+      .from(referrals)
+      .innerJoin(users, eq(referrals.referredId, users.id))
+      .where(eq(referrals.referrerId, userId))
+      .orderBy(desc(referrals.createdAt));
+    
+    return result;
+  }
+
+  async getReferralByReferredId(referredId: string): Promise<Referral | undefined> {
+    const [referral] = await db
+      .select()
+      .from(referrals)
+      .where(eq(referrals.referredId, referredId));
+    return referral;
+  }
+
+  async updateReferralEarningStatus(id: string, isEarningCredited: boolean): Promise<Referral | undefined> {
+    const [updated] = await db
+      .update(referrals)
+      .set({ isEarningCredited })
+      .where(eq(referrals.id, id))
+      .returning();
+    return updated;
+  }
+
   async creditReferralEarning(referralId: string): Promise<void> {
     const [referral] = await db
       .select()

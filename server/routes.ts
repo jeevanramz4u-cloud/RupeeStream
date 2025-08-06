@@ -645,7 +645,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/referrals', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
-      const referrals = await storage.getReferrals(userId);
+      const referrals = await storage.getReferralsWithUserDetails(userId);
       res.json(referrals || []);
     } catch (error) {
       console.error("Error fetching referrals:", error);
@@ -877,6 +877,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.updateUserVerification(id, status);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
+      }
+
+      // Process referral bonus if user is verified and has a referrer
+      if (status === 'verified' && user.referredBy) {
+        try {
+          console.log(`Processing referral bonus for verified user: ${user.email} (referred by: ${user.referredBy})`);
+          
+          // Check if referral bonus has already been credited
+          const referralRecord = await storage.getReferralByReferredId(user.id);
+          if (referralRecord && !referralRecord.isEarningCredited) {
+            // Credit ₹49 to the referrer
+            const referrer = await storage.getUser(user.referredBy);
+            if (referrer) {
+              const currentBalance = parseFloat(referrer.balance as string) || 0;
+              const bonusAmount = 49;
+              const newBalance = currentBalance + bonusAmount;
+              
+              // Update referrer's balance
+              await storage.updateUser(referrer.id, { balance: newBalance.toString() });
+              
+              // Add earning record for the referrer
+              await storage.createEarning({
+                userId: referrer.id,
+                amount: bonusAmount.toString(),
+                type: "referral",
+                description: `Referral bonus for ${user.firstName} ${user.lastName} getting verified`,
+              });
+              
+              // Mark referral as earning credited
+              await storage.updateReferralEarningStatus(referralRecord.id, true);
+              
+              console.log(`✅ Referral bonus paid: ₹${bonusAmount} to ${referrer.email} for referring ${user.email}`);
+            }
+          }
+        } catch (error) {
+          console.error("❌ Error processing referral bonus:", error);
+          // Don't fail the verification if referral bonus fails
+        }
       }
 
       res.json(user);
