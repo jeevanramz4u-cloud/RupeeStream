@@ -207,17 +207,39 @@ export default function VideoPlayer() {
           <CardContent className="p-0">
             <div className="bg-gray-900 rounded-t-lg aspect-video flex items-center justify-center relative">
               {video.url ? (
-                <video
-                  ref={videoRef}
-                  className="w-full h-full rounded-t-lg"
-                  controls
-                  controlsList="nodownload nofullscreen noremoteplayback"
-                  disablePictureInPicture
-                  onContextMenu={(e) => e.preventDefault()}
-                >
-                  <source src={video.url} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+                video.url.includes('youtube.com') || video.url.includes('youtu.be') ? (
+                  // YouTube embed player
+                  <iframe
+                    className="w-full h-full rounded-t-lg"
+                    src={(() => {
+                      let embedUrl = video.url;
+                      if (embedUrl.includes('youtube.com/watch?v=')) {
+                        embedUrl = embedUrl.replace('youtube.com/watch?v=', 'youtube.com/embed/');
+                      } else if (embedUrl.includes('youtu.be/')) {
+                        embedUrl = embedUrl.replace('youtu.be/', 'youtube.com/embed/');
+                      }
+                      return embedUrl;
+                    })()}
+                    title={video.title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    onContextMenu={(e) => e.preventDefault()}
+                  />
+                ) : (
+                  // Regular video player for direct video files
+                  <video
+                    ref={videoRef}
+                    className="w-full h-full rounded-t-lg"
+                    controls
+                    controlsList="nodownload nofullscreen noremoteplayback"
+                    disablePictureInPicture
+                    onContextMenu={(e) => e.preventDefault()}
+                  >
+                    <source src={video.url} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                )
               ) : (
                 <div className="text-center text-white">
                   <Play className="w-16 h-16 mb-4 opacity-50 mx-auto" />

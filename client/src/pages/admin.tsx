@@ -238,13 +238,29 @@ export default function Admin() {
     },
   });
 
+  // Function to extract YouTube video ID from URL
+  const extractYouTubeId = (url: string): string | null => {
+    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  };
+
+  // Function to generate YouTube thumbnail URL
+  const getYouTubeThumbnail = (url: string): string | null => {
+    const videoId = extractYouTubeId(url);
+    return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null;
+  };
+
   const onSubmitVideo = (data: any) => {
+    // Generate thumbnail URL from YouTube video
+    const thumbnailUrl = getYouTubeThumbnail(data.url || "");
+    
     // Prepare video data with default values
     const videoData = {
       title: data.title || "Untitled Video",
       description: data.description || "",
       url: data.url || "",
-      thumbnailUrl: null, // Not used anymore
+      thumbnailUrl: thumbnailUrl, // Auto-generated from YouTube
       duration: 300, // Default 5 minutes - will be auto-detected later
       category: null, // Not used anymore  
       earning: data.earning || "0.00",
@@ -864,22 +880,35 @@ export default function Admin() {
                       {(videos as any[]).map((video: any) => (
                         <div key={video.id} className="p-3 sm:p-4 border border-gray-200 rounded-lg">
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">{video.title}</h3>
-                              <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{video.description}</p>
-                              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-xs text-gray-500">
-                                <span className="flex items-center">
-                                  <Clock className="w-3 h-3 mr-1" />
-                                  {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
-                                </span>
-                                <span className="flex items-center">
-                                  <Eye className="w-3 h-3 mr-1" />
-                                  {video.views} views
-                                </span>
-                                <span className="flex items-center">
-                                  <DollarSign className="w-3 h-3 mr-1" />
-                                  ₹{video.earning}
-                                </span>
+                            <div className="flex items-start gap-3 flex-1 min-w-0">
+                              {/* Video thumbnail */}
+                              {video.thumbnailUrl && (
+                                <div className="flex-shrink-0">
+                                  <img 
+                                    src={video.thumbnailUrl} 
+                                    alt={video.title}
+                                    className="w-16 h-12 object-cover rounded"
+                                  />
+                                </div>
+                              )}
+                              
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">{video.title}</h3>
+                                <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{video.description}</p>
+                                <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-xs text-gray-500">
+                                  <span className="flex items-center">
+                                    <Clock className="w-3 h-3 mr-1" />
+                                    {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
+                                  </span>
+                                  <span className="flex items-center">
+                                    <Eye className="w-3 h-3 mr-1" />
+                                    {video.views} views
+                                  </span>
+                                  <span className="flex items-center">
+                                    <DollarSign className="w-3 h-3 mr-1" />
+                                    ₹{video.earning}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                             
