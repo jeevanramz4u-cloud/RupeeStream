@@ -23,12 +23,12 @@ export default function VideoPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasCompleted, setHasCompleted] = useState(false);
 
-  const { data: video, isLoading } = useQuery({
+  const { data: video, isLoading } = useQuery<any>({
     queryKey: ["/api/videos", id],
     enabled: !!id,
   });
 
-  const { data: progress } = useQuery({
+  const { data: progress } = useQuery<any>({
     queryKey: ["/api/video-progress", id],
     enabled: !!id && !!user,
   });
@@ -59,7 +59,7 @@ export default function VideoPlayer() {
       setHasCompleted(true);
       toast({
         title: "Video Completed!",
-        description: `You earned ₹${video?.earning} for watching this video.`,
+        description: `You earned ₹${videoEarning} for watching this video.`,
       });
       queryClient.invalidateQueries({ queryKey: ["/api/earnings"] });
       queryClient.invalidateQueries({ queryKey: ["/api/earnings/stats"] });
@@ -80,13 +80,25 @@ export default function VideoPlayer() {
 
   useEffect(() => {
     if (progress) {
-      setWatchedSeconds(progress.watchedSeconds || 0);
-      setHasCompleted(progress.isCompleted || false);
+      setWatchedSeconds(progressWatchedSeconds);
+      setHasCompleted(progressIsCompleted);
     }
   }, [progress]);
 
+  // Safe accessors
+  const videoTitle = video?.title || 'Loading...';
+  const videoEarning = video?.earning || '0';
+  const videoUrl = video?.url || '';
+  const videoThumbnail = video?.thumbnailUrl || null;
+  const videoDuration = video?.duration || 0;
+  const videoViews = video?.views || 0;
+  const videoDescription = video?.description || '';
+  const progressWatchedSeconds = progress?.watchedSeconds || 0;
+  const progressIsCompleted = progress?.isCompleted || false;
+  const progressIsEarningCredited = progress?.isEarningCredited || false;
+
   // Check if this is a YouTube video
-  const isYouTubeVideo = video?.url && (video.url.includes('youtube.com') || video.url.includes('youtu.be'));
+  const isYouTubeVideo = videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'));
 
   useEffect(() => {
     // Only add event listeners for direct video files, not YouTube iframes
@@ -165,9 +177,9 @@ export default function VideoPlayer() {
     );
   }
 
-  const progressPercentage = video.duration > 0 ? (watchedSeconds / video.duration) * 100 : 0;
-  const remainingTime = Math.max(video.duration - watchedSeconds, 0);
-  const canEarn = !hasCompleted && !progress?.isEarningCredited;
+  const progressPercentage = videoDuration > 0 ? (watchedSeconds / videoDuration) * 100 : 0;
+  const remainingTime = Math.max(videoDuration - watchedSeconds, 0);
+  const canEarn = !hasCompleted && !progressIsEarningCredited;
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -189,19 +201,19 @@ export default function VideoPlayer() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Video Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{video.title}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">{videoTitle}</h1>
           <div className="flex items-center space-x-6 text-sm text-gray-500">
             <span className="flex items-center">
               <Clock className="w-4 h-4 mr-1" />
-              {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
+              {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
             </span>
             <span className="flex items-center">
               <Eye className="w-4 h-4 mr-1" />
-              {video.views.toLocaleString()} views
+              {videoViews.toLocaleString()} views
             </span>
             <span className="flex items-center text-accent font-semibold">
               <Coins className="w-4 h-4 mr-1" />
-              ₹{video.earning}
+              ₹{videoEarning}
             </span>
           </div>
         </div>
@@ -210,43 +222,87 @@ export default function VideoPlayer() {
         <Card className="mb-6">
           <CardContent className="p-0">
             <div className="bg-gray-900 rounded-t-lg aspect-video flex items-center justify-center relative">
-              {video.url ? (
+              {videoUrl ? (
                 isYouTubeVideo ? (
-                  // YouTube embed player with manual completion
-                  <div className="w-full h-full relative">
-                    <iframe
-                      className="w-full h-full rounded-t-lg"
-                      src={(() => {
-                        let embedUrl = video.url;
-                        if (embedUrl.includes('youtube.com/watch?v=')) {
-                          embedUrl = embedUrl.replace('youtube.com/watch?v=', 'youtube.com/embed/');
-                        } else if (embedUrl.includes('youtu.be/')) {
-                          embedUrl = embedUrl.replace('youtu.be/', 'youtube.com/embed/');
-                        }
-                        // Add autoplay and other parameters
-                        embedUrl += embedUrl.includes('?') ? '&' : '?';
-                        embedUrl += 'autoplay=0&controls=1&disablekb=1&fs=0&modestbranding=1&rel=0';
-                        return embedUrl;
-                      })()}
-                      title={video.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                    {/* Manual completion button for YouTube videos */}
-                    {!hasCompleted && (
-                      <div className="absolute bottom-4 right-4">
-                        <Button
-                          onClick={() => {
-                            completeVideoMutation.mutate();
-                          }}
-                          className="bg-green-600 hover:bg-green-700 text-white"
-                          disabled={completeVideoMutation.isPending}
-                        >
-                          Mark as Completed
-                        </Button>
+                  // YouTube viewing options with ad blocker awareness
+                  <div className="w-full h-full relative bg-gray-800 rounded-t-lg flex flex-col">
+                    {/* YouTube thumbnail and play instructions */}
+                    <div className="flex-1 flex flex-col items-center justify-center text-white p-8">
+                      {videoThumbnail && (
+                        <img 
+                          src={videoThumbnail} 
+                          alt={videoTitle}
+                          className="w-48 h-36 object-cover rounded mb-4 shadow-lg"
+                        />
+                      )}
+                      <h3 className="text-xl font-semibold mb-4 text-center">{videoTitle}</h3>
+                      
+                      <div className="text-center space-y-3 mb-6">
+                        <p className="text-gray-300">Watch this video on YouTube to earn ₹{videoEarning}</p>
+                        <p className="text-sm text-yellow-400">
+                          Note: If ad blockers prevent embedded playback, click "Open on YouTube" below
+                        </p>
                       </div>
-                    )}
+
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button
+                          onClick={() => window.open(videoUrl, '_blank')}
+                          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2"
+                        >
+                          <Play className="w-4 h-4 mr-2" />
+                          Open on YouTube
+                        </Button>
+                        
+                        {!hasCompleted && (
+                          <Button
+                            onClick={() => {
+                              completeVideoMutation.mutate();
+                            }}
+                            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+                            disabled={completeVideoMutation.isPending}
+                          >
+                            <Coins className="w-4 h-4 mr-2" />
+                            {completeVideoMutation.isPending ? 'Processing...' : 'Mark as Completed'}
+                          </Button>
+                        )}
+                        
+                        {hasCompleted && (
+                          <div className="flex items-center bg-green-800 text-green-200 px-4 py-2 rounded">
+                            <Coins className="w-4 h-4 mr-2" />
+                            Video Completed!
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Optional: Try embedded player with error handling */}
+                    <div className="border-t border-gray-700 p-4">
+                      <details className="text-white">
+                        <summary className="cursor-pointer text-sm text-gray-400 hover:text-white">
+                          Try Embedded Player (may not work with ad blockers)
+                        </summary>
+                        <div className="mt-3 aspect-video">
+                          <iframe
+                            className="w-full h-full rounded"
+                            src={(() => {
+                              let embedUrl = videoUrl;
+                              if (embedUrl.includes('youtube.com/watch?v=')) {
+                                embedUrl = embedUrl.replace('youtube.com/watch?v=', 'youtube.com/embed/');
+                              } else if (embedUrl.includes('youtu.be/')) {
+                                embedUrl = embedUrl.replace('youtu.be/', 'youtube.com/embed/');
+                              }
+                              embedUrl += embedUrl.includes('?') ? '&' : '?';
+                              embedUrl += 'autoplay=0&controls=1&modestbranding=1&rel=0';
+                              return embedUrl;
+                            })()}
+                            title={videoTitle}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                      </details>
+                    </div>
                   </div>
                 ) : (
                   // Regular video player for direct video files
@@ -258,7 +314,7 @@ export default function VideoPlayer() {
                     disablePictureInPicture
                     onContextMenu={(e) => e.preventDefault()}
                   >
-                    <source src={video.url} type="video/mp4" />
+                    <source src={videoUrl} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                 )
@@ -287,17 +343,22 @@ export default function VideoPlayer() {
               </div>
             )}
             
-            {/* YouTube video info */}
+            {/* Instructions for YouTube videos */}
             {isYouTubeVideo && (
-              <div className="p-4">
-                <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-                  <span>YouTube Video</span>
-                  <span className={`font-medium ${hasCompleted ? 'text-green-600' : 'text-orange-600'}`}>
-                    {hasCompleted ? 'Completed' : 'Click "Mark as Completed" after watching'}
-                  </span>
-                </div>
-                <div className="text-xs text-gray-500">
-                  Earning: ₹{video?.earning} • Duration: {Math.floor((video?.duration || 0) / 60)}:{((video?.duration || 0) % 60).toString().padStart(2, '0')}
+              <div className="p-4 bg-blue-50 border-t">
+                <div className="flex items-start gap-3">
+                  <Info className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-blue-900 mb-1">How to earn from this video:</h4>
+                    <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                      <li>Click "Open on YouTube" to watch the video</li>
+                      <li>Watch the complete video on YouTube</li>
+                      <li>Return here and click "Mark as Completed" to earn ₹{videoEarning}</li>
+                    </ol>
+                    <p className="text-xs text-blue-600 mt-2">
+                      Status: {hasCompleted ? '✅ Completed' : '⏳ Pending completion'}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
