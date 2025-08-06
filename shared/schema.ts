@@ -108,6 +108,13 @@ export const users = pgTable("users", {
   lastWatchDate: timestamp("last_watch_date"),
   lastHourlyBonusAt: timestamp("last_hourly_bonus_at"),
   hourlyBonusCount: integer("hourly_bonus_count").default(0).notNull(),
+  
+  // Account suspension fields
+  suspendedAt: timestamp("suspended_at"),
+  suspensionReason: varchar("suspension_reason"),
+  consecutiveFailedDays: integer("consecutive_failed_days").default(0).notNull(),
+  reactivationFeePaid: boolean("reactivation_fee_paid").default(false).notNull(),
+  reactivationFeeAmount: decimal("reactivation_fee_amount", { precision: 8, scale: 2 }).default("49.00"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => [

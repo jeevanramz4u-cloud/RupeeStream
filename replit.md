@@ -63,6 +63,13 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Fixed daily watch time calculation to track incremental progress instead of total time repeatedly
 - Database schema now supports millions of earnings records with efficient query performance
 - Created data retention policy ensuring compliance and permanent user history preservation
+- **Implemented account suspension system with ₹49 reactivation fee (August 2025)**
+- Suspension system only applies to KYC-completed users (approved + verified status)
+- Users who fail to meet 8-hour daily watch targets for 3 consecutive days get suspended
+- Suspended accounts require ₹49 reactivation fee payment to restore access
+- Progressive warning system alerts users at risk (1-2 missed days)
+- Admin panel includes suspension management tools and compliance checking
+- Automatic daily compliance monitoring for all eligible users
 
 # User Preferences
 

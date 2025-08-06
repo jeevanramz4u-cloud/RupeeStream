@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { ObjectPermission } from "./objectAcl";
+import { SuspensionSystem } from "./suspensionSystem";
 import { 
   insertVideoSchema, 
   insertVideoProgressSchema, 
@@ -543,6 +544,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error completing video:", error);
       res.status(500).json({ message: "Failed to complete video" });
+    }
+  });
+
+  // Suspension status route
+  app.get('/api/user/suspension-status', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const status = await SuspensionSystem.getSuspensionStatus(userId);
+      res.json(status);
+    } catch (error) {
+      console.error("Error fetching suspension status:", error);
+      res.status(500).json({ message: "Failed to fetch suspension status" });
+    }
+  });
+
+  // Reactivation fee payment route
+  app.post('/api/user/pay-reactivation-fee', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const result = await SuspensionSystem.processReactivationFee(userId);
+      
+      if (result.success) {
+        res.json({ message: result.message, success: true });
+      } else {
+        res.status(400).json({ message: result.message, success: false });
+      }
+    } catch (error) {
+      console.error("Error processing reactivation fee:", error);
+      res.status(500).json({ message: "Failed to process reactivation fee" });
     }
   });
 

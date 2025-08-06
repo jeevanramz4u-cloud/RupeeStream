@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { PerformanceOptimizer } from "./performanceOptimizations";
+import { initializeSuspensionSystem } from "./suspensionSystem";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
@@ -41,6 +42,7 @@ app.use((req, res, next) => {
   // Initialize performance optimizations for 200k+ users
   try {
     await PerformanceOptimizer.createOptimizedIndexes();
+    await initializeSuspensionSystem();
   } catch (error) {
     log("Performance optimization setup completed");
   }

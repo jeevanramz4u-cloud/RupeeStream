@@ -31,6 +31,7 @@ import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useLocation } from "wouter";
+import SuspensionAlert from "@/components/SuspensionAlert";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -253,6 +254,9 @@ export default function Dashboard() {
             </AlertDescription>
           </Alert>
         )}
+
+        {/* Suspension Alert - Only shows for KYC-completed users */}
+        <SuspensionAlert />
 
         {/* Daily Target Warning - Red for remaining hours */}
         <Alert className={`mb-6 ${remainingHours > 0 ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'}`}>
