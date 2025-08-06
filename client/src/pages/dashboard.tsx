@@ -16,7 +16,14 @@ import {
   Share,
   Headphones,
   CheckCircle,
-  Copy
+  Copy,
+  User,
+  Phone,
+  MapPin,
+  CreditCard,
+  FileText,
+  Calendar,
+  Mail
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
@@ -142,6 +149,168 @@ export default function Dashboard() {
               </div>
               <div className="mt-4">
                 <p className="text-xs text-gray-500">0 successful referrals</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* User Profile Section */}
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="w-5 h-5" />
+                My Profile Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Personal Information */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-gray-900 border-b pb-2">Personal Information</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Name:</span>
+                      <span className="text-sm font-medium">{user?.firstName} {user?.lastName}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Email:</span>
+                      <span className="text-sm font-medium">{user?.email}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Phone:</span>
+                      <span className="text-sm font-medium">{user?.phoneNumber || 'Not provided'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Date of Birth:</span>
+                      <span className="text-sm font-medium">
+                        {user?.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('en-IN') : 'Not provided'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Address Information */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-gray-900 border-b pb-2">Address</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-2">
+                      <MapPin className="w-4 h-4 text-gray-500 mt-0.5" />
+                      <div className="text-sm">
+                        <p className="font-medium">{user?.address || 'Not provided'}</p>
+                        <p className="text-gray-600">{user?.city || ''}{user?.city && user?.state ? ', ' : ''}{user?.state || ''}</p>
+                        {user?.pincode && <p className="text-gray-600">PIN: {user.pincode}</p>}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bank Information */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-gray-900 border-b pb-2">Bank Details</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Account Holder:</span>
+                      <span className="text-sm font-medium">{user?.accountHolderName || 'Not provided'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Account Number:</span>
+                      <span className="text-sm font-medium">
+                        {user?.accountNumber ? `****${user.accountNumber.slice(-4)}` : 'Not provided'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">IFSC Code:</span>
+                      <span className="text-sm font-medium">{user?.ifscCode || 'Not provided'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Bank:</span>
+                      <span className="text-sm font-medium">{user?.bankName || 'Not provided'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Government ID Information */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-gray-900 border-b pb-2">Government ID</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">ID Type:</span>
+                      <span className="text-sm font-medium">{user?.governmentIdType || 'Not provided'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">ID Number:</span>
+                      <span className="text-sm font-medium">
+                        {user?.governmentIdNumber ? `****${user.governmentIdNumber.slice(-4)}` : 'Not provided'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Account Status */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-gray-900 border-b pb-2">Account Status</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Verification:</span>
+                      <span className={`text-sm font-medium ${
+                        user?.verificationStatus === 'verified' ? 'text-green-600' : 
+                        user?.verificationStatus === 'rejected' ? 'text-red-600' : 'text-yellow-600'
+                      }`}>
+                        {user?.verificationStatus === 'verified' ? 'Verified' :
+                         user?.verificationStatus === 'rejected' ? 'Rejected' : 'Pending'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Account Status:</span>
+                      <span className={`text-sm font-medium ${
+                        user?.status === 'active' ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {user?.status === 'active' ? 'Active' : 'Suspended'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Referral Code:</span>
+                      <span className="text-sm font-medium">{user?.referralCode || 'Not available'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Account Details */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-gray-900 border-b pb-2">Account Details</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Member Since:</span>
+                      <span className="text-sm font-medium">
+                        {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        }) : 'Not available'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Wallet className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Current Balance:</span>
+                      <span className="text-sm font-medium text-green-600">₹{user?.balance || 0}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

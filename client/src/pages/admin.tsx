@@ -393,27 +393,52 @@ export default function Admin() {
                             <p className="text-gray-900">{selectedUser.email}</p>
                           </div>
                           <div>
+                            <Label>Phone</Label>
+                            <p className="text-gray-900">{selectedUser.phoneNumber || 'Not provided'}</p>
+                          </div>
+                          <div>
+                            <Label>Date of Birth</Label>
+                            <p className="text-gray-900">
+                              {selectedUser.dateOfBirth ? new Date(selectedUser.dateOfBirth).toLocaleDateString('en-IN') : 'Not provided'}
+                            </p>
+                          </div>
+                          <div>
                             <Label>Status</Label>
                             {getStatusBadge(selectedUser.verificationStatus)}
                           </div>
                           <div>
                             <Label>Balance</Label>
-                            <p className="text-gray-900">₹{selectedUser.balance}</p>
+                            <p className="text-gray-900">₹{selectedUser.balance || 0}</p>
                           </div>
                         </div>
                       </div>
 
                       <div>
+                        <h3 className="font-medium text-gray-900 mb-2">Address Information</h3>
+                        <div className="p-3 bg-gray-50 rounded-lg text-sm">
+                          <p><strong>Address:</strong> {selectedUser.address || 'Not provided'}</p>
+                          <p><strong>City:</strong> {selectedUser.city || 'Not provided'}</p>
+                          <p><strong>State:</strong> {selectedUser.state || 'Not provided'}</p>
+                          <p><strong>PIN Code:</strong> {selectedUser.pincode || 'Not provided'}</p>
+                        </div>
+                      </div>
+
+                      <div>
                         <h3 className="font-medium text-gray-900 mb-2">Bank Details</h3>
-                        {selectedUser.bankDetails ? (
-                          <div className="p-3 bg-gray-50 rounded-lg">
-                            <pre className="text-sm text-gray-700 whitespace-pre-wrap">
-                              {selectedUser.bankDetails}
-                            </pre>
-                          </div>
-                        ) : (
-                          <p className="text-gray-500">No bank details provided</p>
-                        )}
+                        <div className="p-3 bg-gray-50 rounded-lg text-sm">
+                          <p><strong>Account Holder:</strong> {selectedUser.accountHolderName || 'Not provided'}</p>
+                          <p><strong>Account Number:</strong> {selectedUser.accountNumber ? `****${selectedUser.accountNumber.slice(-4)}` : 'Not provided'}</p>
+                          <p><strong>IFSC Code:</strong> {selectedUser.ifscCode || 'Not provided'}</p>
+                          <p><strong>Bank Name:</strong> {selectedUser.bankName || 'Not provided'}</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="font-medium text-gray-900 mb-2">Government ID Details</h3>
+                        <div className="p-3 bg-gray-50 rounded-lg text-sm">
+                          <p><strong>ID Type:</strong> {selectedUser.governmentIdType || 'Not provided'}</p>
+                          <p><strong>ID Number:</strong> {selectedUser.governmentIdNumber ? `****${selectedUser.governmentIdNumber.slice(-4)}` : 'Not provided'}</p>
+                        </div>
                       </div>
 
                       <div>
