@@ -522,11 +522,38 @@ export class DatabaseStorage implements IStorage {
       updateData.reason = reason;
     }
     
+    // Get the payout request first to get the amount and userId
+    const [existingRequest] = await db
+      .select()
+      .from(payoutRequests)
+      .where(eq(payoutRequests.id, id));
+    
+    if (!existingRequest) {
+      throw new Error("Payout request not found");
+    }
+    
+    // Update the payout status
     const [request] = await db
       .update(payoutRequests)
       .set(updateData)
       .where(eq(payoutRequests.id, id))
       .returning();
+    
+    // If status is completed, deduct the amount from user's balance
+    if (status === 'completed' && existingRequest.status !== 'completed') {
+      const user = await this.getUser(existingRequest.userId);
+      if (user) {
+        const currentBalance = parseFloat(user.balance || '0');
+        const payoutAmount = parseFloat(existingRequest.amount);
+        const newBalance = Math.max(0, currentBalance - payoutAmount); // Ensure balance doesn't go negative
+        
+        await db
+          .update(users)
+          .set({ balance: newBalance.toFixed(2) })
+          .where(eq(users.id, existingRequest.userId));
+      }
+    }
+    
     return request;
   }
 
