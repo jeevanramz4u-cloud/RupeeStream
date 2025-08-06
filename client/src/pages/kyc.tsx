@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ObjectUploader } from "@/components/ObjectUploader";
+import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Shield, 
   Upload, 
@@ -19,7 +21,9 @@ import {
   FileText,
   Camera,
   Info,
-  ArrowLeft
+  User,
+  IdCard,
+  CameraIcon
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -123,21 +127,19 @@ export default function KYC() {
     },
   });
 
-  // KYC fee payment mutation
-  const payKycFeeMutation = useMutation({
+  // Pay KYC fee mutation
+  const payFeeMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/kyc/pay-fee");
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast({
-        title: "Payment Initiated",
-        description: "Redirecting to payment gateway...",
+        title: "Payment Successful",
+        description: "KYC processing fee paid successfully. Your documents will be reviewed soon.",
       });
-      // Redirect to payment URL or handle payment flow
-      if (data.paymentUrl) {
-        window.location.href = data.paymentUrl;
-      }
+      queryClient.invalidateQueries({ queryKey: ["/api/kyc/status"] });
+      setCurrentStep(5);
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -153,63 +155,45 @@ export default function KYC() {
       }
       toast({
         title: "Payment Failed",
-        description: "Failed to initiate payment. Please try again.",
+        description: "Failed to process payment. Please try again.",
         variant: "destructive",
       });
     },
   });
 
-  const handleFileUpload = async (type: 'front' | 'back' | 'selfie') => {
-    try {
-      console.log(`Getting upload URL for ${type}`);
-      const uploadUrl = await uploadMutation.mutateAsync();
-      console.log(`Upload URL received for ${type}:`, uploadUrl);
-      
-      if (!uploadUrl) {
-        throw new Error("No upload URL received from server");
-      }
-      
-      return {
-        method: "PUT" as const,
-        url: uploadUrl
-      };
-    } catch (error) {
-      console.error(`Upload error for ${type}:`, error);
-      toast({
-        title: "Upload Error",
-        description: `Failed to get upload URL for ${type}. Please try again.`,
-        variant: "destructive",
-      });
-      throw error;
-    }
+  // File upload handlers
+  const handleFileUpload = async (documentType: 'front' | 'back' | 'selfie') => {
+    return {
+      method: "PUT" as const,
+      url: await uploadMutation.mutateAsync(),
+    };
   };
 
-  const handleUploadComplete = async (result: UploadResult<Record<string, unknown>, Record<string, unknown>>, type: 'front' | 'back' | 'selfie') => {
+  const handleUploadComplete = (documentType: 'front' | 'back' | 'selfie') => (result: UploadResult) => {
     if (result.successful && result.successful.length > 0) {
-      const uploadUrl = result.successful[0].uploadURL;
+      const uploadedFile = result.successful[0];
+      const documentUrl = uploadedFile.uploadURL;
       
-      // Set the ACL and get the normalized path
-      const response = await apiRequest("PUT", "/api/kyc/document", {
-        documentUrl: uploadUrl,
-        documentType: type
-      });
-      const data = await response.json();
-      
-      switch (type) {
-        case 'front':
-          setGovIdFrontUrl(data.objectPath);
-          break;
-        case 'back':
-          setGovIdBackUrl(data.objectPath);
-          break;
-        case 'selfie':
-          setSelfieWithIdUrl(data.objectPath);
-          break;
+      // Update the appropriate state
+      if (documentType === 'front') {
+        setGovIdFrontUrl(documentUrl);
+      } else if (documentType === 'back') {
+        setGovIdBackUrl(documentUrl);
+      } else if (documentType === 'selfie') {
+        setSelfieWithIdUrl(documentUrl);
       }
-      
-      toast({
-        title: "Upload Successful",
-        description: `${type === 'front' ? 'Front side' : type === 'back' ? 'Back side' : 'Selfie'} uploaded successfully.`,
+
+      // Save to backend
+      apiRequest("PUT", "/api/kyc/document", {
+        documentUrl,
+        documentType,
+      }).then(() => {
+        toast({
+          title: "Document Uploaded",
+          description: `Your ${documentType === 'front' ? 'ID front' : documentType === 'back' ? 'ID back' : 'selfie'} has been uploaded successfully.`,
+        });
+      }).catch((error) => {
+        console.error("Error saving document:", error);
       });
     }
   };
@@ -218,7 +202,7 @@ export default function KYC() {
     if (!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) {
       toast({
         title: "Incomplete Information",
-        description: "Please fill all fields and upload all required documents.",
+        description: "Please fill in all required fields and upload all documents.",
         variant: "destructive",
       });
       return;
@@ -233,330 +217,387 @@ export default function KYC() {
     });
   };
 
+  const getKycStatusBadge = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
+      case 'submitted':
+        return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200"><Info className="w-3 h-3 mr-1" />Under Review</Badge>;
+      case 'approved':
+        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200"><CheckCircle className="w-3 h-3 mr-1" />Approved</Badge>;
+      case 'rejected':
+        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200"><XCircle className="w-3 h-3 mr-1" />Rejected</Badge>;
+      default:
+        return <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">Unknown</Badge>;
+    }
+  };
+
+  const getProgressPercentage = () => {
+    if (!kycData) return 0;
+    if (kycData.kycStatus === 'approved') return 100;
+    if (kycData.kycFeePaid) return 80;
+    if (kycData.kycStatus === 'submitted') return 60;
+    if (govIdFrontUrl && govIdBackUrl && selfieWithIdUrl) return 40;
+    if (govIdType && govIdNumber) return 20;
+    return 0;
+  };
+
   if (isAuthLoading || isKycLoading) {
     return (
-      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Loading KYC status...</p>
+      <div className="min-h-screen bg-neutral-50 safe-area-padding">
+        <Header />
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
         </div>
       </div>
     );
   }
 
-  const kycStatus = (kycData as any)?.kycStatus || 'pending';
-  const kycFeePaid = (kycData as any)?.kycFeePaid || false;
-
-  // Calculate current step based on KYC status
-  const getStepFromStatus = () => {
-    if (kycStatus === 'approved' && kycFeePaid) return 5;
-    if (kycStatus === 'submitted' && !kycFeePaid) return 4;
-    if (kycStatus === 'submitted' && kycFeePaid) return 5;
-    return 1;
-  };
-
-  const actualStep = currentStep || getStepFromStatus();
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => setLocation("/dashboard")}
-                className="mr-4"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Dashboard
-              </Button>
-              <h1 className="text-xl font-bold text-gray-900">KYC Verification</h1>
+    <div className="min-h-screen bg-neutral-50 safe-area-padding">
+      <Header />
+      
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">KYC Verification</h1>
+          <p className="text-sm sm:text-base text-gray-600">Complete your identity verification to start earning. One-time ₹99 processing fee required.</p>
+        </div>
+
+        {/* Status Overview */}
+        <Card className="mb-6 sm:mb-8 touch-manipulation">
+          <CardHeader className="pb-3 sm:pb-4">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm sm:text-base flex items-center">
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-600" />
+                Verification Status
+              </CardTitle>
+              {kycData && getKycStatusBadge(kycData.kycStatus)}
             </div>
-            <Badge variant={
-              kycStatus === 'approved' ? 'default' : 
-              kycStatus === 'submitted' ? 'secondary' : 
-              kycStatus === 'rejected' ? 'destructive' : 'outline'
-            }>
-              {kycStatus === 'approved' ? 'Approved' :
-               kycStatus === 'submitted' ? 'Under Review' :
-               kycStatus === 'rejected' ? 'Rejected' : 'Pending'}
-            </Badge>
-          </div>
-        </div>
-      </header>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between text-sm text-gray-600 mb-2">
+                  <span>Progress</span>
+                  <span>{getProgressPercentage()}%</span>
+                </div>
+                <Progress value={getProgressPercentage()} className="h-2" />
+              </div>
+              
+              {kycData?.kycStatus === 'approved' && (
+                <Alert className="bg-green-50 border-green-200">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-green-800">
+                    Your KYC verification is complete! You can now receive payouts.
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {kycData?.kycStatus === 'rejected' && (
+                <Alert className="bg-red-50 border-red-200">
+                  <XCircle className="h-4 w-4 text-red-600" />
+                  <AlertDescription className="text-red-800">
+                    Your KYC verification was rejected. Please contact support for assistance.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex justify-between text-sm font-medium text-gray-900 mb-2">
-            <span>Progress</span>
-            <span>{actualStep}/5 steps</span>
-          </div>
-          <Progress value={(actualStep / 5) * 100} className="h-2" />
-        </div>
-
-        {/* KYC Fee Notice */}
-        <Alert className="mb-6 border-blue-200 bg-blue-50">
-          <Info className="h-4 w-4 text-blue-600" />
-          <AlertDescription className="text-blue-800">
-            <strong>One-time KYC Processing Fee: ₹99</strong><br />
-            This is a one-time fee for document verification. EarnPay is lifetime free with no monthly or annual charges.
-            You can only request payouts after completing KYC verification and fee payment.
-          </AlertDescription>
-        </Alert>
-
-        {kycStatus === 'approved' && kycFeePaid ? (
-          /* KYC Approved */
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-green-700 mb-2">KYC Verified!</h2>
-              <p className="text-gray-600 mb-4">
-                Your identity has been verified and KYC fee has been paid. You can now request payouts.
-              </p>
-              <Button onClick={() => setLocation("/earnings")}>
-                <CreditCard className="w-4 h-4 mr-2" />
-                Request Payout
-              </Button>
-            </CardContent>
-          </Card>
-        ) : kycStatus === 'submitted' && !kycFeePaid ? (
-          /* Documents submitted, payment pending */
-          <Card>
+        {/* KYC Steps */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          {/* Step 1: Personal Information */}
+          <Card className="touch-manipulation">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Clock className="w-5 h-5 mr-2 text-orange-500" />
-                Payment Required
+              <CardTitle className="text-base flex items-center">
+                <User className="w-4 h-4 mr-2 text-blue-600" />
+                1. Personal Information
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 mb-4">
-                Your documents have been submitted successfully. Please pay the KYC processing fee to complete verification.
-              </p>
-              <Button 
-                onClick={() => payKycFeeMutation.mutate()}
-                disabled={payKycFeeMutation.isPending}
-                className="w-full"
-              >
-                <CreditCard className="w-4 h-4 mr-2" />
-                {payKycFeeMutation.isPending ? 'Processing...' : 'Pay KYC Fee (₹99)'}
-              </Button>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="govIdType" className="text-sm font-medium">Government ID Type</Label>
+                  <Select value={govIdType} onValueChange={setGovIdType} disabled={kycData?.kycStatus === 'approved'}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select ID type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="aadhaar">Aadhaar Card</SelectItem>
+                      <SelectItem value="pan">PAN Card</SelectItem>
+                      <SelectItem value="driving_license">Driving License</SelectItem>
+                      <SelectItem value="voter_id">Voter ID</SelectItem>
+                      <SelectItem value="passport">Passport</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label htmlFor="govIdNumber" className="text-sm font-medium">ID Number</Label>
+                  <Input
+                    id="govIdNumber"
+                    value={govIdNumber}
+                    onChange={(e) => setGovIdNumber(e.target.value)}
+                    placeholder="Enter your ID number"
+                    className="mt-1"
+                    disabled={kycData?.kycStatus === 'approved'}
+                  />
+                </div>
+
+                {govIdType && govIdNumber && (
+                  <div className="flex items-center text-green-600 text-sm">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    Information saved
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
-        ) : kycStatus === 'submitted' && kycFeePaid ? (
-          /* Under review */
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <Clock className="w-16 h-16 text-orange-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-orange-700 mb-2">Under Review</h2>
-              <p className="text-gray-600">
-                Your KYC documents and payment are being reviewed. This typically takes 24-48 hours.
-              </p>
+
+          {/* Step 2: ID Front Upload */}
+          <Card className="touch-manipulation">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center">
+                <IdCard className="w-4 h-4 mr-2 text-blue-600" />
+                2. ID Front Side
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">Upload a clear photo of the front side of your government ID.</p>
+                
+                {kycData?.kycStatus === 'approved' ? (
+                  <div className="flex items-center justify-center p-4 border-2 border-green-200 border-dashed rounded-lg bg-green-50">
+                    <div className="text-center">
+                      <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                      <p className="text-sm text-green-700">Document verified</p>
+                    </div>
+                  </div>
+                ) : (
+                  <ObjectUploader
+                    maxNumberOfFiles={1}
+                    maxFileSize={10485760}
+                    onGetUploadParameters={() => handleFileUpload('front')}
+                    onComplete={handleUploadComplete('front')}
+                    buttonClassName="w-full"
+                  >
+                    <div className="flex items-center justify-center">
+                      <Upload className="w-4 h-4 mr-2" />
+                      {govIdFrontUrl ? 'Update Front Side' : 'Upload Front Side'}
+                    </div>
+                  </ObjectUploader>
+                )}
+
+                {govIdFrontUrl && kycData?.kycStatus !== 'approved' && (
+                  <div className="flex items-center text-green-600 text-sm">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    Front side uploaded
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
-        ) : kycStatus === 'rejected' ? (
-          /* KYC Rejected */
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-red-700 mb-2">KYC Rejected</h2>
-              <p className="text-gray-600 mb-4">
-                Your KYC submission was rejected. Please contact support for more information or resubmit with correct documents.
-              </p>
-              <Button variant="outline" onClick={() => {
-                setCurrentStep(1);
-                setGovIdType("");
-                setGovIdNumber("");
-                setGovIdFrontUrl("");
-                setGovIdBackUrl("");
-                setSelfieWithIdUrl("");
-              }}>
-                Resubmit KYC
-              </Button>
+
+          {/* Step 3: ID Back Upload */}
+          <Card className="touch-manipulation">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center">
+                <IdCard className="w-4 h-4 mr-2 text-blue-600" />
+                3. ID Back Side
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">Upload a clear photo of the back side of your government ID.</p>
+                
+                {kycData?.kycStatus === 'approved' ? (
+                  <div className="flex items-center justify-center p-4 border-2 border-green-200 border-dashed rounded-lg bg-green-50">
+                    <div className="text-center">
+                      <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                      <p className="text-sm text-green-700">Document verified</p>
+                    </div>
+                  </div>
+                ) : (
+                  <ObjectUploader
+                    maxNumberOfFiles={1}
+                    maxFileSize={10485760}
+                    onGetUploadParameters={() => handleFileUpload('back')}
+                    onComplete={handleUploadComplete('back')}
+                    buttonClassName="w-full"
+                  >
+                    <div className="flex items-center justify-center">
+                      <Upload className="w-4 h-4 mr-2" />
+                      {govIdBackUrl ? 'Update Back Side' : 'Upload Back Side'}
+                    </div>
+                  </ObjectUploader>
+                )}
+
+                {govIdBackUrl && kycData?.kycStatus !== 'approved' && (
+                  <div className="flex items-center text-green-600 text-sm">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    Back side uploaded
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
-        ) : (
-          /* KYC Form */
-          <div className="space-y-6">
-            {/* Step 1: Government ID Information */}
-            {actualStep >= 1 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <FileText className="w-5 h-5 mr-2" />
-                    Step 1: Government ID Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="govIdType">Government ID Type</Label>
-                    <select
-                      id="govIdType"
-                      value={govIdType}
-                      onChange={(e) => setGovIdType(e.target.value)}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    >
-                      <option value="">Select ID Type</option>
-                      <option value="aadhaar">Aadhaar Card</option>
-                      <option value="pan">PAN Card</option>
-                      <option value="passport">Passport</option>
-                      <option value="driving_license">Driving License</option>
-                      <option value="voter_id">Voter ID</option>
-                    </select>
-                  </div>
-                  <div>
-                    <Label htmlFor="govIdNumber">Government ID Number</Label>
-                    <Input
-                      id="govIdNumber"
-                      value={govIdNumber}
-                      onChange={(e) => setGovIdNumber(e.target.value)}
-                      placeholder="Enter your ID number"
-                    />
-                  </div>
-                  {govIdType && govIdNumber && (
-                    <Button onClick={() => setCurrentStep(2)}>
-                      Continue to Document Upload
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            )}
 
-            {/* Step 2: Document Uploads */}
-            {actualStep >= 2 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Upload className="w-5 h-5 mr-2" />
-                    Step 2: Upload Documents
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Front Side Upload */}
-                  <div>
-                    <Label className="text-sm font-medium">Government ID - Front Side</Label>
-                    <div className="mt-2">
-                      <ObjectUploader
-                        maxNumberOfFiles={1}
-                        maxFileSize={5 * 1024 * 1024} // 5MB
-                        onGetUploadParameters={() => handleFileUpload('front')}
-                        onComplete={(result) => handleUploadComplete(result, 'front')}
-                        buttonClassName="w-full"
-                      >
-                        <div className="flex items-center justify-center gap-2">
-                          {govIdFrontUrl ? <CheckCircle className="w-4 h-4 text-green-500" /> : <Upload className="w-4 h-4" />}
-                          <span>{govIdFrontUrl ? 'Front Side Uploaded' : 'Upload Front Side'}</span>
-                        </div>
-                      </ObjectUploader>
+          {/* Step 4: Selfie Upload */}
+          <Card className="touch-manipulation">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center">
+                <CameraIcon className="w-4 h-4 mr-2 text-blue-600" />
+                4. Selfie with ID
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">Take a selfie holding your government ID next to your face.</p>
+                
+                {kycData?.kycStatus === 'approved' ? (
+                  <div className="flex items-center justify-center p-4 border-2 border-green-200 border-dashed rounded-lg bg-green-50">
+                    <div className="text-center">
+                      <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                      <p className="text-sm text-green-700">Selfie verified</p>
                     </div>
                   </div>
-
-                  {/* Back Side Upload */}
-                  <div>
-                    <Label className="text-sm font-medium">Government ID - Back Side</Label>
-                    <div className="mt-2">
-                      <ObjectUploader
-                        maxNumberOfFiles={1}
-                        maxFileSize={5 * 1024 * 1024} // 5MB
-                        onGetUploadParameters={() => handleFileUpload('back')}
-                        onComplete={(result) => handleUploadComplete(result, 'back')}
-                        buttonClassName="w-full"
-                      >
-                        <div className="flex items-center justify-center gap-2">
-                          {govIdBackUrl ? <CheckCircle className="w-4 h-4 text-green-500" /> : <Upload className="w-4 h-4" />}
-                          <span>{govIdBackUrl ? 'Back Side Uploaded' : 'Upload Back Side'}</span>
-                        </div>
-                      </ObjectUploader>
+                ) : (
+                  <ObjectUploader
+                    maxNumberOfFiles={1}
+                    maxFileSize={10485760}
+                    onGetUploadParameters={() => handleFileUpload('selfie')}
+                    onComplete={handleUploadComplete('selfie')}
+                    buttonClassName="w-full"
+                  >
+                    <div className="flex items-center justify-center">
+                      <Camera className="w-4 h-4 mr-2" />
+                      {selfieWithIdUrl ? 'Update Selfie' : 'Upload Selfie'}
                     </div>
+                  </ObjectUploader>
+                )}
+
+                {selfieWithIdUrl && kycData?.kycStatus !== 'approved' && (
+                  <div className="flex items-center text-green-600 text-sm">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    Selfie uploaded
                   </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
-                  {/* Selfie Upload */}
-                  <div>
-                    <Label className="text-sm font-medium">Selfie with Government ID</Label>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Take a clear selfie while holding your government ID next to your face
-                    </p>
-                    <div className="mt-2">
-                      <ObjectUploader
-                        maxNumberOfFiles={1}
-                        maxFileSize={5 * 1024 * 1024} // 5MB
-                        onGetUploadParameters={() => handleFileUpload('selfie')}
-                        onComplete={(result) => handleUploadComplete(result, 'selfie')}
-                        buttonClassName="w-full"
-                      >
-                        <div className="flex items-center justify-center gap-2">
-                          {selfieWithIdUrl ? <CheckCircle className="w-4 h-4 text-green-500" /> : <Camera className="w-4 h-4" />}
-                          <span>{selfieWithIdUrl ? 'Selfie Uploaded' : 'Upload Selfie with ID'}</span>
-                        </div>
-                      </ObjectUploader>
-                    </div>
+          {/* Step 5: Submit for Review */}
+          <Card className="touch-manipulation">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center">
+                <FileText className="w-4 h-4 mr-2 text-blue-600" />
+                5. Submit for Review
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">Submit your documents for admin review.</p>
+                
+                {kycData?.kycStatus === 'pending' ? (
+                  <Button 
+                    onClick={handleSubmitKyc}
+                    disabled={!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl || submitKycMutation.isPending}
+                    className="w-full"
+                  >
+                    {submitKycMutation.isPending ? (
+                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                    ) : (
+                      <FileText className="w-4 h-4 mr-2" />
+                    )}
+                    Submit for Review
+                  </Button>
+                ) : (
+                  <div className="flex items-center justify-center p-3 bg-blue-50 rounded-lg">
+                    <CheckCircle className="w-4 h-4 text-blue-600 mr-2" />
+                    <span className="text-sm text-blue-700">Documents submitted</span>
                   </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
-                  {govIdFrontUrl && govIdBackUrl && selfieWithIdUrl && (
-                    <Button onClick={() => setCurrentStep(3)} className="w-full">
-                      Continue to Review
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Step 3: Review and Submit */}
-            {actualStep >= 3 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Shield className="w-5 h-5 mr-2" />
-                    Step 3: Review and Submit
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <p><strong>ID Type:</strong> {govIdType}</p>
-                      <p><strong>ID Number:</strong> {govIdNumber}</p>
-                    </div>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center">
-                        {govIdFrontUrl ? (
-                          <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                        ) : (
-                          <XCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                        )}
-                        <p className="text-sm">Front Side</p>
-                      </div>
-                      <div className="text-center">
-                        {govIdBackUrl ? (
-                          <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                        ) : (
-                          <XCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                        )}
-                        <p className="text-sm">Back Side</p>
-                      </div>
-                      <div className="text-center">
-                        {selfieWithIdUrl ? (
-                          <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                        ) : (
-                          <XCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                        )}
-                        <p className="text-sm">Selfie</p>
-                      </div>
-                    </div>
-                    <Button 
-                      onClick={handleSubmitKyc}
-                      disabled={submitKycMutation.isPending}
-                      className="w-full"
-                    >
-                      {submitKycMutation.isPending ? 'Submitting...' : 'Submit KYC Documents'}
-                    </Button>
+          {/* Step 6: Processing Fee */}
+          <Card className="touch-manipulation">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center">
+                <CreditCard className="w-4 h-4 mr-2 text-blue-600" />
+                6. Processing Fee
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">Pay ₹99 one-time processing fee to complete verification.</p>
+                
+                {kycData?.kycFeePaid ? (
+                  <div className="flex items-center justify-center p-3 bg-green-50 rounded-lg">
+                    <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                    <span className="text-sm text-green-700">Fee paid</span>
                   </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        )}
+                ) : kycData?.kycStatus === 'submitted' ? (
+                  <Button 
+                    onClick={() => payFeeMutation.mutate()}
+                    disabled={payFeeMutation.isPending}
+                    className="w-full"
+                  >
+                    {payFeeMutation.isPending ? (
+                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                    ) : (
+                      <CreditCard className="w-4 h-4 mr-2" />
+                    )}
+                    Pay ₹99 Fee
+                  </Button>
+                ) : (
+                  <div className="text-center p-3 border-2 border-gray-200 border-dashed rounded-lg">
+                    <span className="text-sm text-gray-500">Submit documents first</span>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Help Section */}
+        <Card className="mt-6 sm:mt-8 touch-manipulation">
+          <CardHeader>
+            <CardTitle className="text-base flex items-center">
+              <Info className="w-4 h-4 mr-2 text-blue-600" />
+              Important Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">Document Requirements:</h4>
+                <ul className="space-y-1">
+                  <li>• Clear, well-lit photos</li>
+                  <li>• All text must be readable</li>
+                  <li>• No blurred or cropped images</li>
+                  <li>• Maximum file size: 10MB</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">Processing Timeline:</h4>
+                <ul className="space-y-1">
+                  <li>• Document review: 24-48 hours</li>
+                  <li>• Processing fee: ₹99 (one-time)</li>
+                  <li>• Verification result via email</li>
+                  <li>• Contact support if needed</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );
