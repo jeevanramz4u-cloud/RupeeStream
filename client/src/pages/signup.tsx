@@ -380,26 +380,28 @@ export default function Signup() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <Label htmlFor="city">City *</Label>
+                <Label htmlFor="city" className="text-sm">City *</Label>
                 <Input
                   id="city"
                   name="city"
                   placeholder="City"
                   value={formData.city}
                   onChange={handleChange}
+                  className="h-10 sm:h-11 text-sm"
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="state">State *</Label>
+                <Label htmlFor="state" className="text-sm">State *</Label>
                 <Input
                   id="state"
                   name="state"
                   placeholder="State"
                   value={formData.state}
                   onChange={handleChange}
+                  className="h-10 sm:h-11 text-sm"
                   required
                 />
               </div>

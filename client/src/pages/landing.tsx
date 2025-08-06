@@ -5,27 +5,30 @@ import { Play, Users, Coins, Clock, CheckCircle, Shield } from "lucide-react";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-neutral-50 safe-area-padding">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <Play className="text-white w-5 h-5" />
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            <div className="flex items-center space-x-1.5 sm:space-x-2">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
+                <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="text-xl font-bold text-gray-900">EarnPay</span>
+              <span className="text-lg sm:text-xl font-bold text-gray-900">EarnPay</span>
             </div>
             
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-primary">Features</a>
-              <a href="#how-it-works" className="text-gray-600 hover:text-primary">How it Works</a>
-              <a href="#faq" className="text-gray-600 hover:text-primary">FAQ</a>
-              <a href="/privacy-policy" className="text-gray-600 hover:text-primary">Privacy</a>
-              <a href="/terms-conditions" className="text-gray-600 hover:text-primary">Terms</a>
+            <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
+              <a href="#features" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Features</a>
+              <a href="#how-it-works" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">How it Works</a>
+              <a href="#faq" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">FAQ</a>
+              <a href="/privacy-policy" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Privacy</a>
+              <a href="/terms-conditions" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Terms</a>
             </nav>
 
-            <Button onClick={() => window.location.href = '/api/login'} className="bg-primary hover:bg-primary/90">
+            <Button 
+              onClick={() => window.location.href = '/api/login'} 
+              className="bg-primary hover:bg-primary/90 h-8 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm touch-manipulation"
+            >
               Sign In
             </Button>
           </div>
@@ -33,19 +36,19 @@ export default function Landing() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
+      <section className="py-12 sm:py-16 lg:py-20 px-3 sm:px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
             Earn Money by Watching Videos
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed">
             Turn your free time into income. Watch entertaining videos, complete daily targets, 
             and earn real money with our trusted platform.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-2xl mx-auto">
             <Button 
               size="lg" 
-              className="bg-primary hover:bg-primary/90"
+              className="bg-primary hover:bg-primary/90 h-11 sm:h-12 text-sm sm:text-base touch-manipulation"
               onClick={() => window.location.href = '/signup'}
             >
               Sign Up to Start Earning
@@ -53,11 +56,14 @@ export default function Landing() {
             <Button 
               size="lg" 
               variant="outline"
+              className="h-11 sm:h-12 text-sm sm:text-base touch-manipulation"
               onClick={() => window.location.href = '/login'}
             >
               Already Have Account?
             </Button>
-            <Button size="lg" variant="outline">
+          </div>
+          <div className="mt-4 sm:hidden">
+            <Button size="sm" variant="outline" className="text-xs touch-manipulation">
               <a href="/how-to-earn">Learn How It Works</a>
             </Button>
           </div>

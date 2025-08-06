@@ -25,34 +25,34 @@ export default function Videos() {
   const categories = Array.from(new Set(videos.map((video: any) => video.category).filter(Boolean)));
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-neutral-50 safe-area-padding">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Available Videos</h1>
-          <p className="text-gray-600">Watch videos completely to earn money. Remember, you cannot skip or fast-forward!</p>
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Available Videos</h1>
+          <p className="text-sm sm:text-base text-gray-600">Watch videos completely to earn money. Remember, you cannot skip or fast-forward!</p>
         </div>
 
         {/* Filters */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Filter Videos</CardTitle>
+        <Card className="mb-6 sm:mb-8 touch-manipulation">
+          <CardHeader className="pb-3 sm:pb-4">
+            <CardTitle className="text-sm sm:text-base">Filter Videos</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-col md:flex-row gap-4">
+          <CardContent className="pt-0">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <Input
                     placeholder="Search videos..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="pl-9 sm:pl-10 h-9 sm:h-10 text-sm"
                   />
                 </div>
               </div>
-              <div className="w-full md:w-48">
+              <div className="w-full sm:w-48">
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                   <SelectTrigger>
                     <SelectValue placeholder="Category" />

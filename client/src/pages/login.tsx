@@ -58,25 +58,25 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center p-3 sm:p-4 safe-area-padding">
+      <div className="w-full max-w-md space-y-4 sm:space-y-6">
         {/* Header */}
         <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center">
-              <span className="text-2xl font-bold text-white">E</span>
+          <div className="flex justify-center mb-3 sm:mb-4">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-xl flex items-center justify-center">
+              <span className="text-xl sm:text-2xl font-bold text-white">E</span>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-gray-600 mt-2">Sign in to your EarnPay account</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Welcome Back</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">Sign in to your EarnPay account</p>
         </div>
 
         {/* Demo Login Info */}
         <Card className="bg-blue-50 border-blue-200">
-          <CardContent className="pt-6">
+          <CardContent className="pt-4 sm:pt-6">
             <div className="text-center space-y-2">
-              <h3 className="font-semibold text-blue-900">Demo Login</h3>
-              <div className="text-sm text-blue-700">
+              <h3 className="text-sm sm:text-base font-semibold text-blue-900">Demo Login</h3>
+              <div className="text-xs sm:text-sm text-blue-700">
                 <p><strong>Email:</strong> demo@earnpay.com</p>
                 <p><strong>Password:</strong> demo123</p>
               </div>
@@ -85,7 +85,7 @@ export default function Login() {
                 variant="outline" 
                 size="sm" 
                 onClick={() => setFormData({ email: 'demo@earnpay.com', password: 'demo123' })}
-                className="text-blue-700 border-blue-300 hover:bg-blue-100"
+                className="text-xs sm:text-sm text-blue-700 border-blue-300 hover:bg-blue-100 touch-manipulation"
               >
                 Use Demo Login
               </Button>
@@ -155,7 +155,7 @@ export default function Login() {
 
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full touch-manipulation h-11 sm:h-10 text-sm sm:text-base" 
                 disabled={isLoading}
               >
                 {isLoading ? "Signing in..." : "Sign In"}

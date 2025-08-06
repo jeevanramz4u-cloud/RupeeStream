@@ -77,74 +77,74 @@ export default function Dashboard() {
   const remainingHours = Math.max(targetHours - watchedHours, 0);
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-neutral-50 safe-area-padding">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="pt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Today's Earnings</p>
-                  <p className="text-2xl font-bold text-gray-900">₹{stats?.todayEarnings || '0.00'}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Today's Earnings</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900 truncate">₹{(stats as any)?.todayEarnings || '0.00'}</p>
                 </div>
-                <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
-                  <Coins className="text-secondary w-6 h-6" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/10 rounded-lg flex items-center justify-center ml-2">
+                  <Coins className="text-secondary w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
-              <div className="mt-4">
-                <Progress value={progressPercentage} className="h-2" />
-                <span className="text-xs text-gray-500 mt-1">{Math.round(progressPercentage)}%</span>
+              <div className="mt-3 sm:mt-4">
+                <Progress value={progressPercentage} className="h-1.5 sm:h-2" />
+                <span className="text-xs text-gray-500 mt-1 block">{Math.round(progressPercentage)}%</span>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Watch Time Today</p>
-                  <p className="text-2xl font-bold text-gray-900">{Math.floor(watchedHours)}h {Math.floor((watchedHours % 1) * 60)}m</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Watch Time Today</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900 truncate">{Math.floor(watchedHours)}h {Math.floor((watchedHours % 1) * 60)}m</p>
                 </div>
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <Clock className="text-primary w-6 h-6" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center ml-2">
+                  <Clock className="text-primary w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
-              <div className="mt-4">
-                <Progress value={progressPercentage} className="h-2" />
-                <span className="text-xs text-gray-500 mt-1">{Math.floor(watchedHours)}/{targetHours} hours</span>
+              <div className="mt-3 sm:mt-4">
+                <Progress value={progressPercentage} className="h-1.5 sm:h-2" />
+                <span className="text-xs text-gray-500 mt-1 block">{Math.floor(watchedHours)}/{targetHours} hours</span>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Videos Watched</p>
-                  <p className="text-2xl font-bold text-gray-900">0</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Videos Watched</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">0</p>
                 </div>
-                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
-                  <PlayCircle className="text-accent w-6 h-6" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 rounded-lg flex items-center justify-center ml-2">
+                  <PlayCircle className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
-              <div className="mt-4">
+              <div className="mt-3 sm:mt-4">
                 <p className="text-xs text-gray-500">+0 from yesterday</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Referral Earnings</p>
-                  <p className="text-2xl font-bold text-gray-900">₹0</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Referral Earnings</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">₹0</p>
                 </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Users className="text-purple-600 w-6 h-6" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600/10 rounded-lg flex items-center justify-center ml-2">
+                  <Users className="text-purple-600 w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
               <div className="mt-4">
@@ -155,85 +155,85 @@ export default function Dashboard() {
         </div>
 
         {/* User Profile Section */}
-        <div className="mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="w-5 h-5" />
+        <div className="mb-6 sm:mb-8">
+          <Card className="touch-manipulation">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <User className="w-4 h-4 sm:w-5 sm:h-5" />
                 My Profile Information
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                 {/* Personal Information */}
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-900 border-b pb-2">Personal Information</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">Name:</span>
-                      <span className="text-sm font-medium">{user?.firstName} {user?.lastName}</span>
+                <div className="space-y-3 sm:space-y-4">
+                  <h3 className="font-semibold text-gray-900 border-b pb-2 text-sm sm:text-base">Personal Information</h3>
+                  <div className="space-y-2.5 sm:space-y-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Name:</span>
+                      <span className="text-xs sm:text-sm font-medium truncate">{(user as any)?.firstName} {(user as any)?.lastName}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">Email:</span>
-                      <span className="text-sm font-medium">{user?.email}</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Email:</span>
+                      <span className="text-xs sm:text-sm font-medium truncate">{(user as any)?.email}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">Phone:</span>
-                      <span className="text-sm font-medium">{user?.phoneNumber || 'Not provided'}</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Phone:</span>
+                      <span className="text-xs sm:text-sm font-medium truncate">{(user as any)?.phoneNumber || 'Not provided'}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">Date of Birth:</span>
-                      <span className="text-sm font-medium">
-                        {user?.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('en-IN') : 'Not provided'}
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Date of Birth:</span>
+                      <span className="text-xs sm:text-sm font-medium truncate">
+                        {(user as any)?.dateOfBirth ? new Date((user as any).dateOfBirth).toLocaleDateString('en-IN') : 'Not provided'}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Address Information */}
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-900 border-b pb-2">Address</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-2">
-                      <MapPin className="w-4 h-4 text-gray-500 mt-0.5" />
-                      <div className="text-sm">
-                        <p className="font-medium">{user?.address || 'Not provided'}</p>
-                        <p className="text-gray-600">{user?.city || ''}{user?.city && user?.state ? ', ' : ''}{user?.state || ''}</p>
-                        {user?.pincode && <p className="text-gray-600">PIN: {user.pincode}</p>}
+                <div className="space-y-3 sm:space-y-4">
+                  <h3 className="font-semibold text-gray-900 border-b pb-2 text-sm sm:text-base">Address</h3>
+                  <div className="space-y-2.5 sm:space-y-3">
+                    <div className="flex items-start gap-2 min-w-0">
+                      <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                      <div className="text-xs sm:text-sm min-w-0 flex-1">
+                        <p className="font-medium break-words">{(user as any)?.address || 'Not provided'}</p>
+                        <p className="text-gray-600 break-words">{(user as any)?.city || ''}{(user as any)?.city && (user as any)?.state ? ', ' : ''}{(user as any)?.state || ''}</p>
+                        {(user as any)?.pincode && <p className="text-gray-600">PIN: {(user as any).pincode}</p>}
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Bank Information */}
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-900 border-b pb-2">Bank Details</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">Account Holder:</span>
-                      <span className="text-sm font-medium">{user?.accountHolderName || 'Not provided'}</span>
+                <div className="space-y-3 sm:space-y-4">
+                  <h3 className="font-semibold text-gray-900 border-b pb-2 text-sm sm:text-base">Bank Details</h3>
+                  <div className="space-y-2.5 sm:space-y-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Account Holder:</span>
+                      <span className="text-xs sm:text-sm font-medium truncate">{(user as any)?.accountHolderName || 'Not provided'}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">Account Number:</span>
-                      <span className="text-sm font-medium">
-                        {user?.accountNumber ? `****${user.accountNumber.slice(-4)}` : 'Not provided'}
+                    <div className="flex items-center gap-2 min-w-0">
+                      <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Account Number:</span>
+                      <span className="text-xs sm:text-sm font-medium font-mono">
+                        {(user as any)?.accountNumber ? `****${(user as any).accountNumber.slice(-4)}` : 'Not provided'}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">IFSC Code:</span>
-                      <span className="text-sm font-medium">{user?.ifscCode || 'Not provided'}</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">IFSC Code:</span>
+                      <span className="text-xs sm:text-sm font-medium font-mono">{(user as any)?.ifscCode || 'Not provided'}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">Bank:</span>
-                      <span className="text-sm font-medium">{user?.bankName || 'Not provided'}</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Bank:</span>
+                      <span className="text-xs sm:text-sm font-medium truncate">{(user as any)?.bankName || 'Not provided'}</span>
                     </div>
                   </div>
                 </div>
