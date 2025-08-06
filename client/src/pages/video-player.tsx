@@ -385,32 +385,6 @@ export default function VideoPlayer() {
 
 
 
-        {/* Earning Status */}
-        {canEarn ? (
-          <Alert className="mb-4 sm:mb-6 border-orange-200 bg-orange-50 touch-manipulation">
-            <Info className="h-3 w-3 sm:h-4 sm:w-4 text-orange-600" />
-            <AlertDescription className="text-orange-700 text-sm sm:text-base">
-              <strong>Complete the video to earn ₹{videoEarning}</strong>
-              <br />
-              You cannot skip or fast-forward. Watch the full video to receive your earnings.
-            </AlertDescription>
-          </Alert>
-        ) : hasCompleted ? (
-          <Alert className="mb-4 sm:mb-6 border-green-200 bg-green-50 touch-manipulation">
-            <Coins className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
-            <AlertDescription className="text-green-700 text-sm sm:text-base">
-              <strong>Video completed!</strong> You have earned ₹{videoEarning} for watching this video.
-            </AlertDescription>
-          </Alert>
-        ) : (
-          <Alert className="mb-4 sm:mb-6 touch-manipulation">
-            <Info className="h-3 w-3 sm:h-4 sm:w-4" />
-            <AlertDescription className="text-sm sm:text-base">
-              You have already earned from this video.
-            </AlertDescription>
-          </Alert>
-        )}
-
         {/* Instructions for YouTube videos - Compact */}
         {isYouTubeVideo && (
           <Card className="mb-4 sm:mb-6 touch-manipulation">
@@ -425,6 +399,30 @@ export default function VideoPlayer() {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Earning Status */}
+        {canEarn ? (
+          <Alert className="mb-3 border-orange-200 bg-orange-50 touch-manipulation">
+            <Info className="h-3 w-3 text-orange-600" />
+            <AlertDescription className="text-orange-700 text-xs">
+              <strong>Earn ₹{videoEarning}</strong> - Watch completely without skipping
+            </AlertDescription>
+          </Alert>
+        ) : hasCompleted ? (
+          <Alert className="mb-3 border-green-200 bg-green-50 touch-manipulation">
+            <Coins className="h-3 w-3 text-green-600" />
+            <AlertDescription className="text-green-700 text-xs">
+              <strong>Completed!</strong> You earned ₹{videoEarning}
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <Alert className="mb-3 touch-manipulation">
+            <Info className="h-3 w-3" />
+            <AlertDescription className="text-xs">
+              Already earned from this video
+            </AlertDescription>
+          </Alert>
         )}
 
         {/* Video Description */}
