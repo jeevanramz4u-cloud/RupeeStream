@@ -40,6 +40,10 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Deletion process removes all associated data: earnings, video progress, referrals, payouts, and chat messages
 - Confirmation dialog warns administrators about permanent data deletion
 - Maintains database referential integrity during deletion process
+- **Fixed signup bonus duplication issue (August 2025)**
+- Corrected signup process that was awarding ₹2000 instead of ₹1000
+- Set initial user balance to ₹0.00 with ₹1000 added via earning record to prevent double bonus
+- Signup bonus now correctly awards exactly ₹1000 as intended
 
 # User Preferences
 
