@@ -137,7 +137,7 @@ export class DatabaseStorage implements IStorage {
         verificationStatus: userData.verificationStatus || 'pending',
         status: userData.status || 'active',
         balance: userData.balance || 0,
-        referralCode: userData.referralCode,
+        referralCode: userData.referralCode || this.generateReferralCode(),
         createdAt: new Date(),
         updatedAt: new Date(),
       })

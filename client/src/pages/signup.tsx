@@ -27,9 +27,11 @@ import {
   ArrowRight
 } from "lucide-react";
 import { ObjectUploader } from "@/components/ObjectUploader";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Signup() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -105,11 +107,23 @@ export default function Signup() {
       });
 
       if (response.ok) {
-        // Redirect to verification pending page or dashboard
-        setLocation('/dashboard');
+        toast({
+          title: "Account Created Successfully!",
+          description: "You can now log in to your account.",
+        });
+        // Redirect to login page
+        setLocation('/login');
       } else {
         const data = await response.json();
-        setError(data.message || 'Registration failed');
+        const errorMessage = data.message || 'Registration failed';
+        setError(errorMessage);
+        toast({
+          title: "Signup Failed",
+          description: errorMessage.includes('User already exists') 
+            ? "An account with this email already exists. Please use a different email or try logging in."
+            : errorMessage,
+          variant: "destructive",
+        });
       }
     } catch (err) {
       setError('Network error. Please try again.');
@@ -183,10 +197,17 @@ export default function Signup() {
 
   const handleGovernmentIdUpload = async () => {
     try {
-      const response = await fetch('/api/objects/upload', {
+      const response = await fetch('/api/objects/upload-temp', {
         method: 'POST',
         credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to get upload URL');
+      }
+      
       const data = await response.json();
       return {
         method: 'PUT' as const,
@@ -194,6 +215,11 @@ export default function Signup() {
       };
     } catch (error) {
       console.error('Error getting upload URL:', error);
+      toast({
+        title: "Upload Error",
+        description: "Could not prepare file upload. Please try again.",
+        variant: "destructive",
+      });
       throw error;
     }
   };
@@ -201,6 +227,10 @@ export default function Signup() {
   const handleUploadComplete = (result: any) => {
     if (result.successful && result.successful[0]) {
       setGovernmentIdUrl(result.successful[0].uploadURL);
+      toast({
+        title: "Upload Successful",
+        description: "Your government ID has been uploaded successfully",
+      });
     }
   };
 

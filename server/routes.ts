@@ -12,6 +12,13 @@ import {
   insertChatMessageSchema 
 } from "@shared/schema";
 
+// Extend session interface
+declare module 'express-session' {
+  interface SessionData {
+    userId: string;
+  }
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
@@ -136,6 +143,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Check authentication status
+  app.get('/api/auth/check', async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      const { password: _, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error checking auth:", error);
+      res.status(401).json({ message: "Not authenticated" });
+    }
+  });
+
   app.post('/api/auth/logout', (req, res) => {
     req.session.destroy((err) => {
       if (err) {
@@ -145,20 +173,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Alternative user auth check for traditional login
-  app.get('/api/auth/check', async (req: any, res) => {
+  // Traditional auth middleware
+  const isTraditionallyAuthenticated = async (req: any, res: any, next: any) => {
     try {
-      if (req.session.userId) {
-        const user = await storage.getUser(req.session.userId);
-        if (user) {
-          const { password: _, ...userWithoutPassword } = user;
-          return res.json(userWithoutPassword);
-        }
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
       }
-      res.status(401).json({ message: "Not authenticated" });
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+      
+      req.user = user;
+      next();
     } catch (error) {
-      console.error("Error checking auth:", error);
-      res.status(500).json({ message: "Authentication check failed" });
+      console.error("Auth middleware error:", error);
+      res.status(401).json({ message: "Unauthorized" });
+    }
+  };
+
+  // The endpoint for getting the upload URL for an object entity (authenticated users)
+  app.post("/api/objects/upload", isTraditionallyAuthenticated, async (req, res) => {
+    const objectStorageService = new ObjectStorageService();
+    try {
+      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      res.json({ uploadURL });
+    } catch (error) {
+      console.error("Error generating upload URL:", error);
+      res.status(500).json({ error: "Failed to generate upload URL" });
+    }
+  });
+
+  // Temporary upload endpoint for signup process (no auth required)
+  app.post("/api/objects/upload-temp", async (req, res) => {
+    const objectStorageService = new ObjectStorageService();
+    try {
+      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      res.json({ uploadURL });
+    } catch (error) {
+      console.error("Error generating upload URL:", error);
+      res.status(500).json({ error: "Failed to generate upload URL" });
     }
   });
 
