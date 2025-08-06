@@ -351,14 +351,14 @@ export default function Admin() {
                   <CardTitle>Pending Verifications</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {(users as any[]).length === 0 ? (
+                  {(users as any[]).filter((user: any) => user.verificationStatus === 'pending').length === 0 ? (
                     <div className="text-center py-8">
                       <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-500">No pending verifications</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {(users as any[]).map((user: any) => (
+                      {(users as any[]).filter((user: any) => user.verificationStatus === 'pending').map((user: any) => (
                         <div 
                           key={user.id}
                           className={`p-3 sm:p-4 border rounded-lg cursor-pointer transition-colors ${
