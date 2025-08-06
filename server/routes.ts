@@ -1040,6 +1040,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // KYC Routes - traditional auth
+  app.get('/api/kyc/status', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const user = req.user;
+      res.json({
+        kycStatus: user.kycStatus || 'pending',
+        kycFeePaid: user.kycFeePaid || false,
+        govIdFrontUrl: user.govIdFrontUrl || null,
+        govIdBackUrl: user.govIdBackUrl || null,
+        selfieWithIdUrl: user.selfieWithIdUrl || null,
+        kycSubmittedAt: user.kycSubmittedAt || null,
+        kycApprovedAt: user.kycApprovedAt || null
+      });
+    } catch (error) {
+      console.error("Error getting KYC status:", error);
+      res.status(500).json({ message: "Failed to get KYC status" });
+    }
+  });
+
+  app.put('/api/kyc/document', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const { documentUrl, documentType } = req.body;
+      const userId = req.user.id;
+      
+      const objectStorageService = new ObjectStorageService();
+      const objectPath = await objectStorageService.trySetObjectEntityAclPolicy(
+        documentUrl,
+        {
+          owner: userId,
+          visibility: "private",
+        }
+      );
+      
+      // Update user record with document path
+      await storage.updateKycDocument(userId, documentType, objectPath);
+      
+      res.json({ 
+        message: "Document uploaded successfully",
+        objectPath 
+      });
+    } catch (error) {
+      console.error("Error updating KYC document:", error);
+      res.status(500).json({ message: "Failed to update document" });
+    }
+  });
+
+  app.post('/api/kyc/submit', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const { 
+        governmentIdType, 
+        governmentIdNumber, 
+        govIdFrontUrl, 
+        govIdBackUrl, 
+        selfieWithIdUrl 
+      } = req.body;
+      const userId = req.user.id;
+      
+      await storage.submitKyc(userId, {
+        governmentIdType,
+        governmentIdNumber,
+        govIdFrontUrl,
+        govIdBackUrl,
+        selfieWithIdUrl
+      });
+      
+      res.json({ message: "KYC submitted successfully" });
+    } catch (error) {
+      console.error("Error submitting KYC:", error);
+      res.status(500).json({ message: "Failed to submit KYC" });
+    }
+  });
+
+  app.post('/api/kyc/pay-fee', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      
+      // For demo purposes, simulate successful payment
+      await storage.markKycFeePaid(userId, 'demo-payment-' + Date.now());
+      
+      res.json({ 
+        message: "KYC fee payment successful",
+        paymentId: 'demo-payment-' + Date.now()
+      });
+    } catch (error) {
+      console.error("Error processing KYC fee payment:", error);
+      res.status(500).json({ message: "Failed to process payment" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // WebSocket server for live chat

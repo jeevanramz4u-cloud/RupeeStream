@@ -69,6 +69,7 @@ export default function KYC() {
       return data.uploadURL;
     },
     onError: (error) => {
+      console.error("Upload error:", error);
       if (isUnauthorizedError(error)) {
         toast({
           title: "Unauthorized",
@@ -160,10 +161,25 @@ export default function KYC() {
 
   const handleFileUpload = async (type: 'front' | 'back' | 'selfie') => {
     try {
+      console.log(`Getting upload URL for ${type}`);
       const uploadUrl = await uploadMutation.mutateAsync();
-      return uploadUrl;
+      console.log(`Upload URL received for ${type}:`, uploadUrl);
+      
+      if (!uploadUrl) {
+        throw new Error("No upload URL received from server");
+      }
+      
+      return {
+        method: "PUT" as const,
+        url: uploadUrl
+      };
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error(`Upload error for ${type}:`, error);
+      toast({
+        title: "Upload Error",
+        description: `Failed to get upload URL for ${type}. Please try again.`,
+        variant: "destructive",
+      });
       throw error;
     }
   };

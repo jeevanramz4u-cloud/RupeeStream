@@ -507,6 +507,61 @@ export class DatabaseStorage implements IStorage {
       .set({ dailyWatchTime: 0 })
       .where(eq(users.id, userId));
   }
+
+  // KYC methods
+  async updateKycDocument(userId: string, documentType: 'front' | 'back' | 'selfie', objectPath: string): Promise<User | undefined> {
+    const updateData: any = {};
+    if (documentType === 'front') {
+      updateData.govIdFrontUrl = objectPath;
+    } else if (documentType === 'back') {
+      updateData.govIdBackUrl = objectPath;
+    } else if (documentType === 'selfie') {
+      updateData.selfieWithIdUrl = objectPath;
+    }
+
+    const [user] = await db
+      .update(users)
+      .set(updateData)
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async submitKyc(userId: string, kycData: {
+    governmentIdType: string;
+    governmentIdNumber: string;
+    govIdFrontUrl: string;
+    govIdBackUrl: string;
+    selfieWithIdUrl: string;
+  }): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({
+        governmentIdType: kycData.governmentIdType,
+        governmentIdNumber: kycData.governmentIdNumber,
+        govIdFrontUrl: kycData.govIdFrontUrl,
+        govIdBackUrl: kycData.govIdBackUrl,
+        selfieWithIdUrl: kycData.selfieWithIdUrl,
+        kycStatus: 'submitted',
+        kycSubmittedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async markKycFeePaid(userId: string, paymentId: string): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({
+        kycFeePaid: true,
+        kycFeePaymentId: paymentId,
+        kycFeePaidAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
 }
 
 export const storage = new DatabaseStorage();
