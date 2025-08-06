@@ -275,7 +275,7 @@ export default function KYC() {
                 <Shield className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-600" />
                 Verification Status
               </CardTitle>
-              {kycData && getKycStatusBadge((kycData as any).kycStatus)}
+              {kycData && getKycStatusBadge((kycData as any).kycStatus || 'pending')}
             </div>
           </CardHeader>
           <CardContent className="pt-0">
@@ -318,8 +318,31 @@ export default function KYC() {
           </CardContent>
         </Card>
 
-        {/* KYC Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* KYC Steps - Hide if submitted/approved, show only if pending/rejected */}
+        {((kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid) || (kycData as any)?.kycStatus === 'approved' ? (
+          // Show completion status instead of steps when fully submitted or approved
+          <Card className="col-span-full">
+            <CardContent className="pt-6">
+              <div className="text-center py-8">
+                {(kycData as any)?.kycStatus === 'approved' ? (
+                  <>
+                    <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">KYC Verification Complete!</h3>
+                    <p className="text-gray-600">Your documents have been verified successfully. You can now receive payouts.</p>
+                  </>
+                ) : (
+                  <>
+                    <Clock className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Under Review</h3>
+                    <p className="text-gray-600">Your documents and payment have been received. Our team is reviewing your verification.</p>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          // Show KYC steps for pending/rejected status
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           {/* Step 1: Personal Information */}
           <Card className="touch-manipulation">
@@ -639,7 +662,8 @@ export default function KYC() {
               </div>
             </CardContent>
           </Card>
-        </div>
+          </div>
+        )}
 
         {/* Help Section */}
         <Card className="mt-6 sm:mt-8 touch-manipulation">
