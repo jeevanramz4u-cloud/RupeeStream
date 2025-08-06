@@ -179,7 +179,7 @@ export default function Earnings() {
         <Alert className="mb-6 border-green-200 bg-green-50">
           <TrendingUp className="h-4 w-4 text-green-600" />
           <AlertDescription className="text-green-800">
-            <strong>Welcome Bonus:</strong> New users receive ₹1,000 signup bonus automatically credited to their account. 
+            <strong>Welcome Bonus:</strong> New users receive ₹1,000 automatically credited to their account. 
             Check your earnings history below to see all credited amounts.
           </AlertDescription>
         </Alert>
