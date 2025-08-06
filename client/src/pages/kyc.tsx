@@ -355,7 +355,10 @@ export default function KYC() {
       <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">KYC Verification</h1>
-          <p className="text-sm sm:text-base text-gray-600">Complete your identity verification to start earning. One-time ₹99 processing fee required.</p>
+          {/* Only show description if KYC not completed */}
+          {!(kycData as any)?.kycStatus || (kycData as any)?.kycStatus !== 'approved' || (kycData as any)?.verificationStatus !== 'verified' ? (
+            <p className="text-sm sm:text-base text-gray-600">Complete your identity verification to start earning. One-time ₹99 processing fee required.</p>
+          ) : null}
         </div>
 
         {/* Quick Guide for Pending Users or Re-verification */}
