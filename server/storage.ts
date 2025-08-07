@@ -839,9 +839,11 @@ export class DatabaseStorage implements IStorage {
   }
   // Payment history operations
   async addPaymentHistory(userId: string, payment: Omit<InsertPaymentHistory, 'userId'>): Promise<PaymentHistory> {
+    const paymentId = `payment_${Date.now()}_${userId.slice(-8)}`;
     const [newPayment] = await db
       .insert(paymentHistory)
       .values({
+        id: paymentId,
         ...payment,
         userId,
         completedAt: payment.status === 'completed' ? new Date() : null,
