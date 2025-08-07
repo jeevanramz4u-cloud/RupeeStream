@@ -107,6 +107,13 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Enhanced status detection to properly recognize completed users (kycFeePaid + kycStatus approved)
 - Added informational message explaining KYC completion status in user detail views
 - Filtered pending verification lists to exclude already-completed KYC users
+- **Fixed payment history display in admin panel with complete transaction tracking (August 2025)**
+- Resolved payment history visibility issues with improved user data joins and error handling
+- Enhanced payment transaction display with detailed user information, timestamps, and order IDs  
+- Added comprehensive payment records for both KYC (₹99) and reactivation (₹49) fees
+- Universal API authentication support for all payment processing endpoints
+- Suspended page access control: only suspended users can access /suspended, others redirected
+- Automatic account reactivation after ₹49 payment with real-time admin panel status updates
 
 # User Preferences
 

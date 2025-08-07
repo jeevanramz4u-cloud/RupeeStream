@@ -2023,6 +2023,9 @@ export default function Admin() {
                     <div className="text-center py-8">
                       <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-500">No payment history found</p>
+                      <p className="text-xs text-gray-400 mt-2">
+                        KYC and reactivation payments will appear here
+                      </p>
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -2039,11 +2042,14 @@ export default function Admin() {
                               }`}></div>
                               <div>
                                 <p className="font-medium text-gray-900">
-                                  {payment.userName || 'Unknown User'}
+                                  {payment.userName || payment.userEmail || 'Unknown User'}
                                 </p>
-                                <p className="text-sm text-gray-600">{payment.userEmail}</p>
+                                <p className="text-sm text-gray-600">{payment.userEmail || 'No email'}</p>
                                 <p className="text-xs text-gray-500">
-                                  Order ID: {payment.orderId}
+                                  Order ID: {payment.orderId || 'N/A'}
+                                </p>
+                                <p className="text-xs text-gray-400">
+                                  User ID: {payment.userId}
                                 </p>
                               </div>
                             </div>
@@ -2079,7 +2085,10 @@ export default function Admin() {
                             <div className="text-center">
                               <p className="text-xs text-gray-500 mb-1">Date</p>
                               <p className="text-xs text-gray-700">
-                                {new Date(payment.createdAt).toLocaleDateString('en-IN')}
+                                {payment.createdAt ? new Date(payment.createdAt).toLocaleDateString('en-IN') : 'N/A'}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {payment.createdAt ? new Date(payment.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : ''}
                               </p>
                             </div>
                           </div>
