@@ -162,7 +162,13 @@ export default function Login() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-6 space-y-3 text-center">
+              <Link href="/forgot-password">
+                <Button variant="link" className="text-sm text-primary">
+                  Forgot your password?
+                </Button>
+              </Link>
+              
               <p className="text-sm text-gray-600">
                 Don't have an account?{" "}
                 <Link href="/signup">

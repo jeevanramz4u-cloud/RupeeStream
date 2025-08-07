@@ -124,6 +124,11 @@ export const users = pgTable("users", {
   consecutiveFailedDays: integer("consecutive_failed_days").default(0).notNull(),
   reactivationFeePaid: boolean("reactivation_fee_paid").default(false).notNull(),
   reactivationFeeAmount: decimal("reactivation_fee_amount", { precision: 8, scale: 2 }).default("49.00"),
+  
+  // Password reset fields
+  resetToken: varchar("reset_token"),
+  resetTokenExpiry: timestamp("reset_token_expiry"),
+  
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => [

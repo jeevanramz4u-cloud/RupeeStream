@@ -9,6 +9,8 @@ import NotFound from "./pages/not-found";
 import Landing from "./pages/landing";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
+import ForgotPassword from "./pages/forgot-password";
+import ResetPassword from "./pages/reset-password";
 import Dashboard from "./pages/dashboard";
 import Videos from "./pages/videos";
 import VideoPlayer from "./pages/video-player";
@@ -103,6 +105,8 @@ function Router() {
       {/* Public routes - always accessible */}
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
+      <Route path="/forgot-password" component={ForgotPassword} />
+      <Route path="/reset-password" component={ResetPassword} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-conditions" component={TermsConditions} />
       <Route path="/how-to-earn" component={HowToEarn} />

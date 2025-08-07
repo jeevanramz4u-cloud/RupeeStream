@@ -146,8 +146,8 @@ export default function Signup() {
           setError("Passwords do not match");
           return false;
         }
-        if (formData.password.length < 6) {
-          setError("Password must be at least 6 characters");
+        if (formData.password.length < 8) {
+          setError("Password must be at least 8 characters");
           return false;
         }
         break;
@@ -261,16 +261,17 @@ export default function Signup() {
             </div>
 
             <div>
-              <Label htmlFor="password">Password *</Label>
+              <Label htmlFor="password">Password * (minimum 8 characters)</Label>
               <div className="relative">
                 <Input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Create a password"
+                  placeholder="Create a password (minimum 8 characters)"
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  minLength={8}
                 />
                 <Button
                   type="button"
@@ -295,10 +296,11 @@ export default function Signup() {
                   id="confirmPassword"
                   name="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm your password"
+                  placeholder="Confirm your password (minimum 8 characters)"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
+                  minLength={8}
                 />
                 <Button
                   type="button"

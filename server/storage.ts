@@ -34,6 +34,7 @@ export interface IStorage {
   
   // Traditional auth operations
   getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByResetToken(token: string): Promise<User | undefined>;
   createUserWithTraditionalAuth(userData: any): Promise<User>;
   
   // User management
@@ -124,6 +125,11 @@ export class DatabaseStorage implements IStorage {
   // Traditional auth operations
   async getUserByEmail(email: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async getUserByResetToken(token: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.resetToken, token));
     return user;
   }
 
