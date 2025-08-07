@@ -196,6 +196,14 @@ export default function Admin() {
     enabled: isAuthenticated,
   });
 
+  const { data: paymentHistory = [] } = useQuery({
+    queryKey: ["/api/admin/payment-history"],
+    enabled: isAuthenticated,
+  });
+
+  // Type cast for payment history data
+  const paymentHistoryData = paymentHistory as any[];
+
   // User profile query (only fetch when needed)  
   const { data: userProfile, isLoading: isLoadingProfile, error } = useQuery({
     queryKey: ["user-profile", selectedUserProfile?.id],
@@ -594,7 +602,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
-          <TabsList className="grid w-full grid-cols-5 h-auto p-1">
+          <TabsList className="grid w-full grid-cols-6 h-auto p-1">
             <TabsTrigger value="users" className="text-xs sm:text-sm px-2 py-2">
               <span className="hidden sm:inline">User Verification</span>
               <span className="sm:hidden">Users</span>
@@ -614,6 +622,10 @@ export default function Admin() {
             <TabsTrigger value="kyc" className="text-xs sm:text-sm px-2 py-2">
               <span className="hidden sm:inline">KYC Status</span>
               <span className="sm:hidden">KYC</span>
+            </TabsTrigger>
+            <TabsTrigger value="payments" className="text-xs sm:text-sm px-2 py-2">
+              <span className="hidden sm:inline">Payment History</span>
+              <span className="sm:hidden">Payments</span>
             </TabsTrigger>
           </TabsList>
 
@@ -1947,6 +1959,140 @@ export default function Admin() {
                           </div>
                         </div>
                       ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Payment History Tab */}
+          <TabsContent value="payments">
+            <div className="space-y-6">
+              {/* Payment History Overview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="w-5 h-5" />
+                    Payment History Overview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                      <h3 className="text-lg font-semibold text-blue-800">
+                        ₹{paymentHistoryData.filter((p: any) => p.type === 'kyc' && p.status === 'completed').length * 99}
+                      </h3>
+                      <p className="text-sm text-blue-600">Total KYC Revenue</p>
+                      <p className="text-xs text-blue-500">
+                        {paymentHistoryData.filter((p: any) => p.type === 'kyc' && p.status === 'completed').length} payments
+                      </p>
+                    </div>
+                    <div className="p-4 bg-green-50 rounded-lg">
+                      <h3 className="text-lg font-semibold text-green-800">
+                        ₹{paymentHistoryData.filter((p: any) => p.type === 'reactivation' && p.status === 'completed').length * 49}
+                      </h3>
+                      <p className="text-sm text-green-600">Total Reactivation Revenue</p>
+                      <p className="text-xs text-green-500">
+                        {paymentHistoryData.filter((p: any) => p.type === 'reactivation' && p.status === 'completed').length} payments
+                      </p>
+                    </div>
+                    <div className="p-4 bg-purple-50 rounded-lg">
+                      <h3 className="text-lg font-semibold text-purple-800">
+                        ₹{paymentHistoryData.filter((p: any) => p.status === 'completed').reduce((sum: number, p: any) => sum + Number(p.amount), 0)}
+                      </h3>
+                      <p className="text-sm text-purple-600">Total Revenue</p>
+                      <p className="text-xs text-purple-500">
+                        {paymentHistoryData.filter((p: any) => p.status === 'completed').length} total payments
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Payment History List */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="w-5 h-5" />
+                    Recent Payment Transactions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {paymentHistoryData.length === 0 ? (
+                    <div className="text-center py-8">
+                      <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-500">No payment history found</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {paymentHistoryData.slice(0, 20).map((payment: any) => (
+                        <div 
+                          key={payment.id} 
+                          className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-3 h-3 rounded-full ${
+                                payment.status === 'completed' ? 'bg-green-500' : 
+                                payment.status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
+                              }`}></div>
+                              <div>
+                                <p className="font-medium text-gray-900">
+                                  {payment.userName || 'Unknown User'}
+                                </p>
+                                <p className="text-sm text-gray-600">{payment.userEmail}</p>
+                                <p className="text-xs text-gray-500">
+                                  Order ID: {payment.orderId}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-4">
+                            {/* Payment Type */}
+                            <div className="text-center">
+                              <p className="text-xs text-gray-500 mb-1">Type</p>
+                              <Badge variant={payment.type === 'kyc' ? 'default' : 'secondary'}>
+                                {payment.type === 'kyc' ? 'KYC Fee' : 'Reactivation'}
+                              </Badge>
+                            </div>
+                            
+                            {/* Payment Amount */}
+                            <div className="text-center">
+                              <p className="text-xs text-gray-500 mb-1">Amount</p>
+                              <p className="font-semibold text-green-600">₹{payment.amount}</p>
+                            </div>
+                            
+                            {/* Payment Status */}
+                            <div className="text-center">
+                              <p className="text-xs text-gray-500 mb-1">Status</p>
+                              <Badge variant={
+                                payment.status === 'completed' ? 'default' : 
+                                payment.status === 'pending' ? 'secondary' : 'destructive'
+                              }>
+                                {payment.status}
+                              </Badge>
+                            </div>
+                            
+                            {/* Payment Date */}
+                            <div className="text-center">
+                              <p className="text-xs text-gray-500 mb-1">Date</p>
+                              <p className="text-xs text-gray-700">
+                                {new Date(payment.createdAt).toLocaleDateString('en-IN')}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {paymentHistoryData.length > 20 && (
+                        <div className="text-center py-4">
+                          <p className="text-sm text-gray-500">
+                            Showing recent 20 payments of {paymentHistoryData.length} total
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </CardContent>

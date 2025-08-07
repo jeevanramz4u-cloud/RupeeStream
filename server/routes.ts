@@ -1088,6 +1088,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin get payment history for a specific user
+  app.get("/api/admin/users/:id/payment-history", async (req: any, res) => {
+    if (!req.session.adminUser) {
+      return res.status(401).json({ message: "Admin authentication required" });
+    }
+
+    try {
+      const { id } = req.params;
+      const paymentHistory = await storage.getPaymentHistory(id);
+      const paymentStats = await storage.getUserPaymentStats(id);
+      
+      res.json({
+        payments: paymentHistory,
+        stats: paymentStats
+      });
+    } catch (error) {
+      console.error("Error fetching user payment history:", error);
+      res.status(500).json({ error: "Failed to fetch payment history" });
+    }
+  });
+
+  // Admin get all payment history
+  app.get("/api/admin/payment-history", async (req: any, res) => {
+    if (!req.session.adminUser) {
+      return res.status(401).json({ message: "Admin authentication required" });
+    }
+
+    try {
+      const allPayments = await storage.getAllPaymentHistory();
+      res.json(allPayments);
+    } catch (error) {
+      console.error("Error fetching all payment history:", error);
+      res.status(500).json({ error: "Failed to fetch payment history" });
+    }
+  });
+
   // Admin - Get detailed user profile with referral history
   app.get('/api/admin/users/:userId/profile', async (req: any, res) => {
     console.log('Profile endpoint hit, session:', !!req.session.adminUser);
