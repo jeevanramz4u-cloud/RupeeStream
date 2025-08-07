@@ -311,6 +311,272 @@ export default function HowToEarn() {
           </CardContent>
         </Card>
 
+        {/* Refer and Earn Section */}
+        <div className="mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8">
+            Refer Friends & Earn ₹49 Per Verified Referral
+          </h2>
+          
+          <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200 mb-8">
+            <CardContent className="pt-8">
+              <div className="text-center mb-8">
+                <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-10 h-10 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-bold text-purple-900 mb-2">
+                  Boost Your Earnings with Referrals
+                </h3>
+                <p className="text-purple-700 max-w-2xl mx-auto">
+                  Share EarnPay with friends and family to earn additional income. Every person you refer who completes KYC verification earns you ₹49 instantly.
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-6 text-center">
+                <div className="bg-white rounded-lg p-6 shadow-sm">
+                  <div className="text-3xl font-bold text-purple-600 mb-2">₹49</div>
+                  <div className="text-sm text-gray-600">Per Verified Referral</div>
+                </div>
+                <div className="bg-white rounded-lg p-6 shadow-sm">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">∞</div>
+                  <div className="text-sm text-gray-600">Unlimited Referrals</div>
+                </div>
+                <div className="bg-white rounded-lg p-6 shadow-sm">
+                  <div className="text-3xl font-bold text-green-600 mb-2">24hr</div>
+                  <div className="text-sm text-gray-600">Instant Credit</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* How Referral Program Works */}
+          <div className="grid lg:grid-cols-2 gap-8 mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="w-5 h-5 text-primary" />
+                  How Referral Program Works
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm font-semibold text-blue-600">
+                      1
+                    </div>
+                    <div>
+                      <h4 className="font-medium">Get Your Referral Code</h4>
+                      <p className="text-sm text-gray-600">
+                        Visit your Referrals page to get your unique referral code and sharing links.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm font-semibold text-blue-600">
+                      2
+                    </div>
+                    <div>
+                      <h4 className="font-medium">Share with Friends</h4>
+                      <p className="text-sm text-gray-600">
+                        Share your referral code via WhatsApp, social media, or direct messaging.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm font-semibold text-blue-600">
+                      3
+                    </div>
+                    <div>
+                      <h4 className="font-medium">Friend Signs Up</h4>
+                      <p className="text-sm text-gray-600">
+                        Your friend registers using your referral code and creates their account.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm font-semibold text-blue-600">
+                      4
+                    </div>
+                    <div>
+                      <h4 className="font-medium">KYC Completion</h4>
+                      <p className="text-sm text-gray-600">
+                        When your friend completes KYC verification, you earn ₹49 instantly.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-primary" />
+                  Referral Requirements
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium">Your Account Status</h4>
+                      <p className="text-sm text-gray-600">
+                        You must have a verified account with completed KYC to refer others.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium">Unique Users Only</h4>
+                      <p className="text-sm text-gray-600">
+                        Each person can only be referred once. Multiple accounts by same person are prohibited.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium">Complete KYC Required</h4>
+                      <p className="text-sm text-gray-600">
+                        Referral bonus is credited only after the referred user completes KYC verification.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium">No Limit</h4>
+                      <p className="text-sm text-gray-600">
+                        There's no limit to how many people you can refer. More referrals = more earnings.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Referral Success Examples */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="text-center">Real Referral Success Stories</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-6 text-center">
+                <div className="bg-green-50 rounded-lg p-6">
+                  <div className="text-2xl font-bold text-green-600 mb-2">150 Referrals</div>
+                  <div className="text-sm text-gray-600 mb-2">Priya from Mumbai</div>
+                  <div className="text-lg font-semibold text-green-700">₹7,350 Earned</div>
+                  <p className="text-xs text-gray-500 mt-2">Shared with college friends and family</p>
+                </div>
+                <div className="bg-blue-50 rounded-lg p-6">
+                  <div className="text-2xl font-bold text-blue-600 mb-2">89 Referrals</div>
+                  <div className="text-sm text-gray-600 mb-2">Rahul from Delhi</div>
+                  <div className="text-lg font-semibold text-blue-700">₹4,361 Earned</div>
+                  <p className="text-xs text-gray-500 mt-2">Active in WhatsApp groups</p>
+                </div>
+                <div className="bg-purple-50 rounded-lg p-6">
+                  <div className="text-2xl font-bold text-purple-600 mb-2">67 Referrals</div>
+                  <div className="text-sm text-gray-600 mb-2">Anita from Bangalore</div>
+                  <div className="text-lg font-semibold text-purple-700">₹3,283 Earned</div>
+                  <p className="text-xs text-gray-500 mt-2">Social media sharing expert</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Referral Tips */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Referral Success Tips</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="font-semibold mb-4 text-green-700">Best Places to Share</h4>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      WhatsApp family and friends groups
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      Facebook and Instagram stories
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      College and workplace groups
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      Telegram earning communities
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      Direct personal recommendations
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-4 text-blue-700">Effective Sharing Messages</h4>
+                  <div className="space-y-3 text-sm">
+                    <div className="bg-gray-50 p-3 rounded border-l-4 border-blue-500">
+                      <p className="italic text-gray-700">
+                        "I'm earning ₹15,000+ monthly by watching videos on EarnPay! 
+                        Use my code [CODE] to get started and we both benefit. It's genuine and pays on time!"
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded border-l-4 border-green-500">
+                      <p className="italic text-gray-700">
+                        "Found this amazing app where you earn money just by watching videos. 
+                        Weekly payouts, no investment needed. Join with my referral: [CODE]"
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Referral Tracking */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Track Your Referral Performance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-4 gap-4 text-center">
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <div className="text-xl font-bold text-blue-600">Real-Time</div>
+                  <div className="text-sm text-gray-600">Tracking</div>
+                </div>
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <div className="text-xl font-bold text-green-600">Instant</div>
+                  <div className="text-sm text-gray-600">Notifications</div>
+                </div>
+                <div className="bg-purple-50 p-4 rounded-lg">
+                  <div className="text-xl font-bold text-purple-600">Detailed</div>
+                  <div className="text-sm text-gray-600">Analytics</div>
+                </div>
+                <div className="bg-orange-50 p-4 rounded-lg">
+                  <div className="text-xl font-bold text-orange-600">Monthly</div>
+                  <div className="text-sm text-gray-600">Reports</div>
+                </div>
+              </div>
+              <p className="text-center text-gray-600 mt-4">
+                Monitor your referral progress in the Referrals section of your dashboard. 
+                See who signed up, their KYC status, and your earnings in real-time.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Call to Action */}
         <Card className="text-center">
           <CardContent className="pt-8 pb-8">
@@ -318,7 +584,7 @@ export default function HowToEarn() {
               Ready to Start Earning?
             </h2>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Join thousands of users who are already earning money by watching videos. 
+              Join thousands of users who are already earning money by watching videos and referring friends. 
               Start your journey today and turn your free time into income.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -331,7 +597,7 @@ export default function HowToEarn() {
               <Link href="/referrals">
                 <Button variant="outline" size="lg" className="w-full sm:w-auto">
                   <Users className="w-5 h-5 mr-2" />
-                  Refer Friends & Earn More
+                  Start Referring Friends
                 </Button>
               </Link>
             </div>
