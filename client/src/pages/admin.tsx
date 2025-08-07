@@ -1111,13 +1111,15 @@ export default function Admin() {
                                 const kycStatus = user.kycStatus || user.kyc_status;
                                 const verificationStatus = user.verificationStatus || user.verification_status;
                                 
-                                // Debug: Log user KYC data to console
-                                console.log(`User ${user.email} KYC Debug:`, {
-                                  kycFeePaid, 
-                                  kycStatus, 
-                                  verificationStatus,
-                                  showBadge: kycFeePaid && verificationStatus === 'verified'
-                                });
+                                // Debug: Log user KYC data to console (temporary)
+                                if (user.email === 'deepa@gmail.com') {
+                                  console.log(`User ${user.email} KYC Debug:`, {
+                                    kycFeePaid, 
+                                    kycStatus, 
+                                    verificationStatus,
+                                    showBadge: kycFeePaid && verificationStatus === 'verified'
+                                  });
+                                }
                                 
                                 // Show KYC Completed if fee is paid AND user is verified
                                 return kycFeePaid && verificationStatus === 'verified';

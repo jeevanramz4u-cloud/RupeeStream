@@ -41,10 +41,13 @@ export default function Dashboard() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
 
-  // Check if user is suspended and redirect
+  // Check if user is suspended and redirect with forced refresh
   React.useEffect(() => {
     if ((user as any)?.status === 'suspended') {
+      console.log('User is suspended, redirecting to /suspended page');
       setLocation('/suspended');
+      // Force reload to clear any cached data
+      window.location.href = '/suspended';
     }
   }, [user, setLocation]);
 

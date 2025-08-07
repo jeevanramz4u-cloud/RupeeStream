@@ -46,7 +46,7 @@ function AdminRoute() {
 }
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   
   if (isLoading) {
     return (
@@ -62,6 +62,13 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
   if (!isAuthenticated) {
     // Redirect to login instead of 404
     window.location.href = "/login";
+    return null;
+  }
+  
+  // Check if user is suspended and redirect to suspended page (except if already on suspended page)
+  if ((user as any)?.status === 'suspended' && window.location.pathname !== '/suspended') {
+    console.log('User is suspended, forcing redirect to /suspended');
+    window.location.href = '/suspended';
     return null;
   }
   
