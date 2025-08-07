@@ -107,6 +107,7 @@ function Router() {
       <Route path="/earnings-history" component={() => <ProtectedRoute component={EarningsHistory} />} />
       <Route path="/referrals" component={() => <ProtectedRoute component={Referrals} />} />
       <Route path="/support" component={() => <ProtectedRoute component={Support} />} />
+      <Route path="/suspended" component={() => <ProtectedRoute component={lazy(() => import("./pages/suspended"))} />} />
       <Route path="/kyc" component={() => <ProtectedRoute component={KYC} />} />
       <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
       

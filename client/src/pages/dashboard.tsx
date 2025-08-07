@@ -40,6 +40,12 @@ export default function Dashboard() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
 
+  // Check if user is suspended and redirect
+  if ((user as any)?.status === 'suspended') {
+    setLocation('/suspended');
+    return null;
+  }
+
   const { data: stats } = useQuery({
     queryKey: ["/api/earnings/stats"],
     enabled: !!user,

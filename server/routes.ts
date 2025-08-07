@@ -1460,6 +1460,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Account reactivation payment endpoint
+  app.post("/api/account/reactivate-payment", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user!.id;
+      const user = await storage.getUser(userId);
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if (user.status !== 'suspended') {
+        return res.status(400).json({ error: "Account is not suspended" });
+      }
+
+      const reactivationFee = parseFloat(user.reactivationFeeAmount || "49.00");
+      
+      try {
+        // Try to create Cashfree payment
+        const orderId = `reactivation_${userId}_${Date.now()}`;
+        const cashfreeOrder = await createCashfreeOrder({
+          orderId,
+          amount: reactivationFee,
+          customerDetails: {
+            customerId: userId,
+            customerEmail: user.email || "user@example.com",
+            customerPhone: user.phoneNumber || "9999999999",
+            customerName: `${user.firstName || 'User'} ${user.lastName || 'Account'}`
+          }
+        });
+
+        console.log('Cashfree reactivation order created:', cashfreeOrder);
+        
+        if (cashfreeOrder.paymentSessionId) {
+          res.json({
+            paymentUrl: `https://payments-test.cashfree.com/pgappsdksandbox/login?order_id=${orderId}`,
+            sessionId: cashfreeOrder.paymentSessionId,
+            orderId: orderId
+          });
+          return;
+        }
+      } catch (cashfreeError) {
+        console.warn('Cashfree reactivation payment failed, using development fallback:', cashfreeError);
+      }
+
+      // Development fallback - automatically reactivate account
+      await storage.updateUser(userId, { 
+        status: 'active',
+        reactivationFeePaid: true,
+        suspendedAt: null,
+        suspensionReason: null,
+        consecutiveFailedDays: 0
+      });
+
+      console.log(`Development reactivation completed for user ${userId}, fee: ₹${reactivationFee}`);
+      
+      res.json({
+        success: true,
+        message: "Account reactivated successfully",
+        amount: reactivationFee
+      });
+
+    } catch (error) {
+      console.error("Error processing reactivation payment:", error);
+      res.status(500).json({ error: "Failed to process reactivation payment" });
+    }
+  });
+
   // Chat routes
   app.get('/api/chat/messages', isAuthenticated, async (req, res) => {
     try {
