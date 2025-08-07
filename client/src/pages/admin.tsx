@@ -2571,35 +2571,61 @@ export default function Admin() {
                 </CardContent>
               </Card>
 
-              {/* Recent Earnings */}
+              {/* Payment History */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <DollarSign className="w-5 h-5" />
-                    Recent Earnings
+                    <CreditCard className="w-5 h-5" />
+                    Payment History
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {userProfile.earnings.length > 0 ? (
-                    <div className="space-y-2 max-h-40 overflow-y-auto">
-                      {userProfile.earnings.slice(0, 10).map((earning: any, index: number) => (
-                        <div key={index} className="flex items-center justify-between py-2 border-b">
-                          <div>
-                            <p className="text-sm font-medium">{earning.description || earning.source}</p>
-                            <p className="text-xs text-gray-500">{formatDate(earning.createdAt)}</p>
+                  <div className="space-y-3">
+                    {paymentHistoryData
+                      .filter((payment: any) => payment.userId === userProfile.user.id)
+                      .map((payment: any) => (
+                        <div 
+                          key={payment.id} 
+                          className="flex items-center justify-between p-4 border rounded-lg bg-gray-50"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-3 h-3 rounded-full ${
+                              payment.status === 'completed' ? 'bg-green-500' : 
+                              payment.status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}></div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">
+                                {payment.type === 'kyc' ? 'KYC Processing Fee' : 'Account Reactivation Fee'}
+                              </p>
+                              <p className="text-xs text-gray-600">
+                                Order: {payment.orderId || 'N/A'}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                Method: {payment.paymentMethod || 'N/A'}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {payment.createdAt ? new Date(payment.createdAt).toLocaleString('en-IN') : 'N/A'}
+                              </p>
+                            </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium text-green-600">+₹{earning.amount}</p>
+                            <p className="text-lg font-semibold text-green-600">₹{payment.amount}</p>
+                            <Badge variant={payment.status === 'completed' ? 'default' : 'secondary'} className="text-xs">
+                              {payment.status}
+                            </Badge>
                           </div>
                         </div>
                       ))}
-                    </div>
-                  ) : (
-                    <div className="p-4 text-center text-gray-500">
-                      <DollarSign className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                      <p className="text-sm">No earnings yet</p>
-                    </div>
-                  )}
+                    {paymentHistoryData.filter((payment: any) => payment.userId === userProfile.user.id).length === 0 && (
+                      <div className="text-center py-8 text-gray-500">
+                        <CreditCard className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                        <p className="text-sm">No payment history found</p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          KYC and reactivation payments will appear here
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
