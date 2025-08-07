@@ -758,12 +758,12 @@ export default function KYC() {
                     <h3 className="text-lg font-semibold text-gray-800">Complete KYC Verification</h3>
                   </div>
                   
-                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="flex items-center mb-3">
-                      <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                      <span className="font-semibold text-green-900">All Documents Uploaded</span>
+                  <div className="p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center mb-2 sm:mb-3">
+                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 mr-2 flex-shrink-0" />
+                      <span className="font-semibold text-green-900 text-sm sm:text-base">All Documents Uploaded</span>
                     </div>
-                    <p className="text-green-700 mb-4">
+                    <p className="text-green-700 mb-3 sm:mb-4 text-xs sm:text-sm leading-relaxed">
                       Great! All your documents have been uploaded successfully. 
                       Now pay the one-time ₹99 processing fee to complete your KYC verification.
                     </p>
@@ -782,9 +782,9 @@ export default function KYC() {
                         }, 500);
                       }}
                       disabled={submitKycMutation.isPending || createPaymentMutation.isPending || verifyPaymentMutation.isPending}
-                      className="w-full bg-green-600 hover:bg-green-700 text-lg py-3"
+                      className="w-full bg-green-600 hover:bg-green-700 text-sm sm:text-base lg:text-lg py-3 px-4 rounded-lg"
                     >
-                      {(submitKycMutation.isPending || createPaymentMutation.isPending || verifyPaymentMutation.isPending) ? "Processing Cashfree Payment..." : "Pay ₹99 via Cashfree & Complete KYC"}
+                      {(submitKycMutation.isPending || createPaymentMutation.isPending || verifyPaymentMutation.isPending) ? "Processing..." : "Complete KYC"}
                     </Button>
                   </div>
                 </div>
