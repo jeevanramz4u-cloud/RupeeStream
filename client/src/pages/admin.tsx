@@ -520,13 +520,15 @@ export default function Admin() {
     const kycStatus = user.kycStatus || user.kyc_status;
     const verificationStatus = user.verificationStatus || user.verification_status;
     
+    console.log(`Status check for ${user.email}:`, { kycFeePaid, kycStatus, verificationStatus });
+    
     // Priority 1: KYC Completed (fee paid + approved status)
     if (kycFeePaid && kycStatus === 'approved') {
       return <Badge className="bg-green-600 text-white"><CheckCircle className="w-3 h-3 mr-1" />KYC Completed</Badge>;
     }
     
-    // Priority 2: KYC Fee Paid but pending approval
-    if (kycFeePaid && (kycStatus === 'submitted' || kycStatus === 'pending')) {
+    // Priority 2: KYC Fee Paid but pending approval - THIS IS THE CASE FOR SONU
+    if (kycFeePaid) {
       return <Badge className="bg-blue-600 text-white"><Clock className="w-3 h-3 mr-1" />KYC Fee Paid</Badge>;
     }
     
@@ -942,6 +944,23 @@ export default function Admin() {
                           </div>
                           <p className="text-green-700 text-sm mt-1">
                             User has completed KYC verification with ₹99 processing fee payment. No further action required.
+                          </p>
+                        </div>
+                      )}
+                      
+                      {/* Show fee paid status for users who paid but waiting for approval */}
+                      {(() => {
+                        const kycFeePaid = selectedUser.kycFeePaid || selectedUser.kyc_fee_paid;
+                        const kycStatus = selectedUser.kycStatus || selectedUser.kyc_status;
+                        return kycFeePaid && kycStatus !== 'approved';
+                      })() && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <div className="flex items-center text-blue-800">
+                            <DollarSign className="w-5 h-5 mr-2" />
+                            <span className="font-semibold">KYC Processing Fee Paid</span>
+                          </div>
+                          <p className="text-blue-700 text-sm mt-1">
+                            User has paid the ₹99 KYC processing fee. Payment verification complete - no manual approval needed.
                           </p>
                         </div>
                       )}
