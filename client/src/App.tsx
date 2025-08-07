@@ -30,6 +30,7 @@ import About from "./pages/about";
 import Contact from "./pages/contact";
 import Careers from "./pages/careers";
 import PayoutSchedule from "./pages/payout-schedule";
+import ReferralProgram from "./pages/referral-program";
 
 function AdminRoute() {
   const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
@@ -118,6 +119,7 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/careers" component={Careers} />
       <Route path="/payout-schedule" component={PayoutSchedule} />
+      <Route path="/referral-program" component={ReferralProgram} />
       
       {/* Home route - conditional based on auth */}
       <Route path="/" component={() => {

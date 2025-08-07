@@ -10,7 +10,7 @@ export default function Footer() {
 
   const earnLinks = [
     { href: "/how-to-earn", label: "How to Earn" },
-    { href: "/referrals", label: "Referral Program" },
+    { href: "/referral-program", label: "Referral Program" },
     { href: "/payout-schedule", label: "Payout Schedule" },
   ];
 
