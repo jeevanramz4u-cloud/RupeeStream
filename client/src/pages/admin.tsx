@@ -39,7 +39,8 @@ import {
   LogOut,
   CreditCard,
   Building2,
-  Coins
+  Coins,
+  ExternalLink
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -1246,45 +1247,31 @@ export default function Admin() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        {/* Simplified Overview - Only Basic Status */}
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                          <div>
-                            <Label className="text-xs font-medium text-gray-500">Account Status</Label>
-                            <p className="text-xs sm:text-sm font-medium">
+                        {/* Minimal Information - Hide Details */}
+                        <div className="text-center py-4">
+                          <p className="text-sm text-gray-600 mb-2">User Profile Summary</p>
+                          <div className="flex items-center justify-center gap-2 mb-3">
+                            <Badge variant={user.status === 'suspended' ? 'destructive' : 'default'} className="text-xs">
                               {user.status === 'suspended' ? 'Suspended' : 'Active'}
-                            </p>
+                            </Badge>
+                            {user.kycFeePaid && (
+                              <Badge className="bg-green-100 text-green-800 text-xs">
+                                KYC Paid
+                              </Badge>
+                            )}
                           </div>
-                          <div>
-                            <Label className="text-xs font-medium text-gray-500">KYC Status</Label>
-                            <div className="flex items-center gap-1 mt-1">
-                              {user.kycFeePaid ? (
-                                <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
-                                  <CheckCircle className="w-3 h-3 mr-1" />
-                                  Fee Paid
-                                </Badge>
-                              ) : (
-                                <Badge variant="outline" className="text-gray-600 text-xs">
-                                  Unpaid
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
-                          <div>
-                            <Label className="text-xs font-medium text-gray-500">Verification</Label>
-                            <p className="text-xs sm:text-sm font-medium capitalize">{user.verificationStatus}</p>
-                          </div>
-                          <div>
-                            <Label className="text-xs font-medium text-gray-500">Balance</Label>
-                            <p className="text-xs sm:text-sm font-medium">₹{user.balance || 0}</p>
-                          </div>
-                        </div>
-                        
-                        {/* Quick Action Note */}
-                        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                          <p className="text-xs text-blue-700">
-                            <Eye className="w-3 h-3 inline mr-1" />
-                            Click "View Profile" above to see complete user details, KYC documents, banking information, and address details.
+                          <p className="text-xs text-gray-500 mb-4">
+                            All personal details, KYC documents, banking information, and address details are hidden for privacy.
                           </p>
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={() => openUserProfile(user)}
+                            className="w-full max-w-xs"
+                          >
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Complete Profile & Documents
+                          </Button>
                         </div>
 
                         {/* Action Buttons - All buttons on single line */}
