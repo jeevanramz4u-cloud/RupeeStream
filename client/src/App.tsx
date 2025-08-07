@@ -94,7 +94,7 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 }
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   return (
     <Switch>

@@ -1155,56 +1155,98 @@ export default function Admin() {
 
 
 
-              {/* Users Grid */}
-              <div className="grid grid-cols-1 gap-6">
+              {/* Users Grid - Modern Card Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {(() => {
                   const filteredUsers = getSearchFilteredUsers();
                   return filteredUsers.length === 0 ? (
-                    <Card>
-                      <CardContent className="pt-6">
-                        <div className="text-center py-8">
-                          <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                          <p className="text-gray-500">
-                            {searchTerm.trim() ? `No users found matching "${searchTerm}"` : 'No users found'}
-                          </p>
-                          {searchTerm.trim() && (
-                            <Button 
-                              variant="outline" 
-                              className="mt-2"
-                              onClick={() => setSearchTerm('')}
-                            >
-                              Clear Search
-                            </Button>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <div className="col-span-full">
+                      <Card>
+                        <CardContent className="pt-6">
+                          <div className="text-center py-8">
+                            <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                            <p className="text-gray-500">
+                              {searchTerm.trim() ? `No users found matching "${searchTerm}"` : 'No users found'}
+                            </p>
+                            {searchTerm.trim() && (
+                              <Button 
+                                variant="outline" 
+                                className="mt-2"
+                                onClick={() => setSearchTerm('')}
+                              >
+                                Clear Search
+                              </Button>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
                   ) : (
                     filteredUsers.map((user: any) => (
                     <Card 
                       key={user.id} 
-                      className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-primary/50 group"
-                      onClick={() => openUserProfile(user)}
+                      className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:scale-105 border-0 bg-gradient-to-br from-white to-gray-50 hover:from-blue-50 hover:to-white"
                     >
-                      <CardHeader className="pb-3">
+                      <CardHeader className="pb-2">
                         <div className="text-center">
-                          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <User className="w-6 h-6 text-primary" />
+                          <div className="relative mx-auto mb-3">
+                            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                              <User className="w-8 h-8 text-white" />
+                            </div>
+                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                              <div className="w-2 h-2 bg-white rounded-full"></div>
+                            </div>
                           </div>
-                          <CardTitle className="text-lg font-semibold">{user.firstName} {user.lastName}</CardTitle>
-                          <p className="text-sm text-gray-600 mt-1">{user.email}</p>
+                          <CardTitle className="text-base font-bold text-gray-800">{user.firstName} {user.lastName}</CardTitle>
+                          <p className="text-xs text-gray-500 mt-1 truncate px-2">{user.email}</p>
                         </div>
                       </CardHeader>
-                      <CardContent>
-                        <div className="text-center">
+                      <CardContent className="pt-0">
+                        <div className="space-y-3">
+                          {/* Status Badges */}
+                          <div className="flex flex-wrap justify-center gap-1">
+                            <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              user.status === 'suspended' 
+                                ? 'bg-red-100 text-red-700 border border-red-200' 
+                                : 'bg-green-100 text-green-700 border border-green-200'
+                            }`}>
+                              {user.status === 'suspended' ? 'Suspended' : 'Active'}
+                            </div>
+                            {user.kycFeePaid && (
+                              <div className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200">
+                                KYC Paid
+                              </div>
+                            )}
+                            {user.verificationStatus === 'verified' && (
+                              <div className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700 border border-purple-200">
+                                Verified
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Quick Stats */}
+                          <div className="text-center text-xs text-gray-500">
+                            <div className="grid grid-cols-2 gap-2">
+                              <div>
+                                <div className="font-medium text-gray-700">Earnings</div>
+                                <div>₹{user.totalEarnings || 0}</div>
+                              </div>
+                              <div>
+                                <div className="font-medium text-gray-700">Videos</div>
+                                <div>{user.videosWatched || 0}</div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Action Button */}
                           <Button
-                            variant="default"
+                            variant="outline"
                             size="sm"
                             onClick={() => openUserProfile(user)}
-                            className="w-full"
+                            className="w-full text-xs bg-white/80 hover:bg-blue-50 group-hover:border-blue-400 group-hover:text-blue-600 transition-all duration-200 shadow-sm"
                           >
-                            <Eye className="w-4 h-4 mr-2" />
-                            View Details
+                            <Eye className="w-3 h-3 mr-1" />
+                            View Full Profile
                           </Button>
                         </div>
 
