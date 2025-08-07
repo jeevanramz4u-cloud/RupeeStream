@@ -1155,168 +1155,106 @@ export default function Admin() {
 
 
 
-              {/* Users Grid - Modern Card Layout */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {/* Users List Layout */}
+              <div className="space-y-2">
                 {(() => {
                   const filteredUsers = getSearchFilteredUsers();
                   return filteredUsers.length === 0 ? (
-                    <div className="col-span-full">
-                      <Card>
-                        <CardContent className="pt-6">
-                          <div className="text-center py-8">
-                            <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                            <p className="text-gray-500">
-                              {searchTerm.trim() ? `No users found matching "${searchTerm}"` : 'No users found'}
-                            </p>
-                            {searchTerm.trim() && (
-                              <Button 
-                                variant="outline" 
-                                className="mt-2"
-                                onClick={() => setSearchTerm('')}
-                              >
-                                Clear Search
-                              </Button>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  ) : (
-                    filteredUsers.map((user: any) => (
-                    <Card 
-                      key={user.id} 
-                      className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:scale-105 border-0 bg-gradient-to-br from-white to-gray-50 hover:from-blue-50 hover:to-white"
-                    >
-                      <CardHeader className="pb-2">
-                        <div className="text-center">
-                          <div className="relative mx-auto mb-3">
-                            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto shadow-lg">
-                              <User className="w-8 h-8 text-white" />
-                            </div>
-                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                              <div className="w-2 h-2 bg-white rounded-full"></div>
-                            </div>
-                          </div>
-                          <CardTitle className="text-base font-bold text-gray-800">{user.firstName} {user.lastName}</CardTitle>
-                          <p className="text-xs text-gray-500 mt-1 truncate px-2">{user.email}</p>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="space-y-3">
-                          {/* Status Badges */}
-                          <div className="flex flex-wrap justify-center gap-1">
-                            <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              user.status === 'suspended' 
-                                ? 'bg-red-100 text-red-700 border border-red-200' 
-                                : 'bg-green-100 text-green-700 border border-green-200'
-                            }`}>
-                              {user.status === 'suspended' ? 'Suspended' : 'Active'}
-                            </div>
-                            {user.kycFeePaid && (
-                              <div className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200">
-                                KYC Paid
-                              </div>
-                            )}
-                            {user.verificationStatus === 'verified' && (
-                              <div className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700 border border-purple-200">
-                                Verified
-                              </div>
-                            )}
-                          </div>
-                          
-                          {/* Quick Stats */}
-                          <div className="text-center text-xs text-gray-500">
-                            <div className="grid grid-cols-2 gap-2">
-                              <div>
-                                <div className="font-medium text-gray-700">Earnings</div>
-                                <div>₹{user.totalEarnings || 0}</div>
-                              </div>
-                              <div>
-                                <div className="font-medium text-gray-700">Videos</div>
-                                <div>{user.videosWatched || 0}</div>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Action Button */}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => openUserProfile(user)}
-                            className="w-full text-xs bg-white/80 hover:bg-blue-50 group-hover:border-blue-400 group-hover:text-blue-600 transition-all duration-200 shadow-sm"
-                          >
-                            <Eye className="w-3 h-3 mr-1" />
-                            View Full Profile
-                          </Button>
-                        </div>
-
-                        {/* Action Buttons - All buttons on single line */}
-                        <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t">
-                          {/* Reset Verification Button */}
-                          <Button 
-                            size="sm"
-                            variant="outline"
-                            className="text-xs border-blue-600 text-blue-600 hover:bg-blue-50"
-                            onClick={() => verifyUserMutation.mutate({
-                              userId: user.id,
-                              status: 'pending'
-                            })}
-                            disabled={verifyUserMutation.isPending}
-                          >
-                            <RotateCcw className="w-3 h-3 sm:mr-1" />
-                            <span className="hidden sm:inline">Reset Verification</span>
-                          </Button>
-
-                          {/* Suspend/Unsuspend Button */}
-                          {user.status !== 'suspended' ? (
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="text-center py-8">
+                          <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                          <p className="text-gray-500">
+                            {searchTerm.trim() ? `No users found matching "${searchTerm}"` : 'No users found'}
+                          </p>
+                          {searchTerm.trim() && (
                             <Button 
-                              size="sm"
-                              variant="outline"
-                              className="text-xs border-orange-600 text-orange-600 hover:bg-orange-50"
-                              onClick={() => suspendUserMutation.mutate({
-                                userId: user.id,
-                                status: 'suspended'
-                              })}
-                              disabled={suspendUserMutation.isPending}
+                              variant="outline" 
+                              className="mt-2"
+                              onClick={() => setSearchTerm('')}
                             >
-                              <Ban className="w-3 h-3 sm:mr-1" />
-                              <span className="hidden sm:inline">Suspend</span>
-                            </Button>
-                          ) : (
-                            <Button 
-                              size="sm"
-                              variant="outline"
-                              className="text-xs border-green-600 text-green-600 hover:bg-green-50"
-                              onClick={() => suspendUserMutation.mutate({
-                                userId: user.id,
-                                status: 'active'
-                              })}
-                              disabled={suspendUserMutation.isPending}
-                            >
-                              <CheckCircle className="w-3 h-3 sm:mr-1" />
-                              <span className="hidden sm:inline">Unsuspend</span>
+                              Clear Search
                             </Button>
                           )}
-
-                          {/* Delete Profile Button */}
-                          <Button 
-                            size="sm"
-                            variant="destructive"
-                            className="text-xs"
-                            onClick={() => {
-                              if (confirm(`Are you sure you want to delete ${user.email}'s profile? This action cannot be undone and will remove all user data including earnings, videos progress, and payout history.`)) {
-                                deleteUserMutation.mutate(user.id);
-                              }
-                            }}
-                            disabled={deleteUserMutation.isPending}
-                          >
-                            <Trash2 className="w-3 h-3 sm:mr-1" />
-                            <span className="hidden sm:inline">Delete Profile</span>
-                          </Button>
                         </div>
                       </CardContent>
                     </Card>
-                  ))
+                  ) : (
+                    filteredUsers.map((user: any) => (
+                      <Card 
+                        key={user.id} 
+                        className="hover:shadow-md transition-all duration-200 hover:border-blue-300 border border-gray-200"
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            {/* User Info Section */}
+                            <div className="flex items-center space-x-4">
+                              {/* Avatar */}
+                              <div className="relative">
+                                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                  <User className="w-5 h-5 text-white" />
+                                </div>
+                                <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
+                                  user.status === 'suspended' ? 'bg-red-500' : 'bg-green-500'
+                                }`}></div>
+                              </div>
+                              
+                              {/* Basic Info */}
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-3">
+                                  <h3 className="font-semibold text-gray-900">{user.firstName} {user.lastName}</h3>
+                                  
+                                  {/* Status Badges */}
+                                  <div className="flex space-x-2">
+                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                      user.status === 'suspended' 
+                                        ? 'bg-red-100 text-red-700' 
+                                        : 'bg-green-100 text-green-700'
+                                    }`}>
+                                      {user.status === 'suspended' ? 'Suspended' : 'Active'}
+                                    </span>
+                                    
+                                    {user.kycFeePaid && (
+                                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                        KYC Paid
+                                      </span>
+                                    )}
+                                    
+                                    {user.verificationStatus === 'verified' && (
+                                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                                        Verified
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                
+                                <p className="text-sm text-gray-600 mt-1">{user.email}</p>
+                                
+                                {/* Quick Stats */}
+                                <div className="flex space-x-4 mt-2 text-xs text-gray-500">
+                                  <span>Earnings: ₹{user.totalEarnings || 0}</span>
+                                  <span>Videos: {user.videosWatched || 0}</span>
+                                  <span>Joined: {new Date(user.createdAt || Date.now()).toLocaleDateString()}</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Action Button */}
+                            <div className="flex items-center space-x-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => openUserProfile(user)}
+                                className="text-blue-600 hover:bg-blue-50 border-blue-300"
+                              >
+                                <Eye className="w-4 h-4 mr-2" />
+                                View Details
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
                   );
                 })()}
               </div>
