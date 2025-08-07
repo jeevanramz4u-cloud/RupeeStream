@@ -23,6 +23,7 @@ import HowToEarn from "./pages/how-to-earn";
 import EarningsHistory from "./pages/earnings-history";
 import KYC from "./pages/kyc";
 import Profile from "./pages/profile";
+import SuspendedPage from "./pages/suspended";
 
 function AdminRoute() {
   const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
@@ -114,7 +115,7 @@ function Router() {
       <Route path="/earnings-history" component={() => <ProtectedRoute component={EarningsHistory} />} />
       <Route path="/referrals" component={() => <ProtectedRoute component={Referrals} />} />
       <Route path="/support" component={() => <ProtectedRoute component={Support} />} />
-      <Route path="/suspended" component={() => <ProtectedRoute component={React.lazy(() => import("./pages/suspended"))} />} />
+      <Route path="/suspended" component={() => <ProtectedRoute component={SuspendedPage} />} />
       <Route path="/kyc" component={() => <ProtectedRoute component={KYC} />} />
       <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
       
