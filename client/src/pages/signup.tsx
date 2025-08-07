@@ -156,6 +156,12 @@ export default function Signup() {
           setError("Please fill in all required fields");
           return false;
         }
+        // Validate phone number (must be exactly 10 digits after +91)
+        const phoneDigits = formData.phoneNumber?.replace('+91', '') || '';
+        if (phoneDigits.length !== 10 || !/^\d{10}$/.test(phoneDigits)) {
+          setError("Phone number must be exactly 10 digits");
+          return false;
+        }
         // Validate age (must be 18+)
         const birthDate = new Date(formData.dateOfBirth);
         const today = new Date();
@@ -349,16 +355,31 @@ export default function Signup() {
             </div>
 
             <div>
-              <Label htmlFor="phoneNumber">Phone Number *</Label>
-              <Input
-                id="phoneNumber"
-                name="phoneNumber"
-                type="tel"
-                placeholder="+91 9876543210"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                required
-              />
+              <Label htmlFor="phoneNumber">Phone Number * (10 digits)</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                  +91
+                </span>
+                <Input
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  type="tel"
+                  placeholder="9876543210"
+                  value={formData.phoneNumber?.replace('+91', '') || ''}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setFormData({
+                      ...formData,
+                      phoneNumber: value ? `+91${value}` : ''
+                    });
+                  }}
+                  className="pl-12"
+                  required
+                  pattern="[0-9]{10}"
+                  minLength={10}
+                  maxLength={10}
+                />
+              </div>
             </div>
 
             <div>
