@@ -22,6 +22,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { 
   Users, 
+  User,
   Video, 
   CheckCircle, 
   XCircle, 
