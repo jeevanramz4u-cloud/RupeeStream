@@ -5,6 +5,7 @@ EarnPay is a video monetization platform designed to reward users for watching v
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
+Platform focus: Optimized for laptop/desktop users with comprehensive workflow documentation.
 
 # System Architecture
 
