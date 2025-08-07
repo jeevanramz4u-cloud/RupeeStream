@@ -73,6 +73,10 @@ export default function Admin() {
   const [declineReason, setDeclineReason] = useState("");
   const [showBankDetails, setShowBankDetails] = useState<Record<string, boolean>>({});
   const [showUserPasswords, setShowUserPasswords] = useState<Record<string, boolean>>({});
+  const [paymentFilter, setPaymentFilter] = useState<'all' | 'kyc' | 'reactivation'>('all');
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState<'all' | 'completed' | 'pending' | 'failed'>('all');
+  const [paymentDateFilter, setPaymentDateFilter] = useState<string>('');
+  const [paymentSearchTerm, setPaymentSearchTerm] = useState<string>('');
 
   // Filter users based on KYC status
   const getFilteredUsers = () => {
@@ -1805,8 +1809,89 @@ export default function Admin() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <FileText className="w-5 h-5" />
-                    Recent Payment Transactions
+                    Payment Transactions
                   </CardTitle>
+                  
+                  {/* Filter Controls */}
+                  <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                    {/* Search Input */}
+                    <div className="flex-1">
+                      <Input
+                        placeholder="Search by user email, order ID, or user ID..."
+                        value={paymentSearchTerm}
+                        onChange={(e) => setPaymentSearchTerm(e.target.value)}
+                        className="w-full"
+                      />
+                    </div>
+                    
+                    {/* Payment Type Filter */}
+                    <div className="flex gap-2">
+                      <Button
+                        variant={paymentFilter === 'all' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setPaymentFilter('all')}
+                      >
+                        All Types
+                      </Button>
+                      <Button
+                        variant={paymentFilter === 'kyc' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setPaymentFilter('kyc')}
+                      >
+                        KYC (₹99)
+                      </Button>
+                      <Button
+                        variant={paymentFilter === 'reactivation' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setPaymentFilter('reactivation')}
+                      >
+                        Reactivation (₹49)
+                      </Button>
+                    </div>
+                    
+                    {/* Status Filter */}
+                    <div className="flex gap-2">
+                      <Button
+                        variant={paymentStatusFilter === 'all' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setPaymentStatusFilter('all')}
+                      >
+                        All Status
+                      </Button>
+                      <Button
+                        variant={paymentStatusFilter === 'completed' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setPaymentStatusFilter('completed')}
+                      >
+                        Completed
+                      </Button>
+                      <Button
+                        variant={paymentStatusFilter === 'pending' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setPaymentStatusFilter('pending')}
+                      >
+                        Pending
+                      </Button>
+                      <Button
+                        variant={paymentStatusFilter === 'failed' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setPaymentStatusFilter('failed')}
+                      >
+                        Failed
+                      </Button>
+                    </div>
+                    
+                    {/* Date Filter */}
+                    <div>
+                      <Input
+                        type="date"
+                        value={paymentDateFilter}
+                        onChange={(e) => setPaymentDateFilter(e.target.value)}
+                        className="w-auto"
+                        placeholder="Filter by date"
+                      />
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {paymentHistoryData.length === 0 ? (
@@ -1819,7 +1904,93 @@ export default function Admin() {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {paymentHistoryData.slice(0, 20).map((payment: any) => (
+                      {(() => {
+                        // Apply filters to payment data
+                        let filteredPayments = paymentHistoryData.filter((payment: any) => {
+                          // Type filter
+                          if (paymentFilter !== 'all' && payment.type !== paymentFilter) {
+                            return false;
+                          }
+                          
+                          // Status filter
+                          if (paymentStatusFilter !== 'all' && payment.status !== paymentStatusFilter) {
+                            return false;
+                          }
+                          
+                          // Date filter
+                          if (paymentDateFilter && payment.createdAt) {
+                            const paymentDate = new Date(payment.createdAt).toDateString();
+                            const filterDate = new Date(paymentDateFilter).toDateString();
+                            if (paymentDate !== filterDate) {
+                              return false;
+                            }
+                          }
+                          
+                          // Search filter
+                          if (paymentSearchTerm) {
+                            const searchLower = paymentSearchTerm.toLowerCase();
+                            const userEmail = (payment.userEmail || '').toLowerCase();
+                            const userName = (payment.userName || '').toLowerCase();
+                            const orderId = (payment.orderId || '').toLowerCase();
+                            const userId = (payment.userId || '').toLowerCase();
+                            
+                            if (!userEmail.includes(searchLower) && 
+                                !userName.includes(searchLower) && 
+                                !orderId.includes(searchLower) && 
+                                !userId.includes(searchLower)) {
+                              return false;
+                            }
+                          }
+                          
+                          return true;
+                        });
+                        
+                        return (
+                          <>
+                            {/* Filter Results Summary */}
+                            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                              <div className="text-sm text-gray-600">
+                                Showing {filteredPayments.length} of {paymentHistoryData.length} payments
+                                {paymentFilter !== 'all' && (
+                                  <span className="ml-2 text-blue-600">• {paymentFilter.toUpperCase()} only</span>
+                                )}
+                                {paymentStatusFilter !== 'all' && (
+                                  <span className="ml-2 text-green-600">• {paymentStatusFilter.toUpperCase()} status</span>
+                                )}
+                                {paymentDateFilter && (
+                                  <span className="ml-2 text-purple-600">• {new Date(paymentDateFilter).toLocaleDateString()}</span>
+                                )}
+                                {paymentSearchTerm && (
+                                  <span className="ml-2 text-orange-600">• "{paymentSearchTerm}"</span>
+                                )}
+                              </div>
+                              
+                              {(paymentFilter !== 'all' || paymentStatusFilter !== 'all' || paymentDateFilter || paymentSearchTerm) && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    setPaymentFilter('all');
+                                    setPaymentStatusFilter('all');
+                                    setPaymentDateFilter('');
+                                    setPaymentSearchTerm('');
+                                  }}
+                                >
+                                  Clear Filters
+                                </Button>
+                              )}
+                            </div>
+                            
+                            {filteredPayments.length === 0 ? (
+                              <div className="text-center py-8">
+                                <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                                <p className="text-gray-500">No payments match your filters</p>
+                                <p className="text-xs text-gray-400 mt-2">
+                                  Try adjusting your filter criteria
+                                </p>
+                              </div>
+                            ) : (
+                              filteredPayments.map((payment: any) => (
                         <div 
                           key={payment.id} 
                           className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
@@ -1883,15 +2054,11 @@ export default function Admin() {
                             </div>
                           </div>
                         </div>
-                      ))}
-                      
-                      {paymentHistoryData.length > 20 && (
-                        <div className="text-center py-4">
-                          <p className="text-sm text-gray-500">
-                            Showing recent 20 payments of {paymentHistoryData.length} total
-                          </p>
-                        </div>
-                      )}
+                              ))
+                            )}
+                          </>
+                        );
+                      })()}
                     </div>
                   )}
                 </CardContent>
