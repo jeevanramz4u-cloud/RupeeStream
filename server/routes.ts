@@ -1601,16 +1601,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let userId;
       let user;
 
+      // Check for traditional session-based authentication (suspended users)
+      console.log('Reactivation payment - Session check:', { 
+        hasSession: !!req.session, 
+        sessionUserId: req.session?.userId,
+        hasUser: !!req.user 
+      });
+      
+      if (req.session?.userId) {
+        userId = req.session.userId;
+        user = await storage.getUser(userId);
+        console.log('Reactivation payment - Traditional auth found for user:', userId);
+      }
       // Support both traditional and OIDC authentication
-      if (req.user && req.user.id) {
+      else if (req.user && req.user.id) {
         userId = req.user.id;
         user = req.user;
+        console.log('Reactivation payment - User object auth found for user:', userId);
       } 
       else if (req.isAuthenticated && req.isAuthenticated() && req.user?.claims?.sub) {
         userId = req.user.claims.sub;
         user = await storage.getUser(userId);
+        console.log('Reactivation payment - OIDC auth found for user:', userId);
       } 
       else {
+        console.log('Reactivation payment - No valid authentication found');
         return res.status(401).json({ error: "Authentication required" });
       }
 
@@ -1626,6 +1641,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       try {
         // Try to create Cashfree payment
+        const { createCashfreeOrder } = await import('./cashfree');
         const orderId = `reactivation_${userId}_${Date.now()}`;
         const cashfreeOrder = await createCashfreeOrder({
           orderId,
