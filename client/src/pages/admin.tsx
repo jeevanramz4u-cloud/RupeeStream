@@ -515,13 +515,26 @@ export default function Admin() {
   };
 
   const getStatusBadge = (user: any) => {
-    // Check if user has completed KYC (paid fee + approved)
-    if (user.kycFeePaid && user.kycStatus === 'approved' && user.verificationStatus === 'verified') {
+    // Debug user data to see field names and values
+    console.log("User data for status badge:", {
+      email: user.email,
+      kycFeePaid: user.kycFeePaid,
+      kycStatus: user.kycStatus, 
+      verificationStatus: user.verificationStatus,
+      allFields: Object.keys(user)
+    });
+    
+    // Check if user has completed KYC (paid fee + approved) - handle both field name formats
+    const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
+    const kycStatus = user.kycStatus || user.kyc_status;
+    const verificationStatus = user.verificationStatus || user.verification_status;
+    
+    if (kycFeePaid && kycStatus === 'approved' && verificationStatus === 'verified') {
       return <Badge className="bg-green-600 text-white"><CheckCircle className="w-3 h-3 mr-1" />KYC Completed</Badge>;
     }
     
     // Standard verification status
-    switch (user.verificationStatus) {
+    switch (verificationStatus) {
       case 'verified':
         return <Badge className="bg-secondary text-white"><CheckCircle className="w-3 h-3 mr-1" />Verified</Badge>;
       case 'rejected':
@@ -615,20 +628,24 @@ export default function Admin() {
                   <CardTitle>Pending Verifications</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {(users as any[]).filter((user: any) => 
-                    user.verificationStatus === 'pending' && 
-                    !(user.kycFeePaid && user.kycStatus === 'approved')
-                  ).length === 0 ? (
+                  {(users as any[]).filter((user: any) => {
+                    const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
+                    const kycStatus = user.kycStatus || user.kyc_status;
+                    const verificationStatus = user.verificationStatus || user.verification_status;
+                    return verificationStatus === 'pending' && !(kycFeePaid && kycStatus === 'approved');
+                  }).length === 0 ? (
                     <div className="text-center py-8">
                       <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-500">No pending verifications</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {(users as any[]).filter((user: any) => 
-                        user.verificationStatus === 'pending' && 
-                        !(user.kycFeePaid && user.kycStatus === 'approved')
-                      ).map((user: any) => (
+                      {(users as any[]).filter((user: any) => {
+                        const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
+                        const kycStatus = user.kycStatus || user.kyc_status;
+                        const verificationStatus = user.verificationStatus || user.verification_status;
+                        return verificationStatus === 'pending' && !(kycFeePaid && kycStatus === 'approved');
+                      }).map((user: any) => (
                         <div 
                           key={user.id}
                           className={`p-3 sm:p-4 border rounded-lg cursor-pointer transition-colors ${
@@ -879,8 +896,12 @@ export default function Admin() {
                       </div>
 
                       {/* Only show approve/reject for users who haven't completed KYC */}
-                      {selectedUser.verificationStatus === 'pending' && 
-                       !(selectedUser.kycFeePaid && selectedUser.kycStatus === 'approved') && (
+                      {(() => {
+                        const kycFeePaid = selectedUser.kycFeePaid || selectedUser.kyc_fee_paid;
+                        const kycStatus = selectedUser.kycStatus || selectedUser.kyc_status;
+                        const verificationStatus = selectedUser.verificationStatus || selectedUser.verification_status;
+                        return verificationStatus === 'pending' && !(kycFeePaid && kycStatus === 'approved');
+                      })() && (
                         <div className="flex space-x-2">
                           <Button 
                             className="flex-1 bg-secondary hover:bg-secondary/90"
@@ -909,7 +930,11 @@ export default function Admin() {
                       )}
                       
                       {/* Show KYC completion status for completed users */}
-                      {selectedUser.kycFeePaid && selectedUser.kycStatus === 'approved' && (
+                      {(() => {
+                        const kycFeePaid = selectedUser.kycFeePaid || selectedUser.kyc_fee_paid;
+                        const kycStatus = selectedUser.kycStatus || selectedUser.kyc_status;
+                        return kycFeePaid && kycStatus === 'approved';
+                      })() && (
                         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                           <div className="flex items-center text-green-800">
                             <CheckCircle className="w-5 h-5 mr-2" />
@@ -1268,8 +1293,12 @@ export default function Admin() {
                         <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t">
                           {/* Verification Actions */}
                           {/* Only show approve/reject for users who haven't completed KYC */}
-                          {user.verificationStatus === 'pending' && 
-                           !(user.kycFeePaid && user.kycStatus === 'approved') && (
+                          {(() => {
+                            const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
+                            const kycStatus = user.kycStatus || user.kyc_status;
+                            const verificationStatus = user.verificationStatus || user.verification_status;
+                            return verificationStatus === 'pending' && !(kycFeePaid && kycStatus === 'approved');
+                          })() && (
                             <>
                               <Button 
                                 size="sm"
@@ -1300,7 +1329,11 @@ export default function Admin() {
                           )}
                           
                           {/* Show completed status for KYC completed users */}
-                          {user.kycFeePaid && user.kycStatus === 'approved' && (
+                          {(() => {
+                            const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
+                            const kycStatus = user.kycStatus || user.kyc_status;
+                            return kycFeePaid && kycStatus === 'approved';
+                          })() && (
                             <Badge className="bg-green-600 text-white text-xs">
                               <CheckCircle className="w-3 h-3 mr-1" />
                               KYC Completed
