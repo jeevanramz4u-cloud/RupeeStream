@@ -36,14 +36,6 @@ export default function Footer() {
             <p className="text-gray-600 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base max-w-md">
               Transform your free time into real income. Join thousands of users who are already earning money by watching videos on our platform.
             </p>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-              <div className="bg-gray-50 hover:bg-gray-100 p-2 sm:p-3 rounded-lg transition-colors cursor-pointer text-center sm:text-left">
-                <span className="text-xs sm:text-sm font-medium text-gray-700">Trusted Platform</span>
-              </div>
-              <div className="bg-gray-50 hover:bg-gray-100 p-2 sm:p-3 rounded-lg transition-colors cursor-pointer text-center sm:text-left">
-                <span className="text-xs sm:text-sm font-medium text-gray-700">Secure Payments</span>
-              </div>
-            </div>
           </div>
 
           {/* Company Links */}
