@@ -1306,87 +1306,69 @@ export default function Admin() {
                           )}
                         </div>
 
-                        {/* Action Buttons - Show ALL buttons for EVERY user */}
+                        {/* Action Buttons - All buttons on single line */}
                         <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t">
-                          {/* Row 1: Verification Actions - API handles approval */}
-                          <div className="w-full flex flex-wrap gap-1.5 sm:gap-2 mb-2">
-                            {/* Reset Verification Button - Always Available */}
+                          {/* Reset Verification Button */}
+                          <Button 
+                            size="sm"
+                            variant="outline"
+                            className="text-xs border-blue-600 text-blue-600 hover:bg-blue-50"
+                            onClick={() => verifyUserMutation.mutate({
+                              userId: user.id,
+                              status: 'pending'
+                            })}
+                            disabled={verifyUserMutation.isPending}
+                          >
+                            <RotateCcw className="w-3 h-3 sm:mr-1" />
+                            <span className="hidden sm:inline">Reset Verification</span>
+                          </Button>
+
+                          {/* Suspend/Unsuspend Button */}
+                          {user.status !== 'suspended' ? (
                             <Button 
                               size="sm"
                               variant="outline"
-                              className="text-xs border-blue-600 text-blue-600 hover:bg-blue-50"
-                              onClick={() => verifyUserMutation.mutate({
+                              className="text-xs border-orange-600 text-orange-600 hover:bg-orange-50"
+                              onClick={() => suspendUserMutation.mutate({
                                 userId: user.id,
-                                status: 'pending'
+                                status: 'suspended'
                               })}
-                              disabled={verifyUserMutation.isPending}
+                              disabled={suspendUserMutation.isPending}
                             >
-                              <RotateCcw className="w-3 h-3 sm:mr-1" />
-                              <span className="hidden sm:inline">Reset Verification</span>
+                              <Ban className="w-3 h-3 sm:mr-1" />
+                              <span className="hidden sm:inline">Suspend</span>
                             </Button>
-
-                            {/* KYC Completed Badge - Show if user completed KYC */}
-                            {(() => {
-                              const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
-                              const kycStatus = user.kycStatus || user.kyc_status;
-                              return kycFeePaid && kycStatus === 'approved';
-                            })() && (
-                              <Badge className="bg-green-600 text-white text-xs">
-                                <CheckCircle className="w-3 h-3 mr-1" />
-                                KYC Completed
-                              </Badge>
-                            )}
-                          </div>
-
-                          {/* Row 2: Account Management Actions - Always show all buttons */}
-                          <div className="w-full flex flex-wrap gap-1.5 sm:gap-2">
-                            {/* Suspend/Unsuspend Button - Always Available */}
-                            {user.status !== 'suspended' ? (
-                              <Button 
-                                size="sm"
-                                variant="outline"
-                                className="text-xs border-orange-600 text-orange-600 hover:bg-orange-50"
-                                onClick={() => suspendUserMutation.mutate({
-                                  userId: user.id,
-                                  status: 'suspended'
-                                })}
-                                disabled={suspendUserMutation.isPending}
-                              >
-                                <Ban className="w-3 h-3 sm:mr-1" />
-                                <span className="hidden sm:inline">Suspend</span>
-                              </Button>
-                            ) : (
-                              <Button 
-                                size="sm"
-                                variant="outline"
-                                className="text-xs border-green-600 text-green-600 hover:bg-green-50"
-                                onClick={() => suspendUserMutation.mutate({
-                                  userId: user.id,
-                                  status: 'active'
-                                })}
-                                disabled={suspendUserMutation.isPending}
-                              >
-                                <CheckCircle className="w-3 h-3 sm:mr-1" />
-                                <span className="hidden sm:inline">Unsuspend</span>
-                              </Button>
-                            )}
-
-                            {/* Delete Profile Button - Always Available */}
+                          ) : (
                             <Button 
                               size="sm"
-                              variant="destructive"
-                              className="text-xs"
-                              onClick={() => {
-                                if (confirm(`Are you sure you want to delete ${user.email}'s profile? This action cannot be undone and will remove all user data including earnings, videos progress, and payout history.`)) {
-                                  deleteUserMutation.mutate(user.id);
-                                }
-                              }}
-                              disabled={deleteUserMutation.isPending}
+                              variant="outline"
+                              className="text-xs border-green-600 text-green-600 hover:bg-green-50"
+                              onClick={() => suspendUserMutation.mutate({
+                                userId: user.id,
+                                status: 'active'
+                              })}
+                              disabled={suspendUserMutation.isPending}
                             >
-                              <Trash2 className="w-3 h-3 sm:mr-1" />
-                              <span className="hidden sm:inline">Delete Profile</span>
+                              <CheckCircle className="w-3 h-3 sm:mr-1" />
+                              <span className="hidden sm:inline">Unsuspend</span>
                             </Button>
-                          </div>
+                          )}
+
+                          {/* Delete Profile Button */}
+                          <Button 
+                            size="sm"
+                            variant="destructive"
+                            className="text-xs"
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to delete ${user.email}'s profile? This action cannot be undone and will remove all user data including earnings, videos progress, and payout history.`)) {
+                                deleteUserMutation.mutate(user.id);
+                              }
+                            }}
+                            disabled={deleteUserMutation.isPending}
+                          >
+                            <Trash2 className="w-3 h-3 sm:mr-1" />
+                            <span className="hidden sm:inline">Delete Profile</span>
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
