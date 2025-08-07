@@ -1315,14 +1315,8 @@ export default function Admin() {
                             const kycStatus = user.kycStatus || user.kyc_status;
                             const verificationStatus = user.verificationStatus || user.verification_status;
                             
-                            // Show approve/reject for pending users who haven't paid fee
-                            const showApproveReject = verificationStatus === 'pending' && !kycFeePaid;
-                            // Show reset for verified users or rejected users (but not for KYC fee paid users)
-                            const showReset = (verificationStatus === 'verified' || verificationStatus === 'rejected') && !kycFeePaid;
-                            // Show special reset for KYC fee paid users who need verification reset
-                            const showKycReset = kycFeePaid && verificationStatus !== 'pending';
-                            
-                            return showApproveReject || showReset || showKycReset;
+                            // Always show verification actions for all users
+                            return true;
                           })() && (
                             <>
                               {(() => {
@@ -1362,8 +1356,8 @@ export default function Admin() {
                                   );
                                 }
                                 
-                                // Show reset for verified/rejected users (not for KYC fee paid users)
-                                if ((verificationStatus === 'verified' || verificationStatus === 'rejected') && !kycFeePaid) {
+                                // Show reset for any non-pending user (verified or rejected)
+                                if (verificationStatus !== 'pending') {
                                   return (
                                     <Button 
                                       size="sm"
@@ -1377,25 +1371,6 @@ export default function Admin() {
                                     >
                                       <RotateCcw className="w-3 h-3 sm:mr-1" />
                                       <span className="hidden sm:inline">Reset Verification</span>
-                                    </Button>
-                                  );
-                                }
-                                
-                                // Show special reset for KYC fee paid users
-                                if (kycFeePaid && verificationStatus !== 'pending') {
-                                  return (
-                                    <Button 
-                                      size="sm"
-                                      variant="outline"
-                                      className="text-xs"
-                                      onClick={() => verifyUserMutation.mutate({
-                                        userId: user.id,
-                                        status: 'pending'
-                                      })}
-                                      disabled={verifyUserMutation.isPending}
-                                    >
-                                      <RotateCcw className="w-3 h-3 sm:mr-1" />
-                                      <span className="hidden sm:inline">Reset Status</span>
                                     </Button>
                                   );
                                 }

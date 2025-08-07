@@ -6,6 +6,14 @@ const cashfreeConfig = {
   baseUrl: process.env.NODE_ENV === 'production' ? 'https://api.cashfree.com' : 'https://sandbox.cashfree.com'
 };
 
+// Debug: Check if credentials are present
+console.log('Cashfree Config Check:', {
+  hasAppId: !!cashfreeConfig.appId,
+  hasSecretKey: !!cashfreeConfig.secretKey,
+  environment: cashfreeConfig.environment,
+  baseUrl: cashfreeConfig.baseUrl
+});
+
 export interface PaymentSession {
   order_id: string;
   payment_session_id: string;
@@ -54,8 +62,8 @@ export async function createPaymentSession(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-client-id': cashfreeConfig.appId,
-        'x-client-secret': cashfreeConfig.secretKey,
+        'X-Client-Id': cashfreeConfig.appId,
+        'X-Client-Secret': cashfreeConfig.secretKey,
         'x-api-version': '2023-08-01'
       },
       body: JSON.stringify(orderRequest)
@@ -93,8 +101,8 @@ export async function verifyPayment(orderId: string): Promise<any> {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'x-client-id': cashfreeConfig.appId,
-        'x-client-secret': cashfreeConfig.secretKey,
+        'X-Client-Id': cashfreeConfig.appId,
+        'X-Client-Secret': cashfreeConfig.secretKey,
         'x-api-version': '2023-08-01'
       }
     });
