@@ -728,14 +728,14 @@ export default function KYC() {
                         console.log("All fields complete, submitting KYC...");
                         handleSubmitKyc();
                         setTimeout(() => {
-                          console.log("Initiating payment...");
+                          console.log("Initiating Cashfree payment...");
                           payFeeMutation.mutate();
                         }, 500);
                       }}
                       disabled={submitKycMutation.isPending || payFeeMutation.isPending}
                       className="w-full bg-green-600 hover:bg-green-700 text-lg py-3"
                     >
-                      {(submitKycMutation.isPending || payFeeMutation.isPending) ? "Processing Payment..." : "Pay ₹99 Processing Fee & Complete KYC"}
+                      {(submitKycMutation.isPending || payFeeMutation.isPending) ? "Processing Cashfree Payment..." : "Pay ₹99 via Cashfree & Complete KYC"}
                     </Button>
                   </div>
                 </div>

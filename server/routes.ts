@@ -15,6 +15,14 @@ import {
   users,
   referrals
 } from "@shared/schema";
+import { 
+  createPaymentSession, 
+  verifyPayment, 
+  getOrderDetails,
+  createBeneficiary,
+  processPayout,
+  getTransferStatus 
+} from './cashfree';
 
 // Extend session interface
 declare module 'express-session' {
@@ -394,6 +402,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create payment session for KYC fee
+  app.post("/api/kyc/create-payment", isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const user = req.user;
+      const orderId = `kyc_${userId}_${Date.now()}`;
+      
+      const paymentSession = await createPaymentSession(
+        orderId,
+        99, // KYC fee amount
+        user.phoneNumber || '9999999999',
+        user.email,
+        `${user.firstName} ${user.lastName}`,
+        'kyc_fee'
+      );
+
+      res.json({
+        orderId: paymentSession.order_id,
+        paymentSessionId: paymentSession.payment_session_id,
+        amount: paymentSession.order_amount,
+        currency: paymentSession.order_currency
+      });
+    } catch (error) {
+      console.error("Error creating KYC payment session:", error);
+      res.status(500).json({ message: "Failed to create payment session" });
+    }
+  });
+
+  // Verify KYC payment
+  app.post("/api/kyc/verify-payment", isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const { orderId } = req.body;
+      const userId = req.user.id;
+      
+      const orderDetails = await getOrderDetails(orderId);
+      
+      if (orderDetails && orderDetails.order_status === 'PAID') {
+        // Update payment status and automatically approve KYC
+        await storage.updateUserKycPaymentAndApprove(userId, {
+          kycFeePaid: true,
+          kycFeePaymentId: orderId,
+          kycStatus: "approved",
+          verificationStatus: "verified",
+          kycApprovedAt: new Date(),
+        });
+
+        res.json({ 
+          message: "KYC fee payment successful - Verification completed!",
+          paymentId: orderId,
+          kycStatus: "approved"
+        });
+      } else {
+        res.status(400).json({ message: "Payment not completed" });
+      }
+    } catch (error) {
+      console.error("Error verifying KYC payment:", error);
+      res.status(500).json({ message: "Failed to verify payment" });
+    }
+  });
+
+  // Legacy endpoint for backward compatibility
   app.post("/api/kyc/pay-fee", isTraditionallyAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
