@@ -156,6 +156,17 @@ export default function Signup() {
           setError("Please fill in all required fields");
           return false;
         }
+        // Validate age (must be 18+)
+        const birthDate = new Date(formData.dateOfBirth);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        const actualAge = (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) ? age - 1 : age;
+        
+        if (actualAge < 18) {
+          setError("You must be 18 years or older to register");
+          return false;
+        }
         break;
       case 3:
         if (!formData.address || !formData.city || !formData.state || !formData.pincode) {
@@ -349,15 +360,17 @@ export default function Signup() {
             </div>
 
             <div>
-              <Label htmlFor="dateOfBirth">Date of Birth *</Label>
+              <Label htmlFor="dateOfBirth">Date of Birth * (Must be 18+)</Label>
               <Input
                 id="dateOfBirth"
                 name="dateOfBirth"
                 type="date"
                 value={formData.dateOfBirth}
                 onChange={handleChange}
+                max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
                 required
               />
+              <p className="text-sm text-gray-500 mt-1">You must be 18 years or older to register</p>
             </div>
 
             <div>
