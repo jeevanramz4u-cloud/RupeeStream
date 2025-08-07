@@ -33,22 +33,8 @@ export default function Footer() {
               <span className="text-xl font-bold text-white">EarnPay</span>
             </div>
             <p className="text-sm text-gray-400 mb-4">
-              Revolutionizing video monetization by rewarding genuine engagement and creating sustainable income opportunities.
+              Revolutionizing video monetization by rewarding genuine engagement and creating sustainable income opportunities for users worldwide.
             </p>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                <span>support@earnpay.com</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4" />
-                <span>+91 9876543210</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                <span>Mumbai, India</span>
-              </div>
-            </div>
           </div>
 
           {/* Company Links */}

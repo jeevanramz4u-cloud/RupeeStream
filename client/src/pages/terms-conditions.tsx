@@ -1,3 +1,5 @@
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, FileText } from "lucide-react";
@@ -5,20 +7,8 @@ import { Link } from "wouter";
 
 export default function TermsConditions() {
   return (
-    <div className="min-h-screen bg-neutral-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
-            <Link href="/">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Home
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-neutral-50 safe-area-padding">
+      <Header />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
@@ -237,12 +227,7 @@ export default function TermsConditions() {
               <section>
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">15. Contact Information</h2>
                 <div className="space-y-4 text-gray-700">
-                  <p>For questions about these terms, contact us:</p>
-                  <ul className="list-none space-y-2">
-                    <li><strong>Email:</strong> legal@earnpay.com</li>
-                    <li><strong>Address:</strong> EarnPay Legal Department, India</li>
-                    <li><strong>Phone:</strong> +91-XXXX-XXXX</li>
-                  </ul>
+                  <p>For questions about these terms, contact us through our support channels or legal department.</p>
                 </div>
               </section>
             </div>
@@ -258,6 +243,8 @@ export default function TermsConditions() {
           </Link>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }
