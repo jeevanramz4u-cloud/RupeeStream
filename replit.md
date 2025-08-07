@@ -1,6 +1,6 @@
 # Overview
 
-EarnPay is a video monetization platform designed to reward users for watching videos. It integrates user authentication, video management, earnings tracking, a referral program, and administrative controls. The platform's core vision is to provide a sustainable income stream for users by engaging with video content, while ensuring content consumption is genuine through strict viewing rules. Key capabilities include comprehensive user verification (KYC), efficient payout management, and real-time support.
+EarnPay is a video monetization platform designed to reward users for watching videos. It integrates user authentication, video management, earnings tracking, a referral program, and administrative controls. The platform's core vision is to provide a sustainable income stream for users by engaging with video content, while ensuring content consumption is genuine through strict viewing rules. Key capabilities include comprehensive user verification (KYC), efficient payout management, real-time support, and complete company pages structure with professional corporate presence.
 
 # User Preferences
 

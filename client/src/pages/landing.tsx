@@ -20,9 +20,9 @@ export default function Landing() {
             <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
               <a href="#features" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Features</a>
               <a href="#how-it-works" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">How it Works</a>
-              <a href="#faq" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">FAQ</a>
-              <a href="/privacy-policy" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Privacy</a>
-              <a href="/terms-conditions" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Terms</a>
+              <a href="/how-to-earn" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">How to Earn</a>
+              <a href="/about" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">About</a>
+              <a href="/contact" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Contact</a>
             </nav>
 
             <Button 
@@ -386,17 +386,17 @@ export default function Landing() {
             <div>
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Company</h3>
               <ul className="mt-4 space-y-2">
-                <li><a href="#about" className="text-sm text-gray-600 hover:text-primary">About Us</a></li>
-                <li><a href="#contact" className="text-sm text-gray-600 hover:text-primary">Contact</a></li>
-                <li><a href="#careers" className="text-sm text-gray-600 hover:text-primary">Careers</a></li>
+                <li><a href="/about" className="text-sm text-gray-600 hover:text-primary">About Us</a></li>
+                <li><a href="/contact" className="text-sm text-gray-600 hover:text-primary">Contact</a></li>
+                <li><a href="/careers" className="text-sm text-gray-600 hover:text-primary">Careers</a></li>
               </ul>
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Earn</h3>
               <ul className="mt-4 space-y-2">
                 <li><a href="/how-to-earn" className="text-sm text-gray-600 hover:text-primary">How to Earn</a></li>
-                <li><a href="#referrals" className="text-sm text-gray-600 hover:text-primary">Referral Program</a></li>
-                <li><a href="#payouts" className="text-sm text-gray-600 hover:text-primary">Payout Schedule</a></li>
+                <li><a href="/referrals" className="text-sm text-gray-600 hover:text-primary">Referral Program</a></li>
+                <li><a href="/payout-schedule" className="text-sm text-gray-600 hover:text-primary">Payout Schedule</a></li>
               </ul>
             </div>
             <div>

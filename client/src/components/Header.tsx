@@ -21,6 +21,7 @@ export default function Header() {
   const navItems = [
     { href: "/dashboard", label: "Dashboard", active: location === "/" || location === "/dashboard" },
     { href: "/videos", label: "Videos", active: location === "/videos" },
+    { href: "/how-to-earn", label: "How to Earn", active: location === "/how-to-earn" },
     { href: "/kyc", label: "KYC", active: location === "/kyc" },
     { href: "/referrals", label: "Referrals", active: location === "/referrals" },
     { href: "/support", label: "Support", active: location === "/support" },

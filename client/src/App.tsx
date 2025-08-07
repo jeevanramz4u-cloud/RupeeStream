@@ -26,6 +26,10 @@ import EarningsHistory from "./pages/earnings-history";
 import KYC from "./pages/kyc";
 import Profile from "./pages/profile";
 import SuspendedPage from "./pages/suspended";
+import About from "./pages/about";
+import Contact from "./pages/contact";
+import Careers from "./pages/careers";
+import PayoutSchedule from "./pages/payout-schedule";
 
 function AdminRoute() {
   const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
@@ -110,6 +114,10 @@ function Router() {
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-conditions" component={TermsConditions} />
       <Route path="/how-to-earn" component={HowToEarn} />
+      <Route path="/about" component={About} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/careers" component={Careers} />
+      <Route path="/payout-schedule" component={PayoutSchedule} />
       
       {/* Home route - conditional based on auth */}
       <Route path="/" component={() => {
