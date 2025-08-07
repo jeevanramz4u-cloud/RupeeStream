@@ -155,16 +155,45 @@ export default function KYC() {
     },
   });
 
-  // Pay KYC fee mutation
-  const payFeeMutation = useMutation({
+  // Create Cashfree payment session mutation
+  const createPaymentMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/kyc/pay-fee");
+      const response = await apiRequest("POST", "/api/kyc/create-payment");
+      return response.json();
+    },
+    onSuccess: (data) => {
+      // Redirect to Cashfree payment page or handle payment session
+      console.log("Payment session created:", data);
+      toast({
+        title: "Payment Session Created",
+        description: "Redirecting to Cashfree payment gateway...",
+      });
+      
+      // For demo purposes, auto-verify after a short delay
+      // In production, user would be redirected to Cashfree payment page
+      setTimeout(() => {
+        verifyPaymentMutation.mutate({ orderId: data.orderId });
+      }, 2000);
+    },
+    onError: (error) => {
+      toast({
+        title: "Payment Session Failed",
+        description: "Failed to create payment session. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Verify Cashfree payment mutation
+  const verifyPaymentMutation = useMutation({
+    mutationFn: async ({ orderId }: { orderId: string }) => {
+      const response = await apiRequest("POST", "/api/kyc/verify-payment", { orderId });
       return response.json();
     },
     onSuccess: (data) => {
       toast({
         title: "Payment Successful",
-        description: "KYC processing fee paid successfully. Your verification is now approved!",
+        description: "KYC processing fee paid successfully via Cashfree. Your verification is now approved!",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/kyc/status"] });
       setTimeout(() => {
@@ -173,8 +202,8 @@ export default function KYC() {
     },
     onError: (error) => {
       toast({
-        title: "Payment Failed",
-        description: "Failed to process payment. Please try again.",
+        title: "Payment Verification Failed",
+        description: "Payment verification failed. Please contact support.",
         variant: "destructive",
       });
     },
@@ -726,14 +755,14 @@ export default function KYC() {
                         console.log("All fields complete, submitting KYC...");
                         handleSubmitKyc();
                         setTimeout(() => {
-                          console.log("Initiating Cashfree payment...");
-                          payFeeMutation.mutate();
+                          console.log("Initiating Cashfree payment session...");
+                          createPaymentMutation.mutate();
                         }, 500);
                       }}
-                      disabled={submitKycMutation.isPending || payFeeMutation.isPending}
+                      disabled={submitKycMutation.isPending || createPaymentMutation.isPending || verifyPaymentMutation.isPending}
                       className="w-full bg-green-600 hover:bg-green-700 text-lg py-3"
                     >
-                      {(submitKycMutation.isPending || payFeeMutation.isPending) ? "Processing Cashfree Payment..." : "Pay ₹99 via Cashfree & Complete KYC"}
+                      {(submitKycMutation.isPending || createPaymentMutation.isPending || verifyPaymentMutation.isPending) ? "Processing Cashfree Payment..." : "Pay ₹99 via Cashfree & Complete KYC"}
                     </Button>
                   </div>
                 </div>

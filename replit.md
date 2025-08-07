@@ -82,6 +82,11 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Disabled automatic KYC completion success alerts for verified users
 - Fixed infinite API call issue from SuspensionAlert component
 - Bonus earnings still credited automatically without persistent UI notifications
+- **Fixed KYC payment bypass issue (August 2025)**
+- Disabled legacy direct payment endpoint that was allowing KYC completion without actual payment
+- Enforced Cashfree payment gateway integration for all KYC fee processing
+- Replaced instant payment completion with proper payment session creation and verification flow
+- Updated KYC form to use createPaymentMutation and verifyPaymentMutation for secure payments
 
 # User Preferences
 

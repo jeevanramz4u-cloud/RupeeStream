@@ -438,6 +438,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const orderDetails = await getOrderDetails(orderId);
       
+      // For demo purposes, we'll simulate the payment verification process
+      // In production, this would check actual Cashfree payment status
+      console.log("Verifying Cashfree payment for order:", orderId);
+      
       if (orderDetails && orderDetails.order_status === 'PAID') {
         // Update payment status and automatically approve KYC
         await storage.updateUserKycPaymentAndApprove(userId, {
@@ -449,12 +453,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
 
         res.json({ 
-          message: "KYC fee payment successful - Verification completed!",
+          message: "KYC fee payment successful via Cashfree - Verification completed!",
           paymentId: orderId,
           kycStatus: "approved"
         });
       } else {
-        res.status(400).json({ message: "Payment not completed" });
+        res.status(400).json({ message: "Payment not completed. Please complete payment via Cashfree." });
       }
     } catch (error) {
       console.error("Error verifying KYC payment:", error);
@@ -462,28 +466,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Legacy endpoint for backward compatibility
+  // Legacy endpoint - DISABLED to force Cashfree payment flow
   app.post("/api/kyc/pay-fee", isTraditionallyAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
-      
-      // For demo purposes, we'll simulate payment success
-      // In production, this would integrate with a real payment gateway
-      const paymentId = `kyc_payment_${Date.now()}_${userId}`;
-      
-      // Update payment status and automatically approve KYC
-      await storage.updateUserKycPaymentAndApprove(userId, {
-        kycFeePaid: true,
-        kycFeePaymentId: paymentId,
-        kycStatus: "approved",
-        verificationStatus: "verified",
-        kycApprovedAt: new Date(),
-      });
-
-      res.json({ 
-        message: "KYC fee payment successful - Verification completed!",
-        paymentId: paymentId,
-        kycStatus: "approved"
+      // Redirect to proper Cashfree payment flow
+      res.status(400).json({ 
+        message: "Direct payment not allowed. Please use Cashfree payment gateway.",
+        redirectTo: "/api/kyc/create-payment"
       });
     } catch (error) {
       console.error("Error processing KYC fee payment:", error);
