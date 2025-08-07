@@ -173,10 +173,10 @@ export default function Earnings() {
     <div className="min-h-screen bg-neutral-50">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Earnings Dashboard</h1>
-          <p className="text-gray-600">Track your earnings, watch time, and payout history.</p>
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8 safe-area-padding">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Earnings Dashboard</h1>
+          <p className="text-sm sm:text-base text-gray-600">Track your earnings, watch time, and payout history.</p>
         </div>
 
         {/* Signup Bonus Alert */}
@@ -199,59 +199,59 @@ export default function Earnings() {
         )}
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="pt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white md:bg-white md:text-gray-900 touch-manipulation">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Balance</p>
-                  <p className="text-2xl font-bold text-gray-900">₹{(user as any)?.balance || '0.00'}</p>
+                  <p className="text-sm font-medium text-green-100 md:text-gray-600">Total Balance</p>
+                  <p className="text-2xl sm:text-3xl md:text-2xl font-bold text-white md:text-gray-900">₹{(user as any)?.balance || '0.00'}</p>
                 </div>
-                <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
-                  <Wallet className="text-secondary w-6 h-6" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 md:bg-secondary/10 rounded-lg flex items-center justify-center">
+                  <Wallet className="text-white md:text-secondary w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Today's Earnings</p>
-                  <p className="text-2xl font-bold text-gray-900">₹{(stats as any)?.todayEarnings || '0.00'}</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Today's Earnings</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">₹{(stats as any)?.todayEarnings || '0.00'}</p>
                 </div>
-                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
-                  <Coins className="text-accent w-6 h-6" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                  <Coins className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Today's Watch Time</p>
-                  <p className="text-2xl font-bold text-gray-900">{Math.floor(watchedHours)}h {Math.floor((watchedHours % 1) * 60)}m</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Today's Watch Time</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">{Math.floor(watchedHours)}h {Math.floor((watchedHours % 1) * 60)}m</p>
                 </div>
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <Clock className="text-primary w-6 h-6" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Clock className="text-primary w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
-              <div className="mt-4">
+              <div className="mt-3 sm:mt-4">
                 <Progress value={progressPercentage} className="h-2" />
                 <span className="text-xs text-gray-500 mt-1">{Math.floor(watchedHours)}/{targetHours} hours (Target: 8h daily)</span>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Next Payout Date</p>
-                  <p className="text-lg font-bold text-blue-900">{nextPayoutDate}</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Next Payout Date</p>
+                  <p className="text-base sm:text-lg font-bold text-blue-900">{nextPayoutDate}</p>
                   <p className="text-xs text-blue-600 mt-1 flex items-center">
                     <Info className="w-3 h-3 mr-1" />
                     Payouts processed every Tuesday

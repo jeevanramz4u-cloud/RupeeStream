@@ -25,7 +25,8 @@ import {
   Play,
   Users,
   CheckCircle,
-  XCircle
+  XCircle,
+  Wallet
 } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -88,6 +89,26 @@ export default function Dashboard() {
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Welcome back, {(user as any)?.firstName}!</h1>
           <p className="text-sm sm:text-base text-gray-600">Here's your profile dashboard</p>
+        </div>
+
+        {/* Mobile Balance Banner */}
+        <div className="md:hidden mb-6">
+          <Link href="/earnings">
+            <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white cursor-pointer hover:from-green-600 hover:to-green-700 transition-all touch-manipulation">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-green-100 text-sm font-medium">Your Balance</p>
+                    <p className="text-3xl font-bold">₹{(user as any)?.balance || '0.00'}</p>
+                    <p className="text-green-100 text-xs mt-1">Tap to view earnings history</p>
+                  </div>
+                  <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
+                    <Wallet className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         {/* Earnings Quick Stats */}

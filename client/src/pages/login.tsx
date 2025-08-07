@@ -63,7 +63,7 @@ export default function Login() {
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-3 sm:mb-4">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-xl flex items-center justify-center touch-manipulation">
               <span className="text-xl sm:text-2xl font-bold text-white">E</span>
             </div>
           </div>
@@ -120,6 +120,7 @@ export default function Login() {
                   onChange={handleChange}
                   required
                   disabled={isLoading}
+                  className="h-12 text-base touch-manipulation"
                 />
               </div>
 
@@ -135,19 +136,20 @@ export default function Login() {
                     onChange={handleChange}
                     required
                     disabled={isLoading}
+                    className="h-12 text-base pr-12 touch-manipulation"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent touch-manipulation mobile-tap-target"
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isLoading}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
+                      <EyeOff className="h-5 w-5 text-gray-400" />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
+                      <Eye className="h-5 w-5 text-gray-400" />
                     )}
                   </Button>
                 </div>
@@ -155,7 +157,7 @@ export default function Login() {
 
               <Button 
                 type="submit" 
-                className="w-full touch-manipulation h-11 sm:h-10 text-sm sm:text-base" 
+                className="w-full h-12 text-base touch-manipulation mobile-tap-target" 
                 disabled={isLoading}
               >
                 {isLoading ? "Signing in..." : "Sign In"}
