@@ -1461,7 +1461,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Account reactivation payment endpoint
-  app.post("/api/account/reactivate-payment", isAuthenticated, async (req: any, res) => {
+  app.post("/api/account/reactivate-payment", isTraditionallyAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user!.id;
       const user = await storage.getUser(userId);
@@ -1504,7 +1504,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.warn('Cashfree reactivation payment failed, using development fallback:', cashfreeError);
       }
 
-      // Development fallback - automatically reactivate account
+      // Development fallback - automatically reactivate account and record payment
       await storage.updateUser(userId, { 
         status: 'active',
         reactivationFeePaid: true,
@@ -1512,6 +1512,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         suspensionReason: null,
         consecutiveFailedDays: 0
       });
+
+      // Try to record payment history
+      try {
+        await storage.addPaymentHistory(userId, {
+          type: 'reactivation',
+          amount: reactivationFee,
+          orderId: `reactivation_${userId}_${Date.now()}`,
+          paymentMethod: 'development_fallback',
+          status: 'completed'
+        });
+      } catch (historyError) {
+        console.warn('Failed to record payment history:', historyError);
+      }
 
       console.log(`Development reactivation completed for user ${userId}, fee: ₹${reactivationFee}`);
       

@@ -6,6 +6,7 @@ import {
   referrals,
   payoutRequests,
   chatMessages,
+  paymentHistory,
   type User,
   type UpsertUser,
   type Video,
@@ -20,6 +21,8 @@ import {
   type InsertPayoutRequest,
   type ChatMessage,
   type InsertChatMessage,
+  type PaymentHistory,
+  type InsertPaymentHistory,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, gte } from "drizzle-orm";
@@ -73,6 +76,13 @@ export interface IStorage {
   
   // Chat operations
   getChatMessages(limit?: number): Promise<ChatMessage[]>;
+  createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
+  
+  // Payment history operations
+  addPaymentHistory(userId: string, payment: Omit<InsertPaymentHistory, 'userId'>): Promise<PaymentHistory>;
+  getPaymentHistory(userId: string): Promise<PaymentHistory[]>;
+  getUserPaymentStats(userId: string): Promise<{ kycPaid: boolean; reactivationCount: number; totalPaid: number }>;
+  getAllPaymentHistory(): Promise<PaymentHistory[]>;
   
   // KYC operations
   updateUserKycDocuments(userId: string, kycData: any): Promise<void>;
@@ -819,6 +829,49 @@ export class DatabaseStorage implements IStorage {
     }
 
     return user;
+  }
+  // Payment history operations
+  async addPaymentHistory(userId: string, payment: Omit<InsertPaymentHistory, 'userId'>): Promise<PaymentHistory> {
+    const [newPayment] = await db
+      .insert(paymentHistory)
+      .values({
+        ...payment,
+        userId,
+        completedAt: payment.status === 'completed' ? new Date() : null,
+      })
+      .returning();
+    return newPayment;
+  }
+
+  async getPaymentHistory(userId: string): Promise<PaymentHistory[]> {
+    return await db
+      .select()
+      .from(paymentHistory)
+      .where(eq(paymentHistory.userId, userId))
+      .orderBy(desc(paymentHistory.createdAt));
+  }
+
+  async getUserPaymentStats(userId: string): Promise<{ kycPaid: boolean; reactivationCount: number; totalPaid: number }> {
+    const payments = await this.getPaymentHistory(userId);
+    
+    const kycPaid = payments.some(p => p.type === 'kyc' && p.status === 'completed');
+    const reactivationCount = payments.filter(p => p.type === 'reactivation' && p.status === 'completed').length;
+    const totalPaid = payments
+      .filter(p => p.status === 'completed')
+      .reduce((sum, p) => sum + Number(p.amount), 0);
+
+    return {
+      kycPaid,
+      reactivationCount,
+      totalPaid
+    };
+  }
+
+  async getAllPaymentHistory(): Promise<PaymentHistory[]> {
+    return await db
+      .select()
+      .from(paymentHistory)
+      .orderBy(desc(paymentHistory.createdAt));
   }
 }
 

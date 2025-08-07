@@ -213,6 +213,26 @@ export const chatMessages = pgTable("chat_messages", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Payment history table for tracking KYC and reactivation payments
+export const paymentHistory = pgTable("payment_history", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  type: varchar("type").notNull(), // "kyc", "reactivation"
+  amount: decimal("amount", { precision: 8, scale: 2 }).notNull(),
+  orderId: varchar("order_id"),
+  paymentMethod: varchar("payment_method"), // "cashfree", "development_fallback", etc.
+  status: varchar("status").notNull(), // "pending", "completed", "failed"
+  paymentGatewayData: jsonb("payment_gateway_data"), // Store Cashfree response data
+  createdAt: timestamp("created_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+}, (table) => [
+  index("idx_payment_history_user_id").on(table.userId),
+  index("idx_payment_history_type").on(table.type),
+  index("idx_payment_history_status").on(table.status),
+  index("idx_payment_history_created_at").on(table.createdAt),
+  index("idx_payment_history_user_type").on(table.userId, table.type),
+]);
+
 // Relations
 export const usersRelations = relations(users, ({ many, one }) => ({
   earnings: many(earnings),
@@ -221,6 +241,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   referralsReceived: many(referrals, { relationName: "referred" }),
   payoutRequests: many(payoutRequests),
   chatMessages: many(chatMessages),
+  paymentHistory: many(paymentHistory),
   referredByUser: one(users, {
     fields: [users.referredBy],
     references: [users.id],
@@ -281,6 +302,13 @@ export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
   }),
 }));
 
+export const paymentHistoryRelations = relations(paymentHistory, ({ one }) => ({
+  user: one(users, {
+    fields: [paymentHistory.userId],
+    references: [users.id],
+  }),
+}));
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -327,6 +355,12 @@ export const insertChatMessageSchema = createInsertSchema(chatMessages).omit({
   createdAt: true,
 });
 
+export const insertPaymentHistorySchema = createInsertSchema(paymentHistory).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
 export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
   id: true,
   createdAt: true,
@@ -368,3 +402,5 @@ export type PayoutRequest = typeof payoutRequests.$inferSelect;
 export type InsertPayoutRequest = z.infer<typeof insertPayoutRequestSchema>;
 export type ChatMessage = typeof chatMessages.$inferSelect;
 export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
+export type PaymentHistory = typeof paymentHistory.$inferSelect;
+export type InsertPaymentHistory = z.infer<typeof insertPaymentHistorySchema>;
