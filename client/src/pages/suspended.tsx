@@ -5,7 +5,8 @@ import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle, CreditCard, Clock, Shield, LogOut, Home } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertTriangle, CreditCard, Clock, Shield, LogOut, Home, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -17,6 +18,7 @@ export default function SuspendedPage() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Redirect non-suspended users away from this page
   useEffect(() => {
@@ -43,12 +45,20 @@ export default function SuspendedPage() {
         window.location.href = data.paymentUrl;
       } else {
         // Development payment completed
+        // Show professional success modal
+        setShowSuccessModal(true);
+        
         toast({
-          title: "Account Reactivated!",
-          description: "Your account has been successfully reactivated. You can now access the dashboard.",
+          title: "Account Successfully Reactivated!",
+          description: data.message || "Your account is now active. Payment recorded successfully. You can start earning again!",
+          duration: 5000,
         });
-        queryClient.invalidateQueries({ queryKey: ["/api/auth/check"] });
-        setLocation("/dashboard");
+        
+        // Auto-redirect after showing success message
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ["/api/auth/check"] });
+          setLocation("/dashboard");
+        }, 4000);
       }
     },
     onError: (error: any) => {
@@ -219,6 +229,51 @@ export default function SuspendedPage() {
           </p>
         </div>
       </footer>
+
+      {/* Success Modal */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader className="text-center">
+            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+            <DialogTitle className="text-xl text-green-700">Account Reactivated!</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 text-center">
+            <div className="space-y-2">
+              <p className="text-gray-700 font-medium">
+                Your account has been successfully reactivated!
+              </p>
+              <p className="text-sm text-gray-600">
+                Payment of ₹{reactivationFee} has been processed and recorded.
+              </p>
+            </div>
+            
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <h4 className="font-medium text-green-800 mb-2">You can now:</h4>
+              <div className="space-y-1 text-sm text-green-700">
+                <div className="flex items-center justify-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  <span>Access your dashboard</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  <span>Watch videos and earn money</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  <span>Track your earnings history</span>
+                </div>
+              </div>
+            </div>
+            
+            <p className="text-xs text-gray-500">
+              Redirecting to dashboard in a few seconds...
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

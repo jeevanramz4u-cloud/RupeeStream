@@ -1697,9 +1697,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({
         success: true,
-        message: "Account reactivated successfully",
+        message: "🎉 Your account has been successfully reactivated! You can now start earning again.",
         amount: reactivationFee,
-        newStatus: 'active'
+        newStatus: 'active',
+        paymentRecorded: true,
+        nextSteps: "Visit your dashboard to continue watching videos and earning rewards."
       });
 
     } catch (error) {
