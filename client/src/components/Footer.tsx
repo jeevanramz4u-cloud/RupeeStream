@@ -14,11 +14,7 @@ export default function Footer() {
     { href: "/payout-schedule", label: "Payout Schedule" },
   ];
 
-  const supportLinks = [
-    { href: "/support", label: "Help Center" },
-    { href: "/support", label: "Live Chat" },
-    { href: "/support", label: "FAQ" },
-  ];
+
 
   const legalLinks = [
     { href: "/privacy-policy", label: "Privacy Policy" },
@@ -28,7 +24,7 @@ export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-12 sm:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Company Info */}
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-6">
@@ -84,23 +80,10 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Support & Legal */}
+          {/* Legal */}
           <div>
-            <h3 className="text-gray-900 font-bold text-lg mb-6">Support</h3>
+            <h3 className="text-gray-900 font-bold text-lg mb-6">Legal</h3>
             <ul className="space-y-3">
-              {supportLinks.map((link, index) => (
-                <li key={`${link.href}-${index}`}>
-                  <Link 
-                    href={link.href} 
-                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-              <li className="pt-4 border-t border-gray-100">
-                <span className="text-gray-900 font-semibold text-sm block mb-3">Legal</span>
-              </li>
               {legalLinks.map((link) => (
                 <li key={link.href}>
                   <Link 
