@@ -30,6 +30,7 @@ import {
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import React from "react";
 import { useLocation } from "wouter";
 import SuspensionAlert from "@/components/SuspensionAlert";
 
@@ -41,10 +42,11 @@ export default function Dashboard() {
   const [editingUser, setEditingUser] = useState<any>(null);
 
   // Check if user is suspended and redirect
-  if ((user as any)?.status === 'suspended') {
-    setLocation('/suspended');
-    return null;
-  }
+  React.useEffect(() => {
+    if ((user as any)?.status === 'suspended') {
+      setLocation('/suspended');
+    }
+  }, [user, setLocation]);
 
   const { data: stats } = useQuery({
     queryKey: ["/api/earnings/stats"],
