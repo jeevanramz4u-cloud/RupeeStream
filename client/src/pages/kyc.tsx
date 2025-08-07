@@ -51,7 +51,16 @@ export default function KYC() {
     typeof window !== 'undefined' ? localStorage.getItem('kyc_selfieWithIdUrl') || "" : ""
   );
 
-  // Check authentication
+  // Fetch user KYC status
+  const { data: kycData, isLoading: isKycLoading, refetch: refetchKycData } = useQuery({
+    queryKey: ["/api/kyc/status"],
+    retry: false,
+    enabled: !!user,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to prevent constant refetching
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+  });
+
+  // Check authentication and handle payment success
   useEffect(() => {
     if (!isAuthLoading && !isAuthenticated) {
       toast({
@@ -63,16 +72,29 @@ export default function KYC() {
         setLocation("/login");
       }, 1000);
     }
-  }, [isAuthenticated, isAuthLoading, toast, setLocation]);
-
-  // Fetch user KYC status
-  const { data: kycData, isLoading: isKycLoading, refetch: refetchKycData } = useQuery({
-    queryKey: ["/api/kyc/status"],
-    retry: false,
-    enabled: !!user,
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to prevent constant refetching
-    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
-  });
+    
+    // Handle payment success from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    if (paymentStatus === 'success') {
+      toast({
+        title: "Payment Successful!",
+        description: "Your KYC verification has been completed successfully.",
+      });
+      // Clear the URL parameter
+      window.history.replaceState({}, '', '/kyc');
+      // Refresh KYC data
+      refetchKycData();
+    } else if (paymentStatus === 'failed') {
+      toast({
+        title: "Payment Failed",
+        description: "Your payment could not be processed. Please try again.",
+        variant: "destructive",
+      });
+      // Clear the URL parameter
+      window.history.replaceState({}, '', '/kyc');
+    }
+  }, [isAuthenticated, isAuthLoading, toast, setLocation, refetchKycData]);
 
   // Handle localStorage cleanup only when KYC is fully complete  
   useEffect(() => {
@@ -379,12 +401,12 @@ export default function KYC() {
     <div className="min-h-screen bg-neutral-50 safe-area-padding">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">KYC Verification</h1>
+      <main className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-4 lg:py-6">
+        <div className="mb-4 sm:mb-6 lg:mb-8">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4">KYC Verification</h1>
           {/* Only show description if KYC not completed */}
           {!(kycData as any)?.kycStatus || (kycData as any)?.kycStatus !== 'approved' || (kycData as any)?.verificationStatus !== 'verified' ? (
-            <p className="text-sm sm:text-base text-gray-600">Complete your identity verification to start earning. One-time ₹99 processing fee required.</p>
+            <p className="text-xs sm:text-sm lg:text-base text-gray-600 leading-relaxed">Complete your identity verification to start earning. One-time ₹99 processing fee required.</p>
           ) : null}
         </div>
 
@@ -541,7 +563,7 @@ export default function KYC() {
                   <h3 className="text-lg font-semibold text-gray-800">Personal Information</h3>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="govIdType" className="text-sm font-semibold text-gray-700">Government ID Type *</Label>
                     <Select value={govIdType} onValueChange={(value) => {
@@ -619,10 +641,10 @@ export default function KYC() {
                         maxFileSize={5 * 1024 * 1024}
                         buttonClassName="w-full h-auto p-0 border-2 border-dashed border-gray-300 hover:border-gray-400 bg-transparent hover:bg-gray-50"
                       >
-                        <div className="flex items-center justify-center py-6 px-4">
+                        <div className="flex items-center justify-center py-4 sm:py-6 px-3 sm:px-4">
                           <div className="text-center">
-                            <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                            <div className="text-sm text-gray-600 font-medium">Upload front side of ID</div>
+                            <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 mx-auto mb-2" />
+                            <div className="text-xs sm:text-sm text-gray-600 font-medium">Upload front side of ID</div>
                             <div className="text-xs text-gray-400 mt-1">JPG, PNG, PDF up to 5MB</div>
                           </div>
                         </div>

@@ -1,11 +1,9 @@
-// Simplified Cashfree integration for demo purposes
-// In production, you would use the full Cashfree SDK
-
-// For now, we'll simulate the Cashfree API responses
+// Real Cashfree integration with HTTP API calls
 const cashfreeConfig = {
   appId: process.env.CASHFREE_APP_ID!,
   secretKey: process.env.CASHFREE_SECRET_KEY!,
-  environment: process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'SANDBOX'
+  environment: process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'SANDBOX',
+  baseUrl: process.env.NODE_ENV === 'production' ? 'https://api.cashfree.com' : 'https://sandbox.cashfree.com'
 };
 
 export interface PaymentSession {
@@ -35,18 +33,51 @@ export async function createPaymentSession(
   try {
     console.log(`Creating Cashfree payment session for ${purpose}: ₹${amount}`);
     
-    // For demo purposes, simulate successful payment session creation
-    // In production, this would make actual API calls to Cashfree
-    const paymentSession: PaymentSession = {
-      order_id: orderId,
-      payment_session_id: `ps_${Date.now()}_${orderId}`,
+    const orderRequest = {
       order_amount: amount,
       order_currency: 'INR',
-      order_status: 'ACTIVE'
+      order_id: orderId,
+      customer_details: {
+        customer_id: customerEmail.replace('@', '_').replace('.', '_'),
+        customer_email: customerEmail,
+        customer_phone: customerPhone,
+        customer_name: customerName
+      },
+      order_meta: {
+        return_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/api/kyc/payment-success`,
+        notify_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/api/kyc/payment-webhook`,
+        payment_methods: ""
+      }
     };
 
-    console.log('Cashfree payment session created:', paymentSession);
-    return paymentSession;
+    const response = await fetch(`${cashfreeConfig.baseUrl}/pg/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-client-id': cashfreeConfig.appId,
+        'x-client-secret': cashfreeConfig.secretKey,
+        'x-api-version': '2023-08-01'
+      },
+      body: JSON.stringify(orderRequest)
+    });
+    
+    const responseData = await response.json();
+    
+    if (response.ok && responseData.payment_session_id) {
+      const paymentSession: PaymentSession = {
+        order_id: responseData.order_id,
+        payment_session_id: responseData.payment_session_id,
+        order_amount: responseData.order_amount,
+        order_currency: responseData.order_currency,
+        order_status: responseData.order_status
+      };
+
+      console.log('Cashfree payment session created:', paymentSession);
+      return paymentSession;
+    } else {
+      console.error('Cashfree API error:', responseData);
+      throw new Error('Payment session creation failed');
+    }
   } catch (error) {
     console.error('Cashfree payment session creation error:', error);
     throw new Error('Payment session creation failed');
@@ -58,14 +89,30 @@ export async function verifyPayment(orderId: string): Promise<any> {
   try {
     console.log(`Verifying Cashfree payment for order: ${orderId}`);
     
-    // For demo purposes, simulate successful payment verification
-    // In production, this would make actual API calls to Cashfree
-    return {
-      payment_status: 'SUCCESS',
-      order_id: orderId,
-      payment_amount: 99,
-      payment_currency: 'INR'
-    };
+    const response = await fetch(`${cashfreeConfig.baseUrl}/pg/orders/${orderId}/payments`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-client-id': cashfreeConfig.appId,
+        'x-client-secret': cashfreeConfig.secretKey,
+        'x-api-version': '2023-08-01'
+      }
+    });
+    
+    const responseData = await response.json();
+    
+    if (response.ok && responseData.length > 0) {
+      const payment = responseData[0];
+      return {
+        payment_status: payment.payment_status,
+        order_id: orderId,
+        payment_amount: payment.payment_amount,
+        payment_currency: payment.payment_currency,
+        cf_payment_id: payment.cf_payment_id
+      };
+    } else {
+      throw new Error('No payment found for this order');
+    }
   } catch (error) {
     console.error('Payment verification error:', error);
     throw new Error('Payment verification failed');

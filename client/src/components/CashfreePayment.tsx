@@ -42,37 +42,39 @@ export default function CashfreePayment({
       
       const { orderId, paymentSessionId } = await response.json();
       
-      // For demo purposes, simulate successful payment
-      // In production, this would redirect to Cashfree payment page
-      setTimeout(async () => {
-        try {
-          // Verify payment
-          const verifyResponse = await fetch('/api/kyc/verify-payment', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderId })
-          });
-          
-          if (verifyResponse.ok) {
-            setPaymentStep('success');
-            onSuccess(orderId);
-            toast({
-              title: "Payment Successful!",
-              description: purpose === 'kyc_fee' ? 
-                "KYC verification completed successfully" : 
-                "Account reactivated successfully"
-            });
-          } else {
-            throw new Error('Payment verification failed');
-          }
-        } catch (error) {
-          setPaymentStep('error');
-          onError(error instanceof Error ? error.message : 'Payment failed');
-        } finally {
+      // Redirect to Cashfree payment page
+      const checkoutOptions = {
+        paymentSessionId: paymentSessionId,
+        redirectTarget: "_self"
+      };
+      
+      // Load Cashfree checkout
+      const script = document.createElement('script');
+      script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
+      script.onload = () => {
+        // @ts-ignore
+        const cashfree = Cashfree({
+          mode: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox'
+        });
+        
+        cashfree.checkout(checkoutOptions).then(() => {
+          // Payment completed, verify on return
           setIsProcessing(false);
-        }
-      }, 2000);
+        }).catch((error: any) => {
+          console.error('Cashfree checkout error:', error);
+          setPaymentStep('error');
+          onError('Payment process was cancelled or failed');
+          setIsProcessing(false);
+        });
+      };
+      
+      script.onerror = () => {
+        setPaymentStep('error');
+        onError('Failed to load payment system');
+        setIsProcessing(false);
+      };
+      
+      document.head.appendChild(script);
       
     } catch (error) {
       console.error('Payment error:', error);
