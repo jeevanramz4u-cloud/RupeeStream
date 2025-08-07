@@ -303,19 +303,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         resetTokenExpiry
       });
 
-      // In development, return the reset link directly for testing
-      // In production, this would send an email instead
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`Password reset link for ${email}: /reset-password?token=${resetToken}`);
-        res.json({ 
-          message: "Password reset link generated (development mode)", 
-          resetLink: `/reset-password?token=${resetToken}`,
-          token: resetToken
-        });
-      } else {
-        // In production, send email and don't reveal the token
-        res.json({ message: "If an account with that email exists, a reset link has been sent." });
-      }
+      // In development, log the reset link but don't auto-redirect
+      // This simulates email being sent - user must manually click the logged link
+      console.log(`Password reset link for ${email}: /reset-password?token=${resetToken}`);
+      
+      // Always respond the same way for security (don't reveal if user exists)
+      res.json({ 
+        message: "If an account with that email exists, a reset link has been sent.",
+        devNote: process.env.NODE_ENV === 'development' ? "Check console for reset link (simulates email)" : undefined
+      });
     } catch (error) {
       console.error("Forgot password error:", error);
       res.status(500).json({ message: "Failed to process forgot password request" });
