@@ -337,21 +337,63 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-primary">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Start Earning?
-          </h2>
-          <p className="text-blue-100 mb-8 text-lg">
-            Join our community and turn your free time into real income.
-          </p>
-          <Button 
-            size="lg" 
-            variant="secondary"
-            onClick={() => window.location.href = '/api/login'}
-          >
-            Sign Up Now
-          </Button>
+      <section className="py-20 px-4 bg-gradient-to-r from-primary via-primary/90 to-secondary relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-20 h-20 bg-white rounded-full"></div>
+          <div className="absolute top-32 right-20 w-16 h-16 bg-white rounded-full"></div>
+          <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-white rounded-full"></div>
+          <div className="absolute bottom-32 right-10 w-14 h-14 bg-white rounded-full"></div>
+        </div>
+        
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          <div className="mb-8">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-white leading-tight">
+              Ready to Start Earning?
+            </h2>
+            <p className="text-xl lg:text-2xl mb-4 text-white/90 max-w-3xl mx-auto leading-relaxed">
+              Join our community and turn your free time into real income.
+            </p>
+            <p className="text-lg text-white/80 max-w-2xl mx-auto">
+              Watch videos, earn money, and get paid weekly. It's that simple.
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
+            <Link href="/signup" className="w-full sm:w-auto">
+              <Button 
+                size="lg" 
+                variant="secondary"
+                className="w-full sm:w-auto bg-white text-primary hover:bg-gray-100 font-semibold text-lg px-8 py-4 h-auto shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              >
+                Sign Up Now
+              </Button>
+            </Link>
+            <Link href="/how-to-earn" className="w-full sm:w-auto">
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-primary font-semibold text-lg px-8 py-4 h-auto bg-transparent transition-all duration-300"
+              >
+                Learn More
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-white/80">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-white" />
+              <span className="text-sm">No hidden fees</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-white" />
+              <span className="text-sm">Weekly payouts</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-white" />
+              <span className="text-sm">24/7 support</span>
+            </div>
+          </div>
         </div>
       </section>
 
