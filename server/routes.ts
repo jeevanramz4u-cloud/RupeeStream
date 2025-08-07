@@ -437,7 +437,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
         
         // Simulate successful payment immediately for development
-        await storage.updateKycPaymentStatus(userId, true);
+        await storage.updateUserKycPayment(userId, { kycFeePaid: true });
         
         console.log(`Development payment completed for user ${userId}, amount: ₹99`);
         
