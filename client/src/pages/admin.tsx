@@ -1308,37 +1308,8 @@ export default function Admin() {
 
                         {/* Action Buttons - Show ALL buttons for EVERY user */}
                         <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t">
-                          {/* Row 1: Verification Actions - Always show all verification buttons */}
+                          {/* Row 1: Verification Actions - API handles approval */}
                           <div className="w-full flex flex-wrap gap-1.5 sm:gap-2 mb-2">
-                            {/* Approve Button - Always Available */}
-                            <Button 
-                              size="sm"
-                              className="bg-secondary hover:bg-secondary/90 text-white text-xs"
-                              onClick={() => verifyUserMutation.mutate({
-                                userId: user.id,
-                                status: 'verified'
-                              })}
-                              disabled={verifyUserMutation.isPending}
-                            >
-                              <CheckCircle className="w-3 h-3 sm:mr-1" />
-                              <span className="hidden sm:inline">Approve</span>
-                            </Button>
-
-                            {/* Reject Button - Always Available */}
-                            <Button 
-                              size="sm"
-                              variant="destructive"
-                              className="text-xs"
-                              onClick={() => verifyUserMutation.mutate({
-                                userId: user.id,
-                                status: 'rejected'
-                              })}
-                              disabled={verifyUserMutation.isPending}
-                            >
-                              <XCircle className="w-3 h-3 sm:mr-1" />
-                              <span className="hidden sm:inline">Reject</span>
-                            </Button>
-
                             {/* Reset Verification Button - Always Available */}
                             <Button 
                               size="sm"
