@@ -754,6 +754,54 @@ export default function Admin() {
                         </div>
                       </div>
 
+                      {/* Payment History */}
+                      <div>
+                        <h3 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                          <CreditCard className="w-4 h-4" />
+                          Payment History
+                        </h3>
+                        <div className="space-y-2">
+                          {paymentHistoryData
+                            .filter((payment: any) => payment.userId === selectedUser.id)
+                            .map((payment: any) => (
+                              <div 
+                                key={payment.id} 
+                                className="flex items-center justify-between p-3 border rounded-lg bg-gray-50"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-2 h-2 rounded-full ${
+                                    payment.status === 'completed' ? 'bg-green-500' : 
+                                    payment.status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
+                                  }`}></div>
+                                  <div>
+                                    <p className="text-sm font-medium text-gray-900">
+                                      {payment.type === 'kyc' ? 'KYC Processing Fee' : 'Account Reactivation Fee'}
+                                    </p>
+                                    <p className="text-xs text-gray-600">
+                                      Order: {payment.orderId || 'N/A'}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                      {payment.createdAt ? new Date(payment.createdAt).toLocaleString('en-IN') : 'N/A'}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-sm font-semibold text-green-600">₹{payment.amount}</p>
+                                  <Badge variant={payment.status === 'completed' ? 'default' : 'secondary'} className="text-xs">
+                                    {payment.status}
+                                  </Badge>
+                                </div>
+                              </div>
+                            ))}
+                          {paymentHistoryData.filter((payment: any) => payment.userId === selectedUser.id).length === 0 && (
+                            <div className="text-center py-4 text-gray-500">
+                              <CreditCard className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                              <p className="text-sm">No payment history found</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
                       <div>
                         <h3 className="font-medium text-gray-900 mb-2">Bank Details</h3>
                         <div className="p-3 bg-gray-50 rounded-lg text-sm">
