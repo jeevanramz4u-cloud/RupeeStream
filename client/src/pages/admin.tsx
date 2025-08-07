@@ -1246,240 +1246,45 @@ export default function Admin() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        {/* Personal Details Section */}
-                        <div className="mb-4">
-                          <h4 className="font-medium text-gray-900 mb-3 text-sm">Personal Information</h4>
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Full Name</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.firstName} {user.lastName}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Date of Birth</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.dateOfBirth || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Phone Number</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.phoneNumber || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Gender</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.gender || 'Not specified'}</p>
-                            </div>
+                        {/* Simplified Overview - Only Basic Status */}
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                          <div>
+                            <Label className="text-xs font-medium text-gray-500">Account Status</Label>
+                            <p className="text-xs sm:text-sm font-medium">
+                              {user.status === 'suspended' ? 'Suspended' : 'Active'}
+                            </p>
                           </div>
-                        </div>
-
-                        {/* Address Details Section */}
-                        <div className="mb-4">
-                          <h4 className="font-medium text-gray-900 mb-3 text-sm">Address Information</h4>
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Address</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.address || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">City</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.city || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">State</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.state || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Pincode</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.pincode || 'Not provided'}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Account Status Section */}
-                        <div className="mb-4">
-                          <h4 className="font-medium text-gray-900 mb-3 text-sm">Account Status</h4>
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Account Status</Label>
-                              <p className="text-xs sm:text-sm font-medium">
-                                {user.status === 'suspended' ? 'Suspended' : 'Active'}
-                              </p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">KYC Fee Status</Label>
-                              <div className="flex items-center gap-1 mt-1">
-                                {user.kycFeePaid ? (
-                                  <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
-                                    <CheckCircle className="w-3 h-3 mr-1" />
-                                    Paid
-                                  </Badge>
-                                ) : (
-                                  <Badge variant="outline" className="text-gray-600 text-xs">
-                                    Unpaid
-                                  </Badge>
-                                )}
-                              </div>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Verification</Label>
-                              <p className="text-xs sm:text-sm font-medium capitalize">{user.verificationStatus}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Balance</Label>
-                              <p className="text-xs sm:text-sm font-medium">₹{user.balance || 0}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Joined Date</Label>
-                              <p className="text-xs sm:text-sm font-medium">{formatDate(user.createdAt)}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Bank Details Section */}
-                        <div className="mb-4">
-                          <h4 className="font-medium text-gray-900 mb-3 text-sm">Banking Information</h4>
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Account Holder</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.accountHolderName || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Account Number</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.accountNumber || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">IFSC Code</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.ifscCode || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs font-medium text-gray-500">Bank Name</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.bankName || 'Not provided'}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* KYC Documents Section */}
-                        <div className="mb-4">
-                          <h4 className="font-medium text-gray-900 mb-2 text-sm">KYC Documents</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            {/* Government ID Front */}
-                            <div className="p-2 border rounded-lg">
-                              <h5 className="font-medium text-xs text-gray-600 mb-2">ID Front</h5>
-                              {user.governmentIdFrontUrl ? (
-                                <div className="space-y-2">
-                                  <img 
-                                    src={user.governmentIdFrontUrl} 
-                                    alt="Government ID Front"
-                                    className="w-full h-20 object-cover rounded border cursor-pointer"
-                                    onClick={() => window.open(user.governmentIdFrontUrl, '_blank')}
-                                    onError={(e) => {
-                                      e.currentTarget.style.display = 'none';
-                                      const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
-                                      if (nextSibling) {
-                                        nextSibling.style.display = 'flex';
-                                      }
-                                    }}
-                                  />
-                                  <div style={{ display: 'none' }} className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
-                                    <span className="text-gray-500 text-xs">Image unavailable</span>
-                                  </div>
-                                  <a 
-                                    href={user.governmentIdFrontUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-primary hover:underline text-xs block"
-                                  >
-                                    View Full Size
-                                  </a>
-                                </div>
+                          <div>
+                            <Label className="text-xs font-medium text-gray-500">KYC Status</Label>
+                            <div className="flex items-center gap-1 mt-1">
+                              {user.kycFeePaid ? (
+                                <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                                  <CheckCircle className="w-3 h-3 mr-1" />
+                                  Fee Paid
+                                </Badge>
                               ) : (
-                                <div className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
-                                  <span className="text-gray-500 text-xs">Not uploaded</span>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Government ID Back */}
-                            <div className="p-2 border rounded-lg">
-                              <h5 className="font-medium text-xs text-gray-600 mb-2">ID Back</h5>
-                              {user.governmentIdBackUrl ? (
-                                <div className="space-y-2">
-                                  <img 
-                                    src={user.governmentIdBackUrl} 
-                                    alt="Government ID Back"
-                                    className="w-full h-20 object-cover rounded border cursor-pointer"
-                                    onClick={() => window.open(user.governmentIdBackUrl, '_blank')}
-                                    onError={(e) => {
-                                      e.currentTarget.style.display = 'none';
-                                      const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
-                                      if (nextSibling) {
-                                        nextSibling.style.display = 'flex';
-                                      }
-                                    }}
-                                  />
-                                  <div style={{ display: 'none' }} className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
-                                    <span className="text-gray-500 text-xs">Image unavailable</span>
-                                  </div>
-                                  <a 
-                                    href={user.governmentIdBackUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-primary hover:underline text-xs block"
-                                  >
-                                    View Full Size
-                                  </a>
-                                </div>
-                              ) : (
-                                <div className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
-                                  <span className="text-gray-500 text-xs">Not uploaded</span>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Selfie with ID */}
-                            <div className="p-2 border rounded-lg">
-                              <h5 className="font-medium text-xs text-gray-600 mb-2">Selfie with ID</h5>
-                              {user.selfieWithIdUrl ? (
-                                <div className="space-y-2">
-                                  <img 
-                                    src={user.selfieWithIdUrl} 
-                                    alt="Selfie with ID"
-                                    className="w-full h-20 object-cover rounded border cursor-pointer"
-                                    onClick={() => window.open(user.selfieWithIdUrl, '_blank')}
-                                    onError={(e) => {
-                                      e.currentTarget.style.display = 'none';
-                                      const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
-                                      if (nextSibling) {
-                                        nextSibling.style.display = 'flex';
-                                      }
-                                    }}
-                                  />
-                                  <div style={{ display: 'none' }} className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
-                                    <span className="text-gray-500 text-xs">Image unavailable</span>
-                                  </div>
-                                  <a 
-                                    href={user.selfieWithIdUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-primary hover:underline text-xs block"
-                                  >
-                                    View Full Size
-                                  </a>
-                                </div>
-                              ) : (
-                                <div className="w-full h-20 bg-gray-100 rounded border flex items-center justify-center">
-                                  <span className="text-gray-500 text-xs">Not uploaded</span>
-                                </div>
+                                <Badge variant="outline" className="text-gray-600 text-xs">
+                                  Unpaid
+                                </Badge>
                               )}
                             </div>
                           </div>
-                          
-                          {/* KYC Status Information - Always visible for admins */}
-                          {(user.governmentIdType || user.governmentIdNumber) && (
-                            <div className="mt-3 p-2 bg-blue-50 rounded-lg">
-                              <p className="text-xs text-blue-800">
-                                <strong>ID Type:</strong> {user.governmentIdType || 'Not specified'} | 
-                                <strong> ID Number:</strong> {user.governmentIdNumber || 'Not provided'}
-                              </p>
-                            </div>
-                          )}
+                          <div>
+                            <Label className="text-xs font-medium text-gray-500">Verification</Label>
+                            <p className="text-xs sm:text-sm font-medium capitalize">{user.verificationStatus}</p>
+                          </div>
+                          <div>
+                            <Label className="text-xs font-medium text-gray-500">Balance</Label>
+                            <p className="text-xs sm:text-sm font-medium">₹{user.balance || 0}</p>
+                          </div>
+                        </div>
+                        
+                        {/* Quick Action Note */}
+                        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                          <p className="text-xs text-blue-700">
+                            <Eye className="w-3 h-3 inline mr-1" />
+                            Click "View Profile" above to see complete user details, KYC documents, banking information, and address details.
+                          </p>
                         </div>
 
                         {/* Action Buttons - All buttons on single line */}
@@ -2525,6 +2330,242 @@ export default function Admin() {
                           <Badge className="bg-green-100 text-green-800">Fee Paid</Badge>
                         )}
                       </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Address Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Address Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Date of Birth</Label>
+                      <p className="text-sm font-medium">{userProfile.user.dateOfBirth || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Gender</Label>
+                      <p className="text-sm font-medium">{userProfile.user.gender || 'Not specified'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Address</Label>
+                      <p className="text-sm font-medium">{userProfile.user.address || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">City</Label>
+                      <p className="text-sm font-medium">{userProfile.user.city || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">State</Label>
+                      <p className="text-sm font-medium">{userProfile.user.state || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Pincode</Label>
+                      <p className="text-sm font-medium">{userProfile.user.pincode || 'Not provided'}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Banking Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Banking Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Account Holder Name</Label>
+                      <p className="text-sm font-medium">{userProfile.user.accountHolderName || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Account Number</Label>
+                      <p className="text-sm font-medium">{userProfile.user.accountNumber || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">IFSC Code</Label>
+                      <p className="text-sm font-medium">{userProfile.user.ifscCode || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Bank Name</Label>
+                      <p className="text-sm font-medium">{userProfile.user.bankName || 'Not provided'}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* KYC Documents */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">KYC Documents & Verification</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {/* Government ID Information */}
+                  <div className="mb-6">
+                    <h4 className="font-medium text-gray-900 mb-3">Government ID Details</h4>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <Label className="text-sm font-medium text-gray-500">ID Type</Label>
+                        <p className="text-sm font-medium">{userProfile.user.governmentIdType || 'Not specified'}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-500">ID Number</Label>
+                        <p className="text-sm font-medium">{userProfile.user.governmentIdNumber || 'Not provided'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Document Images */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-gray-900 mb-3">Uploaded Documents</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* Government ID Front */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-sm text-gray-700 mb-3">Government ID - Front</h5>
+                        {userProfile.user.govIdFrontUrl ? (
+                          <div className="space-y-3">
+                            <img 
+                              src={userProfile.user.govIdFrontUrl} 
+                              alt="Government ID Front"
+                              className="w-full h-32 object-cover rounded border cursor-pointer hover:shadow-lg transition-shadow"
+                              onClick={() => window.open(userProfile.user.govIdFrontUrl, '_blank')}
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                if (nextSibling) {
+                                  nextSibling.style.display = 'flex';
+                                }
+                              }}
+                            />
+                            <div style={{ display: 'none' }} className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                              <span className="text-gray-500 text-sm">Image unavailable</span>
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full text-xs"
+                              onClick={() => window.open(userProfile.user.govIdFrontUrl, '_blank')}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-1" />
+                              View Full Size
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                            <span className="text-gray-500 text-sm">Not uploaded</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Government ID Back */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-sm text-gray-700 mb-3">Government ID - Back</h5>
+                        {userProfile.user.govIdBackUrl ? (
+                          <div className="space-y-3">
+                            <img 
+                              src={userProfile.user.govIdBackUrl} 
+                              alt="Government ID Back"
+                              className="w-full h-32 object-cover rounded border cursor-pointer hover:shadow-lg transition-shadow"
+                              onClick={() => window.open(userProfile.user.govIdBackUrl, '_blank')}
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                if (nextSibling) {
+                                  nextSibling.style.display = 'flex';
+                                }
+                              }}
+                            />
+                            <div style={{ display: 'none' }} className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                              <span className="text-gray-500 text-sm">Image unavailable</span>
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full text-xs"
+                              onClick={() => window.open(userProfile.user.govIdBackUrl, '_blank')}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-1" />
+                              View Full Size
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                            <span className="text-gray-500 text-sm">Not uploaded</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Selfie with ID */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-sm text-gray-700 mb-3">Selfie with ID</h5>
+                        {userProfile.user.selfieWithIdUrl ? (
+                          <div className="space-y-3">
+                            <img 
+                              src={userProfile.user.selfieWithIdUrl} 
+                              alt="Selfie with ID"
+                              className="w-full h-32 object-cover rounded border cursor-pointer hover:shadow-lg transition-shadow"
+                              onClick={() => window.open(userProfile.user.selfieWithIdUrl, '_blank')}
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                if (nextSibling) {
+                                  nextSibling.style.display = 'flex';
+                                }
+                              }}
+                            />
+                            <div style={{ display: 'none' }} className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                              <span className="text-gray-500 text-sm">Image unavailable</span>
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full text-xs"
+                              onClick={() => window.open(userProfile.user.selfieWithIdUrl, '_blank')}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-1" />
+                              View Full Size
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="w-full h-32 bg-gray-100 rounded border flex items-center justify-center">
+                            <span className="text-gray-500 text-sm">Not uploaded</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* KYC Status Timeline */}
+                  <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                    <h4 className="font-medium text-gray-900 mb-3">KYC Timeline</h4>
+                    <div className="space-y-2 text-sm">
+                      {userProfile.user.kycSubmittedAt && (
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-gray-600">
+                            Submitted: {new Date(userProfile.user.kycSubmittedAt).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                      )}
+                      {userProfile.user.kycApprovedAt && (
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-gray-600">
+                            Approved: {new Date(userProfile.user.kycApprovedAt).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                      )}
+                      {userProfile.user.kycFeePaymentId && (
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-gray-600">
+                            Payment ID: {userProfile.user.kycFeePaymentId}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </CardContent>
