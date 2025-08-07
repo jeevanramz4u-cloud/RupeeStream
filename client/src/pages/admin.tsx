@@ -975,11 +975,17 @@ export default function Admin() {
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">User Profile Management</h2>
-                  {searchTerm.trim() && (
-                    <p className="text-sm text-gray-600 mt-1">
-                      {getSearchFilteredUsers().length} user{getSearchFilteredUsers().length !== 1 ? 's' : ''} found for "{searchTerm}"
-                    </p>
-                  )}
+                  <div className="mt-1">
+                    {searchTerm.trim() ? (
+                      <p className="text-sm text-gray-600">
+                        {getSearchFilteredUsers().length} user{getSearchFilteredUsers().length !== 1 ? 's' : ''} found for "{searchTerm}"
+                      </p>
+                    ) : (
+                      <p className="text-sm text-gray-600">
+                        Total Users: {users?.length || 0}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Input
@@ -1100,6 +1106,16 @@ export default function Admin() {
                           <div>
                             <CardTitle className="flex items-center space-x-2">
                               <span>{user.firstName} {user.lastName}</span>
+                              {(() => {
+                                const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
+                                const kycStatus = user.kycStatus || user.kyc_status;
+                                return kycFeePaid && kycStatus === 'approved';
+                              })() && (
+                                <Badge className="bg-green-600 text-white text-xs">
+                                  <CheckCircle className="w-3 h-3 mr-1" />
+                                  KYC Completed
+                                </Badge>
+                              )}
                             </CardTitle>
                             <p className="text-sm text-gray-600 mt-1">{user.email}</p>
                           </div>
@@ -1130,52 +1146,113 @@ export default function Admin() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
-                          <div>
-                            <Label className="text-xs font-medium text-gray-500">Account Status</Label>
-                            <p className="text-xs sm:text-sm font-medium">
-                              {user.status === 'suspended' ? 'Suspended' : 'Active'}
-                            </p>
-                          </div>
-                          <div>
-                            <Label className="text-xs font-medium text-gray-500">KYC Fee Status</Label>
-                            <div className="flex items-center gap-1 mt-1">
-                              {user.kycFeePaid ? (
-                                <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
-                                  <CheckCircle className="w-3 h-3 mr-1" />
-                                  Paid
-                                </Badge>
-                              ) : (
-                                <Badge variant="outline" className="text-gray-600 text-xs">
-                                  Unpaid
-                                </Badge>
-                              )}
+                        {/* Personal Details Section */}
+                        <div className="mb-4">
+                          <h4 className="font-medium text-gray-900 mb-3 text-sm">Personal Information</h4>
+                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Full Name</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.firstName} {user.lastName}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Date of Birth</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.dateOfBirth || 'Not provided'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Phone Number</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.phoneNumber || 'Not provided'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Gender</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.gender || 'Not specified'}</p>
                             </div>
                           </div>
-                          <div>
-                            <Label className="text-xs font-medium text-gray-500">Verification</Label>
-                            <p className="text-xs sm:text-sm font-medium capitalize">{user.verificationStatus}</p>
+                        </div>
+
+                        {/* Address Details Section */}
+                        <div className="mb-4">
+                          <h4 className="font-medium text-gray-900 mb-3 text-sm">Address Information</h4>
+                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Address</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.address || 'Not provided'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">City</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.city || 'Not provided'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">State</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.state || 'Not provided'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Pincode</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.pincode || 'Not provided'}</p>
+                            </div>
                           </div>
-                          <div>
-                            <Label className="text-xs font-medium text-gray-500">Balance</Label>
-                            <p className="text-xs sm:text-sm font-medium">₹{user.balance || 0}</p>
-                          </div>
-                          <div>
-                            <Label className="text-xs font-medium text-gray-500">Joined Date</Label>
-                            <p className="text-xs sm:text-sm font-medium">{formatDate(user.createdAt)}</p>
+                        </div>
+
+                        {/* Account Status Section */}
+                        <div className="mb-4">
+                          <h4 className="font-medium text-gray-900 mb-3 text-sm">Account Status</h4>
+                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Account Status</Label>
+                              <p className="text-xs sm:text-sm font-medium">
+                                {user.status === 'suspended' ? 'Suspended' : 'Active'}
+                              </p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">KYC Fee Status</Label>
+                              <div className="flex items-center gap-1 mt-1">
+                                {user.kycFeePaid ? (
+                                  <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                                    <CheckCircle className="w-3 h-3 mr-1" />
+                                    Paid
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="outline" className="text-gray-600 text-xs">
+                                    Unpaid
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Verification</Label>
+                              <p className="text-xs sm:text-sm font-medium capitalize">{user.verificationStatus}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Balance</Label>
+                              <p className="text-xs sm:text-sm font-medium">₹{user.balance || 0}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Joined Date</Label>
+                              <p className="text-xs sm:text-sm font-medium">{formatDate(user.createdAt)}</p>
+                            </div>
                           </div>
                         </div>
 
                         {/* Bank Details Section */}
                         <div className="mb-4">
-                          <h4 className="font-medium text-gray-900 mb-2 text-sm">Bank Details</h4>
-                          {user.bankDetails ? (
-                            <div className="p-3 bg-gray-50 rounded-lg">
-                              <pre className="text-xs text-gray-700 whitespace-pre-wrap">{user.bankDetails}</pre>
+                          <h4 className="font-medium text-gray-900 mb-3 text-sm">Banking Information</h4>
+                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Account Holder</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.accountHolderName || 'Not provided'}</p>
                             </div>
-                          ) : (
-                            <p className="text-xs text-gray-500 italic">No bank details provided</p>
-                          )}
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Account Number</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.accountNumber ? `****${user.accountNumber.slice(-4)}` : 'Not provided'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">IFSC Code</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.ifscCode || 'Not provided'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-gray-500">Bank Name</Label>
+                              <p className="text-xs sm:text-sm font-medium">{user.bankName || 'Not provided'}</p>
+                            </div>
+                          </div>
                         </div>
 
                         {/* KYC Documents Section */}
