@@ -31,6 +31,15 @@ export default function ForgotPassword() {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        
+        // Check if we're in development mode and got a direct reset link
+        if (data.resetLink) {
+          // In development, navigate directly to reset page
+          window.location.href = data.resetLink;
+          return;
+        }
+        
         setIsEmailSent(true);
         toast({
           title: "Reset Email Sent",
