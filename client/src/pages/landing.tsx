@@ -9,33 +9,7 @@ import { Link } from "wouter";
 export default function Landing() {
   return (
     <div className="min-h-screen bg-neutral-50 safe-area-padding">
-      {/* Public Header for Landing */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
-          <div className="flex justify-between items-center h-14 sm:h-16">
-            <Link href="/" className="flex items-center space-x-1.5 sm:space-x-2">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
-                <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
-              <span className="text-lg sm:text-xl font-bold text-gray-900">EarnPay</span>
-            </Link>
-            
-            <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
-              <a href="#features" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Features</a>
-              <a href="#how-it-works" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">How it Works</a>
-              <Link href="/how-to-earn" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">How to Earn</Link>
-              <Link href="/about" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">About</Link>
-              <Link href="/contact" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Contact</Link>
-            </nav>
-
-            <Link href="/login">
-              <Button className="bg-primary hover:bg-primary/90 h-8 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm touch-manipulation">
-                Sign In
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20 px-3 sm:px-4">

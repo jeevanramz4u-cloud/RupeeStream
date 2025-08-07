@@ -27,8 +27,45 @@ export default function Header() {
     { href: "/support", label: "Support", active: location === "/support" },
   ];
 
+  // Public header for non-authenticated users
   if (!isAuthenticated) {
-    return null;
+    return (
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 safe-area-padding">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-1.5 sm:space-x-2 touch-manipulation">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
+                <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
+              </div>
+              <span className="text-lg sm:text-xl font-bold text-gray-900">EarnPay</span>
+            </Link>
+            
+            {/* Public Navigation */}
+            <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
+              <Link href="/how-to-earn" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">How to Earn</Link>
+              <Link href="/referral-program" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Referral Program</Link>
+              <Link href="/about" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">About</Link>
+              <Link href="/contact" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Contact</Link>
+            </nav>
+
+            {/* Auth buttons */}
+            <div className="flex items-center space-x-2">
+              <Link href="/login">
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm touch-manipulation">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button size="sm" className="text-xs sm:text-sm touch-manipulation">
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
   }
 
   return (
