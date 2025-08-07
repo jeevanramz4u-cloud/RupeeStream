@@ -567,8 +567,11 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl space-y-6">
+    <div className="min-h-screen bg-neutral-50 safe-area-padding">
+      <Header />
+      
+      <div className="min-h-[calc(100vh-160px)] bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl space-y-6">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-4">
@@ -679,6 +682,7 @@ export default function Signup() {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
       
       <Footer />

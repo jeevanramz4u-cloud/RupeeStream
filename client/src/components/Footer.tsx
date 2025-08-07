@@ -28,7 +28,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-2 mb-4">
@@ -76,9 +76,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Support Links */}
+          {/* Support & Legal Combined */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Support</h3>
+            <h3 className="text-white font-semibold mb-4">Support & Legal</h3>
             <ul className="space-y-2">
               {supportLinks.map((link, index) => (
                 <li key={`${link.href}-${index}`}>
@@ -90,13 +90,6 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-            </ul>
-          </div>
-
-          {/* Legal Links */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Legal</h3>
-            <ul className="space-y-2">
               {legalLinks.map((link) => (
                 <li key={link.href}>
                   <Link 

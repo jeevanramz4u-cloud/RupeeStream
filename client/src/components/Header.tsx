@@ -15,6 +15,9 @@ export default function Header() {
   const { user, isAuthenticated } = useAuth();
   const [location] = useLocation();
   
+  // Check if we're on login or signup pages to hide auth buttons
+  const isAuthPage = location === '/login' || location === '/signup';
+  
   // Check if user is suspended and block navigation
   const isSuspended = (user as any)?.status === 'suspended';
 
@@ -49,19 +52,21 @@ export default function Header() {
               <Link href="/contact" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Contact</Link>
             </nav>
 
-            {/* Auth buttons */}
-            <div className="flex items-center space-x-2">
-              <Link href="/login">
-                <Button variant="outline" size="sm" className="text-xs sm:text-sm touch-manipulation">
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button size="sm" className="text-xs sm:text-sm touch-manipulation">
-                  Sign Up
-                </Button>
-              </Link>
-            </div>
+            {/* Auth buttons - hidden on login/signup pages */}
+            {!isAuthPage && (
+              <div className="flex items-center space-x-2">
+                <Link href="/login">
+                  <Button variant="outline" size="sm" className="text-xs sm:text-sm touch-manipulation">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm" className="text-xs sm:text-sm touch-manipulation">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </header>
