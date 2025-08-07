@@ -26,6 +26,8 @@ import {
   CheckCircle,
   ArrowRight
 } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { ObjectUploader } from "@/components/ObjectUploader";
 import { useToast } from "@/hooks/use-toast";
 
@@ -678,6 +680,8 @@ export default function Signup() {
           </CardContent>
         </Card>
       </div>
+      
+      <Footer />
     </div>
   );
 }

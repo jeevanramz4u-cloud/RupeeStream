@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import VideoCard from "@/components/VideoCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -101,6 +102,8 @@ export default function Videos() {
           </div>
         )}
       </main>
+      
+      <Footer />
     </div>
   );
 }

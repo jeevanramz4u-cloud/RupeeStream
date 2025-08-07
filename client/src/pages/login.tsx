@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Eye, EyeOff, LogIn, UserPlus } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 
@@ -58,7 +60,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center p-3 sm:p-4 safe-area-padding">
+    <div className="min-h-screen bg-neutral-50 safe-area-padding">
+      <Header />
+      
+      <div className="min-h-[calc(100vh-160px)] bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center p-3 sm:p-4">
       <div className="w-full max-w-md space-y-4 sm:space-y-6">
         {/* Header */}
         <div className="text-center">
@@ -201,6 +206,9 @@ export default function Login() {
           </CardContent>
         </Card>
       </div>
+      </div>
+      
+      <Footer />
     </div>
   );
 }

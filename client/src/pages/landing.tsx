@@ -1,36 +1,38 @@
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Play, Users, Coins, Clock, CheckCircle, Shield } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Landing() {
   return (
     <div className="min-h-screen bg-neutral-50 safe-area-padding">
-      {/* Header */}
+      {/* Public Header for Landing */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
           <div className="flex justify-between items-center h-14 sm:h-16">
-            <div className="flex items-center space-x-1.5 sm:space-x-2">
+            <Link href="/" className="flex items-center space-x-1.5 sm:space-x-2">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
                 <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <span className="text-lg sm:text-xl font-bold text-gray-900">EarnPay</span>
-            </div>
+            </Link>
             
             <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
               <a href="#features" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Features</a>
               <a href="#how-it-works" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">How it Works</a>
-              <a href="/how-to-earn" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">How to Earn</a>
-              <a href="/about" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">About</a>
-              <a href="/contact" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Contact</a>
+              <Link href="/how-to-earn" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">How to Earn</Link>
+              <Link href="/about" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">About</Link>
+              <Link href="/contact" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Contact</Link>
             </nav>
 
-            <Button 
-              onClick={() => window.location.href = '/login'} 
-              className="bg-primary hover:bg-primary/90 h-8 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm touch-manipulation"
-            >
-              Sign In
-            </Button>
+            <Link href="/login">
+              <Button className="bg-primary hover:bg-primary/90 h-8 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm touch-manipulation">
+                Sign In
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -379,56 +381,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Company</h3>
-              <ul className="mt-4 space-y-2">
-                <li><a href="/about" className="text-sm text-gray-600 hover:text-primary">About Us</a></li>
-                <li><a href="/contact" className="text-sm text-gray-600 hover:text-primary">Contact</a></li>
-                <li><a href="/careers" className="text-sm text-gray-600 hover:text-primary">Careers</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Earn</h3>
-              <ul className="mt-4 space-y-2">
-                <li><a href="/how-to-earn" className="text-sm text-gray-600 hover:text-primary">How to Earn</a></li>
-                <li><a href="/referrals" className="text-sm text-gray-600 hover:text-primary">Referral Program</a></li>
-                <li><a href="/payout-schedule" className="text-sm text-gray-600 hover:text-primary">Payout Schedule</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Support</h3>
-              <ul className="mt-4 space-y-2">
-                <li><a href="#help" className="text-sm text-gray-600 hover:text-primary">Help Center</a></li>
-                <li><a href="/support" className="text-sm text-gray-600 hover:text-primary">Live Chat</a></li>
-                <li><a href="#faq" className="text-sm text-gray-600 hover:text-primary">FAQ</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Legal</h3>
-              <ul className="mt-4 space-y-2">
-                <li><a href="/privacy-policy" className="text-sm text-gray-600 hover:text-primary">Privacy Policy</a></li>
-                <li><a href="/terms-conditions" className="text-sm text-gray-600 hover:text-primary">Terms & Conditions</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="mt-8 pt-8 border-t border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Play className="text-white w-4 h-4" />
-                </div>
-                <span className="text-lg font-bold text-gray-900">EarnPay</span>
-              </div>
-              <p className="text-sm text-gray-500">© 2024 EarnPay. All rights reserved.</p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

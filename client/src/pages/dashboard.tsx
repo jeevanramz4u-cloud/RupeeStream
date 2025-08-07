@@ -1,6 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -553,6 +554,8 @@ export default function Dashboard() {
           </DialogContent>
         </Dialog>
       </main>
+      
+      <Footer />
     </div>
   );
 }
