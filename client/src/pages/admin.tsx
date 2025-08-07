@@ -57,6 +57,7 @@ export default function Admin() {
   const [showNewVideoForm, setShowNewVideoForm] = useState(false);
   const [userProfileDialogOpen, setUserProfileDialogOpen] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<any>(null);
+  const [showSensitiveInfo, setShowSensitiveInfo] = useState(false);
   const [kycFilter, setKycFilter] = useState<'all' | 'unpaid' | 'verification' | 'verified'>('all');
   const [activeTab, setActiveTab] = useState('users');
   const [searchTerm, setSearchTerm] = useState('');
@@ -471,6 +472,7 @@ export default function Admin() {
     console.log('Opening user profile for:', user);
     setSelectedUserProfile(user);
     setUserProfileDialogOpen(true);
+    setShowSensitiveInfo(false); // Reset to hide sensitive info by default
   };
 
   // Function to extract YouTube video ID from URL
@@ -1149,6 +1151,19 @@ export default function Admin() {
                 </CardContent>
               </Card>
 
+              {/* Show/Hide Sensitive Information Toggle */}
+              <div className="mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowSensitiveInfo(!showSensitiveInfo)}
+                  className="text-sm gap-2"
+                >
+                  {showSensitiveInfo ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showSensitiveInfo ? "Hide Sensitive Details" : "Show Sensitive Details"}
+                </Button>
+              </div>
+
               {/* Users Grid */}
               <div className="grid grid-cols-1 gap-6">
                 {(() => {
@@ -1256,7 +1271,12 @@ export default function Admin() {
                             </div>
                             <div>
                               <Label className="text-xs font-medium text-gray-500">Phone Number</Label>
-                              <p className="text-xs sm:text-sm font-medium">{user.phoneNumber || 'Not provided'}</p>
+                              <p className="text-xs sm:text-sm font-medium">
+                                {showSensitiveInfo 
+                                  ? (user.phoneNumber || 'Not provided')
+                                  : (user.phoneNumber ? `****${user.phoneNumber.slice(-4)}` : 'Not provided')
+                                }
+                              </p>
                             </div>
                             <div>
                               <Label className="text-xs font-medium text-gray-500">Gender</Label>
@@ -1467,8 +1487,8 @@ export default function Admin() {
                             </div>
                           </div>
                           
-                          {/* KYC Status Information */}
-                          {(user.governmentIdType || user.governmentIdNumber) && (
+                          {/* KYC Status Information - Hidden by default */}
+                          {showSensitiveInfo && (user.governmentIdType || user.governmentIdNumber) && (
                             <div className="mt-3 p-2 bg-blue-50 rounded-lg">
                               <p className="text-xs text-blue-800">
                                 <strong>ID Type:</strong> {user.governmentIdType || 'Not specified'} | 
@@ -2487,7 +2507,18 @@ export default function Admin() {
               {/* Basic User Info */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Personal Information</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">Personal Information</CardTitle>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowSensitiveInfo(!showSensitiveInfo)}
+                      className="text-xs gap-1"
+                    >
+                      {showSensitiveInfo ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                      {showSensitiveInfo ? "Hide Details" : "Show Details"}
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4">
@@ -2501,7 +2532,12 @@ export default function Admin() {
                     </div>
                     <div>
                       <Label className="text-sm font-medium text-gray-500">Phone Number</Label>
-                      <p className="text-sm font-medium">{userProfile.user.phoneNumber || 'Not provided'}</p>
+                      <p className="text-sm font-medium">
+                        {showSensitiveInfo 
+                          ? (userProfile.user.phoneNumber || 'Not provided')
+                          : (userProfile.user.phoneNumber ? `****${userProfile.user.phoneNumber.slice(-4)}` : 'Not provided')
+                        }
+                      </p>
                     </div>
                     <div>
                       <Label className="text-sm font-medium text-gray-500">Current Balance</Label>
