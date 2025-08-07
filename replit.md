@@ -114,6 +114,12 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Universal API authentication support for all payment processing endpoints
 - Suspended page access control: only suspended users can access /suspended, others redirected
 - Automatic account reactivation after ₹49 payment with real-time admin panel status updates
+- **Fixed suspension fee payment reactivation issue (August 2025)**
+- Added missing verification endpoint `/api/account/verify-reactivation-payment` for automatic account reactivation
+- Implemented `getPaymentByOrderId` storage method for payment verification and fallback handling
+- Fixed bug where users remained suspended despite successful ₹49 reactivation fee payment
+- Account status now properly updates from 'suspended' to 'active' after payment completion
+- Enhanced payment verification with both Cashfree API and local payment history fallback checks
 
 # User Preferences
 

@@ -1593,6 +1593,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Reactivation payment verification endpoint
+  app.post("/api/account/verify-reactivation-payment", async (req: any, res) => {
+    try {
+      const { orderId } = req.body;
+      let userId;
+      let user;
+
+      // Support both traditional and OIDC authentication
+      if (req.user && req.user.id) {
+        userId = req.user.id;
+        user = req.user;
+      } 
+      else if (req.isAuthenticated && req.isAuthenticated() && req.user?.claims?.sub) {
+        userId = req.user.claims.sub;
+        user = await storage.getUser(userId);
+      } 
+      else {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      console.log(`Verifying reactivation payment for user ${userId}, order: ${orderId}`);
+
+      try {
+        // Verify payment with Cashfree
+        const orderDetails = await getOrderDetails(orderId);
+        
+        if (orderDetails && orderDetails.order_status === 'PAID') {
+          // Payment successful - reactivate account
+          await storage.updateUser(userId, { 
+            status: 'active',
+            reactivationFeePaid: true,
+            suspendedAt: null,
+            suspensionReason: null,
+            consecutiveFailedDays: 0
+          });
+
+          // Record payment in history
+          try {
+            await storage.addPaymentHistory(userId, {
+              orderId: orderId,
+              amount: parseFloat(user.reactivationFeeAmount || "49.00"),
+              type: 'reactivation',
+              status: 'completed',
+              paymentMethod: 'cashfree'
+            });
+          } catch (historyError) {
+            console.warn('Failed to record payment history:', historyError);
+          }
+
+          console.log(`✅ User ${userId} (${user.email}) successfully reactivated via payment verification`);
+          
+          res.json({
+            success: true,
+            message: "Account reactivated successfully",
+            kycStatus: "completed",
+            accountStatus: 'active'
+          });
+        } else {
+          // Payment not completed
+          res.status(400).json({
+            error: "Payment not verified",
+            orderStatus: orderDetails?.order_status || 'unknown'
+          });
+        }
+      } catch (verifyError) {
+        console.warn('Cashfree verification failed, checking payment history as fallback:', verifyError);
+        
+        // Check if payment already recorded in our system
+        const existingPayment = await storage.getPaymentByOrderId(orderId);
+        if (existingPayment && existingPayment.status === 'completed') {
+          // Payment already processed - reactivate account
+          await storage.updateUser(userId, { 
+            status: 'active',
+            reactivationFeePaid: true,
+            suspendedAt: null,
+            suspensionReason: null,
+            consecutiveFailedDays: 0
+          });
+
+          console.log(`✅ User ${userId} reactivated via payment history fallback`);
+          
+          res.json({
+            success: true,
+            message: "Account reactivated successfully",
+            accountStatus: 'active'
+          });
+        } else {
+          res.status(500).json({ error: "Failed to verify payment" });
+        }
+      }
+    } catch (error) {
+      console.error("Error verifying reactivation payment:", error);
+      res.status(500).json({ error: "Failed to verify payment" });
+    }
+  });
+
   // Chat routes
   app.get('/api/chat/messages', isAuthenticated, async (req, res) => {
     try {

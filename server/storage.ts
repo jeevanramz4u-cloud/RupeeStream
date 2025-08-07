@@ -81,6 +81,7 @@ export interface IStorage {
   // Payment history operations
   addPaymentHistory(userId: string, payment: Omit<InsertPaymentHistory, 'userId'>): Promise<PaymentHistory>;
   getPaymentHistory(userId: string): Promise<PaymentHistory[]>;
+  getPaymentByOrderId(orderId: string): Promise<PaymentHistory | undefined>;
   getUserPaymentStats(userId: string): Promise<{ kycPaid: boolean; reactivationCount: number; totalPaid: number }>;
   getAllPaymentHistory(): Promise<PaymentHistory[]>;
   
@@ -849,6 +850,14 @@ export class DatabaseStorage implements IStorage {
       .from(paymentHistory)
       .where(eq(paymentHistory.userId, userId))
       .orderBy(desc(paymentHistory.createdAt));
+  }
+
+  async getPaymentByOrderId(orderId: string): Promise<PaymentHistory | undefined> {
+    const [payment] = await db
+      .select()
+      .from(paymentHistory)
+      .where(eq(paymentHistory.orderId, orderId));
+    return payment;
   }
 
   async getUserPaymentStats(userId: string): Promise<{ kycPaid: boolean; reactivationCount: number; totalPaid: number }> {
