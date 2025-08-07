@@ -53,6 +53,7 @@ export default function Signup() {
     lastName: "",
     phoneNumber: "",
     dateOfBirth: "",
+    gender: "",
     
     // Address Information
     address: "",
@@ -151,7 +152,7 @@ export default function Signup() {
         }
         break;
       case 2:
-        if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.dateOfBirth) {
+        if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.dateOfBirth || !formData.gender) {
           setError("Please fill in all required fields");
           return false;
         }
@@ -357,6 +358,21 @@ export default function Signup() {
                 onChange={handleChange}
                 required
               />
+            </div>
+
+            <div>
+              <Label htmlFor="gender">Gender *</Label>
+              <Select value={formData.gender} onValueChange={(value) => handleSelectChange(value, 'gender')}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select your gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         );

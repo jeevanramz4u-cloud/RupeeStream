@@ -39,6 +39,14 @@ export const accountStatusEnum = pgEnum("account_status", [
   "banned"
 ]);
 
+// Gender enum
+export const genderEnum = pgEnum("gender", [
+  "male",
+  "female",
+  "other",
+  "prefer_not_to_say"
+]);
+
 // User role enum
 export const userRoleEnum = pgEnum("user_role", [
   "user",
@@ -69,6 +77,7 @@ export const users = pgTable("users", {
   password: varchar("password"), // For traditional login (hashed)
   phoneNumber: varchar("phone_number"),
   dateOfBirth: varchar("date_of_birth"),
+  gender: genderEnum("gender"),
   
   // Address fields
   address: text("address"),
