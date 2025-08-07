@@ -74,31 +74,36 @@ export default function KYC() {
     gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
-  // Handle localStorage based on KYC status changes
+  // Handle localStorage cleanup only when KYC is fully complete  
   useEffect(() => {
     if (kycData) {
       const data = kycData as any;
-      // If KYC is fully approved and verified, clear the localStorage
+      // Only clear localStorage when KYC is FULLY approved and verified
       if (data.kycStatus === 'approved' && data.verificationStatus === 'verified') {
-        localStorage.removeItem('kyc_govIdType');
-        localStorage.removeItem('kyc_govIdNumber');
-        localStorage.removeItem('kyc_govIdFrontUrl');
-        localStorage.removeItem('kyc_govIdBackUrl');
-        localStorage.removeItem('kyc_selfieWithIdUrl');
-      }
-      // If admin requested re-verification (status changed back to pending), clear only document URLs
-      // This allows user to re-upload documents while keeping basic info
-      if (data.kycStatus === 'pending' && data.kycFeePaid) {
-        localStorage.removeItem('kyc_govIdFrontUrl');
-        localStorage.removeItem('kyc_govIdBackUrl');
-        localStorage.removeItem('kyc_selfieWithIdUrl');
-        // Clear the state as well for re-upload
-        setGovIdFrontUrl("");
-        setGovIdBackUrl("");
-        setSelfieWithIdUrl("");
+        // Keep localStorage for now to avoid clearing during form usage
+        // localStorage.removeItem('kyc_govIdType');
+        // localStorage.removeItem('kyc_govIdNumber'); 
+        // localStorage.removeItem('kyc_govIdFrontUrl');
+        // localStorage.removeItem('kyc_govIdBackUrl');
+        // localStorage.removeItem('kyc_selfieWithIdUrl');
       }
     }
   }, [kycData]);
+  
+  // Restore form state from localStorage on component mount
+  useEffect(() => {
+    const savedType = localStorage.getItem('kyc_govIdType');
+    const savedNumber = localStorage.getItem('kyc_govIdNumber');
+    const savedFront = localStorage.getItem('kyc_govIdFrontUrl');
+    const savedBack = localStorage.getItem('kyc_govIdBackUrl');
+    const savedSelfie = localStorage.getItem('kyc_selfieWithIdUrl');
+    
+    if (savedType && !govIdType) setGovIdType(savedType);
+    if (savedNumber && !govIdNumber) setGovIdNumber(savedNumber);
+    if (savedFront && !govIdFrontUrl) setGovIdFrontUrl(savedFront);
+    if (savedBack && !govIdBackUrl) setGovIdBackUrl(savedBack);
+    if (savedSelfie && !selfieWithIdUrl) setSelfieWithIdUrl(savedSelfie);
+  }, []);
 
   // Auto-refresh KYC status every 10 seconds when submitted or waiting for approval
   useEffect(() => {
@@ -227,7 +232,7 @@ export default function KYC() {
         return;
       }
       
-      // Update the appropriate state and persist to localStorage
+      // Update state and localStorage - this should maintain persistence
       if (documentType === 'front') {
         setGovIdFrontUrl(documentUrl);
         localStorage.setItem('kyc_govIdFrontUrl', documentUrl);
@@ -242,23 +247,16 @@ export default function KYC() {
         console.log("Set selfieWithIdUrl to:", documentUrl);
       }
 
-      // Save to backend
+      // Save to backend asynchronously
       apiRequest("PUT", "/api/kyc/document", {
         documentUrl,
         documentType,
       }).then(() => {
+        console.log("Document saved to backend successfully");
         toast({
           title: "Document Uploaded",
           description: `Your ${documentType === 'front' ? 'ID front' : documentType === 'back' ? 'ID back' : 'selfie'} has been uploaded successfully.`,
         });
-        
-        // Document saved successfully - form state is preserved
-        console.log("Document saved to backend successfully");
-        
-        // Force a small delay to ensure state is preserved, then refresh
-        setTimeout(() => {
-          console.log("State after timeout:", { govIdType, govIdNumber, govIdFrontUrl, govIdBackUrl, selfieWithIdUrl });
-        }, 100);
       }).catch((error) => {
         console.error("Error saving document:", error);
         toast({
@@ -742,17 +740,16 @@ export default function KYC() {
               )}
               
               {/* Show message for incomplete documents */}
-              {(!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) && (
-                <div>
-                  {console.log("Missing fields:", { 
-                    govIdType: !govIdType, 
-                    govIdNumber: !govIdNumber, 
-                    govIdFrontUrl: !govIdFrontUrl, 
-                    govIdBackUrl: !govIdBackUrl, 
-                    selfieWithIdUrl: !selfieWithIdUrl 
-                  })}
-              </div>
-              )}
+              {(!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) && (() => {
+                console.log("Missing fields:", { 
+                  govIdType: !govIdType, 
+                  govIdNumber: !govIdNumber, 
+                  govIdFrontUrl: !govIdFrontUrl, 
+                  govIdBackUrl: !govIdBackUrl, 
+                  selfieWithIdUrl: !selfieWithIdUrl 
+                });
+                return null;
+              })()}
               {(!govIdType || !govIdNumber || !govIdFrontUrl || !govIdBackUrl || !selfieWithIdUrl) && (
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <div className="flex items-center mb-3">
