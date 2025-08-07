@@ -210,10 +210,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid email or password" });
       }
 
-      // Check if account is suspended
-      if (user.status === 'suspended') {
-        return res.status(403).json({ message: "Account is suspended. Please contact support." });
-      }
+      // Allow suspended users to login - they will be redirected to suspended page by frontend
+      // Suspension is handled by the frontend redirect logic, not by blocking login
 
       // Verify password
       const bcrypt = await import('bcryptjs');
