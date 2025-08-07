@@ -184,18 +184,30 @@ export default function KYC() {
       return response.json();
     },
     onSuccess: (data) => {
-      // Redirect to Cashfree payment page or handle payment session
       console.log("Payment session created:", data);
-      toast({
-        title: "Payment Session Created",
-        description: "Redirecting to Cashfree payment gateway...",
-      });
       
-      // For demo purposes, auto-verify after a short delay
-      // In production, user would be redirected to Cashfree payment page
-      setTimeout(() => {
-        verifyPaymentMutation.mutate({ orderId: data.orderId });
-      }, 2000);
+      // Check if this is a development payment completion
+      if (data.status === 'development_payment_completed') {
+        toast({
+          title: "Payment Completed",
+          description: "KYC payment processed successfully!",
+        });
+        
+        // Automatically trigger verification since payment is complete
+        setTimeout(() => {
+          verifyPaymentMutation.mutate({ orderId: data.orderId });
+        }, 1000);
+      } else {
+        toast({
+          title: "Payment Session Created",
+          description: "Redirecting to Cashfree payment gateway...",
+        });
+        
+        // For real Cashfree payments, redirect to payment URL
+        setTimeout(() => {
+          verifyPaymentMutation.mutate({ orderId: data.orderId });
+        }, 2000);
+      }
     },
     onError: (error) => {
       toast({

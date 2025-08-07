@@ -64,7 +64,7 @@ export async function createPaymentSession(
         'Content-Type': 'application/json',
         'X-Client-Id': cashfreeConfig.appId,
         'X-Client-Secret': cashfreeConfig.secretKey,
-        'x-api-version': '2023-08-01'
+        'x-api-version': '2022-09-01'
       },
       body: JSON.stringify(orderRequest)
     });
@@ -103,7 +103,7 @@ export async function verifyPayment(orderId: string): Promise<any> {
         'Content-Type': 'application/json',
         'X-Client-Id': cashfreeConfig.appId,
         'X-Client-Secret': cashfreeConfig.secretKey,
-        'x-api-version': '2023-08-01'
+        'x-api-version': '2022-09-01'
       }
     });
     
