@@ -2436,7 +2436,6 @@ export default function Admin() {
                               className="w-full text-xs"
                               onClick={() => window.open(userProfile.user.govIdFrontUrl, '_blank')}
                             >
-                              <ExternalLink className="w-3 h-3 mr-1" />
                               View Full Size
                             </Button>
                           </div>
@@ -2474,7 +2473,6 @@ export default function Admin() {
                               className="w-full text-xs"
                               onClick={() => window.open(userProfile.user.govIdBackUrl, '_blank')}
                             >
-                              <ExternalLink className="w-3 h-3 mr-1" />
                               View Full Size
                             </Button>
                           </div>
@@ -2512,7 +2510,6 @@ export default function Admin() {
                               className="w-full text-xs"
                               onClick={() => window.open(userProfile.user.selfieWithIdUrl, '_blank')}
                             >
-                              <ExternalLink className="w-3 h-3 mr-1" />
                               View Full Size
                             </Button>
                           </div>
