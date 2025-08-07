@@ -64,6 +64,12 @@ EarnPay is a video monetization platform where users earn money by watching vide
 - Improved touch-friendly UI elements with better spacing and tap targets for mobile devices
 - Added payment success/failure handling with proper URL redirects and user notifications
 - Secured payment flow now requires actual Cashfree gateway completion for KYC verification
+- **Fixed KYC Status Display Logic and Mobile Button Design (August 2025)**
+- Corrected "Under Review" status to only show for users who have completed verification (verified status)
+- Changed KYC button text from "Pay ₹99 via Cashfree & Complete KYC" to mobile-friendly "Complete KYC"
+- Enhanced mobile responsiveness with better text scaling, padding, and touch-friendly interactions
+- Fixed admin panel re-verification buttons to show for all users regardless of status
+- Improved KYC form conditional display logic to prevent showing form when documents are under review
 - **Optimized database for 200k+ users with permanent earnings history (August 2025)**
 - Added comprehensive database indexes for performance at scale (earnings, video progress, payouts, users)
 - Implemented permanent data retention policy - earnings history never deleted

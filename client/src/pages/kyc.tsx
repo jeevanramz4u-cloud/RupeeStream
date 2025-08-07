@@ -485,7 +485,7 @@ export default function KYC() {
                 </Alert>
               )}
 
-              {(kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid && (
+              {(kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid && (kycData as any)?.verificationStatus === 'verified' && (
                 <Alert className="bg-blue-50 border-blue-200">
                   <Clock className="h-4 w-4 text-blue-600" />
                   <AlertDescription className="text-blue-800">
@@ -519,7 +519,7 @@ export default function KYC() {
           </Card>
         )}
         
-        {(kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid && (
+        {(kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid && (kycData as any)?.verificationStatus === 'verified' && (
           <Card className="border-blue-200 bg-blue-50">
             <CardContent className="pt-6">
               <div className="text-center py-4">
@@ -532,7 +532,8 @@ export default function KYC() {
         )}
 
         {/* Show KYC form for users who need verification or re-verification */}
-        {(!kycData || !((kycData as any)?.kycStatus === 'approved' && (kycData as any)?.verificationStatus === 'verified')) && (
+        {(!kycData || !((kycData as any)?.kycStatus === 'approved' && (kycData as any)?.verificationStatus === 'verified')) && 
+         !((kycData as any)?.kycStatus === 'submitted' && (kycData as any)?.kycFeePaid && (kycData as any)?.verificationStatus === 'verified') && (
           <Card className="shadow-sm" id="kyc-form">
             <CardHeader>
               <CardTitle className="text-xl flex items-center text-gray-800">
