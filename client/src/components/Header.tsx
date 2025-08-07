@@ -14,6 +14,9 @@ import { Link, useLocation } from "wouter";
 export default function Header() {
   const { user, isAuthenticated } = useAuth();
   const [location] = useLocation();
+  
+  // Check if user is suspended and block navigation
+  const isSuspended = (user as any)?.status === 'suspended';
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", active: location === "/" || location === "/dashboard" },
@@ -32,7 +35,14 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Logo */}
-          <Link href="/dashboard" className="flex items-center space-x-1.5 sm:space-x-2 touch-manipulation">
+          <Link 
+            href={isSuspended ? "/suspended" : "/dashboard"} 
+            className="flex items-center space-x-1.5 sm:space-x-2 touch-manipulation"
+            onClick={isSuspended ? (e) => {
+              e.preventDefault();
+              window.location.href = '/suspended';
+            } : undefined}
+          >
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
               <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
             </div>
@@ -44,12 +54,18 @@ export default function Header() {
             {navItems.map((item) => (
               <Link
                 key={item.href}
-                href={item.href}
+                href={isSuspended ? '/suspended' : item.href}
                 className={`font-medium text-sm lg:text-base touch-manipulation ${
                   item.active 
                     ? "text-primary" 
-                    : "text-gray-600 hover:text-primary"
+                    : isSuspended 
+                      ? "text-gray-400 cursor-not-allowed" 
+                      : "text-gray-600 hover:text-primary"
                 }`}
+                onClick={isSuspended ? (e) => {
+                  e.preventDefault();
+                  window.location.href = '/suspended';
+                } : undefined}
               >
                 {item.label}
               </Link>

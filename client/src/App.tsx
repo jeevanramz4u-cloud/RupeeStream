@@ -66,11 +66,26 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
     return null;
   }
   
-  // Check if user is suspended and redirect to suspended page (except if already on suspended page)
-  if ((user as any)?.status === 'suspended' && window.location.pathname !== '/suspended') {
-    console.log('User is suspended, forcing redirect to /suspended');
-    window.location.href = '/suspended';
-    return null;
+  // Global suspension check - force suspended users to suspended page for ALL routes
+  if ((user as any)?.status === 'suspended') {
+    const currentPath = window.location.pathname;
+    
+    // If user is suspended and not on suspended page, force redirect
+    if (currentPath !== '/suspended') {
+      console.log('Suspended user attempting to access:', currentPath, '- redirecting to /suspended');
+      // Force page reload to ensure complete redirect
+      setTimeout(() => {
+        window.location.href = '/suspended';
+      }, 100);
+      return (
+        <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+            <p className="text-red-600">Redirecting to suspension page...</p>
+          </div>
+        </div>
+      );
+    }
   }
   
   return <Component />;
@@ -104,7 +119,17 @@ function Router() {
             </div>
           );
         }
-        return isAuthenticated ? <Dashboard /> : <Landing />;
+        
+        if (isAuthenticated) {
+          // Check suspension status for home route too
+          if ((user as any)?.status === 'suspended') {
+            window.location.href = '/suspended';
+            return null;
+          }
+          return <Dashboard />;
+        }
+        
+        return <Landing />;
       }} />
       
       {/* Protected routes - redirect to login if not authenticated */}

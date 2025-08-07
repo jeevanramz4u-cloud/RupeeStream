@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -49,6 +50,35 @@ export default function SuspendedPage() {
     setIsProcessingPayment(true);
     reactivationMutation.mutate();
   };
+
+  // Block navigation for suspended users by overriding browser back/forward
+  React.useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if ((user as any)?.status === 'suspended') {
+        e.preventDefault();
+        e.returnValue = 'You cannot navigate away from this page while your account is suspended.';
+      }
+    };
+
+    const handlePopState = () => {
+      if ((user as any)?.status === 'suspended') {
+        window.history.pushState(null, '', '/suspended');
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('popstate', handlePopState);
+    
+    // Push suspended state to prevent back navigation
+    if ((user as any)?.status === 'suspended') {
+      window.history.pushState(null, '', '/suspended');
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [user]);
 
   const suspensionReason = (user as any)?.suspensionReason || "Failed to meet daily watch time requirements for 3 consecutive days";
   const reactivationFee = (user as any)?.reactivationFeeAmount || "49.00";
