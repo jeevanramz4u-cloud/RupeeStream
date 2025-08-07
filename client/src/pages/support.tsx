@@ -53,56 +53,56 @@ export default function Support() {
     <div className="min-h-screen bg-neutral-50">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Help & Support</h1>
-          <p className="text-gray-600">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8 safe-area-padding">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Help & Support</h1>
+          <p className="text-sm sm:text-base text-gray-600">
             Get help with your EarnPay account, earnings, and any questions you may have.
           </p>
         </div>
 
         {/* Contact Options */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="text-center">
-            <CardContent className="pt-6">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="text-primary w-6 h-6" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <Card className="text-center touch-manipulation">
+            <CardContent className="pt-4 sm:pt-6">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <MessageCircle className="text-primary w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Live Chat</h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Live Chat</h3>
+              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
                 Get instant help from our support team via live chat.
               </p>
               <p className="text-xs text-gray-500">Available 24/7</p>
             </CardContent>
           </Card>
 
-          <Card className="text-center">
-            <CardContent className="pt-6">
-              <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Mail className="text-secondary w-6 h-6" />
+          <Card className="text-center touch-manipulation">
+            <CardContent className="pt-4 sm:pt-6">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/10 rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Mail className="text-secondary w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Email Support</h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Email Support</h3>
+              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
                 Send us an email for detailed inquiries.
               </p>
-              <Button variant="outline" size="sm">
-                <Mail className="w-4 h-4 mr-2" />
+              <Button variant="outline" size="sm" className="touch-manipulation text-xs sm:text-sm">
+                <Mail className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 support@earnpay.com
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="text-center">
-            <CardContent className="pt-6">
-              <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Phone className="text-accent w-6 h-6" />
+          <Card className="text-center touch-manipulation sm:col-span-2 lg:col-span-1">
+            <CardContent className="pt-4 sm:pt-6">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Phone className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Phone Support</h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Phone Support</h3>
+              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
                 Call us for urgent issues or account problems.
               </p>
-              <Button variant="outline" size="sm">
-                <Phone className="w-4 h-4 mr-2" />
+              <Button variant="outline" size="sm" className="touch-manipulation text-xs sm:text-sm">
+                <Phone className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 +91-XXXX-XXXX
               </Button>
             </CardContent>
@@ -110,49 +110,49 @@ export default function Support() {
         </div>
 
         {/* Quick Help Topics */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Quick Help Topics</CardTitle>
+        <Card className="mb-6 sm:mb-8">
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-lg sm:text-xl">Quick Help Topics</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Button variant="outline" className="justify-start h-auto p-4">
-                <div className="flex flex-col items-start">
-                  <div className="flex items-center mb-2">
-                    <Wallet className="w-4 h-4 mr-2 text-primary" />
-                    <span className="font-medium">Earnings & Payouts</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <Button variant="outline" className="justify-start h-auto p-3 sm:p-4 touch-manipulation mobile-tap-target">
+                <div className="flex flex-col items-start w-full">
+                  <div className="flex items-center mb-1 sm:mb-2">
+                    <Wallet className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-primary flex-shrink-0" />
+                    <span className="font-medium text-sm sm:text-base">Earnings & Payouts</span>
                   </div>
-                  <span className="text-xs text-gray-500">Questions about earnings and withdrawals</span>
+                  <span className="text-xs sm:text-sm text-gray-500 text-left">Questions about earnings and withdrawals</span>
                 </div>
               </Button>
 
-              <Button variant="outline" className="justify-start h-auto p-4">
-                <div className="flex flex-col items-start">
-                  <div className="flex items-center mb-2">
-                    <Shield className="w-4 h-4 mr-2 text-secondary" />
-                    <span className="font-medium">Account Verification</span>
+              <Button variant="outline" className="justify-start h-auto p-3 sm:p-4 touch-manipulation mobile-tap-target">
+                <div className="flex flex-col items-start w-full">
+                  <div className="flex items-center mb-1 sm:mb-2">
+                    <Shield className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-secondary flex-shrink-0" />
+                    <span className="font-medium text-sm sm:text-base">Account Verification</span>
                   </div>
-                  <span className="text-xs text-gray-500">Help with document upload and verification</span>
+                  <span className="text-xs sm:text-sm text-gray-500 text-left">Help with document upload and verification</span>
                 </div>
               </Button>
 
-              <Button variant="outline" className="justify-start h-auto p-4">
-                <div className="flex flex-col items-start">
-                  <div className="flex items-center mb-2">
-                    <Users className="w-4 h-4 mr-2 text-purple-600" />
-                    <span className="font-medium">Referral Program</span>
+              <Button variant="outline" className="justify-start h-auto p-3 sm:p-4 touch-manipulation mobile-tap-target">
+                <div className="flex flex-col items-start w-full">
+                  <div className="flex items-center mb-1 sm:mb-2">
+                    <Users className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-purple-600 flex-shrink-0" />
+                    <span className="font-medium text-sm sm:text-base">Referral Program</span>
                   </div>
-                  <span className="text-xs text-gray-500">Questions about referrals and bonuses</span>
+                  <span className="text-xs sm:text-sm text-gray-500 text-left">Questions about referrals and bonuses</span>
                 </div>
               </Button>
 
-              <Button variant="outline" className="justify-start h-auto p-4">
-                <div className="flex flex-col items-start">
-                  <div className="flex items-center mb-2">
-                    <Clock className="w-4 h-4 mr-2 text-accent" />
-                    <span className="font-medium">Daily Targets</span>
+              <Button variant="outline" className="justify-start h-auto p-3 sm:p-4 touch-manipulation mobile-tap-target">
+                <div className="flex flex-col items-start w-full">
+                  <div className="flex items-center mb-1 sm:mb-2">
+                    <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-accent flex-shrink-0" />
+                    <span className="font-medium text-sm sm:text-base">Daily Targets</span>
                   </div>
-                  <span className="text-xs text-gray-500">Help with watching requirements</span>
+                  <span className="text-xs sm:text-sm text-gray-500 text-left">Help with watching requirements</span>
                 </div>
               </Button>
             </div>
@@ -161,18 +161,18 @@ export default function Support() {
 
         {/* FAQ Section */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <HelpCircle className="w-5 h-5 mr-2" />
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center text-lg sm:text-xl">
+              <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               Frequently Asked Questions
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {faqItems.map((item, index) => (
-                <div key={index} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
-                  <h3 className="font-semibold text-gray-900 mb-3">{item.question}</h3>
-                  <p className="text-gray-600 leading-relaxed">{item.answer}</p>
+                <div key={index} className="border-b border-gray-200 pb-4 sm:pb-6 last:border-b-0 last:pb-0">
+                  <h3 className="font-semibold text-gray-900 mb-2 sm:mb-3 text-sm sm:text-base leading-relaxed">{item.question}</h3>
+                  <p className="text-gray-600 leading-relaxed text-sm sm:text-base">{item.answer}</p>
                 </div>
               ))}
             </div>
