@@ -914,6 +914,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const users = await storage.getAllUsers();
+      console.log(`Admin API: Retrieved ${users.length} users for admin panel`);
+      console.log("Sample user data:", users.length > 0 ? {
+        email: users[0].email,
+        kycStatus: users[0].kycStatus,
+        kycFeePaid: users[0].kycFeePaid,
+        verificationStatus: users[0].verificationStatus
+      } : "No users found");
+      
       res.json(users);
     } catch (error) {
       console.error("Error fetching users:", error);
