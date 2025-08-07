@@ -1186,118 +1186,24 @@ export default function Admin() {
                       onClick={() => openUserProfile(user)}
                     >
                       <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1 min-w-0">
-                            <CardTitle className="flex items-center space-x-2 group-hover:text-primary transition-colors">
-                              <Users className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
-                              <span className="truncate">{user.firstName} {user.lastName}</span>
-                              {(() => {
-                                const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
-                                const kycStatus = user.kycStatus || user.kyc_status;
-                                const verificationStatus = user.verificationStatus || user.verification_status;
-                                
-
-                                
-                                // Show KYC Completed if fee is paid AND user is verified
-                                return kycFeePaid && verificationStatus === 'verified';
-                              })() && (
-                                <Badge className="bg-green-600 text-white text-xs">
-                                  <CheckCircle className="w-3 h-3 mr-1" />
-                                  KYC Completed
-                                </Badge>
-                              )}
-                            </CardTitle>
-                            <p className="text-sm text-gray-600 mt-1 truncate">{user.email}</p>
-                            <div className="flex items-center gap-2 mt-2">
-                              <Badge variant={user.status === 'suspended' ? 'destructive' : 'default'} className="text-xs">
-                                {user.status === 'suspended' ? 'Suspended' : 'Active'}
-                              </Badge>
-                              <span className="text-xs text-gray-500">
-                                Click to view full profile
-                              </span>
-                            </div>
+                        <div className="text-center">
+                          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <User className="w-6 h-6 text-primary" />
                           </div>
-                          <div className="flex items-center space-x-2 ml-3">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openUserProfile(user);
-                              }}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <Eye className="w-4 h-4 mr-1" />
-                              View Profile
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingUser(user);
-                                setIsEditDialogOpen(true);
-                              }}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <Edit className="w-4 h-4 mr-1" />
-                              Edit
-                            </Button>
-                          </div>
+                          <CardTitle className="text-lg font-semibold">{user.firstName} {user.lastName}</CardTitle>
+                          <p className="text-sm text-gray-600 mt-1">{user.email}</p>
                         </div>
                       </CardHeader>
                       <CardContent>
-                        {/* Minimal User Overview - Privacy Protected */}
-                        <div className="text-center py-6">
-                          <div className="flex items-center justify-center gap-3 mb-4">
-                            <Badge variant={user.status === 'suspended' ? 'destructive' : 'default'} className="text-xs">
-                              {user.status === 'suspended' ? 'Suspended' : 'Active'}
-                            </Badge>
-                            {(() => {
-                              const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
-                              const verificationStatus = user.verificationStatus || user.verification_status;
-                              
-                              if (kycFeePaid && verificationStatus === 'verified') {
-                                return (
-                                  <Badge className="bg-green-600 text-white text-xs">
-                                    <CheckCircle className="w-3 h-3 mr-1" />
-                                    KYC Complete
-                                  </Badge>
-                                );
-                              } else if (kycFeePaid) {
-                                return (
-                                  <Badge className="bg-blue-600 text-white text-xs">
-                                    <Clock className="w-3 h-3 mr-1" />
-                                    KYC Paid
-                                  </Badge>
-                                );
-                              } else {
-                                return (
-                                  <Badge variant="outline" className="text-gray-600 text-xs">
-                                    KYC Pending
-                                  </Badge>
-                                );
-                              }
-                            })()}
-                          </div>
-                          
-                          <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                            <Shield className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                            <p className="text-sm text-gray-600 mb-1">Protected User Information</p>
-                            <p className="text-xs text-gray-500">
-                              Personal details, KYC documents, banking information,<br />
-                              and address details are hidden for privacy protection.
-                            </p>
-                          </div>
-                          
+                        <div className="text-center">
                           <Button
                             variant="default"
                             size="sm"
                             onClick={() => openUserProfile(user)}
-                            className="w-full max-w-xs"
+                            className="w-full"
                           >
                             <Eye className="w-4 h-4 mr-2" />
-                            View Full Profile & Documents
+                            View Details
                           </Button>
                         </div>
 
