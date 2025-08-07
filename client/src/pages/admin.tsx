@@ -520,14 +520,12 @@ export default function Admin() {
     const kycStatus = user.kycStatus || user.kyc_status;
     const verificationStatus = user.verificationStatus || user.verification_status;
     
-    console.log(`Status check for ${user.email}:`, { kycFeePaid, kycStatus, verificationStatus });
-    
     // Priority 1: KYC Completed (fee paid + approved status)
     if (kycFeePaid && kycStatus === 'approved') {
       return <Badge className="bg-green-600 text-white"><CheckCircle className="w-3 h-3 mr-1" />KYC Completed</Badge>;
     }
     
-    // Priority 2: KYC Fee Paid but pending approval - THIS IS THE CASE FOR SONU
+    // Priority 2: KYC Fee Paid but pending approval
     if (kycFeePaid) {
       return <Badge className="bg-blue-600 text-white"><Clock className="w-3 h-3 mr-1" />KYC Fee Paid</Badge>;
     }
@@ -1102,7 +1100,7 @@ export default function Admin() {
                           <div>
                             <CardTitle className="flex items-center space-x-2">
                               <span>{user.firstName} {user.lastName}</span>
-                              {getStatusBadge(user.verificationStatus)}
+                              {getStatusBadge(user)}
                             </CardTitle>
                             <p className="text-sm text-gray-600 mt-1">{user.email}</p>
                           </div>
