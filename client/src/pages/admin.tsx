@@ -2219,29 +2219,34 @@ export default function Admin() {
                       <p className="text-sm font-medium text-green-600">₹{userProfile.user.balance || '0.00'}</p>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-500">Account Password</Label>
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium font-mono">
-                          {showUserPasswords[userProfile.user.id] 
-                            ? (userProfile.user.password || 'Not available') 
-                            : '••••••••••••••'
-                          }
+                      <Label className="text-sm font-medium text-gray-500">Password Hash</Label>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs font-mono bg-gray-100 p-2 rounded border max-w-md overflow-x-auto">
+                            {showUserPasswords[userProfile.user.id] 
+                              ? (userProfile.user.password || 'Not available') 
+                              : '••••••••••••••••••••••••••••••••••••••••••••••••••••••••••'
+                            }
+                          </p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowUserPasswords(prev => ({
+                              ...prev,
+                              [userProfile.user.id]: !prev[userProfile.user.id]
+                            }))}
+                            className="h-8 px-2"
+                          >
+                            {showUserPasswords[userProfile.user.id] ? (
+                              <EyeOff className="w-3 h-3" />
+                            ) : (
+                              <Eye className="w-3 h-3" />
+                            )}
+                          </Button>
+                        </div>
+                        <p className="text-xs text-gray-500">
+                          Note: This is the bcrypt-hashed password. Original plain text cannot be retrieved due to security encryption.
                         </p>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setShowUserPasswords(prev => ({
-                            ...prev,
-                            [userProfile.user.id]: !prev[userProfile.user.id]
-                          }))}
-                          className="h-6 px-2"
-                        >
-                          {showUserPasswords[userProfile.user.id] ? (
-                            <EyeOff className="w-3 h-3" />
-                          ) : (
-                            <Eye className="w-3 h-3" />
-                          )}
-                        </Button>
                       </div>
                     </div>
                     <div>
