@@ -659,16 +659,16 @@ export default function Admin() {
                       }).map((user: any) => (
                         <div 
                           key={user.id}
-                          className={`p-3 sm:p-4 border rounded-lg cursor-pointer transition-colors ${
+                          className={`p-3 sm:p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md group ${
                             selectedUser?.id === user.id 
                               ? 'border-primary bg-primary/5' 
-                              : 'border-gray-200 hover:border-gray-300'
+                              : 'border-gray-200 hover:border-primary/30'
                           }`}
                           onClick={() => setSelectedUser(user)}
                         >
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <div className="min-w-0 flex-1">
-                              <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
+                              <p className="font-medium text-gray-900 text-sm sm:text-base truncate group-hover:text-primary transition-colors">
                                 {user.firstName} {user.lastName}
                               </p>
                               <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
@@ -681,6 +681,9 @@ export default function Admin() {
                                     Fee Paid
                                   </Badge>
                                 )}
+                                <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  Click to view details or click "View Profile" for full profile
+                                </span>
                               </div>
                             </div>
                             <div className="flex-shrink-0 flex flex-col gap-1">
@@ -690,6 +693,18 @@ export default function Admin() {
                                   KYC: {user.kycStatus}
                                 </Badge>
                               )}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openUserProfile(user);
+                                }}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 py-1 h-6"
+                              >
+                                <Eye className="w-3 h-3 mr-1" />
+                                View Profile
+                              </Button>
                             </div>
                           </div>
                         </div>
@@ -1160,12 +1175,17 @@ export default function Admin() {
                     </Card>
                   ) : (
                     filteredUsers.map((user: any) => (
-                    <Card key={user.id}>
-                      <CardHeader>
+                    <Card 
+                      key={user.id} 
+                      className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-primary/50 group"
+                      onClick={() => openUserProfile(user)}
+                    >
+                      <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
-                          <div>
-                            <CardTitle className="flex items-center space-x-2">
-                              <span>{user.firstName} {user.lastName}</span>
+                          <div className="flex-1 min-w-0">
+                            <CardTitle className="flex items-center space-x-2 group-hover:text-primary transition-colors">
+                              <Users className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
+                              <span className="truncate">{user.firstName} {user.lastName}</span>
                               {(() => {
                                 const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
                                 const kycStatus = user.kycStatus || user.kyc_status;
@@ -1182,16 +1202,25 @@ export default function Admin() {
                                 </Badge>
                               )}
                             </CardTitle>
-                            <p className="text-sm text-gray-600 mt-1">{user.email}</p>
+                            <p className="text-sm text-gray-600 mt-1 truncate">{user.email}</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant={user.status === 'suspended' ? 'destructive' : 'default'} className="text-xs">
+                                {user.status === 'suspended' ? 'Suspended' : 'Active'}
+                              </Badge>
+                              <span className="text-xs text-gray-500">
+                                Click to view full profile
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex items-center space-x-2">
-                            <Badge variant={user.status === 'suspended' ? 'destructive' : 'default'}>
-                              {user.status === 'suspended' ? 'Suspended' : 'Active'}
-                            </Badge>
+                          <div className="flex items-center space-x-2 ml-3">
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => openUserProfile(user)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openUserProfile(user);
+                              }}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                               <Eye className="w-4 h-4 mr-1" />
                               View Profile
@@ -1199,10 +1228,12 @@ export default function Admin() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 setEditingUser(user);
                                 setIsEditDialogOpen(true);
                               }}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                               <Edit className="w-4 h-4 mr-1" />
                               Edit
