@@ -26,31 +26,39 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-gray-900 text-gray-300">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 sm:py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <footer className="bg-white border-t border-gray-200">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-12 sm:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Company Info */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Play className="text-white w-4 h-4" />
+          <div className="lg:col-span-2">
+            <div className="flex items-center space-x-2 mb-6">
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <Play className="text-white w-5 h-5" />
               </div>
-              <span className="text-xl font-bold text-white">EarnPay</span>
+              <span className="text-2xl font-bold text-gray-900">EarnPay</span>
             </div>
-            <p className="text-sm text-gray-400 mb-4">
-              Revolutionizing video monetization by rewarding genuine engagement and creating sustainable income opportunities for users worldwide.
+            <p className="text-gray-600 mb-6 leading-relaxed max-w-md">
+              Transform your free time into real income. Join thousands of users who are already earning money by watching videos on our platform.
             </p>
+            <div className="flex space-x-4">
+              <div className="bg-gray-50 hover:bg-gray-100 p-3 rounded-lg transition-colors cursor-pointer">
+                <span className="text-sm font-medium text-gray-700">Trusted Platform</span>
+              </div>
+              <div className="bg-gray-50 hover:bg-gray-100 p-3 rounded-lg transition-colors cursor-pointer">
+                <span className="text-sm font-medium text-gray-700">Secure Payments</span>
+              </div>
+            </div>
           </div>
 
           {/* Company Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Company</h3>
-            <ul className="space-y-2">
+            <h3 className="text-gray-900 font-bold text-lg mb-6">Company</h3>
+            <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.href}>
                   <Link 
                     href={link.href} 
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium"
                   >
                     {link.label}
                   </Link>
@@ -61,13 +69,13 @@ export default function Footer() {
 
           {/* Earn Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Earn</h3>
-            <ul className="space-y-2">
+            <h3 className="text-gray-900 font-bold text-lg mb-6">Earn Money</h3>
+            <ul className="space-y-3">
               {earnLinks.map((link) => (
                 <li key={link.href}>
                   <Link 
                     href={link.href} 
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium"
                   >
                     {link.label}
                   </Link>
@@ -76,25 +84,28 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Support & Legal Combined */}
+          {/* Support & Legal */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Support & Legal</h3>
-            <ul className="space-y-2">
+            <h3 className="text-gray-900 font-bold text-lg mb-6">Support</h3>
+            <ul className="space-y-3">
               {supportLinks.map((link, index) => (
                 <li key={`${link.href}-${index}`}>
                   <Link 
                     href={link.href} 
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium"
                   >
                     {link.label}
                   </Link>
                 </li>
               ))}
+              <li className="pt-4 border-t border-gray-100">
+                <span className="text-gray-900 font-semibold text-sm block mb-3">Legal</span>
+              </li>
               {legalLinks.map((link) => (
                 <li key={link.href}>
                   <Link 
                     href={link.href} 
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium"
                   >
                     {link.label}
                   </Link>
@@ -105,14 +116,19 @@ export default function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-gray-800 mt-8 pt-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="text-sm text-gray-400">
-              © 2025 EarnPay Technologies Pvt Ltd. All rights reserved.
+        <div className="border-t border-gray-200 mt-12 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Play className="text-white w-4 h-4" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">EarnPay</span>
+              <span className="text-sm text-gray-500">•</span>
+              <span className="text-sm text-gray-600">Video Monetization Platform</span>
             </div>
-            <div className="flex items-center gap-4 text-sm text-gray-400">
-              <span>Platform Status: Online</span>
-              <span>•</span>
+            <div className="flex flex-col sm:flex-row items-center gap-4 text-sm text-gray-500">
+              <span>© 2024 EarnPay Technologies. All rights reserved.</span>
+              <span className="hidden sm:block">•</span>
               <span>200K+ Active Users</span>
             </div>
           </div>
