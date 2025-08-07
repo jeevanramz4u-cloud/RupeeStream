@@ -1100,7 +1100,6 @@ export default function Admin() {
                           <div>
                             <CardTitle className="flex items-center space-x-2">
                               <span>{user.firstName} {user.lastName}</span>
-                              {getStatusBadge(user)}
                             </CardTitle>
                             <p className="text-sm text-gray-600 mt-1">{user.email}</p>
                           </div>
