@@ -17,24 +17,36 @@ import {
 export default function Support() {
   const faqItems = [
     {
+      question: "What bonuses do I get when signing up?",
+      answer: "You receive a ₹1,000 signup bonus when you create your account and complete the registration process. This bonus is credited to your account immediately after successful signup."
+    },
+    {
       question: "How do I earn money on EarnPay?",
-      answer: "You earn money by watching videos completely without skipping or fast-forwarding. Each video has a specific earning amount that gets credited to your account once you finish watching it."
+      answer: "You earn money by watching videos completely without skipping or fast-forwarding. Each video has a specific earning amount that gets credited to your account once you finish watching it. Additionally, you earn ₹10 every hour as a login bonus just for being active on the platform."
+    },
+    {
+      question: "What is the hourly login bonus?",
+      answer: "You earn ₹10 every hour simply by logging into your account and staying active on the platform. This bonus is automatically credited to your account for each hour you remain logged in."
+    },
+    {
+      question: "What fees are required on the platform?",
+      answer: "There are two required fees: (1) ₹99 KYC processing fee - mandatory for document verification and to access payout features, and (2) ₹49 account reactivation fee - required if your account gets suspended for not meeting daily watch time targets for 3 consecutive days."
     },
     {
       question: "What is the daily target requirement?",
-      answer: "You must watch videos for a minimum of 8 hours daily to maintain your account in good standing. Failing to meet this requirement may result in account suspension."
+      answer: "You must watch videos for a minimum of 8 hours daily to maintain your account in good standing. Failing to meet this requirement for 3 consecutive days may result in account suspension, which requires a ₹49 reactivation fee."
     },
     {
       question: "How does the referral program work?",
-      answer: "Share your unique referral code with friends. When they sign up and get verified, you earn ₹49. There's no limit to how many people you can refer."
+      answer: "Share your unique referral code with friends. When they sign up and complete their KYC verification, you earn ₹49. There's no limit to how many people you can refer."
     },
     {
       question: "When do I get paid?",
-      answer: "Payouts are processed weekly on Tuesdays. You can request a payout anytime, and it will be included in the next weekly batch."
+      answer: "Payouts are processed weekly on Tuesdays. You can request a payout anytime after completing KYC verification, and it will be included in the next weekly batch."
     },
     {
       question: "What verification documents do I need?",
-      answer: "You need to upload a government-issued ID (Aadhaar, Passport, or Driver's License) and provide your bank account details for verification and payouts."
+      answer: "You need to upload a government-issued ID (Aadhaar, Passport, or Driver's License) and provide your bank account details for verification and payouts. A ₹99 processing fee is required to complete the KYC verification."
     },
     {
       question: "Can I skip or fast-forward videos?",
@@ -42,11 +54,11 @@ export default function Support() {
     },
     {
       question: "How long does verification take?",
-      answer: "Account verification typically takes 24-48 hours. Our admin team reviews all submitted documents manually to ensure security."
+      answer: "Account verification typically takes 24-48 hours after payment of the ₹99 processing fee. Our admin team reviews all submitted documents manually to ensure security."
     },
     {
       question: "What happens if I don't meet the daily target?",
-      answer: "If you consistently fail to meet the 8-hour daily target, your account may be suspended. It's important to maintain regular viewing activity."
+      answer: "If you fail to meet the 8-hour daily target for 3 consecutive days, your account will be suspended. To reactivate it, you'll need to pay a ₹49 reactivation fee."
     }
   ];
 
