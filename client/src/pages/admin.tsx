@@ -1309,40 +1309,78 @@ export default function Admin() {
                         {/* Action Buttons */}
                         <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t">
                           {/* Verification Actions */}
-                          {/* Only show approve/reject for users who haven't completed KYC and haven't paid fee */}
+                          {/* Show verification actions based on user status */}
                           {(() => {
                             const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
                             const kycStatus = user.kycStatus || user.kyc_status;
                             const verificationStatus = user.verificationStatus || user.verification_status;
-                            // Don't show approve/reject if user paid fee or already completed KYC
-                            return verificationStatus === 'pending' && !kycFeePaid && kycStatus !== 'approved';
+                            
+                            // Show approve/reject for pending users who haven't paid fee
+                            const showApproveReject = verificationStatus === 'pending' && !kycFeePaid;
+                            // Show reset for verified users or rejected users
+                            const showReset = verificationStatus === 'verified' || verificationStatus === 'rejected';
+                            
+                            return showApproveReject || showReset;
                           })() && (
                             <>
-                              <Button 
-                                size="sm"
-                                className="bg-secondary hover:bg-secondary/90 text-white text-xs"
-                                onClick={() => verifyUserMutation.mutate({
-                                  userId: user.id,
-                                  status: 'verified'
-                                })}
-                                disabled={verifyUserMutation.isPending}
-                              >
-                                <CheckCircle className="w-3 h-3 sm:mr-1" />
-                                <span className="hidden sm:inline">Approve</span>
-                              </Button>
-                              <Button 
-                                size="sm"
-                                variant="destructive"
-                                className="text-xs"
-                                onClick={() => verifyUserMutation.mutate({
-                                  userId: user.id,
-                                  status: 'rejected'
-                                })}
-                                disabled={verifyUserMutation.isPending}
-                              >
-                                <XCircle className="w-3 h-3 sm:mr-1" />
-                                <span className="hidden sm:inline">Reject</span>
-                              </Button>
+                              {(() => {
+                                const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
+                                const verificationStatus = user.verificationStatus || user.verification_status;
+                                
+                                // Show approve/reject for pending users who haven't paid fee
+                                if (verificationStatus === 'pending' && !kycFeePaid) {
+                                  return (
+                                    <>
+                                      <Button 
+                                        size="sm"
+                                        className="bg-secondary hover:bg-secondary/90 text-white text-xs"
+                                        onClick={() => verifyUserMutation.mutate({
+                                          userId: user.id,
+                                          status: 'verified'
+                                        })}
+                                        disabled={verifyUserMutation.isPending}
+                                      >
+                                        <CheckCircle className="w-3 h-3 sm:mr-1" />
+                                        <span className="hidden sm:inline">Approve</span>
+                                      </Button>
+                                      <Button 
+                                        size="sm"
+                                        variant="destructive"
+                                        className="text-xs"
+                                        onClick={() => verifyUserMutation.mutate({
+                                          userId: user.id,
+                                          status: 'rejected'
+                                        })}
+                                        disabled={verifyUserMutation.isPending}
+                                      >
+                                        <XCircle className="w-3 h-3 sm:mr-1" />
+                                        <span className="hidden sm:inline">Reject</span>
+                                      </Button>
+                                    </>
+                                  );
+                                }
+                                
+                                // Show reset for verified/rejected users
+                                if (verificationStatus === 'verified' || verificationStatus === 'rejected') {
+                                  return (
+                                    <Button 
+                                      size="sm"
+                                      variant="outline"
+                                      className="text-xs"
+                                      onClick={() => verifyUserMutation.mutate({
+                                        userId: user.id,
+                                        status: 'pending'
+                                      })}
+                                      disabled={verifyUserMutation.isPending}
+                                    >
+                                      <RotateCcw className="w-3 h-3 sm:mr-1" />
+                                      <span className="hidden sm:inline">Reset Verification</span>
+                                    </Button>
+                                  );
+                                }
+                                
+                                return null;
+                              })()}
                             </>
                           )}
                           
