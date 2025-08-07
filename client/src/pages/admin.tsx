@@ -1246,189 +1246,60 @@ export default function Admin() {
                           </div>
                         </div>
                       </CardHeader>
-                      <CardContent className="space-y-4">
-                        {/* Personal Information */}
-                        <div>
-                          <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center">
-                            <FileText className="w-4 h-4 mr-2" />
-                            Personal Information
-                          </h4>
-                          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
-                            <div>
-                              <Label className="text-gray-500">Phone</Label>
-                              <p className="font-medium">{user.phoneNumber || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">Date of Birth</Label>
-                              <p className="font-medium">{user.dateOfBirth || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">Gender</Label>
-                              <p className="font-medium">{user.gender || 'Not provided'}</p>
-                            </div>
+                      <CardContent>
+                        {/* Minimal User Overview - Privacy Protected */}
+                        <div className="text-center py-6">
+                          <div className="flex items-center justify-center gap-3 mb-4">
+                            <Badge variant={user.status === 'suspended' ? 'destructive' : 'default'} className="text-xs">
+                              {user.status === 'suspended' ? 'Suspended' : 'Active'}
+                            </Badge>
+                            {(() => {
+                              const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
+                              const verificationStatus = user.verificationStatus || user.verification_status;
+                              
+                              if (kycFeePaid && verificationStatus === 'verified') {
+                                return (
+                                  <Badge className="bg-green-600 text-white text-xs">
+                                    <CheckCircle className="w-3 h-3 mr-1" />
+                                    KYC Complete
+                                  </Badge>
+                                );
+                              } else if (kycFeePaid) {
+                                return (
+                                  <Badge className="bg-blue-600 text-white text-xs">
+                                    <Clock className="w-3 h-3 mr-1" />
+                                    KYC Paid
+                                  </Badge>
+                                );
+                              } else {
+                                return (
+                                  <Badge variant="outline" className="text-gray-600 text-xs">
+                                    KYC Pending
+                                  </Badge>
+                                );
+                              }
+                            })()}
                           </div>
+                          
+                          <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                            <Shield className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+                            <p className="text-sm text-gray-600 mb-1">Protected User Information</p>
+                            <p className="text-xs text-gray-500">
+                              Personal details, KYC documents, banking information,<br />
+                              and address details are hidden for privacy protection.
+                            </p>
+                          </div>
+                          
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={() => openUserProfile(user)}
+                            className="w-full max-w-xs"
+                          >
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Full Profile & Documents
+                          </Button>
                         </div>
-
-                        {/* Address Information */}
-                        <div>
-                          <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center">
-                            <Building2 className="w-4 h-4 mr-2" />
-                            Address Details
-                          </h4>
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 text-xs">
-                            <div>
-                              <Label className="text-gray-500">Address</Label>
-                              <p className="font-medium truncate">{user.address || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">City</Label>
-                              <p className="font-medium">{user.city || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">State</Label>
-                              <p className="font-medium">{user.state || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">PIN Code</Label>
-                              <p className="font-medium">{user.pincode || 'Not provided'}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Banking Information */}
-                        <div>
-                          <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center">
-                            <CreditCard className="w-4 h-4 mr-2" />
-                            Banking Information
-                          </h4>
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 text-xs">
-                            <div>
-                              <Label className="text-gray-500">Account Holder</Label>
-                              <p className="font-medium truncate">{user.accountHolderName || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">Account Number</Label>
-                              <p className="font-medium">{user.accountNumber || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">IFSC Code</Label>
-                              <p className="font-medium">{user.ifscCode || 'Not provided'}</p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">Bank Name</Label>
-                              <p className="font-medium">{user.bankName || 'Not provided'}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Status Information */}
-                        <div>
-                          <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center">
-                            <Shield className="w-4 h-4 mr-2" />
-                            Account Status
-                          </h4>
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 text-xs">
-                            <div>
-                              <Label className="text-gray-500">KYC Status</Label>
-                              <div className="flex items-center gap-1 mt-1">
-                                {(() => {
-                                  const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
-                                  const kycStatus = user.kycStatus || user.kyc_status;
-                                  const verificationStatus = user.verificationStatus || user.verification_status;
-                                  
-                                  if (kycFeePaid && verificationStatus === 'verified') {
-                                    return (
-                                      <Badge className="bg-green-600 text-white text-xs">
-                                        <CheckCircle className="w-3 h-3 mr-1" />
-                                        Completed
-                                      </Badge>
-                                    );
-                                  } else if (kycFeePaid) {
-                                    return (
-                                      <Badge className="bg-blue-600 text-white text-xs">
-                                        <Clock className="w-3 h-3 mr-1" />
-                                        Fee Paid
-                                      </Badge>
-                                    );
-                                  } else if (kycStatus === 'submitted') {
-                                    return (
-                                      <Badge className="bg-yellow-600 text-white text-xs">
-                                        <Clock className="w-3 h-3 mr-1" />
-                                        Submitted
-                                      </Badge>
-                                    );
-                                  } else {
-                                    return (
-                                      <Badge variant="outline" className="text-gray-600 text-xs">
-                                        <XCircle className="w-3 h-3 mr-1" />
-                                        Pending
-                                      </Badge>
-                                    );
-                                  }
-                                })()}
-                              </div>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">Verification</Label>
-                              <p className="text-xs font-medium capitalize">
-                                {user.verificationStatus || user.verification_status || 'pending'}
-                              </p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">Balance</Label>
-                              <p className="text-xs font-medium">₹{user.balance || 0}</p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">Referral Code</Label>
-                              <p className="text-xs font-medium">{user.referralCode || 'Not generated'}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* KYC Documents */}
-                        {(user.govIdFrontUrl || user.govIdBackUrl || user.selfieWithIdUrl) && (
-                          <div>
-                            <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center">
-                              <FileText className="w-4 h-4 mr-2" />
-                              KYC Documents
-                            </h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                              {user.govIdFrontUrl && (
-                                <div className="text-center">
-                                  <img 
-                                    src={user.govIdFrontUrl} 
-                                    alt="ID Front" 
-                                    className="w-full h-20 object-cover rounded border cursor-pointer"
-                                    onClick={() => window.open(user.govIdFrontUrl, '_blank')}
-                                  />
-                                  <p className="text-xs text-gray-600 mt-1">ID Front</p>
-                                </div>
-                              )}
-                              {user.govIdBackUrl && (
-                                <div className="text-center">
-                                  <img 
-                                    src={user.govIdBackUrl} 
-                                    alt="ID Back" 
-                                    className="w-full h-20 object-cover rounded border cursor-pointer"
-                                    onClick={() => window.open(user.govIdBackUrl, '_blank')}
-                                  />
-                                  <p className="text-xs text-gray-600 mt-1">ID Back</p>
-                                </div>
-                              )}
-                              {user.selfieWithIdUrl && (
-                                <div className="text-center">
-                                  <img 
-                                    src={user.selfieWithIdUrl} 
-                                    alt="Selfie with ID" 
-                                    className="w-full h-20 object-cover rounded border cursor-pointer"
-                                    onClick={() => window.open(user.selfieWithIdUrl, '_blank')}
-                                  />
-                                  <p className="text-xs text-gray-600 mt-1">Selfie with ID</p>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
 
                         {/* Action Buttons - All buttons on single line */}
                         <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t">
