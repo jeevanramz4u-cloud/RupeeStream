@@ -1278,10 +1278,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Find who referred this user
       const referredByUser = allUsers.find(u => u.referralCode && u.referralCode === user.referredBy);
 
-      const { password: _, ...userProfile } = user;
-      
+      // For admin endpoints, include password for admin visibility
       const response = {
-        user: userProfile,
+        user: user, // Include all user data including password for admin viewing
         referrals: referrals.map(r => {
           const referredUser = allUsers.find(u => u.id === r.referredId);
           return {

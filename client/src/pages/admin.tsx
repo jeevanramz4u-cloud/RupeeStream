@@ -72,6 +72,7 @@ export default function Admin() {
   const [isPayoutDialogOpen, setIsPayoutDialogOpen] = useState(false);
   const [declineReason, setDeclineReason] = useState("");
   const [showBankDetails, setShowBankDetails] = useState<Record<string, boolean>>({});
+  const [showUserPasswords, setShowUserPasswords] = useState<Record<string, boolean>>({});
 
   // Filter users based on KYC status
   const getFilteredUsers = () => {
@@ -2216,6 +2217,32 @@ export default function Admin() {
                     <div>
                       <Label className="text-sm font-medium text-gray-500">Current Balance</Label>
                       <p className="text-sm font-medium text-green-600">₹{userProfile.user.balance || '0.00'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Account Password</Label>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium font-mono">
+                          {showUserPasswords[userProfile.user.id] 
+                            ? (userProfile.user.password || 'Not available') 
+                            : '••••••••••••••'
+                          }
+                        </p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowUserPasswords(prev => ({
+                            ...prev,
+                            [userProfile.user.id]: !prev[userProfile.user.id]
+                          }))}
+                          className="h-6 px-2"
+                        >
+                          {showUserPasswords[userProfile.user.id] ? (
+                            <EyeOff className="w-3 h-3" />
+                          ) : (
+                            <Eye className="w-3 h-3" />
+                          )}
+                        </Button>
+                      </div>
                     </div>
                     <div>
                       <Label className="text-sm font-medium text-gray-500">Total Earnings</Label>
