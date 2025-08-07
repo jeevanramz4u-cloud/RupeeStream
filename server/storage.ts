@@ -867,11 +867,31 @@ export class DatabaseStorage implements IStorage {
     };
   }
 
-  async getAllPaymentHistory(): Promise<PaymentHistory[]> {
-    return await db
-      .select()
-      .from(paymentHistory)
-      .orderBy(desc(paymentHistory.createdAt));
+  async getAllPaymentHistory(): Promise<any[]> {
+    try {
+      const payments = await db
+        .select({
+          id: paymentHistory.id,
+          userId: paymentHistory.userId,
+          userEmail: users.email,
+          userName: sql<string>`COALESCE(CONCAT(${users.firstName}, ' ', ${users.lastName}), 'Unknown User')`,
+          type: paymentHistory.type,
+          amount: paymentHistory.amount,
+          orderId: paymentHistory.orderId,
+          paymentMethod: paymentHistory.paymentMethod,
+          status: paymentHistory.status,
+          createdAt: paymentHistory.createdAt
+        })
+        .from(paymentHistory)
+        .leftJoin(users, eq(paymentHistory.userId, users.id))
+        .orderBy(desc(paymentHistory.createdAt))
+        .limit(500);
+      
+      return payments;
+    } catch (error) {
+      console.error("Error fetching all payment history:", error);
+      return [];
+    }
   }
 }
 

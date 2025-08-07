@@ -1,6 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -8,15 +9,31 @@ import { AlertTriangle, CreditCard, Clock, Shield, LogOut, Home } from "lucide-r
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { useLocation } from "wouter";
 import Header from "@/components/Header";
 
 export default function SuspendedPage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
+  // Redirect non-suspended users away from this page
+  useEffect(() => {
+    if (!isLoading && user && (user as any)?.status !== 'suspended') {
+      console.log('Non-suspended user accessing suspended page - redirecting to dashboard');
+      setLocation('/dashboard');
+    }
+  }, [user, isLoading, setLocation]);
+
+  // Don't render for non-suspended users
+  if (!isLoading && user && (user as any)?.status !== 'suspended') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   const reactivationMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/account/reactivate-payment"),

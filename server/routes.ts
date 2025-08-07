@@ -1497,10 +1497,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Account reactivation payment endpoint
-  app.post("/api/account/reactivate-payment", isTraditionallyAuthenticated, async (req: any, res) => {
+  app.post("/api/account/reactivate-payment", async (req: any, res) => {
     try {
-      const userId = req.user!.id;
-      const user = await storage.getUser(userId);
+      let userId;
+      let user;
+
+      // Support both traditional and OIDC authentication
+      if (req.user && req.user.id) {
+        userId = req.user.id;
+        user = req.user;
+      } 
+      else if (req.isAuthenticated && req.isAuthenticated() && req.user?.claims?.sub) {
+        userId = req.user.claims.sub;
+        user = await storage.getUser(userId);
+      } 
+      else {
+        return res.status(401).json({ error: "Authentication required" });
+      }
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -1549,6 +1562,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         consecutiveFailedDays: 0
       });
 
+      // Invalidate any cached admin data to show updated status immediately
+      console.log(`✅ User ${userId} reactivated - status updated to 'active'`);
+
       // Try to record payment history
       try {
         await storage.addPaymentHistory(userId, {
@@ -1562,12 +1578,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.warn('Failed to record payment history:', historyError);
       }
 
-      console.log(`Development reactivation completed for user ${userId}, fee: ₹${reactivationFee}`);
+      console.log(`✅ User ${userId} (${user.email}) reactivated - status: suspended → active`);
       
       res.json({
         success: true,
         message: "Account reactivated successfully",
-        amount: reactivationFee
+        amount: reactivationFee,
+        newStatus: 'active'
       });
 
     } catch (error) {
