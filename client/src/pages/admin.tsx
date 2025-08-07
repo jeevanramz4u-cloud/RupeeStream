@@ -982,7 +982,7 @@ export default function Admin() {
                       </p>
                     ) : (
                       <p className="text-sm text-gray-600">
-                        Total Users: {users?.length || 0}
+                        Total Users: {Array.isArray(users) ? users.length : 0}
                       </p>
                     )}
                   </div>
@@ -1109,7 +1109,18 @@ export default function Admin() {
                               {(() => {
                                 const kycFeePaid = user.kycFeePaid || user.kyc_fee_paid;
                                 const kycStatus = user.kycStatus || user.kyc_status;
-                                return kycFeePaid && kycStatus === 'approved';
+                                const verificationStatus = user.verificationStatus || user.verification_status;
+                                
+                                // Debug: Log user KYC data to console
+                                console.log(`User ${user.email} KYC Debug:`, {
+                                  kycFeePaid, 
+                                  kycStatus, 
+                                  verificationStatus,
+                                  showBadge: kycFeePaid && verificationStatus === 'verified'
+                                });
+                                
+                                // Show KYC Completed if fee is paid AND user is verified
+                                return kycFeePaid && verificationStatus === 'verified';
                               })() && (
                                 <Badge className="bg-green-600 text-white text-xs">
                                   <CheckCircle className="w-3 h-3 mr-1" />
