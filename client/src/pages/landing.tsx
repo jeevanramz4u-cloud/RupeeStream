@@ -104,99 +104,137 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose EarnPay?</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Join thousands of users who are already earning money by watching videos on our platform.
+      <section id="features" className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-white via-indigo-50/30 to-purple-50/20 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-[0.02]">
+          <div className="absolute top-10 left-20 w-80 h-80 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tr from-blue-400 to-cyan-400 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/4 w-40 h-40 bg-gradient-to-br from-pink-400 to-rose-400 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-16">
+            {/* Features Icon Badge */}
+            <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full mb-8">
+              <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-full shadow-lg">
+                <Shield className="w-8 h-8" />
+              </div>
+            </div>
+            
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              Why Choose
+              <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                EarnPay?
+              </span>
+            </h2>
+            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Experience the most trusted and rewarding platform for earning money through video engagement
             </p>
+            
+            {/* Decorative divider */}
+            <div className="flex items-center justify-center mt-8 mb-4">
+              <div className="h-1 w-20 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full"></div>
+              <div className="mx-4 w-3 h-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full"></div>
+              <div className="h-1 w-20 bg-gradient-to-r from-purple-600 to-indigo-500 rounded-full"></div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card>
-              <CardHeader>
-                <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Coins className="text-secondary w-6 h-6" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+            {/* Real Money Earnings */}
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-green-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Coins className="text-white w-8 h-8" />
                 </div>
-                <CardTitle>Real Money Earnings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Earn real rupees for every video you watch completely. No fake rewards or points.
-                </p>
-              </CardContent>
-            </Card>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">Real Money Earnings</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Earn real rupees for every video you watch completely. No fake rewards or points - just genuine cash earnings.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
-                  <Users className="text-accent w-6 h-6" />
+            {/* Referral Bonuses */}
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-blue-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Users className="text-white w-8 h-8" />
                 </div>
-                <CardTitle>Referral Bonuses</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Earn ₹49 for every friend you refer who gets verified on our platform.
-                </p>
-              </CardContent>
-            </Card>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">Referral Bonuses</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Earn ₹49 for every friend you refer who gets verified on our platform. Build your network and increase earnings.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Clock className="text-primary w-6 h-6" />
+            {/* Flexible Schedule */}
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-orange-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Clock className="text-white w-8 h-8" />
                 </div>
-                <CardTitle>Flexible Schedule</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Watch videos anytime, anywhere. Meet the 8-hour daily target to maximize earnings.
-                </p>
-              </CardContent>
-            </Card>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-orange-600 transition-colors">Flexible Schedule</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Watch videos anytime, anywhere. Meet the 8-hour daily target to maximize earnings with complete flexibility.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                  <CheckCircle className="text-purple-600 w-6 h-6" />
+            {/* Weekly Payouts */}
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-purple-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <CheckCircle className="text-white w-8 h-8" />
                 </div>
-                <CardTitle>Weekly Payouts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Receive your earnings every Tuesday directly to your bank account.
-                </p>
-              </CardContent>
-            </Card>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors">Weekly Payouts</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Receive your earnings every Tuesday directly to your bank account. Fast, secure, and reliable payments.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                  <Shield className="text-orange-600 w-6 h-6" />
+            {/* Secure & Verified */}
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-cyan-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Shield className="text-white w-8 h-8" />
                 </div>
-                <CardTitle>Secure & Verified</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Government ID verification ensures a safe and trusted earning environment.
-                </p>
-              </CardContent>
-            </Card>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-cyan-600 transition-colors">Secure & Verified</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Government ID verification ensures a safe and trusted earning environment for all users.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-teal-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Play className="text-secondary w-6 h-6" />
+            {/* Quality Content */}
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-violet-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Play className="text-white w-8 h-8" />
                 </div>
-                <CardTitle>Quality Content</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Watch curated, high-quality videos across various categories and topics.
-                </p>
-              </CardContent>
-            </Card>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-violet-600 transition-colors">Quality Content</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Watch curated, high-quality videos across various categories and topics that are both entertaining and rewarding.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
