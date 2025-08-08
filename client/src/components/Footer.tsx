@@ -43,7 +43,7 @@ export default function Footer() {
               <span className="text-xl font-bold text-gray-900">EarnPay</span>
             </div>
             <p className="text-gray-600 mb-4 leading-relaxed text-sm">
-              Transform your free time into real income. Join thousands of users who are already earning money by watching videos on our platform.
+              Transform your free time into real income.
             </p>
           </div>
 
@@ -146,7 +146,7 @@ export default function Footer() {
               <span className="text-xl sm:text-2xl font-bold text-gray-900">EarnPay</span>
             </div>
             <p className="text-gray-600 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base max-w-md">
-              Transform your free time into real income. Join thousands of users who are already earning money by watching videos on our platform.
+              Transform your free time into real income.
             </p>
           </div>
 
