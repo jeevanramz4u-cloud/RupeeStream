@@ -28,13 +28,13 @@ export default function Landing() {
             </div>
           </div>
           
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-gray-900 mb-6 sm:mb-8 leading-tight tracking-tight">
             Earn Money by<br />
-            <span className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent font-black">
               Watching Videos
             </span>
           </h1>
-          <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-8 sm:mb-10 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-8 sm:mb-10 max-w-4xl mx-auto leading-relaxed font-medium">
             Turn your free time into income. Watch entertaining videos, complete daily targets, 
             and earn real money with our trusted platform.
           </p>
@@ -47,8 +47,8 @@ export default function Landing() {
                   <Coins className="w-7 h-7 text-green-600" />
                 </div>
                 <div className="text-left">
-                  <span className="text-2xl font-bold text-green-700 block">₹1,000</span>
-                  <span className="text-gray-600">Signup Bonus</span>
+                  <span className="text-2xl font-black text-green-700 block tracking-tight">₹1,000</span>
+                  <span className="text-gray-600 font-medium text-sm">Signup Bonus</span>
                 </div>
               </div>
               <div className="flex items-center gap-4 justify-center sm:justify-start">
@@ -56,8 +56,8 @@ export default function Landing() {
                   <Clock className="w-7 h-7 text-blue-600" />
                 </div>
                 <div className="text-left">
-                  <span className="text-2xl font-bold text-blue-700 block">₹10/Hour</span>
-                  <span className="text-gray-600">Login Bonus</span>
+                  <span className="text-2xl font-black text-blue-700 block tracking-tight">₹10/Hour</span>
+                  <span className="text-gray-600 font-medium text-sm">Login Bonus</span>
                 </div>
               </div>
             </div>
@@ -121,13 +121,13 @@ export default function Landing() {
               </div>
             </div>
             
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
               Why Choose
-              <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-black">
                 EarnPay?
               </span>
             </h2>
-            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
               Experience the most trusted and rewarding platform for earning money through video engagement
             </p>
             
@@ -147,8 +147,8 @@ export default function Landing() {
                   <Coins className="text-white w-8 h-8" />
                 </div>
                 <div className="pt-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">Real Money Earnings</h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-green-600 transition-colors tracking-tight">Real Money Earnings</h3>
+                  <p className="text-gray-600 leading-relaxed font-medium">
                     Earn real rupees for every video you watch completely. No fake rewards or points - just genuine cash earnings.
                   </p>
                 </div>
@@ -163,8 +163,8 @@ export default function Landing() {
                   <Users className="text-white w-8 h-8" />
                 </div>
                 <div className="pt-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">Referral Bonuses</h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-blue-600 transition-colors tracking-tight">Referral Bonuses</h3>
+                  <p className="text-gray-600 leading-relaxed font-medium">
                     Earn ₹49 for every friend you refer who gets verified on our platform. Build your network and increase earnings.
                   </p>
                 </div>
@@ -255,10 +255,10 @@ export default function Landing() {
                 <Play className="w-6 h-6" />
               </div>
             </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
               How It Works
             </h2>
-            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
               Simple steps to start earning money by watching videos
             </p>
           </div>
@@ -274,8 +274,8 @@ export default function Landing() {
                 <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <User className="text-green-600 w-8 h-8 lg:w-10 lg:h-10" />
                 </div>
-                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Sign Up & Verify</h3>
-                <p className="text-gray-600 text-center leading-relaxed">Create your account, upload your government ID and bank details for verification.</p>
+                <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Sign Up & Verify</h3>
+                <p className="text-gray-600 text-center leading-relaxed font-medium">Create your account, upload your government ID and bank details for verification.</p>
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
             </div>
@@ -364,13 +364,13 @@ export default function Landing() {
               </div>
             </div>
             
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
               Frequently Asked
-              <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent font-black">
                 Questions
               </span>
             </h2>
-            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
               Get answers to common questions about earning money with EarnPay
             </p>
             
@@ -604,16 +604,16 @@ export default function Landing() {
           </div>
           
           <div className="mb-12">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 text-white leading-tight tracking-tight">
               Ready to Start
-              <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent font-black">
                 Earning?
               </span>
             </h2>
-            <p className="text-xl lg:text-2xl mb-6 text-white/90 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl mb-6 text-white/90 max-w-4xl mx-auto leading-relaxed font-medium">
               Join our community and turn your free time into real income with our trusted platform.
             </p>
-            <p className="text-lg text-white/80 max-w-3xl mx-auto">
+            <p className="text-lg text-white/80 max-w-3xl mx-auto font-medium">
               Watch videos, earn money, and get paid weekly. Start your earning journey today.
             </p>
           </div>
@@ -640,18 +640,18 @@ export default function Landing() {
           <div className="mt-16 grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
               <CheckCircle className="w-8 h-8 text-white mx-auto mb-3" />
-              <div className="text-white font-semibold text-lg">No Hidden Fees</div>
-              <div className="text-white/80 text-sm mt-1">Transparent pricing always</div>
+              <div className="text-white font-bold text-lg tracking-tight">No Hidden Fees</div>
+              <div className="text-white/80 text-sm mt-1 font-medium">Transparent pricing always</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
               <Coins className="w-8 h-8 text-white mx-auto mb-3" />
-              <div className="text-white font-semibold text-lg">Weekly Payouts</div>
-              <div className="text-white/80 text-sm mt-1">Every Tuesday guaranteed</div>
+              <div className="text-white font-bold text-lg tracking-tight">Weekly Payouts</div>
+              <div className="text-white/80 text-sm mt-1 font-medium">Every Tuesday guaranteed</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
               <Shield className="w-8 h-8 text-white mx-auto mb-3" />
-              <div className="text-white font-semibold text-lg">24/7 Support</div>
-              <div className="text-white/80 text-sm mt-1">Always here to help</div>
+              <div className="text-white font-bold text-lg tracking-tight">24/7 Support</div>
+              <div className="text-white/80 text-sm mt-1 font-medium">Always here to help</div>
             </div>
           </div>
         </div>
