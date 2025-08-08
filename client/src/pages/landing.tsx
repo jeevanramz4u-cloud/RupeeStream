@@ -55,15 +55,15 @@ export default function Landing() {
                 <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <Coins className="w-10 h-10 text-white" />
                 </div>
-                <div className="font-code text-4xl font-bold text-emerald-600 mb-1">₹2,500</div>
-                <div className="text-gray-600 font-medium">Daily Potential</div>
+                <div className="font-code text-4xl font-bold text-emerald-600 mb-1">₹1,000</div>
+                <div className="text-gray-600 font-medium">Signup Bonus</div>
               </div>
               
               <div className="text-center group">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <TrendingUp className="w-10 h-10 text-white" />
                 </div>
-                <div className="font-code text-4xl font-bold text-blue-600 mb-1">₹15</div>
+                <div className="font-code text-4xl font-bold text-blue-600 mb-1">₹5-50</div>
                 <div className="text-gray-600 font-medium">Per Video</div>
               </div>
               
@@ -82,8 +82,8 @@ export default function Landing() {
               className="font-outfit bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-16 sm:h-18 text-xl font-bold px-12 sm:px-16 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 touch-manipulation"
               onClick={() => window.location.href = '/signup'}
             >
-              <Play className="w-6 h-6 mr-3" />
-              Start Earning Today
+              <Sparkles className="w-6 h-6 mr-3" />
+              Get ₹1,000 Bonus
             </Button>
             <Button 
               size="lg" 
@@ -136,7 +136,7 @@ export default function Landing() {
           <div className="mt-12 bg-gradient-to-r from-emerald-50 to-blue-50 rounded-full p-4 max-w-lg mx-auto border border-emerald-200">
             <div className="font-inter text-center">
               <span className="text-emerald-600 font-bold">🔥 Live Stats:</span>
-              <span className="text-gray-700 ml-2">₹2,47,530 earned today • 1,247 active users</span>
+              <span className="text-gray-700 ml-2">₹2,47,530 earned today • 1,247 users earning ₹5-50 per video</span>
             </div>
           </div>
         </div>
@@ -603,81 +603,88 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-primary via-blue-600 to-indigo-700 relative overflow-hidden">
-        {/* Background Decorations */}
-        <div className="absolute inset-0 opacity-[0.08]">
-          <div className="absolute top-10 left-10 w-80 h-80 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-200 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/3 w-60 h-60 bg-purple-200 rounded-full blur-3xl"></div>
+      <section className="py-20 sm:py-24 lg:py-28 px-4 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+        {/* Floating geometric shapes */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-br from-white/10 to-blue-300/10 rounded-full blob-animation"></div>
+          <div className="absolute bottom-20 right-20 w-32 h-32 bg-gradient-to-br from-purple-300/10 to-pink-300/10 rounded-lg transform rotate-45 blob-animation" style={{animationDelay: '2s'}}></div>
+          <div className="absolute top-1/2 left-1/3 w-28 h-28 bg-gradient-to-br from-cyan-300/10 to-blue-300/10 rounded-full blob-animation" style={{animationDelay: '4s'}}></div>
         </div>
         
-        {/* Floating elements */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-20 w-4 h-4 bg-white rounded-full animate-pulse"></div>
-          <div className="absolute top-40 right-32 w-6 h-6 bg-white/80 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
-          <div className="absolute bottom-32 left-1/4 w-3 h-3 bg-white rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
-          <div className="absolute bottom-20 right-16 w-5 h-5 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
-        </div>
-        
-        <div className="max-w-6xl mx-auto text-center relative z-10">
-          {/* CTA Icon Badge */}
-          <div className="flex items-center justify-center mb-8">
-            <div className="inline-flex items-center justify-center p-3 bg-white/20 backdrop-blur-sm rounded-full">
-              <div className="bg-white text-primary p-4 rounded-full shadow-lg">
-                <Play className="w-8 h-8" />
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          {/* Modern CTA Badge */}
+          <div className="inline-flex items-center justify-center mb-12">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-white to-yellow-200 rounded-3xl blur opacity-30"></div>
+              <div className="relative bg-white border border-gray-200 rounded-3xl p-8 shadow-2xl">
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-5 rounded-2xl">
+                  <Sparkles className="w-10 h-10" />
+                </div>
               </div>
             </div>
           </div>
           
-          <div className="mb-10">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 text-white leading-tight tracking-tight">
-              Ready to Start
-              <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent font-black">
-                Earning?
-              </span>
+          <div className="mb-12">
+            <h2 className="font-outfit text-5xl sm:text-6xl lg:text-8xl font-black text-white mb-8 leading-tight text-shadow">
+              <span className="block mb-2">Ready to Start</span>
+              <span className="gradient-text">Earning?</span>
             </h2>
-            <p className="text-xl lg:text-2xl mb-6 text-white/90 max-w-4xl mx-auto leading-relaxed font-medium">
-              Join our community and turn your free time into real income with our trusted platform.
+            
+            {/* Special Signup Bonus Banner */}
+            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-6 mb-8 max-w-3xl mx-auto shadow-xl">
+              <div className="flex items-center justify-center gap-4">
+                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
+                  <Coins className="w-8 h-8 text-yellow-600" />
+                </div>
+                <div className="text-left">
+                  <div className="font-outfit text-2xl font-black text-white">₹1,000 Signup Bonus!</div>
+                  <div className="text-white/90 font-medium">Limited time offer for new members</div>
+                </div>
+              </div>
+            </div>
+            
+            <p className="font-inter text-xl lg:text-2xl mb-6 text-white/90 max-w-4xl mx-auto leading-relaxed font-medium">
+              Join thousands of users earning <span className="font-bold text-yellow-300">₹5-50 per video</span> on our trusted platform.
             </p>
-            <p className="text-lg text-white/80 max-w-3xl mx-auto font-medium">
-              Watch videos, earn money, and get paid weekly. Start your earning journey today.
+            <p className="font-inter text-lg text-white/80 max-w-3xl mx-auto">
+              Start earning immediately with your signup bonus and get paid weekly. Your financial freedom starts here.
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto">
-            <Link href="/signup" className="w-full sm:w-auto">
-              <Button 
-                size="lg" 
-                className="w-full sm:w-auto bg-white text-primary hover:bg-yellow-50 hover:text-primary/90 font-bold text-xl px-10 py-6 h-auto rounded-2xl shadow-2xl hover:shadow-white/20 transition-all duration-300 transform hover:scale-105 border-2 border-white/20"
-              >
-                Sign Up Now
-              </Button>
-            </Link>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-4xl mx-auto mb-16">
+            <Button 
+              size="lg" 
+              className="font-outfit bg-white text-blue-600 hover:bg-yellow-50 hover:text-blue-700 h-16 sm:h-18 text-xl font-bold px-12 sm:px-16 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 touch-manipulation"
+              onClick={() => window.location.href = '/signup'}
+            >
+              <Sparkles className="w-6 h-6 mr-3" />
+              Claim ₹1,000 Bonus
+            </Button>
             <Button 
               size="lg" 
               variant="outline"
-              className="w-full sm:w-auto border-2 border-white/40 text-white hover:bg-white/10 hover:border-white backdrop-blur-sm font-semibold text-xl px-10 py-6 h-auto rounded-2xl bg-transparent transition-all duration-300"
+              className="font-outfit h-16 sm:h-18 text-xl border-2 border-white/40 text-white hover:bg-white/10 hover:border-white backdrop-blur-sm px-12 sm:px-16 rounded-2xl transition-all duration-300 bg-transparent hover:shadow-xl touch-manipulation"
               onClick={() => window.location.href = '/login'}
             >
-              Already a Member?
+              Login to Account
             </Button>
           </div>
           
-          <div className="mt-12 grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
-              <CheckCircle className="w-8 h-8 text-white mx-auto mb-3" />
-              <div className="text-white font-bold text-lg tracking-tight">No Hidden Fees</div>
-              <div className="text-white/80 text-sm mt-1 font-medium">Transparent pricing always</div>
+          <div className="grid sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+              <CheckCircle className="w-10 h-10 text-white mx-auto mb-4" />
+              <div className="font-outfit text-xl font-bold text-white">No Hidden Fees</div>
+              <div className="text-white/80 mt-2">100% transparent pricing</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
-              <Coins className="w-8 h-8 text-white mx-auto mb-3" />
-              <div className="text-white font-bold text-lg tracking-tight">Weekly Payouts</div>
-              <div className="text-white/80 text-sm mt-1 font-medium">Every Tuesday guaranteed</div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+              <TrendingUp className="w-10 h-10 text-white mx-auto mb-4" />
+              <div className="font-outfit text-xl font-bold text-white">Weekly Payouts</div>
+              <div className="text-white/80 mt-2">Every Tuesday guaranteed</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
-              <Shield className="w-8 h-8 text-white mx-auto mb-3" />
-              <div className="text-white font-bold text-lg tracking-tight">24/7 Support</div>
-              <div className="text-white/80 text-sm mt-1 font-medium">Always here to help</div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+              <Shield className="w-10 h-10 text-white mx-auto mb-4" />
+              <div className="font-outfit text-xl font-bold text-white">24/7 Support</div>
+              <div className="text-white/80 mt-2">Always here to help</div>
             </div>
           </div>
         </div>
