@@ -8,8 +8,20 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
-import { Play, Coins, User, Settings, LogOut } from "lucide-react";
+import { 
+  Play, 
+  Coins, 
+  User, 
+  Settings, 
+  LogOut, 
+  Menu, 
+  X, 
+  Users, 
+  Info, 
+  Mail 
+} from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useState } from "react";
 
 export default function Header() {
   const { user, isAuthenticated } = useAuth();
@@ -32,6 +44,8 @@ export default function Header() {
 
   // Public header for non-authenticated users
   if (!isAuthenticated) {
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    
     return (
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 safe-area-padding">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
@@ -44,7 +58,7 @@ export default function Header() {
               <span className="text-lg sm:text-xl font-bold text-gray-900">EarnPay</span>
             </Link>
             
-            {/* Public Navigation */}
+            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
               <Link href="/how-to-earn" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">How to Earn</Link>
               <Link href="/referral-program" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Referral Program</Link>
@@ -52,9 +66,22 @@ export default function Header() {
               <Link href="/contact" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Contact</Link>
             </nav>
 
-            {/* Auth buttons - hidden on login/signup pages */}
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 rounded-md text-gray-600 hover:text-primary hover:bg-gray-100 touch-manipulation"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </button>
+
+            {/* Desktop Auth buttons - hidden on login/signup pages */}
             {!isAuthPage && (
-              <div className="flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-2">
                 <Link href="/login">
                   <Button variant="outline" size="sm" className="text-xs sm:text-sm touch-manipulation">
                     Sign In
@@ -69,6 +96,73 @@ export default function Header() {
             )}
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 bg-white">
+            <div className="px-3 py-4 space-y-3">
+              {/* Mobile Navigation Links */}
+              <div className="space-y-2">
+                <Link 
+                  href="/how-to-earn" 
+                  className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg touch-manipulation"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <div className="flex items-center space-x-2">
+                    <Play className="w-4 h-4" />
+                    <span>How to Earn</span>
+                  </div>
+                </Link>
+                <Link 
+                  href="/referral-program" 
+                  className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg touch-manipulation"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <div className="flex items-center space-x-2">
+                    <Users className="w-4 h-4" />
+                    <span>Referral Program</span>
+                  </div>
+                </Link>
+                <Link 
+                  href="/about" 
+                  className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg touch-manipulation"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <div className="flex items-center space-x-2">
+                    <Info className="w-4 h-4" />
+                    <span>About</span>
+                  </div>
+                </Link>
+                <Link 
+                  href="/contact" 
+                  className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg touch-manipulation"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <div className="flex items-center space-x-2">
+                    <Mail className="w-4 h-4" />
+                    <span>Contact</span>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Mobile Auth buttons - hidden on login/signup pages */}
+              {!isAuthPage && (
+                <div className="pt-4 border-t border-gray-100 space-y-2">
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full h-12 text-base font-medium touch-manipulation">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="w-full h-12 text-base font-medium bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 touch-manipulation">
+                      Sign Up & Start Earning
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </header>
     );
   }
