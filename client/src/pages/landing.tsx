@@ -310,113 +310,230 @@ export default function Landing() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-16 px-4 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-            <p className="text-gray-600">
+      <section id="faq" className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-white via-gray-50/30 to-blue-50/20 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-[0.02]">
+          <div className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-br from-primary to-blue-500 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 left-10 w-64 h-64 bg-gradient-to-tr from-purple-400 to-pink-400 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="max-w-5xl mx-auto relative z-10">
+          <div className="text-center mb-16">
+            {/* FAQ Icon Badge */}
+            <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full mb-8">
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-lg">
+                <CheckCircle className="w-8 h-8" />
+              </div>
+            </div>
+            
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              Frequently Asked
+              <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Questions
+              </span>
+            </h2>
+            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Get answers to common questions about earning money with EarnPay
             </p>
+            
+            {/* Decorative divider */}
+            <div className="flex items-center justify-center mt-8 mb-4">
+              <div className="h-1 w-20 bg-gradient-to-r from-primary to-blue-600 rounded-full"></div>
+              <div className="mx-4 w-3 h-3 bg-gradient-to-br from-primary to-blue-600 rounded-full"></div>
+              <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-primary rounded-full"></div>
+            </div>
           </div>
 
-          <Accordion type="single" collapsible className="w-full space-y-4">
-            <AccordionItem value="item-1" className="bg-gray-50 px-6 rounded-lg">
-              <AccordionTrigger className="text-left">
-                How much can I earn per video?
+          <Accordion type="single" collapsible className="w-full space-y-6">
+            <AccordionItem value="item-1" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Coins className="w-5 h-5 text-green-600" />
+                  </div>
+                  How much can I earn per video?
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2">
-                Earnings per video vary based on video length and category. Typically, you can earn between ₹5-₹25 per video. 
-                Longer videos and premium content offer higher earnings. All earnings are credited immediately after completing the full video.
+              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+                <div className="pl-13">
+                  Earnings per video vary based on video length and category. Typically, you can earn between <span className="font-semibold text-green-600">₹5-₹25 per video</span>. 
+                  Longer videos and premium content offer higher earnings. All earnings are credited immediately after completing the full video.
+                </div>
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-2" className="bg-gray-50 px-6 rounded-lg">
-              <AccordionTrigger className="text-left">
-                What is the 8-hour daily requirement?
+            <AccordionItem value="item-2" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Clock className="w-5 h-5 text-orange-600" />
+                  </div>
+                  What bonuses can I earn?
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2">
-                To maintain your account in good standing and maximize earnings, you need to watch videos for 8 hours daily. 
-                This can be spread throughout the day. Failing to meet this requirement may result in account suspension until you catch up.
+              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+                <div className="pl-13 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div><strong className="text-green-600">Welcome Bonus:</strong> Get <span className="font-semibold">₹1,000 signup bonus</span> when you join and complete verification.</div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div><strong className="text-blue-600">Hourly Login Bonus:</strong> Earn <span className="font-semibold">₹10 for every hour</span> you stay logged in and active.</div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div><strong className="text-purple-600">Referral Bonus:</strong> Earn <span className="font-semibold">₹49 for every friend</span> you refer who completes KYC verification.</div>
+                  </div>
+                  <div className="mt-4 p-3 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg">
+                    <span className="text-sm text-gray-600">All bonuses are automatically credited to your account and can be withdrawn with regular earnings.</span>
+                  </div>
+                </div>
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-3" className="bg-gray-50 px-6 rounded-lg">
-              <AccordionTrigger className="text-left">
-                Can I skip or fast-forward videos?
+            <AccordionItem value="item-3" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Shield className="w-5 h-5 text-purple-600" />
+                  </div>
+                  What are the fees I need to pay?
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2">
-                No, you must watch videos completely without skipping or fast-forwarding. Our system monitors viewing behavior 
-                to ensure fair compensation. Attempting to skip content will not credit earnings and may result in account penalties.
+              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+                <div className="pl-13 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div><strong className="text-blue-600">KYC Processing Fee:</strong> One-time <span className="font-semibold">₹99 fee</span> for document verification and account activation.</div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div><strong className="text-orange-600">Reactivation Fee:</strong> <span className="font-semibold">₹49 fee</span> to reactivate suspended accounts for missing daily targets.</div>
+                  </div>
+                  <div className="mt-4 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
+                    <span className="text-sm text-gray-600">These fees ensure platform security and help maintain a genuine user base.</span>
+                  </div>
+                </div>
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-4" className="bg-gray-50 px-6 rounded-lg">
-              <AccordionTrigger className="text-left">
-                When do I get paid?
+            <AccordionItem value="item-4" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Play className="w-5 h-5 text-indigo-600" />
+                  </div>
+                  Can I skip or fast-forward videos?
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2">
-                Payouts are processed every Tuesday. You can request a payout once your earnings reach the minimum threshold. 
-                Money is transferred directly to your verified bank account within 24-48 hours of payout processing.
+              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+                <div className="pl-13">
+                  No, you must watch videos completely without skipping or fast-forwarding. Our system monitors viewing behavior 
+                  to ensure fair compensation. Attempting to skip content will not credit earnings and may result in account penalties.
+                </div>
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-5" className="bg-gray-50 px-6 rounded-lg">
-              <AccordionTrigger className="text-left">
-                How does the referral program work?
+            <AccordionItem value="item-5" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <CheckCircle className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  When do I get paid?
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2">
-                Share your unique referral code with friends and family. When someone signs up using your code and gets verified 
-                (completes ID verification), you earn ₹49. There's no limit to how many people you can refer.
+              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+                <div className="pl-13">
+                  Payouts are processed every <span className="font-semibold text-green-600">Tuesday</span>. You can request a payout once your earnings reach the minimum threshold. 
+                  Money is transferred directly to your verified bank account within 24-48 hours of payout processing.
+                </div>
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-6" className="bg-gray-50 px-6 rounded-lg">
-              <AccordionTrigger className="text-left">
-                Why do I need to verify my identity?
+            <AccordionItem value="item-6" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Users className="w-5 h-5 text-pink-600" />
+                  </div>
+                  How does the referral program work?
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2">
-                Identity verification ensures a safe and legitimate earning environment for all users. It prevents fraud and 
-                enables secure payouts. You need to upload a government-issued ID and bank details for verification before you can start earning.
+              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+                <div className="pl-13">
+                  Share your unique referral code with friends and family. When someone signs up using your code and gets verified 
+                  (completes ID verification), you earn <span className="font-semibold text-pink-600">₹49</span>. There's no limit to how many people you can refer.
+                </div>
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-7" className="bg-gray-50 px-6 rounded-lg">
-              <AccordionTrigger className="text-left">
-                What happens if I miss the daily target?
+            <AccordionItem value="item-7" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Clock className="w-5 h-5 text-yellow-600" />
+                  </div>
+                  What is the 8-hour daily requirement?
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2">
-                If you don't meet the 8-hour daily target, your account may be suspended temporarily. You can reactivate it by 
-                completing the missed hours. Consistent non-compliance may result in permanent account suspension.
+              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+                <div className="pl-13">
+                  To maintain your account in good standing and maximize earnings, you need to watch videos for <span className="font-semibold text-yellow-600">8 hours daily</span>. 
+                  This can be spread throughout the day. Missing this target for 3 consecutive days may result in account suspension.
+                </div>
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-8" className="bg-gray-50 px-6 rounded-lg">
-              <AccordionTrigger className="text-left">
-                Is there a minimum payout amount?
+            <AccordionItem value="item-8" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-teal-100 to-cyan-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Coins className="w-5 h-5 text-teal-600" />
+                  </div>
+                  Is there a minimum payout amount?
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2">
-                Yes, the minimum payout amount is ₹100. Once your earnings reach this threshold, you can request a weekly payout. 
-                This helps minimize transaction fees and ensures efficient payment processing.
+              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+                <div className="pl-13">
+                  Yes, the minimum payout amount is <span className="font-semibold text-teal-600">₹100</span>. Once your earnings reach this threshold, you can request a weekly payout. 
+                  This helps minimize transaction fees and ensures efficient payment processing.
+                </div>
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-9" className="bg-gray-50 px-6 rounded-lg">
-              <AccordionTrigger className="text-left">
-                Can I use multiple devices?
+            <AccordionItem value="item-9" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-violet-100 to-purple-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Shield className="w-5 h-5 text-violet-600" />
+                  </div>
+                  Why do I need to verify my identity?
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2">
-                You can access your account from multiple devices, but you can only watch videos on one device at a time. 
-                Our system tracks active sessions to prevent abuse and ensure fair earnings distribution.
+              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+                <div className="pl-13">
+                  Identity verification ensures a safe and legitimate earning environment for all users. It prevents fraud and 
+                  enables secure payouts. You need to upload a government-issued ID and bank details for verification before you can start earning.
+                </div>
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-10" className="bg-gray-50 px-6 rounded-lg">
-              <AccordionTrigger className="text-left">
-                How do I contact support?
+            <AccordionItem value="item-10" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-sky-100 to-blue-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <CheckCircle className="w-5 h-5 text-sky-600" />
+                  </div>
+                  How do I contact support?
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2">
-                You can contact our support team through the live chat feature available in your dashboard, or send us a message 
-                through the Support page. Our team is available 24/7 to help with any questions or issues.
+              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+                <div className="pl-13">
+                  You can contact our support team through the live chat feature available in your dashboard, or send us a message 
+                  through the Support page. Our team is available <span className="font-semibold text-sky-600">24/7</span> to help with any questions or issues.
+                </div>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
