@@ -8,7 +8,7 @@ import { Link } from "wouter";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 safe-area-padding pb-16 md:pb-0">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 safe-area-padding">
       <Header />
 
       {/* Hero Section */}
@@ -674,27 +674,6 @@ export default function Landing() {
       </section>
 
       <Footer />
-
-      {/* Mobile Sticky Action Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-3 py-2 z-40 safe-area-padding">
-        <div className="flex items-center justify-between gap-2">
-          <Button 
-            size="sm"
-            variant="outline"
-            className="flex-1 h-12 text-sm font-medium border-primary/20 text-primary hover:bg-primary/5 touch-manipulation"
-            onClick={() => window.location.href = '/login'}
-          >
-            Sign In
-          </Button>
-          <Button 
-            size="sm"
-            className="flex-1 h-12 text-sm font-medium bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 text-white touch-manipulation"
-            onClick={() => window.location.href = '/signup'}
-          >
-            Start Earning
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }
