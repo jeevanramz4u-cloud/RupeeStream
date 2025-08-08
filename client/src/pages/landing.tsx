@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Play, Users, Coins, Clock, CheckCircle, Shield } from "lucide-react";
+import { Play, Users, Coins, Clock, CheckCircle, Shield, User } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Landing() {
@@ -12,53 +12,92 @@ export default function Landing() {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-12 sm:py-16 lg:py-20 px-3 sm:px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
-            Earn Money by Watching Videos
+      <section className="relative py-12 sm:py-16 lg:py-24 px-3 sm:px-4 overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="absolute top-10 left-10 w-40 h-40 bg-primary rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-60 h-60 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-1/3 right-10 w-32 h-32 bg-purple-500 rounded-full blur-3xl animate-pulse"></div>
+        </div>
+        
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          {/* Logo Badge */}
+          <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-8">
+            <div className="bg-gradient-to-br from-primary to-blue-600 text-white p-4 rounded-full shadow-lg">
+              <Play className="w-8 h-8" />
+            </div>
+          </div>
+          
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight">
+            Earn Money by<br />
+            <span className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Watching Videos
+            </span>
           </h1>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-8 sm:mb-10 max-w-4xl mx-auto leading-relaxed">
             Turn your free time into income. Watch entertaining videos, complete daily targets, 
             and earn real money with our trusted platform.
           </p>
           
           {/* Bonus Features */}
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 max-w-2xl mx-auto">
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center text-sm sm:text-base">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <Coins className="w-4 h-4 text-green-600" />
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 mb-8 sm:mb-12 max-w-4xl mx-auto shadow-lg border border-gray-100">
+            <div className="grid sm:grid-cols-2 gap-6 items-center justify-center">
+              <div className="flex items-center gap-4 justify-center sm:justify-start">
+                <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center shadow-sm">
+                  <Coins className="w-7 h-7 text-green-600" />
                 </div>
-                <span className="font-semibold text-green-700">₹1,000 Signup Bonus</span>
+                <div className="text-left">
+                  <span className="text-2xl font-bold text-green-700 block">₹1,000</span>
+                  <span className="text-gray-600">Signup Bonus</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-blue-600" />
+              <div className="flex items-center gap-4 justify-center sm:justify-start">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center shadow-sm">
+                  <Clock className="w-7 h-7 text-blue-600" />
                 </div>
-                <span className="font-semibold text-blue-700">₹10 Every Hour Login Bonus</span>
+                <div className="text-left">
+                  <span className="text-2xl font-bold text-blue-700 block">₹10/Hour</span>
+                  <span className="text-gray-600">Login Bonus</span>
+                </div>
               </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-2xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center max-w-2xl mx-auto">
             <Button 
               size="lg" 
-              className="bg-primary hover:bg-primary/90 h-11 sm:h-12 text-sm sm:text-base touch-manipulation"
+              className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 h-14 sm:h-16 text-lg font-semibold px-8 sm:px-12 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 touch-manipulation"
               onClick={() => window.location.href = '/signup'}
             >
-              Sign Up to Start Earning
+              Start Earning Now
             </Button>
             <Button 
               size="lg" 
               variant="outline"
-              className="h-11 sm:h-12 text-sm sm:text-base touch-manipulation"
+              className="h-14 sm:h-16 text-lg border-2 border-gray-300 hover:bg-gray-50 hover:border-primary/50 px-8 sm:px-12 rounded-2xl transition-all duration-300 touch-manipulation"
               onClick={() => window.location.href = '/login'}
             >
               Already Have Account?
             </Button>
           </div>
+          
+          {/* Trust Indicators */}
+          <div className="mt-12 sm:mt-16 flex flex-wrap items-center justify-center gap-8 opacity-60">
+            <div className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-medium text-gray-700">100% Secure</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-blue-600" />
+              <span className="text-sm font-medium text-gray-700">Verified Platform</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-purple-600" />
+              <span className="text-sm font-medium text-gray-700">200K+ Users</span>
+            </div>
+          </div>
           <div className="mt-4 sm:hidden">
-            <Button size="sm" variant="outline" className="text-xs touch-manipulation">
-              <a href="/how-to-earn">Learn How It Works</a>
+            <Button size="sm" variant="outline" className="text-xs touch-manipulation rounded-xl">
+              <a href="#how-it-works">Learn How It Works</a>
             </Button>
           </div>
         </div>
@@ -163,60 +202,108 @@ export default function Landing() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-16 px-4 bg-neutral-50">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p className="text-gray-600">Simple steps to start earning money by watching videos</p>
+      <section id="how-it-works" className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-primary rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-secondary rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-blue-400 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full mb-6">
+              <div className="bg-primary text-white p-3 rounded-full">
+                <Play className="w-6 h-6" />
+              </div>
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              How It Works
+            </h2>
+            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Simple steps to start earning money by watching videos
+            </p>
           </div>
 
-          <div className="space-y-8">
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
-                1
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Up & Verify</h3>
-                <p className="text-gray-600">
-                  Create your account, upload your government ID and bank details for verification.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
-                2
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Watch Videos</h3>
-                <p className="text-gray-600">
-                  Browse our video library and watch videos completely to earn money. No skipping allowed!
-                </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+            {/* Step 1 */}
+            <div className="relative group">
+              <div className="hidden lg:block absolute top-12 left-full w-12 h-0.5 bg-gradient-to-r from-primary to-primary/30 z-0"></div>
+              <div className="relative bg-white rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-primary/20">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-lg">1</span>
+                </div>
+                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <User className="text-green-600 w-8 h-8 lg:w-10 lg:h-10" />
+                </div>
+                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Sign Up & Verify</h3>
+                <p className="text-gray-600 text-center leading-relaxed">Create your account, upload your government ID and bank details for verification.</p>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
             </div>
 
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
-                3
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Meet Daily Target</h3>
-                <p className="text-gray-600">
-                  Watch videos for 8 hours daily to maintain your account in good standing.
-                </p>
+            {/* Step 2 */}
+            <div className="relative group">
+              <div className="hidden lg:block absolute top-12 left-full w-12 h-0.5 bg-gradient-to-r from-primary to-primary/30 z-0"></div>
+              <div className="relative bg-white rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-primary/20">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-lg">2</span>
+                </div>
+                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Play className="text-blue-600 w-8 h-8 lg:w-10 lg:h-10" />
+                </div>
+                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Watch Videos</h3>
+                <p className="text-gray-600 text-center leading-relaxed">Browse our video library and watch videos completely to earn money. No skipping allowed!</p>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
             </div>
 
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
-                4
+            {/* Step 3 */}
+            <div className="relative group">
+              <div className="hidden lg:block absolute top-12 left-full w-12 h-0.5 bg-gradient-to-r from-primary to-primary/30 z-0"></div>
+              <div className="relative bg-white rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-primary/20">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-lg">3</span>
+                </div>
+                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Clock className="text-orange-600 w-8 h-8 lg:w-10 lg:h-10" />
+                </div>
+                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Meet Daily Target</h3>
+                <p className="text-gray-600 text-center leading-relaxed">Watch videos for 8 hours daily to maintain your account in good standing.</p>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Get Paid</h3>
-                <p className="text-gray-600">
-                  Request weekly payouts every Tuesday and receive money directly to your bank account.
-                </p>
+            </div>
+
+            {/* Step 4 */}
+            <div className="relative group">
+              <div className="relative bg-white rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-primary/20">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-lg">4</span>
+                </div>
+                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Coins className="text-purple-600 w-8 h-8 lg:w-10 lg:h-10" />
+                </div>
+                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Get Paid</h3>
+                <p className="text-gray-600 text-center leading-relaxed">Request weekly payouts every Tuesday and receive money directly to your bank account.</p>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
+            </div>
+          </div>
+          
+          {/* Call to Action */}
+          <div className="text-center mt-16">
+            <div className="inline-flex flex-col sm:flex-row items-center gap-4 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                </div>
+                <span className="text-lg font-semibold text-gray-900">Ready to start earning?</span>
+              </div>
+              <Link href="/signup">
+                <Button size="lg" className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                  Get Started Now
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
