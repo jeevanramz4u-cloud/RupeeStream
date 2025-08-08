@@ -8,7 +8,7 @@ import { Link } from "wouter";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-neutral-50 safe-area-padding">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 safe-area-padding">
       <Header />
 
       {/* Hero Section */}
@@ -579,61 +579,79 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-primary via-primary/90 to-secondary relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-20 h-20 bg-white rounded-full"></div>
-          <div className="absolute top-32 right-20 w-16 h-16 bg-white rounded-full"></div>
-          <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-white rounded-full"></div>
-          <div className="absolute bottom-32 right-10 w-14 h-14 bg-white rounded-full"></div>
+      <section className="py-20 sm:py-24 lg:py-28 px-4 bg-gradient-to-br from-primary via-blue-600 to-indigo-700 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-[0.08]">
+          <div className="absolute top-10 left-10 w-80 h-80 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-200 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/3 w-60 h-60 bg-purple-200 rounded-full blur-3xl"></div>
+        </div>
+        
+        {/* Floating elements */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-20 w-4 h-4 bg-white rounded-full animate-pulse"></div>
+          <div className="absolute top-40 right-32 w-6 h-6 bg-white/80 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-32 left-1/4 w-3 h-3 bg-white rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-20 right-16 w-5 h-5 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
         </div>
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <div className="mb-8">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-white leading-tight">
-              Ready to Start Earning?
+          {/* CTA Icon Badge */}
+          <div className="inline-flex items-center justify-center p-3 bg-white/20 backdrop-blur-sm rounded-full mb-8">
+            <div className="bg-white text-primary p-4 rounded-full shadow-lg">
+              <Play className="w-8 h-8" />
+            </div>
+          </div>
+          
+          <div className="mb-12">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight">
+              Ready to Start
+              <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                Earning?
+              </span>
             </h2>
-            <p className="text-xl lg:text-2xl mb-4 text-white/90 max-w-3xl mx-auto leading-relaxed">
-              Join our community and turn your free time into real income.
+            <p className="text-xl lg:text-2xl mb-6 text-white/90 max-w-4xl mx-auto leading-relaxed">
+              Join our community and turn your free time into real income with our trusted platform.
             </p>
-            <p className="text-lg text-white/80 max-w-2xl mx-auto">
-              Watch videos, earn money, and get paid weekly. It's that simple.
+            <p className="text-lg text-white/80 max-w-3xl mx-auto">
+              Watch videos, earn money, and get paid weekly. Start your earning journey today.
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto">
             <Link href="/signup" className="w-full sm:w-auto">
               <Button 
                 size="lg" 
-                variant="secondary"
-                className="w-full sm:w-auto bg-white text-primary hover:bg-gray-100 font-semibold text-lg px-8 py-4 h-auto shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                className="w-full sm:w-auto bg-white text-primary hover:bg-yellow-50 hover:text-primary/90 font-bold text-xl px-10 py-6 h-auto rounded-2xl shadow-2xl hover:shadow-white/20 transition-all duration-300 transform hover:scale-105 border-2 border-white/20"
               >
                 Sign Up Now
               </Button>
             </Link>
-            <Link href="/how-to-earn" className="w-full sm:w-auto">
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-primary font-semibold text-lg px-8 py-4 h-auto bg-transparent transition-all duration-300"
-              >
-                Learn More
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="w-full sm:w-auto border-2 border-white/40 text-white hover:bg-white/10 hover:border-white backdrop-blur-sm font-semibold text-xl px-10 py-6 h-auto rounded-2xl bg-transparent transition-all duration-300"
+              onClick={() => window.location.href = '/login'}
+            >
+              Already a Member?
+            </Button>
           </div>
           
-          <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-white/80">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-white" />
-              <span className="text-sm">No hidden fees</span>
+          <div className="mt-16 grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+              <CheckCircle className="w-8 h-8 text-white mx-auto mb-3" />
+              <div className="text-white font-semibold text-lg">No Hidden Fees</div>
+              <div className="text-white/80 text-sm mt-1">Transparent pricing always</div>
             </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-white" />
-              <span className="text-sm">Weekly payouts</span>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+              <Coins className="w-8 h-8 text-white mx-auto mb-3" />
+              <div className="text-white font-semibold text-lg">Weekly Payouts</div>
+              <div className="text-white/80 text-sm mt-1">Every Tuesday guaranteed</div>
             </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-white" />
-              <span className="text-sm">24/7 support</span>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+              <Shield className="w-8 h-8 text-white mx-auto mb-3" />
+              <div className="text-white font-semibold text-lg">24/7 Support</div>
+              <div className="text-white/80 text-sm mt-1">Always here to help</div>
             </div>
           </div>
         </div>
