@@ -1,15 +1,20 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Play, Mail, Phone, MapPin, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 
 export default function Footer() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const [, setLocation] = useLocation();
 
   const toggleSection = (section: string) => {
     setOpenSections(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
+  };
+
+  const handleLinkClick = (href: string) => {
+    setLocation(href);
   };
 
   const companyLinks = [
@@ -65,12 +70,12 @@ export default function Footer() {
                 <ul className="mt-3 space-y-2">
                   {companyLinks.map((link) => (
                     <li key={link.href}>
-                      <Link 
-                        href={link.href} 
-                        className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1"
+                      <button 
+                        onClick={() => handleLinkClick(link.href)}
+                        className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1 text-left w-full"
                       >
                         {link.label}
-                      </Link>
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -93,12 +98,12 @@ export default function Footer() {
                 <ul className="mt-3 space-y-2">
                   {earnLinks.map((link) => (
                     <li key={link.href}>
-                      <Link 
-                        href={link.href} 
-                        className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1"
+                      <button 
+                        onClick={() => handleLinkClick(link.href)}
+                        className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1 text-left w-full"
                       >
                         {link.label}
-                      </Link>
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -121,12 +126,12 @@ export default function Footer() {
                 <ul className="mt-3 space-y-2">
                   {legalLinks.map((link) => (
                     <li key={link.href}>
-                      <Link 
-                        href={link.href} 
-                        className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1"
+                      <button 
+                        onClick={() => handleLinkClick(link.href)}
+                        className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1 text-left w-full"
                       >
                         {link.label}
-                      </Link>
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -156,12 +161,12 @@ export default function Footer() {
             <ul className="space-y-2 sm:space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.href}>
-                  <Link 
-                    href={link.href} 
-                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1"
+                  <button 
+                    onClick={() => handleLinkClick(link.href)}
+                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1 text-left"
                   >
                     {link.label}
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -173,12 +178,12 @@ export default function Footer() {
             <ul className="space-y-2 sm:space-y-3">
               {earnLinks.map((link) => (
                 <li key={link.href}>
-                  <Link 
-                    href={link.href} 
-                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1"
+                  <button 
+                    onClick={() => handleLinkClick(link.href)}
+                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1 text-left"
                   >
                     {link.label}
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -190,12 +195,12 @@ export default function Footer() {
             <ul className="space-y-2 sm:space-y-3">
               {legalLinks.map((link) => (
                 <li key={link.href}>
-                  <Link 
-                    href={link.href} 
-                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1"
+                  <button 
+                    onClick={() => handleLinkClick(link.href)}
+                    className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1 text-left"
                   >
                     {link.label}
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
