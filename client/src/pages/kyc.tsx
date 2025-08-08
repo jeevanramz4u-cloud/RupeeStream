@@ -653,7 +653,6 @@ export default function KYC() {
                         maxNumberOfFiles={1}
                         maxFileSize={5 * 1024 * 1024}
                         buttonClassName="w-full h-auto p-0 border-2 border-dashed border-gray-300 hover:border-gray-400 bg-transparent hover:bg-gray-50"
-                        children={null}
                       >
                         <div className="flex items-center justify-center py-4 sm:py-6 px-3 sm:px-4">
                           <div className="text-center">

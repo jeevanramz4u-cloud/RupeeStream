@@ -21,10 +21,10 @@ export default function Header() {
   // Check if user is suspended and block navigation
   const isSuspended = (user as any)?.status === 'suspended';
 
-  const navItems = [
+  // Navigation items for authenticated users (no "How to Earn")
+  const authenticatedNavItems = [
     { href: "/dashboard", label: "Dashboard", active: location === "/" || location === "/dashboard" },
     { href: "/videos", label: "Videos", active: location === "/videos" },
-    { href: "/how-to-earn", label: "How to Earn", active: location === "/how-to-earn" },
     { href: "/kyc", label: "KYC", active: location === "/kyc" },
     { href: "/referrals", label: "Referrals", active: location === "/referrals" },
     { href: "/support", label: "Support", active: location === "/support" },
@@ -94,7 +94,7 @@ export default function Header() {
           
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
-            {navItems.map((item) => (
+            {authenticatedNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={isSuspended ? '/suspended' : item.href}
@@ -177,7 +177,7 @@ export default function Header() {
       {/* Mobile Navigation */}
       <div className="md:hidden border-t border-gray-200">
         <div className="flex overflow-x-auto space-x-3 px-3 py-2 scrollbar-hide">
-          {navItems.map((item) => (
+          {authenticatedNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
