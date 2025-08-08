@@ -81,16 +81,16 @@ export default function Landing() {
           </div>
           
           {/* Trust Indicators */}
-          <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-6 opacity-60">
-            <div className="flex items-center gap-2">
+          <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto opacity-70">
+            <div className="flex items-center justify-center gap-2 bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-gray-100 hover:bg-white/80 transition-all duration-300">
               <Shield className="w-5 h-5 text-green-600" />
               <span className="text-sm font-medium text-gray-700">100% Secure</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2 bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-gray-100 hover:bg-white/80 transition-all duration-300">
               <CheckCircle className="w-5 h-5 text-blue-600" />
               <span className="text-sm font-medium text-gray-700">Verified Platform</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2 bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-gray-100 hover:bg-white/80 transition-all duration-300">
               <Users className="w-5 h-5 text-purple-600" />
               <span className="text-sm font-medium text-gray-700">200K+ Users</span>
             </div>
@@ -115,9 +115,11 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-12">
             {/* Features Icon Badge */}
-            <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full mb-6">
-              <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-full shadow-lg">
-                <Shield className="w-8 h-8" />
+            <div className="flex items-center justify-center mb-6">
+              <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full">
+                <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-full shadow-lg">
+                  <Shield className="w-8 h-8" />
+                </div>
               </div>
             </div>
             
@@ -250,9 +252,11 @@ export default function Landing() {
         
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full mb-4">
-              <div className="bg-primary text-white p-3 rounded-full">
-                <Play className="w-6 h-6" />
+            <div className="flex items-center justify-center mb-4">
+              <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full">
+                <div className="bg-primary text-white p-3 rounded-full">
+                  <Play className="w-6 h-6" />
+                </div>
               </div>
             </div>
             <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
@@ -271,8 +275,10 @@ export default function Landing() {
                 <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg">
                   <span className="text-white font-bold text-lg">1</span>
                 </div>
-                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <User className="text-green-600 w-8 h-8 lg:w-10 lg:h-10" />
+                <div className="flex items-center justify-center mb-6">
+                  <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <User className="text-green-600 w-8 h-8 lg:w-10 lg:h-10" />
+                  </div>
                 </div>
                 <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Sign Up & Verify</h3>
                 <p className="text-gray-600 text-center leading-relaxed font-medium">Create your account, upload your government ID and bank details for verification.</p>
@@ -287,8 +293,10 @@ export default function Landing() {
                 <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg">
                   <span className="text-white font-bold text-lg">2</span>
                 </div>
-                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Play className="text-blue-600 w-8 h-8 lg:w-10 lg:h-10" />
+                <div className="flex items-center justify-center mb-6">
+                  <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Play className="text-blue-600 w-8 h-8 lg:w-10 lg:h-10" />
+                  </div>
                 </div>
                 <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Watch Videos</h3>
                 <p className="text-gray-600 text-center leading-relaxed">Browse our video library and watch videos completely to earn money. No skipping allowed!</p>
@@ -303,8 +311,10 @@ export default function Landing() {
                 <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg">
                   <span className="text-white font-bold text-lg">3</span>
                 </div>
-                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Clock className="text-orange-600 w-8 h-8 lg:w-10 lg:h-10" />
+                <div className="flex items-center justify-center mb-6">
+                  <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Clock className="text-orange-600 w-8 h-8 lg:w-10 lg:h-10" />
+                  </div>
                 </div>
                 <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Meet Daily Target</h3>
                 <p className="text-gray-600 text-center leading-relaxed">Watch videos for 8 hours daily to maintain your account in good standing.</p>
@@ -318,8 +328,10 @@ export default function Landing() {
                 <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg">
                   <span className="text-white font-bold text-lg">4</span>
                 </div>
-                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Coins className="text-purple-600 w-8 h-8 lg:w-10 lg:h-10" />
+                <div className="flex items-center justify-center mb-6">
+                  <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Coins className="text-purple-600 w-8 h-8 lg:w-10 lg:h-10" />
+                  </div>
                 </div>
                 <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Get Paid</h3>
                 <p className="text-gray-600 text-center leading-relaxed">Request weekly payouts every Tuesday and receive money directly to your bank account.</p>
@@ -358,9 +370,11 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto relative z-10">
           <div className="text-center mb-12">
             {/* FAQ Icon Badge */}
-            <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full mb-6">
-              <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-lg">
-                <CheckCircle className="w-8 h-8" />
+            <div className="flex items-center justify-center mb-6">
+              <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full">
+                <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-lg">
+                  <CheckCircle className="w-8 h-8" />
+                </div>
               </div>
             </div>
             
@@ -597,9 +611,11 @@ export default function Landing() {
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
           {/* CTA Icon Badge */}
-          <div className="inline-flex items-center justify-center p-3 bg-white/20 backdrop-blur-sm rounded-full mb-8">
-            <div className="bg-white text-primary p-4 rounded-full shadow-lg">
-              <Play className="w-8 h-8" />
+          <div className="flex items-center justify-center mb-8">
+            <div className="inline-flex items-center justify-center p-3 bg-white/20 backdrop-blur-sm rounded-full">
+              <div className="bg-white text-primary p-4 rounded-full shadow-lg">
+                <Play className="w-8 h-8" />
+              </div>
             </div>
           </div>
           
