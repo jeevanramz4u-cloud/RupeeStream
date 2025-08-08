@@ -12,7 +12,7 @@ export default function Landing() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative py-12 sm:py-16 lg:py-24 px-3 sm:px-4 overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
+      <section className="relative py-8 sm:py-12 lg:py-16 px-3 sm:px-4 overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
         {/* Background Decorations */}
         <div className="absolute inset-0 opacity-[0.03]">
           <div className="absolute top-10 left-10 w-40 h-40 bg-primary rounded-full blur-3xl animate-pulse"></div>
@@ -28,20 +28,20 @@ export default function Landing() {
             </div>
           </div>
           
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-gray-900 mb-6 sm:mb-8 leading-tight tracking-tight">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-gray-900 mb-4 sm:mb-6 leading-tight tracking-tight">
             Earn Money by<br />
             <span className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent font-black">
               Watching Videos
             </span>
           </h1>
-          <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-8 sm:mb-10 max-w-4xl mx-auto leading-relaxed font-medium">
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
             Turn your free time into income. Watch entertaining videos, complete daily targets, 
             and earn real money with our trusted platform.
           </p>
           
           {/* Bonus Features */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 mb-8 sm:mb-12 max-w-4xl mx-auto shadow-lg border border-gray-100">
-            <div className="grid sm:grid-cols-2 gap-6 items-center justify-center">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 max-w-4xl mx-auto shadow-lg border border-gray-100">
+            <div className="grid sm:grid-cols-2 gap-4 items-center justify-center">
               <div className="flex items-center gap-4 justify-center sm:justify-start">
                 <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center shadow-sm">
                   <Coins className="w-7 h-7 text-green-600" />
@@ -81,7 +81,7 @@ export default function Landing() {
           </div>
           
           {/* Trust Indicators */}
-          <div className="mt-12 sm:mt-16 flex flex-wrap items-center justify-center gap-8 opacity-60">
+          <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-6 opacity-60">
             <div className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-green-600" />
               <span className="text-sm font-medium text-gray-700">100% Secure</span>
@@ -104,7 +104,7 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-white via-indigo-50/30 to-purple-50/20 relative overflow-hidden">
+      <section id="features" className="py-12 sm:py-16 lg:py-20 px-4 bg-gradient-to-br from-white via-indigo-50/30 to-purple-50/20 relative overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0 opacity-[0.02]">
           <div className="absolute top-10 left-20 w-80 h-80 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full blur-3xl"></div>
@@ -113,9 +113,9 @@ export default function Landing() {
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             {/* Features Icon Badge */}
-            <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full mb-8">
+            <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full mb-6">
               <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-full shadow-lg">
                 <Shield className="w-8 h-8" />
               </div>
@@ -139,10 +139,10 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {/* Real Money Earnings */}
             <div className="group relative">
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-green-200">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-green-200">
                 <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <Coins className="text-white w-8 h-8" />
                 </div>
@@ -240,7 +240,7 @@ export default function Landing() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20 relative overflow-hidden">
+      <section id="how-it-works" className="py-12 sm:py-16 lg:py-20 px-4 bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20 relative overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-20 left-10 w-32 h-32 bg-primary rounded-full blur-3xl"></div>
@@ -249,8 +249,8 @@ export default function Landing() {
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full mb-6">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full mb-4">
               <div className="bg-primary text-white p-3 rounded-full">
                 <Play className="w-6 h-6" />
               </div>
@@ -263,7 +263,7 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {/* Step 1 */}
             <div className="relative group">
               <div className="hidden lg:block absolute top-12 left-full w-8 h-0.5 bg-gradient-to-r from-primary to-primary/30 z-0"></div>
@@ -329,7 +329,7 @@ export default function Landing() {
           </div>
           
           {/* Call to Action */}
-          <div className="text-center mt-16">
+          <div className="text-center mt-12">
             <div className="inline-flex flex-col sm:flex-row items-center gap-4 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -348,7 +348,7 @@ export default function Landing() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-white via-gray-50/30 to-blue-50/20 relative overflow-hidden">
+      <section id="faq" className="py-12 sm:py-16 lg:py-20 px-4 bg-gradient-to-br from-white via-gray-50/30 to-blue-50/20 relative overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0 opacity-[0.02]">
           <div className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-br from-primary to-blue-500 rounded-full blur-3xl"></div>
@@ -356,9 +356,9 @@ export default function Landing() {
         </div>
         
         <div className="max-w-5xl mx-auto relative z-10">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             {/* FAQ Icon Badge */}
-            <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full mb-8">
+            <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full mb-6">
               <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-lg">
                 <CheckCircle className="w-8 h-8" />
               </div>
@@ -382,7 +382,7 @@ export default function Landing() {
             </div>
           </div>
 
-          <Accordion type="single" collapsible className="w-full space-y-4 md:space-y-6">
+          <Accordion type="single" collapsible className="w-full space-y-3 md:space-y-4">
             <AccordionItem value="item-1" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-6 md:px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
               <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
                 <div className="flex items-center gap-3">
@@ -392,7 +392,7 @@ export default function Landing() {
                   How much can I earn per video?
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
+              <AccordionContent className="text-gray-700 pt-2 pb-4 leading-relaxed text-base">
                 <div className="pl-10 md:pl-13">
                   Earnings per video vary based on video length and category. Typically, you can earn between <span className="font-semibold text-green-600">₹5-₹25 per video</span>. 
                   Longer videos and premium content offer higher earnings. All earnings are credited immediately after completing the full video.
@@ -400,7 +400,7 @@ export default function Landing() {
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-2" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-6 md:px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <AccordionItem value="item-2" className="bg-white/80 backdrop-blur-sm border border-gray-100 px-6 md:px-8 py-1 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
               <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -579,7 +579,7 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 sm:py-24 lg:py-28 px-4 bg-gradient-to-br from-primary via-blue-600 to-indigo-700 relative overflow-hidden">
+      <section className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-primary via-blue-600 to-indigo-700 relative overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0 opacity-[0.08]">
           <div className="absolute top-10 left-10 w-80 h-80 bg-white rounded-full blur-3xl"></div>
@@ -603,7 +603,7 @@ export default function Landing() {
             </div>
           </div>
           
-          <div className="mb-12">
+          <div className="mb-10">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 text-white leading-tight tracking-tight">
               Ready to Start
               <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent font-black">
@@ -637,18 +637,18 @@ export default function Landing() {
             </Button>
           </div>
           
-          <div className="mt-16 grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+          <div className="mt-12 grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
               <CheckCircle className="w-8 h-8 text-white mx-auto mb-3" />
               <div className="text-white font-bold text-lg tracking-tight">No Hidden Fees</div>
               <div className="text-white/80 text-sm mt-1 font-medium">Transparent pricing always</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
               <Coins className="w-8 h-8 text-white mx-auto mb-3" />
               <div className="text-white font-bold text-lg tracking-tight">Weekly Payouts</div>
               <div className="text-white/80 text-sm mt-1 font-medium">Every Tuesday guaranteed</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
               <Shield className="w-8 h-8 text-white mx-auto mb-3" />
               <div className="text-white font-bold text-lg tracking-tight">24/7 Support</div>
               <div className="text-white/80 text-sm mt-1 font-medium">Always here to help</div>
