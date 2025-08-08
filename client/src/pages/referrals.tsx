@@ -14,7 +14,14 @@ import {
   ExternalLink,
   CheckCircle,
   Clock,
-  User
+  User,
+  Coins,
+  TrendingUp,
+  Star,
+  Award,
+  Link as LinkIcon,
+  Smartphone,
+  MessageSquare
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
@@ -102,105 +109,122 @@ export default function Referrals() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Referral Program</h1>
-          <p className="text-gray-600">
-            Earn ₹49 for every friend you refer who gets verified on our platform. 
-            Share your referral code and start earning!
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8 safe-area-padding">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Professional Referral Program</h1>
+          <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">
+            Build your business network and earn ₹49 for every verified professional you refer to our platform
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardContent className="pt-6">
+        {/* Modern Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <Card className="relative bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5"></div>
+            <CardContent className="relative pt-6 pb-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Referrals</p>
-                  <p className="text-2xl font-bold text-gray-900">{(referrals as any[] || []).length}</p>
+                  <p className="text-sm font-semibold text-blue-700 mb-1">Network Size</p>
+                  <p className="text-3xl font-black text-gray-900">{(referrals as any[] || []).length}</p>
+                  <p className="text-xs text-blue-600 font-medium">Total professionals referred</p>
                 </div>
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <Users className="text-primary w-6 h-6" />
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Users className="text-blue-600 w-7 h-7" />
                 </div>
               </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
+          <Card className="relative bg-gradient-to-br from-green-50 to-emerald-50 border border-green-100 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5"></div>
+            <CardContent className="relative pt-6 pb-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Verified Referrals</p>
-                  <p className="text-2xl font-bold text-gray-900">{verifiedReferrals.length}</p>
+                  <p className="text-sm font-semibold text-green-700 mb-1">Verified Partners</p>
+                  <p className="text-3xl font-black text-gray-900">{verifiedReferrals.length}</p>
+                  <p className="text-xs text-green-600 font-medium">KYC completed members</p>
                 </div>
-                <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="text-secondary w-6 h-6" />
+                <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Award className="text-green-600 w-7 h-7" />
                 </div>
               </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
+          <Card className="relative bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5"></div>
+            <CardContent className="relative pt-6 pb-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Referral Earnings</p>
-                  <p className="text-2xl font-bold text-gray-900">₹{totalEarnings}</p>
+                  <p className="text-sm font-semibold text-purple-700 mb-1">Total Earnings</p>
+                  <p className="text-3xl font-black text-gray-900">₹{totalEarnings}</p>
+                  <p className="text-xs text-purple-600 font-medium">From referral bonuses</p>
                 </div>
-                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
-                  <Gift className="text-accent w-6 h-6" />
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Coins className="text-purple-600 w-7 h-7" />
                 </div>
               </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Referral Tools */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+          {/* Modern Referral Tools */}
           <div className="space-y-6">
-            {/* Referral Code Card */}
-            <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
-              <CardContent className="pt-6">
-                <div className="flex items-center space-x-2 mb-4">
-                  <Gift className="w-5 h-5" />
-                  <h3 className="text-lg font-bold">Your Referral Code</h3>
+            {/* Enhanced Referral Code Card */}
+            <Card className="relative bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white shadow-2xl border-0 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-600/20"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+              
+              <CardContent className="relative pt-6 pb-6">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <Gift className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black tracking-tight">Your Professional Code</h3>
+                    <p className="text-purple-100 text-sm font-medium">Share and earn with every referral</p>
+                  </div>
                 </div>
                 
-                <div className="bg-white/20 rounded-lg p-4 mb-4">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-6 border border-white/20">
                   <div className="flex items-center justify-between">
-                    <code className="text-xl font-mono font-bold">
+                    <code className="text-2xl font-mono font-black tracking-wider text-white">
                       {(user as any)?.referralCode || 'Loading...'}
                     </code>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-white hover:bg-white/20"
+                      className="text-white hover:bg-white/20 transition-colors"
                       onClick={copyReferralCode}
                     >
-                      {copySuccess ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copySuccess ? <CheckCircle className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                     </Button>
                   </div>
                 </div>
 
-                <p className="text-purple-100 text-sm mb-4">
-                  Share this code with friends. When they sign up and get verified, you earn ₹49!
+                <p className="text-purple-100 text-sm mb-6 leading-relaxed">
+                  Share this exclusive code with business professionals. Earn ₹49 for each verified member who joins!
                 </p>
 
-                <div className="flex space-x-2">
+                <div className="flex space-x-3">
                   <Button 
-                    className="flex-1 bg-white text-purple-600 hover:bg-purple-50"
+                    className="flex-1 bg-white text-purple-700 hover:bg-gray-50 font-semibold shadow-lg"
                     onClick={shareReferral}
                   >
                     <Share className="w-4 h-4 mr-2" />
-                    Share
+                    Share Code
                   </Button>
                   <Button 
                     variant="outline"
-                    className="border-white/20 text-white hover:bg-white/10"
+                    className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
                     onClick={copyReferralCode}
                   >
                     <Copy className="w-4 h-4" />
@@ -209,69 +233,69 @@ export default function Referrals() {
               </CardContent>
             </Card>
 
-            {/* Referral Link */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <ExternalLink className="w-5 h-5 mr-2" />
-                  Referral Link
+            {/* Modern Referral Link Card */}
+            <Card className="border border-gray-100 shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center text-xl font-black text-gray-900 tracking-tight">
+                  <LinkIcon className="w-6 h-6 mr-3 text-blue-600" />
+                  Professional Referral Link
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex space-x-2">
+                <div className="flex space-x-3">
                   <Input 
                     value={referralLink}
                     readOnly
-                    className="flex-1"
+                    className="flex-1 font-mono text-sm bg-gray-50 border-gray-200"
                   />
-                  <Button onClick={copyReferralLink}>
+                  <Button onClick={copyReferralLink} className="bg-blue-600 hover:bg-blue-700">
                     <Copy className="w-4 h-4" />
                   </Button>
                 </div>
-                <p className="text-sm text-gray-600">
-                  Direct link that automatically applies your referral code when someone signs up.
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Direct registration link with your referral code automatically applied for seamless onboarding.
                 </p>
               </CardContent>
             </Card>
 
-            {/* How It Works */}
-            <Card>
-              <CardHeader>
-                <CardTitle>How It Works</CardTitle>
+            {/* Modern How It Works */}
+            <Card className="border border-gray-100 shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl font-black text-gray-900 tracking-tight">Professional Referral Process</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+              <CardContent className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg">
                     1
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">Share Your Code</h4>
-                    <p className="text-sm text-gray-600">
-                      Share your referral code or link with friends and family.
+                    <h4 className="font-semibold text-gray-900 mb-2">Network Expansion</h4>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Share your professional code with qualified individuals in your business network.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg">
                     2
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">They Sign Up</h4>
-                    <p className="text-sm text-gray-600">
-                      Your friends use your code to create an account and upload verification documents.
+                    <h4 className="font-semibold text-gray-900 mb-2">Registration & Verification</h4>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Referred professionals complete account setup and submit KYC documentation for verification.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg">
                     3
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">Get Verified & Earn</h4>
-                    <p className="text-sm text-gray-600">
-                      Once their account is verified by our admin, you receive ₹49 instantly!
+                    <h4 className="font-semibold text-gray-900 mb-2">Instant Bonus Credit</h4>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Upon admin approval of their verification, ₹49 is automatically credited to your earnings.
                     </p>
                   </div>
                 </div>
@@ -279,30 +303,40 @@ export default function Referrals() {
             </Card>
           </div>
 
-          {/* Referral History */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Referral History</CardTitle>
+          {/* Modern Referral History */}
+          <Card className="border border-gray-100 shadow-lg">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-xl font-black text-gray-900 tracking-tight">
+                <TrendingUp className="w-6 h-6 mr-3 text-blue-600" />
+                Professional Network Activity
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="text-center py-12">
-                  <p>Loading referrals...</p>
+                <div className="text-center py-16">
+                  <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-gray-600 font-medium">Loading your network data...</p>
                 </div>
               ) : error ? (
-                <div className="text-center py-12">
-                  <p className="text-red-600">Failed to load referrals</p>
+                <div className="text-center py-16">
+                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ExternalLink className="w-8 h-8 text-red-600" />
+                  </div>
+                  <p className="text-red-600 font-semibold">Failed to load referral data</p>
+                  <p className="text-gray-500 text-sm mt-2">Please refresh the page to try again</p>
                 </div>
               ) : !referrals || (referrals as any[]).length === 0 ? (
-                <div className="text-center py-12">
-                  <UserPlus className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Referrals Yet</h3>
-                  <p className="text-gray-600 mb-4">
-                    Start sharing your referral code to earn money!
+                <div className="text-center py-16">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <UserPlus className="w-10 h-10 text-blue-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">Build Your Professional Network</h3>
+                  <p className="text-gray-600 mb-6 max-w-md mx-auto leading-relaxed">
+                    Start expanding your business network and earning ₹49 for each verified professional you refer.
                   </p>
-                  <Button onClick={shareReferral}>
+                  <Button onClick={shareReferral} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
                     <Share className="w-4 h-4 mr-2" />
-                    Share Now
+                    Share Your Code
                   </Button>
                 </div>
               ) : (
@@ -315,25 +349,37 @@ export default function Referrals() {
                     return (
                       <div 
                         key={referral.id}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                        className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-50/50 rounded-xl border border-gray-100 hover:shadow-md transition-all duration-300"
                       >
-                        <div className="flex items-center space-x-3">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            isVerified ? 'bg-green-100' : 'bg-gray-300'
+                        <div className="flex items-center space-x-4">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm ${
+                            referral.isEarningCredited 
+                              ? 'bg-gradient-to-br from-green-100 to-emerald-100' 
+                              : isVerified && kycCompleted
+                              ? 'bg-gradient-to-br from-blue-100 to-indigo-100'
+                              : isVerified
+                              ? 'bg-gradient-to-br from-yellow-100 to-orange-100'
+                              : 'bg-gradient-to-br from-gray-100 to-gray-200'
                           }`}>
-                            <User className={`w-5 h-5 ${
-                              isVerified ? 'text-green-600' : 'text-gray-600'
+                            <User className={`w-6 h-6 ${
+                              referral.isEarningCredited 
+                                ? 'text-green-600' 
+                                : isVerified && kycCompleted
+                                ? 'text-blue-600'
+                                : isVerified
+                                ? 'text-yellow-600'
+                                : 'text-gray-500'
                             }`} />
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-semibold text-gray-900 text-base">
                               {referredUser?.firstName} {referredUser?.lastName}
                             </p>
-                            <p className="text-sm text-gray-600">
-                              Signed up {formatDate(referral.createdAt)}
+                            <p className="text-sm text-gray-600 font-medium">
+                              Joined {formatDate(referral.createdAt)}
                             </p>
                             {referredUser?.email && (
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-500 font-mono">
                                 {referredUser.email}
                               </p>
                             )}
@@ -342,24 +388,24 @@ export default function Referrals() {
                         
                         <div className="text-right">
                           {referral.isEarningCredited ? (
-                            <Badge className="bg-green-600 text-white">
-                              <CheckCircle className="w-3 h-3 mr-1" />
+                            <Badge className="bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg">
+                              <Coins className="w-3 h-3 mr-1" />
                               Earned ₹49
                             </Badge>
                           ) : isVerified && kycCompleted ? (
-                            <Badge className="bg-blue-600 text-white">
+                            <Badge className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg">
                               <CheckCircle className="w-3 h-3 mr-1" />
                               Verified
                             </Badge>
                           ) : isVerified ? (
-                            <Badge className="bg-yellow-600 text-white">
+                            <Badge className="bg-gradient-to-r from-yellow-600 to-orange-600 text-white shadow-lg">
                               <Clock className="w-3 h-3 mr-1" />
-                              KYC Pending
+                              KYC Processing
                             </Badge>
                           ) : (
-                            <Badge variant="outline">
+                            <Badge variant="outline" className="border-gray-300">
                               <Clock className="w-3 h-3 mr-1" />
-                              Pending Verification
+                              Registration Pending
                             </Badge>
                           )}
                         </div>
@@ -372,18 +418,57 @@ export default function Referrals() {
           </Card>
         </div>
 
-        {/* Terms & Conditions */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Referral Terms & Conditions</CardTitle>
+        {/* Professional Terms & Conditions */}
+        <Card className="mt-8 border border-gray-100 shadow-lg">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center text-xl font-black text-gray-900 tracking-tight">
+              <Star className="w-6 h-6 mr-3 text-yellow-600" />
+              Professional Program Terms
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2 text-sm text-gray-600">
-            <p>• You earn ₹49 for each successfully verified referral.</p>
-            <p>• Referred users must complete account verification with government ID and bank details.</p>
-            <p>• Referral bonuses are credited automatically once verification is approved by admin.</p>
-            <p>• Self-referrals and fake accounts are strictly prohibited and may result in account suspension.</p>
-            <p>• EarnPay reserves the right to modify referral rewards at any time.</p>
-            <p>• Referral earnings are subject to the same payout schedule as video earnings (weekly on Tuesdays).</p>
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    <span className="font-semibold">₹49 bonus</span> per successfully verified professional referral
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    <span className="font-semibold">KYC verification required</span> - government ID and banking details mandatory
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    <span className="font-semibold">Automatic crediting</span> upon admin verification approval
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    <span className="font-semibold">Fraud prevention</span> - self-referrals result in account suspension
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    <span className="font-semibold">Weekly payouts</span> every Tuesday with regular earnings
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    <span className="font-semibold">Program modifications</span> reserved by EarnPay management
+                  </p>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </main>
