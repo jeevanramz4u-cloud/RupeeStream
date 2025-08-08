@@ -1,7 +1,17 @@
 import { Link } from "wouter";
-import { Play, Mail, Phone, MapPin } from "lucide-react";
+import { Play, Mail, Phone, MapPin, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
 export default function Footer() {
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   const companyLinks = [
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact" },
@@ -14,8 +24,6 @@ export default function Footer() {
     { href: "/payout-schedule", label: "Payout Schedule" },
   ];
 
-
-
   const legalLinks = [
     { href: "/privacy-policy", label: "Privacy Policy" },
     { href: "/terms-conditions", label: "Terms & Conditions" },
@@ -24,7 +32,111 @@ export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
+        {/* Mobile: Collapsible Sections, Desktop: Grid Layout */}
+        <div className="block sm:hidden">
+          {/* Company Info */}
+          <div className="mb-6">
+            <div className="flex items-center space-x-2 mb-4">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Play className="text-white w-4 h-4" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">EarnPay</span>
+            </div>
+            <p className="text-gray-600 mb-4 leading-relaxed text-sm">
+              Transform your free time into real income. Join thousands of users who are already earning money by watching videos on our platform.
+            </p>
+          </div>
+
+          {/* Collapsible Sections for Mobile */}
+          <div className="space-y-4">
+            {/* Company Section */}
+            <div className="border-b border-gray-100 pb-4">
+              <button
+                onClick={() => toggleSection('company')}
+                className="flex items-center justify-between w-full text-left"
+              >
+                <h3 className="text-gray-900 font-bold text-base">Company</h3>
+                {openSections.company ? 
+                  <ChevronUp className="w-4 h-4 text-gray-500" /> : 
+                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                }
+              </button>
+              {openSections.company && (
+                <ul className="mt-3 space-y-2">
+                  {companyLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link 
+                        href={link.href} 
+                        className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Earn Money Section */}
+            <div className="border-b border-gray-100 pb-4">
+              <button
+                onClick={() => toggleSection('earn')}
+                className="flex items-center justify-between w-full text-left"
+              >
+                <h3 className="text-gray-900 font-bold text-base">Earn Money</h3>
+                {openSections.earn ? 
+                  <ChevronUp className="w-4 h-4 text-gray-500" /> : 
+                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                }
+              </button>
+              {openSections.earn && (
+                <ul className="mt-3 space-y-2">
+                  {earnLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link 
+                        href={link.href} 
+                        className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Legal Section */}
+            <div className="border-b border-gray-100 pb-4">
+              <button
+                onClick={() => toggleSection('legal')}
+                className="flex items-center justify-between w-full text-left"
+              >
+                <h3 className="text-gray-900 font-bold text-base">Legal</h3>
+                {openSections.legal ? 
+                  <ChevronUp className="w-4 h-4 text-gray-500" /> : 
+                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                }
+              </button>
+              {openSections.legal && (
+                <ul className="mt-3 space-y-2">
+                  {legalLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link 
+                        href={link.href} 
+                        className="text-gray-600 hover:text-primary transition-colors text-sm font-medium block py-1"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: Grid Layout */}
+        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
           {/* Company Info */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center space-x-2 mb-4 sm:mb-6">
