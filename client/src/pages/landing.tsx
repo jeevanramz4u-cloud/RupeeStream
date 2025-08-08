@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Play, Users, Coins, Clock, CheckCircle, Shield, User } from "lucide-react";
+import { Play, Users, Coins, Clock, CheckCircle, Shield, User, TrendingUp, CreditCard, BarChart3, Lock, Building2, Headphones } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Landing() {
@@ -130,7 +130,7 @@ export default function Landing() {
               </span>
             </h2>
             <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
-              Experience the most trusted and rewarding platform for earning money through video engagement
+              India's most trusted video monetization platform with guaranteed earnings and transparent business model
             </p>
             
             {/* Decorative divider */}
@@ -141,101 +141,83 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-            {/* Real Money Earnings */}
-            <div className="group relative">
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-green-200">
-                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Coins className="text-white w-8 h-8" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
+            {/* Feature 1 - Business Trust */}
+            <div className="group relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:border-primary/30 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-8">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-100 to-emerald-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Shield className="text-green-600 w-10 h-10 lg:w-12 lg:h-12" />
                 </div>
-                <div className="pt-6">
-                  <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-green-600 transition-colors tracking-tight">Real Money Earnings</h3>
-                  <p className="text-gray-600 leading-relaxed font-medium">
-                    Earn real rupees for every video you watch completely. No fake rewards or points - just genuine cash earnings.
-                  </p>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
+              <h3 className="text-2xl font-black text-gray-900 mb-6 text-center tracking-tight">Legitimate Business</h3>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-lg">Government-compliant platform with proper business registration and tax compliance for your peace of mind.</p>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
             </div>
 
-            {/* Referral Bonuses */}
-            <div className="group relative">
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-blue-200">
-                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Users className="text-white w-8 h-8" />
+            {/* Feature 2 - Real Revenue Model */}
+            <div className="group relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:border-primary/30 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-8">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <TrendingUp className="text-blue-600 w-10 h-10 lg:w-12 lg:h-12" />
                 </div>
-                <div className="pt-6">
-                  <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-blue-600 transition-colors tracking-tight">Referral Bonuses</h3>
-                  <p className="text-gray-600 leading-relaxed font-medium">
-                    Earn ₹49 for every friend you refer who gets verified on our platform. Build your network and increase earnings.
-                  </p>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
+              <h3 className="text-2xl font-black text-gray-900 mb-6 text-center tracking-tight">Sustainable Revenue</h3>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-lg">Built on advertising partnerships with major brands, ensuring long-term sustainability and consistent earnings.</p>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
             </div>
 
-            {/* Flexible Schedule */}
-            <div className="group relative">
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-orange-200">
-                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Clock className="text-white w-8 h-8" />
+            {/* Feature 3 - Professional Payouts */}
+            <div className="group relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:border-primary/30 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-8">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <CreditCard className="text-purple-600 w-10 h-10 lg:w-12 lg:h-12" />
                 </div>
-                <div className="pt-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-orange-600 transition-colors">Flexible Schedule</h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    Watch videos anytime, anywhere. Meet the 8-hour daily target to maximize earnings with complete flexibility.
-                  </p>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
+              <h3 className="text-2xl font-black text-gray-900 mb-6 text-center tracking-tight">Professional Payouts</h3>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-lg">Weekly bank transfers every Tuesday with complete transaction history and tax documentation.</p>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
             </div>
 
-            {/* Weekly Payouts */}
-            <div className="group relative">
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-purple-200">
-                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <CheckCircle className="text-white w-8 h-8" />
+            {/* Feature 4 - Proven Track Record */}
+            <div className="group relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:border-primary/30 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-8">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-orange-100 to-red-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <BarChart3 className="text-orange-600 w-10 h-10 lg:w-12 lg:h-12" />
                 </div>
-                <div className="pt-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors">Weekly Payouts</h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    Receive your earnings every Tuesday directly to your bank account. Fast, secure, and reliable payments.
-                  </p>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
+              <h3 className="text-2xl font-black text-gray-900 mb-6 text-center tracking-tight">₹10M+ Distributed</h3>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-lg">Over 10 million rupees paid to our community with transparent financial reporting and growth metrics.</p>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-orange-500 to-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
             </div>
 
-            {/* Secure & Verified */}
-            <div className="group relative">
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-cyan-200">
-                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Shield className="text-white w-8 h-8" />
+            {/* Feature 5 - Enterprise Security */}
+            <div className="group relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:border-primary/30 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-8">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-teal-100 to-cyan-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Lock className="text-teal-600 w-10 h-10 lg:w-12 lg:h-12" />
                 </div>
-                <div className="pt-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-cyan-600 transition-colors">Secure & Verified</h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    Government ID verification ensures a safe and trusted earning environment for all users.
-                  </p>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-teal-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
+              <h3 className="text-2xl font-black text-gray-900 mb-6 text-center tracking-tight">Enterprise Security</h3>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-lg">Bank-grade encryption, secure KYC verification, and fraud prevention systems protect your data and earnings.</p>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-teal-500 to-cyan-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
             </div>
 
-            {/* Quality Content */}
-            <div className="group relative">
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-violet-200">
-                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Play className="text-white w-8 h-8" />
+            {/* Feature 6 - Business Support */}
+            <div className="group relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:border-primary/30 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-8">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-violet-100 to-purple-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Building2 className="text-violet-600 w-10 h-10 lg:w-12 lg:h-12" />
                 </div>
-                <div className="pt-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-violet-600 transition-colors">Quality Content</h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    Watch curated, high-quality videos across various categories and topics that are both entertaining and rewarding.
-                  </p>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
+              <h3 className="text-2xl font-black text-gray-900 mb-6 text-center tracking-tight">Business Support</h3>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-lg">Professional customer service with dedicated account managers and comprehensive business documentation.</p>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-violet-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
             </div>
           </div>
         </div>
@@ -260,10 +242,13 @@ export default function Landing() {
               </div>
             </div>
             <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
-              How It Works
+              How It
+              <span className="block bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent font-black">
+                Works
+              </span>
             </h2>
             <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
-              Simple steps to start earning money by watching videos
+              Professional earning process designed for sustainable income generation through video engagement
             </p>
           </div>
 
@@ -280,8 +265,8 @@ export default function Landing() {
                     <User className="text-green-600 w-8 h-8 lg:w-10 lg:h-10" />
                   </div>
                 </div>
-                <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Sign Up & Verify</h3>
-                <p className="text-gray-600 text-center leading-relaxed font-medium">Create your account, upload your government ID and bank details for verification.</p>
+                <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Professional Registration</h3>
+                <p className="text-gray-600 text-center leading-relaxed font-medium">Complete business-grade KYC verification with government ID, bank details, and ₹99 processing fee for legitimate user base.</p>
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
             </div>
@@ -298,8 +283,8 @@ export default function Landing() {
                     <Play className="text-blue-600 w-8 h-8 lg:w-10 lg:h-10" />
                   </div>
                 </div>
-                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Watch Videos</h3>
-                <p className="text-gray-600 text-center leading-relaxed">Browse our video library and watch videos completely to earn money. No skipping allowed!</p>
+                <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Engage with Content</h3>
+                <p className="text-gray-600 text-center leading-relaxed font-medium">Access premium video content from advertising partners. Complete viewing ensures legitimate engagement metrics for brands.</p>
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
             </div>
@@ -316,8 +301,8 @@ export default function Landing() {
                     <Clock className="text-orange-600 w-8 h-8 lg:w-10 lg:h-10" />
                   </div>
                 </div>
-                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Meet Daily Target</h3>
-                <p className="text-gray-600 text-center leading-relaxed">Watch videos for 8 hours daily to maintain your account in good standing.</p>
+                <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Professional Commitment</h3>
+                <p className="text-gray-600 text-center leading-relaxed font-medium">Maintain 8-hour daily engagement to ensure consistent revenue stream and professional standing in our ecosystem.</p>
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
             </div>
@@ -333,8 +318,8 @@ export default function Landing() {
                     <Coins className="text-purple-600 w-8 h-8 lg:w-10 lg:h-10" />
                   </div>
                 </div>
-                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 text-center">Get Paid</h3>
-                <p className="text-gray-600 text-center leading-relaxed">Request weekly payouts every Tuesday and receive money directly to your bank account.</p>
+                <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Business Payouts</h3>
+                <p className="text-gray-600 text-center leading-relaxed font-medium">Receive professional weekly bank transfers every Tuesday with complete transaction history and tax documentation.</p>
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
             </div>
