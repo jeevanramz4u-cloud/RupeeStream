@@ -8,14 +8,11 @@ import { Link } from "wouter";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen aurora-bg safe-area-padding relative overflow-hidden">
-      {/* Dynamic floating elements */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 safe-area-padding relative overflow-hidden">
+      {/* Subtle floating elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-10 left-5 w-40 h-40 bg-gradient-to-br from-white/20 to-blue-300/30 rounded-full blob-animation filter blur-sm"></div>
-        <div className="absolute top-32 right-10 w-32 h-32 bg-gradient-to-br from-purple-300/30 to-pink-400/40 rounded-lg transform rotate-45 blob-animation filter blur-sm" style={{animationDelay: '1s'}}></div>
-        <div className="absolute bottom-20 left-1/5 w-28 h-28 bg-gradient-to-br from-green-300/30 to-cyan-400/40 rounded-full blob-animation filter blur-sm" style={{animationDelay: '3s'}}></div>
-        <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-gradient-to-br from-yellow-300/30 to-orange-400/40 rounded-lg blob-animation filter blur-sm" style={{animationDelay: '5s'}}></div>
-        <div className="absolute bottom-40 right-5 w-36 h-36 bg-gradient-to-br from-indigo-300/30 to-purple-400/40 rounded-full blob-animation filter blur-sm" style={{animationDelay: '7s'}}></div>
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gray-200/40 rounded-full blob-animation filter blur-lg"></div>
+        <div className="absolute bottom-20 right-10 w-28 h-28 bg-gray-300/30 rounded-full blob-animation filter blur-lg" style={{animationDelay: '4s'}}></div>
       </div>
       
       <Header />
@@ -38,58 +35,58 @@ export default function Landing() {
             </div>
           </div>
           
-          <h1 className="font-outfit text-6xl sm:text-7xl lg:text-9xl font-black text-white mb-10 leading-tight text-glow">
-            <span className="block mb-4">Transform Your</span>
-            <span className="block text-yellow-300 text-glow">Free Time</span>
-            <span className="block mt-4 text-5xl sm:text-6xl lg:text-7xl font-bold text-white/90">into Real Income</span>
+          <h1 className="font-outfit text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 mb-8 leading-tight">
+            <span className="block mb-2">Transform Your</span>
+            <span className="block text-blue-600">Free Time</span>
+            <span className="block mt-2 text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-700">into Real Income</span>
           </h1>
           
-          <p className="font-inter text-2xl sm:text-3xl lg:text-4xl text-white/90 mb-12 max-w-6xl mx-auto leading-relaxed font-medium text-shadow">
-            Join the <span className="font-bold text-yellow-300 text-glow">most rewarding</span> video platform where every minute counts. 
+          <p className="font-inter text-xl sm:text-2xl lg:text-3xl text-gray-600 mb-10 max-w-5xl mx-auto leading-relaxed font-medium">
+            Join the <span className="font-bold text-blue-600">most rewarding</span> video platform where every minute counts. 
             Watch, earn, and get paid weekly with complete transparency.
           </p>
           
           {/* Earnings Stats */}
-          <div className="glass-card rounded-4xl p-10 sm:p-12 mb-16 max-w-7xl mx-auto glow-box border border-white/30">
-            <div className="grid sm:grid-cols-3 gap-10 items-center">
+          <div className="bg-white rounded-3xl p-8 sm:p-10 mb-12 max-w-6xl mx-auto shadow-xl border border-gray-200">
+            <div className="grid sm:grid-cols-3 gap-8 items-center">
               <div className="text-center group">
-                <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-green-500 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-2xl glow-box">
-                  <Coins className="w-12 h-12 text-white" />
+                <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <Coins className="w-10 h-10 text-white" />
                 </div>
-                <div className="font-code text-5xl font-bold text-white mb-2 text-glow">₹1,000</div>
-                <div className="text-white/80 font-medium text-lg">Signup Bonus</div>
+                <div className="font-code text-4xl font-bold text-blue-600 mb-1">₹1,000</div>
+                <div className="text-gray-600 font-medium">Signup Bonus</div>
               </div>
               
               <div className="text-center group">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-2xl glow-box">
-                  <TrendingUp className="w-12 h-12 text-white" />
+                <div className="w-20 h-20 bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <TrendingUp className="w-10 h-10 text-white" />
                 </div>
-                <div className="font-code text-5xl font-bold text-white mb-2 text-glow">₹5-50</div>
-                <div className="text-white/80 font-medium text-lg">Per Video</div>
+                <div className="font-code text-4xl font-bold text-gray-600 mb-1">₹5-50</div>
+                <div className="text-gray-600 font-medium">Per Video</div>
               </div>
               
               <div className="text-center group">
-                <div className="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-2xl glow-box">
-                  <Award className="w-12 h-12 text-white" />
+                <div className="w-20 h-20 bg-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <Award className="w-10 h-10 text-white" />
                 </div>
-                <div className="font-code text-5xl font-bold text-white mb-2 text-glow">₹49</div>
-                <div className="text-white/80 font-medium text-lg">Referral Bonus</div>
+                <div className="font-code text-4xl font-bold text-slate-600 mb-1">₹49</div>
+                <div className="text-gray-600 font-medium">Referral Bonus</div>
               </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-8 justify-center max-w-5xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-4xl mx-auto">
             <Button 
               size="lg" 
-              className="font-outfit bg-white text-blue-600 hover:bg-yellow-100 hover:text-blue-700 h-20 sm:h-22 text-2xl font-bold px-16 sm:px-20 rounded-3xl shadow-2xl hover:shadow-white/20 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 touch-manipulation glow-box"
+              className="font-outfit bg-blue-600 text-white hover:bg-blue-700 h-16 sm:h-18 text-xl font-bold px-12 sm:px-16 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 touch-manipulation"
               onClick={() => window.location.href = '/signup'}
             >
-              <Sparkles className="w-8 h-8 mr-4" />
-              Get ₹1,000 Bonus Now
+              <Sparkles className="w-6 h-6 mr-3" />
+              Get ₹1,000 Bonus
             </Button>
             <Button 
               size="lg" 
               variant="outline"
-              className="font-outfit h-20 sm:h-22 text-xl border-3 border-white/50 text-white hover:bg-white/20 hover:border-white backdrop-blur-sm px-16 sm:px-20 rounded-3xl transition-all duration-300 bg-transparent hover:shadow-2xl touch-manipulation glow-box"
+              className="font-outfit h-16 sm:h-18 text-xl border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-blue-500 hover:text-blue-600 px-12 sm:px-16 rounded-2xl transition-all duration-300 bg-white shadow-lg hover:shadow-xl touch-manipulation"
               onClick={() => window.location.href = '/login'}
             >
               Already Member?
@@ -144,12 +141,11 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 sm:py-28 lg:py-32 px-4 mesh-gradient relative overflow-hidden">
-        {/* Dynamic decorative elements */}
+      <section id="features" className="py-20 sm:py-24 lg:py-28 px-4 bg-white relative overflow-hidden">
+        {/* Simple decorative elements */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-80 h-80 bg-white/10 rounded-full opacity-30 blur-3xl blob-animation"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/10 rounded-full opacity-30 blur-3xl blob-animation" style={{animationDelay: '3s'}}></div>
-          <div className="absolute top-1/2 left-1/3 w-72 h-72 bg-white/10 rounded-full opacity-30 blur-3xl blob-animation" style={{animationDelay: '6s'}}></div>
+          <div className="absolute top-20 left-10 w-64 h-64 bg-gray-100 rounded-full opacity-20 blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-gray-50 rounded-full opacity-30 blur-3xl"></div>
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10">
@@ -166,12 +162,12 @@ export default function Landing() {
               </div>
             </div>
             
-            <h2 className="font-outfit text-6xl lg:text-8xl font-black text-white mb-10 leading-tight text-glow">
-              <span className="block mb-4">Why Choose</span>
-              <span className="text-yellow-300 text-glow">EarnPay?</span>
+            <h2 className="font-outfit text-5xl lg:text-7xl font-black text-gray-900 mb-8 leading-tight">
+              <span className="block mb-2">Why Choose</span>
+              <span className="text-blue-600">EarnPay?</span>
             </h2>
-            <p className="font-inter text-2xl lg:text-3xl text-white/90 max-w-5xl mx-auto leading-relaxed font-medium text-shadow">
-              Experience the most <span className="font-bold text-yellow-300 text-glow">trusted and rewarding platform</span> for earning money through video engagement. 
+            <p className="font-inter text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              Experience the most <span className="font-bold text-blue-600">trusted and rewarding platform</span> for earning money through video engagement. 
               Join thousands of satisfied users who are already earning real money.
             </p>
             
@@ -185,67 +181,67 @@ export default function Landing() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
             {/* Real Money Earnings */}
-            <div className="group glass-card rounded-4xl p-10 glow-box hover:shadow-2xl transition-all duration-300 card-hover border border-white/30">
-              <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-green-500 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300 shadow-2xl glow-box">
-                <Coins className="text-white w-10 h-10" />
+            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
+              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Coins className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-outfit text-3xl font-bold text-white mb-6 text-center text-glow">Real Money Earnings</h3>
-              <p className="font-inter text-white/80 leading-relaxed text-center text-lg">
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Real Money Earnings</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
                 Earn genuine rupees for every video you watch completely. No fake rewards or points - just real cash directly to your bank account.
               </p>
             </div>
 
             {/* Referral Program */}
-            <div className="group glass-card rounded-4xl p-10 glow-box hover:shadow-2xl transition-all duration-300 card-hover border border-white/30">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300 shadow-2xl glow-box">
-                <Users className="text-white w-10 h-10" />
+            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
+              <div className="w-16 h-16 bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Users className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-outfit text-3xl font-bold text-white mb-6 text-center text-glow">Smart Referrals</h3>
-              <p className="font-inter text-white/80 leading-relaxed text-center text-lg">
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Smart Referrals</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
                 Earn ₹49 for every friend you refer who completes verification. Build your network and multiply your earnings exponentially.
               </p>
             </div>
 
             {/* Flexible Schedule */}
-            <div className="group glass-card rounded-4xl p-10 glow-box hover:shadow-2xl transition-all duration-300 card-hover border border-white/30">
-              <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-red-500 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300 shadow-2xl glow-box">
-                <Clock className="text-white w-10 h-10" />
+            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
+              <div className="w-16 h-16 bg-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Clock className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-outfit text-3xl font-bold text-white mb-6 text-center text-glow">Complete Flexibility</h3>
-              <p className="font-inter text-white/80 leading-relaxed text-center text-lg">
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Complete Flexibility</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
                 Watch videos anytime, anywhere. Meet the 8-hour daily target at your own pace with complete schedule freedom.
               </p>
             </div>
 
             {/* Weekly Payouts */}
-            <div className="group glass-card rounded-4xl p-10 glow-box hover:shadow-2xl transition-all duration-300 card-hover border border-white/30">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300 shadow-2xl glow-box">
-                <CheckCircle className="text-white w-10 h-10" />
+            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
+              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <CheckCircle className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-outfit text-3xl font-bold text-white mb-6 text-center text-glow">Weekly Payouts</h3>
-              <p className="font-inter text-white/80 leading-relaxed text-center text-lg">
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Weekly Payouts</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
                 Receive your earnings every Tuesday directly to your bank account. Fast, secure, and reliable payment processing.
               </p>
             </div>
 
             {/* Secure Platform */}
-            <div className="group glass-card rounded-4xl p-10 glow-box hover:shadow-2xl transition-all duration-300 card-hover border border-white/30">
-              <div className="w-20 h-20 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300 shadow-2xl glow-box">
-                <Shield className="text-white w-10 h-10" />
+            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
+              <div className="w-16 h-16 bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Shield className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-outfit text-3xl font-bold text-white mb-6 text-center text-glow">Bank-Level Security</h3>
-              <p className="font-inter text-white/80 leading-relaxed text-center text-lg">
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Bank-Level Security</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
                 Government ID verification and encrypted transactions ensure a safe, trusted earning environment for all users.
               </p>
             </div>
 
             {/* Quality Content */}
-            <div className="group glass-card rounded-4xl p-10 glow-box hover:shadow-2xl transition-all duration-300 card-hover border border-white/30">
-              <div className="w-20 h-20 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300 shadow-2xl glow-box">
-                <Play className="text-white w-10 h-10" />
+            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
+              <div className="w-16 h-16 bg-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Play className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-outfit text-3xl font-bold text-white mb-6 text-center text-glow">Premium Content</h3>
-              <p className="font-inter text-white/80 leading-relaxed text-center text-lg">
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Premium Content</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
                 Watch curated, high-quality videos across various categories. Entertainment that's both engaging and rewarding.
               </p>
             </div>
