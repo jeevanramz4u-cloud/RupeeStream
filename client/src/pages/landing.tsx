@@ -29,37 +29,46 @@ export default function Landing() {
           </div>
           
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-gray-900 mb-4 sm:mb-6 leading-tight tracking-tight">
-            Earn Money by<br />
+            Transform Your Time Into<br />
             <span className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent font-black">
-              Watching Videos
+              Real Income
             </span>
           </h1>
           <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
-            Turn your free time into income. Watch entertaining videos, complete daily targets, 
-            and earn real money with our trusted platform.
+            Join India's most trusted video monetization platform. Watch premium content from top brands, 
+            meet daily engagement targets, and earn sustainable income with our professional ecosystem.
           </p>
           
-          {/* Bonus Features */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 max-w-4xl mx-auto shadow-lg border border-gray-100">
-            <div className="grid sm:grid-cols-2 gap-4 items-center justify-center">
-              <div className="flex items-center gap-4 justify-center sm:justify-start">
-                <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center shadow-sm">
-                  <Coins className="w-7 h-7 text-green-600" />
+          {/* Enhanced Bonus Features */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-8">
+            <div className="relative bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-6 shadow-xl border-2 border-green-200/50 hover:shadow-2xl hover:scale-105 transition-all duration-300 group overflow-hidden">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-300/20 to-emerald-400/20 rounded-full blur-xl"></div>
+              <div className="relative flex items-center gap-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform duration-300">
+                  <Coins className="w-8 h-8 text-white" />
                 </div>
                 <div className="text-left">
-                  <span className="text-2xl font-black text-green-700 block tracking-tight">₹1,000</span>
-                  <span className="text-gray-600 font-medium text-sm">Signup Bonus</span>
+                  <span className="text-3xl font-black text-green-700 block tracking-tight leading-none">₹1,000</span>
+                  <span className="text-green-600 font-bold text-sm mt-1 block">Welcome Bonus</span>
+                  <span className="text-xs text-green-500 font-medium">After KYC Verification</span>
                 </div>
               </div>
-              <div className="flex items-center gap-4 justify-center sm:justify-start">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center shadow-sm">
-                  <Clock className="w-7 h-7 text-blue-600" />
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 rounded-b-3xl"></div>
+            </div>
+            
+            <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-6 shadow-xl border-2 border-blue-200/50 hover:shadow-2xl hover:scale-105 transition-all duration-300 group overflow-hidden">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-300/20 to-indigo-400/20 rounded-full blur-xl"></div>
+              <div className="relative flex items-center gap-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform duration-300">
+                  <Clock className="w-8 h-8 text-white" />
                 </div>
                 <div className="text-left">
-                  <span className="text-2xl font-black text-blue-700 block tracking-tight">₹10/Hour</span>
-                  <span className="text-gray-600 font-medium text-sm">Login Bonus</span>
+                  <span className="text-3xl font-black text-blue-700 block tracking-tight leading-none">₹10/Hour</span>
+                  <span className="text-blue-600 font-bold text-sm mt-1 block">Hourly Earnings</span>
+                  <span className="text-xs text-blue-500 font-medium">Daily Active Bonus</span>
                 </div>
               </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-b-3xl"></div>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center max-w-2xl mx-auto">
