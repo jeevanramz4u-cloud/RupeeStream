@@ -3,172 +3,134 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Play, Users, Coins, Clock, CheckCircle, Shield, User, Zap, Star, TrendingUp, Award, Sparkles } from "lucide-react";
+import { Play, Users, Coins, Clock, CheckCircle, Shield, User } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 safe-area-padding relative overflow-hidden">
-      {/* Subtle floating elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gray-200/40 rounded-full blob-animation filter blur-lg"></div>
-        <div className="absolute bottom-20 right-10 w-28 h-28 bg-gray-300/30 rounded-full blob-animation filter blur-lg" style={{animationDelay: '4s'}}></div>
-      </div>
-      
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 safe-area-padding">
       <Header />
 
       {/* Hero Section */}
-      <section className="relative py-16 sm:py-20 lg:py-24 px-4 sm:px-6 overflow-hidden">
-        {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-transparent to-blue-50/40"></div>
+      <section className="relative py-8 sm:py-12 lg:py-16 px-3 sm:px-4 overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="absolute top-10 left-10 w-40 h-40 bg-primary rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-60 h-60 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-1/3 right-10 w-32 h-32 bg-purple-500 rounded-full blur-3xl animate-pulse"></div>
+        </div>
         
-        <div className="max-w-7xl mx-auto text-center relative z-10">
-          {/* Modern Badge */}
-          <div className="inline-flex items-center justify-center mb-10">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-20"></div>
-              <div className="relative bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
-                <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-xl">
-                  <Play className="w-8 h-8" />
-                </div>
-              </div>
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          {/* Logo Badge */}
+          <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-8">
+            <div className="bg-gradient-to-br from-primary to-blue-600 text-white p-4 rounded-full shadow-lg">
+              <Play className="w-8 h-8" />
             </div>
           </div>
           
-          <h1 className="font-outfit text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 mb-8 leading-tight">
-            <span className="block mb-2">Transform Your</span>
-            <span className="block text-blue-600">Free Time</span>
-            <span className="block mt-2 text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-700">into Real Income</span>
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-gray-900 mb-4 sm:mb-6 leading-tight tracking-tight">
+            Earn Money by<br />
+            <span className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent font-black">
+              Watching Videos
+            </span>
           </h1>
-          
-          <p className="font-inter text-xl sm:text-2xl lg:text-3xl text-gray-600 mb-10 max-w-5xl mx-auto leading-relaxed font-medium">
-            Join the <span className="font-bold text-blue-600">most rewarding</span> video platform where every minute counts. 
-            Watch, earn, and get paid weekly with complete transparency.
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
+            Turn your free time into income. Watch entertaining videos, complete daily targets, 
+            and earn real money with our trusted platform.
           </p>
           
-          {/* Earnings Stats */}
-          <div className="bg-white rounded-3xl p-8 sm:p-10 mb-12 max-w-6xl mx-auto shadow-xl border border-gray-200">
-            <div className="grid sm:grid-cols-3 gap-8 items-center">
-              <div className="text-center group">
-                <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Coins className="w-10 h-10 text-white" />
+          {/* Bonus Features */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 max-w-4xl mx-auto shadow-lg border border-gray-100">
+            <div className="grid sm:grid-cols-2 gap-4 items-center justify-center">
+              <div className="flex items-center gap-4 justify-center sm:justify-start">
+                <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center shadow-sm">
+                  <Coins className="w-7 h-7 text-green-600" />
                 </div>
-                <div className="font-code text-4xl font-bold text-blue-600 mb-1">₹1,000</div>
-                <div className="text-gray-600 font-medium">Signup Bonus</div>
+                <div className="text-left">
+                  <span className="text-2xl font-black text-green-700 block tracking-tight">₹1,000</span>
+                  <span className="text-gray-600 font-medium text-sm">Signup Bonus</span>
+                </div>
               </div>
-              
-              <div className="text-center group">
-                <div className="w-20 h-20 bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <TrendingUp className="w-10 h-10 text-white" />
+              <div className="flex items-center gap-4 justify-center sm:justify-start">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center shadow-sm">
+                  <Clock className="w-7 h-7 text-blue-600" />
                 </div>
-                <div className="font-code text-4xl font-bold text-gray-600 mb-1">₹5-50</div>
-                <div className="text-gray-600 font-medium">Per Video</div>
-              </div>
-              
-              <div className="text-center group">
-                <div className="w-20 h-20 bg-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Award className="w-10 h-10 text-white" />
+                <div className="text-left">
+                  <span className="text-2xl font-black text-blue-700 block tracking-tight">₹10/Hour</span>
+                  <span className="text-gray-600 font-medium text-sm">Login Bonus</span>
                 </div>
-                <div className="font-code text-4xl font-bold text-slate-600 mb-1">₹49</div>
-                <div className="text-gray-600 font-medium">Referral Bonus</div>
               </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-4xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center max-w-2xl mx-auto">
             <Button 
               size="lg" 
-              className="font-outfit bg-blue-600 text-white hover:bg-blue-700 h-16 sm:h-18 text-xl font-bold px-12 sm:px-16 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 touch-manipulation"
+              className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 h-14 sm:h-16 text-lg font-semibold px-8 sm:px-12 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 touch-manipulation"
               onClick={() => window.location.href = '/signup'}
             >
-              <Sparkles className="w-6 h-6 mr-3" />
-              Get ₹1,000 Bonus
+              Start Earning Now
             </Button>
             <Button 
               size="lg" 
               variant="outline"
-              className="font-outfit h-16 sm:h-18 text-xl border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-blue-500 hover:text-blue-600 px-12 sm:px-16 rounded-2xl transition-all duration-300 bg-white shadow-lg hover:shadow-xl touch-manipulation"
+              className="h-14 sm:h-16 text-lg border-2 border-gray-300 hover:bg-gray-50 hover:border-primary/50 px-8 sm:px-12 rounded-2xl transition-all duration-300 touch-manipulation"
               onClick={() => window.location.href = '/login'}
             >
-              Already Member?
+              Already Have Account?
             </Button>
           </div>
           
           {/* Trust Indicators */}
-          <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 hover:border-green-200 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-green-600" />
-                </div>
-                <div>
-                  <div className="font-outfit text-lg font-bold text-gray-900">100% Secure</div>
-                  <div className="text-gray-600 text-sm">Bank-level security</div>
-                </div>
-              </div>
+          <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto opacity-70">
+            <div className="flex items-center justify-center gap-2 bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-gray-100 hover:bg-white/80 transition-all duration-300">
+              <Shield className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-medium text-gray-700">100% Secure</span>
             </div>
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 hover:border-blue-200 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-blue-600" />
-                </div>
-                <div>
-                  <div className="font-outfit text-lg font-bold text-gray-900">Verified Platform</div>
-                  <div className="text-gray-600 text-sm">Trusted by millions</div>
-                </div>
-              </div>
+            <div className="flex items-center justify-center gap-2 bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-gray-100 hover:bg-white/80 transition-all duration-300">
+              <CheckCircle className="w-5 h-5 text-blue-600" />
+              <span className="text-sm font-medium text-gray-700">Verified Platform</span>
             </div>
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 hover:border-purple-200 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <Users className="w-6 h-6 text-purple-600" />
-                </div>
-                <div>
-                  <div className="font-outfit text-lg font-bold text-gray-900">200K+ Users</div>
-                  <div className="text-gray-600 text-sm">Active community</div>
-                </div>
-              </div>
+            <div className="flex items-center justify-center gap-2 bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-gray-100 hover:bg-white/80 transition-all duration-300">
+              <Users className="w-5 h-5 text-purple-600" />
+              <span className="text-sm font-medium text-gray-700">200K+ Users</span>
             </div>
           </div>
-          
-          {/* Live stats ticker */}
-          <div className="mt-12 bg-gradient-to-r from-emerald-50 to-blue-50 rounded-full p-4 max-w-lg mx-auto border border-emerald-200">
-            <div className="font-inter text-center">
-              <span className="text-emerald-600 font-bold">🔥 Live Stats:</span>
-              <span className="text-gray-700 ml-2">₹2,47,530 earned today • 1,247 users earning ₹5-50 per video</span>
-            </div>
+          <div className="mt-4 sm:hidden">
+            <Button size="sm" variant="outline" className="text-xs touch-manipulation rounded-xl">
+              <a href="#how-it-works">Learn How It Works</a>
+            </Button>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 sm:py-24 lg:py-28 px-4 bg-white relative overflow-hidden">
-        {/* Simple decorative elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-64 h-64 bg-gray-100 rounded-full opacity-20 blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-gray-50 rounded-full opacity-30 blur-3xl"></div>
+      <section id="features" className="py-12 sm:py-16 lg:py-20 px-4 bg-gradient-to-br from-white via-indigo-50/30 to-purple-50/20 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-[0.02]">
+          <div className="absolute top-10 left-20 w-80 h-80 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tr from-blue-400 to-cyan-400 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/4 w-40 h-40 bg-gradient-to-br from-pink-400 to-rose-400 rounded-full blur-3xl"></div>
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-20">
-            {/* Modern Features Badge */}
-            <div className="inline-flex items-center justify-center mb-10">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur opacity-20"></div>
-                <div className="relative bg-white border border-gray-200 rounded-3xl p-8 shadow-xl">
-                  <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-5 rounded-2xl">
-                    <Star className="w-10 h-10" />
-                  </div>
+          <div className="text-center mb-12">
+            {/* Features Icon Badge */}
+            <div className="flex items-center justify-center mb-6">
+              <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full">
+                <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-full shadow-lg">
+                  <Shield className="w-8 h-8" />
                 </div>
               </div>
             </div>
             
-            <h2 className="font-outfit text-5xl lg:text-7xl font-black text-gray-900 mb-8 leading-tight">
-              <span className="block mb-2">Why Choose</span>
-              <span className="text-blue-600">EarnPay?</span>
+            <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
+              Why Choose
+              <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-black">
+                EarnPay?
+              </span>
             </h2>
-            <p className="font-inter text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Experience the most <span className="font-bold text-blue-600">trusted and rewarding platform</span> for earning money through video engagement. 
-              Join thousands of satisfied users who are already earning real money.
+            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
+              Experience the most trusted and rewarding platform for earning money through video engagement
             </p>
             
             {/* Decorative divider */}
@@ -179,71 +141,101 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {/* Real Money Earnings */}
-            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
-              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Coins className="text-white w-8 h-8" />
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-green-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Coins className="text-white w-8 h-8" />
+                </div>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-green-600 transition-colors tracking-tight">Real Money Earnings</h3>
+                  <p className="text-gray-600 leading-relaxed font-medium">
+                    Earn real rupees for every video you watch completely. No fake rewards or points - just genuine cash earnings.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
-              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Real Money Earnings</h3>
-              <p className="font-inter text-gray-600 leading-relaxed text-center">
-                Earn genuine rupees for every video you watch completely. No fake rewards or points - just real cash directly to your bank account.
-              </p>
             </div>
 
-            {/* Referral Program */}
-            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
-              <div className="w-16 h-16 bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Users className="text-white w-8 h-8" />
+            {/* Referral Bonuses */}
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-blue-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Users className="text-white w-8 h-8" />
+                </div>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-blue-600 transition-colors tracking-tight">Referral Bonuses</h3>
+                  <p className="text-gray-600 leading-relaxed font-medium">
+                    Earn ₹49 for every friend you refer who gets verified on our platform. Build your network and increase earnings.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
-              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Smart Referrals</h3>
-              <p className="font-inter text-gray-600 leading-relaxed text-center">
-                Earn ₹49 for every friend you refer who completes verification. Build your network and multiply your earnings exponentially.
-              </p>
             </div>
 
             {/* Flexible Schedule */}
-            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
-              <div className="w-16 h-16 bg-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Clock className="text-white w-8 h-8" />
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-orange-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Clock className="text-white w-8 h-8" />
+                </div>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-orange-600 transition-colors">Flexible Schedule</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Watch videos anytime, anywhere. Meet the 8-hour daily target to maximize earnings with complete flexibility.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
-              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Complete Flexibility</h3>
-              <p className="font-inter text-gray-600 leading-relaxed text-center">
-                Watch videos anytime, anywhere. Meet the 8-hour daily target at your own pace with complete schedule freedom.
-              </p>
             </div>
 
             {/* Weekly Payouts */}
-            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
-              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <CheckCircle className="text-white w-8 h-8" />
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-purple-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <CheckCircle className="text-white w-8 h-8" />
+                </div>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors">Weekly Payouts</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Receive your earnings every Tuesday directly to your bank account. Fast, secure, and reliable payments.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
-              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Weekly Payouts</h3>
-              <p className="font-inter text-gray-600 leading-relaxed text-center">
-                Receive your earnings every Tuesday directly to your bank account. Fast, secure, and reliable payment processing.
-              </p>
             </div>
 
-            {/* Secure Platform */}
-            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
-              <div className="w-16 h-16 bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Shield className="text-white w-8 h-8" />
+            {/* Secure & Verified */}
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-cyan-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Shield className="text-white w-8 h-8" />
+                </div>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-cyan-600 transition-colors">Secure & Verified</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Government ID verification ensures a safe and trusted earning environment for all users.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-teal-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
-              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Bank-Level Security</h3>
-              <p className="font-inter text-gray-600 leading-relaxed text-center">
-                Government ID verification and encrypted transactions ensure a safe, trusted earning environment for all users.
-              </p>
             </div>
 
             {/* Quality Content */}
-            <div className="group bg-gray-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 card-hover border border-gray-200 hover:border-blue-200">
-              <div className="w-16 h-16 bg-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Play className="text-white w-8 h-8" />
+            <div className="group relative">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group-hover:border-violet-200">
+                <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Play className="text-white w-8 h-8" />
+                </div>
+                <div className="pt-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-violet-600 transition-colors">Quality Content</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Watch curated, high-quality videos across various categories and topics that are both entertaining and rewarding.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
               </div>
-              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Premium Content</h3>
-              <p className="font-inter text-gray-600 leading-relaxed text-center">
-                Watch curated, high-quality videos across various categories. Entertainment that's both engaging and rewarding.
-              </p>
             </div>
           </div>
         </div>
@@ -601,88 +593,81 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 sm:py-24 lg:py-28 px-4 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
-        {/* Floating geometric shapes */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-br from-white/10 to-blue-300/10 rounded-full blob-animation"></div>
-          <div className="absolute bottom-20 right-20 w-32 h-32 bg-gradient-to-br from-purple-300/10 to-pink-300/10 rounded-lg transform rotate-45 blob-animation" style={{animationDelay: '2s'}}></div>
-          <div className="absolute top-1/2 left-1/3 w-28 h-28 bg-gradient-to-br from-cyan-300/10 to-blue-300/10 rounded-full blob-animation" style={{animationDelay: '4s'}}></div>
+      <section className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-primary via-blue-600 to-indigo-700 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-[0.08]">
+          <div className="absolute top-10 left-10 w-80 h-80 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-200 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/3 w-60 h-60 bg-purple-200 rounded-full blur-3xl"></div>
         </div>
         
-        <div className="max-w-7xl mx-auto text-center relative z-10">
-          {/* Modern CTA Badge */}
-          <div className="inline-flex items-center justify-center mb-12">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-white to-yellow-200 rounded-3xl blur opacity-30"></div>
-              <div className="relative bg-white border border-gray-200 rounded-3xl p-8 shadow-2xl">
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-5 rounded-2xl">
-                  <Sparkles className="w-10 h-10" />
-                </div>
+        {/* Floating elements */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-20 w-4 h-4 bg-white rounded-full animate-pulse"></div>
+          <div className="absolute top-40 right-32 w-6 h-6 bg-white/80 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-32 left-1/4 w-3 h-3 bg-white rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-20 right-16 w-5 h-5 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
+        </div>
+        
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          {/* CTA Icon Badge */}
+          <div className="flex items-center justify-center mb-8">
+            <div className="inline-flex items-center justify-center p-3 bg-white/20 backdrop-blur-sm rounded-full">
+              <div className="bg-white text-primary p-4 rounded-full shadow-lg">
+                <Play className="w-8 h-8" />
               </div>
             </div>
           </div>
           
-          <div className="mb-12">
-            <h2 className="font-outfit text-5xl sm:text-6xl lg:text-8xl font-black text-white mb-8 leading-tight text-shadow">
-              <span className="block mb-2">Ready to Start</span>
-              <span className="gradient-text">Earning?</span>
+          <div className="mb-10">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 text-white leading-tight tracking-tight">
+              Ready to Start
+              <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent font-black">
+                Earning?
+              </span>
             </h2>
-            
-            {/* Special Signup Bonus Banner */}
-            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-6 mb-8 max-w-3xl mx-auto shadow-xl">
-              <div className="flex items-center justify-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
-                  <Coins className="w-8 h-8 text-yellow-600" />
-                </div>
-                <div className="text-left">
-                  <div className="font-outfit text-2xl font-black text-white">₹1,000 Signup Bonus!</div>
-                  <div className="text-white/90 font-medium">Limited time offer for new members</div>
-                </div>
-              </div>
-            </div>
-            
-            <p className="font-inter text-xl lg:text-2xl mb-6 text-white/90 max-w-4xl mx-auto leading-relaxed font-medium">
-              Join thousands of users earning <span className="font-bold text-yellow-300">₹5-50 per video</span> on our trusted platform.
+            <p className="text-xl lg:text-2xl mb-6 text-white/90 max-w-4xl mx-auto leading-relaxed font-medium">
+              Join our community and turn your free time into real income with our trusted platform.
             </p>
-            <p className="font-inter text-lg text-white/80 max-w-3xl mx-auto">
-              Start earning immediately with your signup bonus and get paid weekly. Your financial freedom starts here.
+            <p className="text-lg text-white/80 max-w-3xl mx-auto font-medium">
+              Watch videos, earn money, and get paid weekly. Start your earning journey today.
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-4xl mx-auto mb-16">
-            <Button 
-              size="lg" 
-              className="font-outfit bg-white text-blue-600 hover:bg-yellow-50 hover:text-blue-700 h-16 sm:h-18 text-xl font-bold px-12 sm:px-16 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 touch-manipulation"
-              onClick={() => window.location.href = '/signup'}
-            >
-              <Sparkles className="w-6 h-6 mr-3" />
-              Claim ₹1,000 Bonus
-            </Button>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto">
+            <Link href="/signup" className="w-full sm:w-auto">
+              <Button 
+                size="lg" 
+                className="w-full sm:w-auto bg-white text-primary hover:bg-yellow-50 hover:text-primary/90 font-bold text-xl px-10 py-6 h-auto rounded-2xl shadow-2xl hover:shadow-white/20 transition-all duration-300 transform hover:scale-105 border-2 border-white/20"
+              >
+                Sign Up Now
+              </Button>
+            </Link>
             <Button 
               size="lg" 
               variant="outline"
-              className="font-outfit h-16 sm:h-18 text-xl border-2 border-white/40 text-white hover:bg-white/10 hover:border-white backdrop-blur-sm px-12 sm:px-16 rounded-2xl transition-all duration-300 bg-transparent hover:shadow-xl touch-manipulation"
+              className="w-full sm:w-auto border-2 border-white/40 text-white hover:bg-white/10 hover:border-white backdrop-blur-sm font-semibold text-xl px-10 py-6 h-auto rounded-2xl bg-transparent transition-all duration-300"
               onClick={() => window.location.href = '/login'}
             >
-              Login to Account
+              Already a Member?
             </Button>
           </div>
           
-          <div className="grid sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
-              <CheckCircle className="w-10 h-10 text-white mx-auto mb-4" />
-              <div className="font-outfit text-xl font-bold text-white">No Hidden Fees</div>
-              <div className="text-white/80 mt-2">100% transparent pricing</div>
+          <div className="mt-12 grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
+              <CheckCircle className="w-8 h-8 text-white mx-auto mb-3" />
+              <div className="text-white font-bold text-lg tracking-tight">No Hidden Fees</div>
+              <div className="text-white/80 text-sm mt-1 font-medium">Transparent pricing always</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
-              <TrendingUp className="w-10 h-10 text-white mx-auto mb-4" />
-              <div className="font-outfit text-xl font-bold text-white">Weekly Payouts</div>
-              <div className="text-white/80 mt-2">Every Tuesday guaranteed</div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
+              <Coins className="w-8 h-8 text-white mx-auto mb-3" />
+              <div className="text-white font-bold text-lg tracking-tight">Weekly Payouts</div>
+              <div className="text-white/80 text-sm mt-1 font-medium">Every Tuesday guaranteed</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
-              <Shield className="w-10 h-10 text-white mx-auto mb-4" />
-              <div className="font-outfit text-xl font-bold text-white">24/7 Support</div>
-              <div className="text-white/80 mt-2">Always here to help</div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
+              <Shield className="w-8 h-8 text-white mx-auto mb-3" />
+              <div className="text-white font-bold text-lg tracking-tight">24/7 Support</div>
+              <div className="text-white/80 text-sm mt-1 font-medium">Always here to help</div>
             </div>
           </div>
         </div>
