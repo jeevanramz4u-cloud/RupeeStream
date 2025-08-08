@@ -21,7 +21,12 @@ import {
   Camera,
   Info,
   User,
-  IdCard
+  IdCard,
+  ArrowRight,
+  Star,
+  Zap,
+  FileText,
+  Lock
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -414,44 +419,56 @@ export default function KYC() {
       <Header />
       
       <main className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-4 lg:py-6">
-        <div className="mb-4 sm:mb-6 lg:mb-8">
-          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight tracking-tight">KYC Verification</h1>
-          {/* Only show description if KYC not completed */}
-          {!(kycData as any)?.kycStatus || (kycData as any)?.kycStatus !== 'approved' || (kycData as any)?.verificationStatus !== 'verified' ? (
-            <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Complete your professional identity verification to access secure earnings. One-time ₹99 processing fee required.</p>
-          ) : null}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center">
+              <Shield className="w-8 h-8 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight tracking-tight">Professional Verification</h1>
+              {/* Only show description if KYC not completed */}
+              {!(kycData as any)?.kycStatus || (kycData as any)?.kycStatus !== 'approved' || (kycData as any)?.verificationStatus !== 'verified' ? (
+                <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Secure identity verification to unlock professional earnings features</p>
+              ) : (
+                <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Your professional verification is complete and secure</p>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Quick Guide for Pending Users or Re-verification */}
         {(!kycData || (kycData as any)?.kycStatus === 'pending' || (kycData as any)?.kycStatus === 'rejected') && (
-          <Card className="mb-6 sm:mb-8 border-blue-200 bg-blue-50">
+          <Card className="mb-6 sm:mb-8 border border-blue-100 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50">
             <CardHeader className="pb-4">
-              <CardTitle className="text-lg flex items-center text-blue-900">
-                <Info className="w-5 h-5 mr-2" />
-                Getting Started
+              <CardTitle className="text-xl font-black text-gray-900 flex items-center tracking-tight">
+                <Zap className="w-6 h-6 mr-3 text-blue-600" />
+                Quick Start Guide
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 font-semibold">1</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex items-start space-x-4 bg-white/70 rounded-xl p-4 border border-blue-100">
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center">
+                      <FileText className="text-blue-600 w-5 h-5" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-black text-gray-900 mb-1">Upload Documents</h4>
+                    <p className="text-gray-600 text-sm leading-relaxed">Complete the form and upload your government ID plus selfie for verification</p>
                   </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-blue-900 mb-1">Upload Documents</h4>
-                  <p className="text-blue-700 text-sm mb-2">Fill the form below and upload your government ID + selfie</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-4 mt-4">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 font-semibold">2</span>
+                
+                <div className="flex items-start space-x-4 bg-white/70 rounded-xl p-4 border border-blue-100">
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
+                      <CreditCard className="text-green-600 w-5 h-5" />
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-blue-900 mb-1">Pay Processing Fee</h4>
-                  <p className="text-blue-700 text-sm">One-time ₹99 fee (appears after document upload)</p>
+                  <div>
+                    <h4 className="font-black text-gray-900 mb-1">Secure Payment</h4>
+                    <p className="text-gray-600 text-sm leading-relaxed">One-time ₹99 processing fee via secure Cashfree payment gateway</p>
+                  </div>
                 </div>
               </div>
             </CardContent>

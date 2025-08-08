@@ -5,7 +5,8 @@ import VideoCard from "@/components/VideoCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Search, Video, Star } from "lucide-react";
 import { useState } from "react";
 
 export default function Videos() {
@@ -31,38 +32,56 @@ export default function Videos() {
       
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Earning Videos</h1>
-          <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Watch professional content completely to maximize your earnings. Complete viewing required!</p>
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center">
+              <Video className="w-8 h-8 text-purple-600" />
+            </div>
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight tracking-tight">Professional Content Library</h1>
+              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Premium video content designed to maximize your professional earnings potential</p>
+            </div>
+          </div>
         </div>
 
-        {/* Filters */}
-        <Card className="mb-6 sm:mb-8 touch-manipulation">
+        {/* Professional Earnings Alert */}
+        <Alert className="mb-6 border-green-200 bg-green-50">
+          <Star className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-800">
+            <strong>Premium Earnings:</strong> Complete video viewing generates professional income. Videos must be watched entirely without skipping for full payment credit.
+          </AlertDescription>
+        </Alert>
+
+        {/* Enhanced Filters */}
+        <Card className="mb-6 sm:mb-8 border border-gray-100 shadow-lg bg-gradient-to-br from-white to-gray-50/50">
           <CardHeader className="pb-3 sm:pb-4">
-            <CardTitle className="text-sm sm:text-base">Filter Videos</CardTitle>
+            <CardTitle className="text-xl font-black text-gray-900 flex items-center tracking-tight">
+              <Search className="w-6 h-6 mr-3 text-purple-600" />
+              Content Discovery
+            </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <div className="flex-1">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <Input
-                    placeholder="Search videos..."
+                    placeholder="Search professional video content..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 sm:pl-10 h-9 sm:h-10 text-sm"
+                    className="pl-10 h-11 text-sm border-gray-200 focus:border-purple-300 focus:ring-purple-200"
                   />
                 </div>
               </div>
-              <div className="w-full sm:w-48">
+              <div>
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Category" />
+                  <SelectTrigger className="h-11 border-gray-200 focus:border-purple-300 focus:ring-purple-200">
+                    <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
+                    <SelectItem value="all">🎯 All Categories</SelectItem>
                     {categories.map((category: string) => (
                       <SelectItem key={category} value={category}>
-                        {category}
+                        📂 {category}
                       </SelectItem>
                     ))}
                   </SelectContent>

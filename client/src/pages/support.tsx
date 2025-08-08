@@ -20,54 +20,69 @@ import {
   Wallet,
   CheckCircle,
   Coins,
-  Play
+  Play,
+  HeadphonesIcon,
+  ArrowRight,
+  Star,
+  Zap
 } from "lucide-react";
 
 export default function Support() {
   const faqItems = [
     {
       question: "What bonuses do I get when signing up?",
-      answer: "You receive a ₹1,000 signup bonus when you create your account and complete the registration process. This bonus is credited to your account immediately after successful signup."
+      answer: "You receive a ₹1,000 signup bonus when you create your account and complete the registration process. This bonus is credited to your account immediately after successful signup.",
+      icon: <Coins className="w-4 h-4 text-green-600" />
     },
     {
       question: "How do I earn money on EarnPay?",
-      answer: "You earn money by watching videos completely without skipping or fast-forwarding. Each video has a specific earning amount that gets credited to your account once you finish watching it. Additionally, you earn ₹10 every hour as a login bonus just for being active on the platform."
+      answer: "You earn money by watching videos completely without skipping or fast-forwarding. Each video has a specific earning amount that gets credited to your account once you finish watching it. Additionally, you earn ₹10 every hour as a login bonus just for being active on the platform.",
+      icon: <Play className="w-4 h-4 text-blue-600" />
     },
     {
       question: "What is the hourly login bonus?",
-      answer: "You earn ₹10 every hour simply by logging into your account and staying active on the platform. This bonus is automatically credited to your account for each hour you remain logged in."
+      answer: "You earn ₹10 every hour simply by logging into your account and staying active on the platform. This bonus is automatically credited to your account for each hour you remain logged in.",
+      icon: <Clock className="w-4 h-4 text-purple-600" />
     },
     {
       question: "What fees are required on the platform?",
-      answer: "There are two required fees: (1) ₹99 KYC processing fee - mandatory for document verification and to access payout features, and (2) ₹49 account reactivation fee - required if your account gets suspended for not meeting daily watch time targets for 3 consecutive days."
+      answer: "There are two required fees: (1) ₹99 KYC processing fee - mandatory for document verification and to access payout features, and (2) ₹49 account reactivation fee - required if your account gets suspended for not meeting daily watch time targets for 3 consecutive days.",
+      icon: <Wallet className="w-4 h-4 text-orange-600" />
     },
     {
       question: "What is the daily target requirement?",
-      answer: "You must watch videos for a minimum of 8 hours daily to maintain your account in good standing. Failing to meet this requirement for 3 consecutive days may result in account suspension, which requires a ₹49 reactivation fee."
+      answer: "You must watch videos for a minimum of 8 hours daily to maintain your account in good standing. Failing to meet this requirement for 3 consecutive days may result in account suspension, which requires a ₹49 reactivation fee.",
+      icon: <Shield className="w-4 h-4 text-red-600" />
     },
     {
       question: "How does the referral program work?",
-      answer: "Share your unique referral code with friends. When they sign up and complete their KYC verification, you earn ₹49. There's no limit to how many people you can refer."
+      answer: "Share your unique referral code with friends. When they sign up and complete their KYC verification, you earn ₹49. There's no limit to how many people you can refer.",
+      icon: <Users className="w-4 h-4 text-indigo-600" />
     },
     {
       question: "When do I get paid?",
-      answer: "Payouts are processed weekly on Tuesdays. You can request a payout anytime after completing KYC verification, and it will be included in the next weekly batch."
+      answer: "Payouts are processed weekly on Tuesdays. You can request a payout anytime after completing KYC verification, and it will be included in the next weekly batch.",
+      icon: <CheckCircle className="w-4 h-4 text-emerald-600" />
     },
     {
       question: "What verification documents do I need?",
-      answer: "You need to upload a government-issued ID (Aadhaar, Passport, or Driver's License) and provide your bank account details for verification and payouts. A ₹99 processing fee is required to complete the KYC verification."
+      answer: "You need to upload a government-issued ID (Aadhaar, Passport, or Driver's License) and provide your bank account details for verification and payouts. A ₹99 processing fee is required to complete the KYC verification.",
+      icon: <Shield className="w-4 h-4 text-blue-600" />
     },
     {
       question: "Can I skip or fast-forward videos?",
-      answer: "No, you cannot skip, fast-forward, or rewind videos. You must watch the complete video from start to finish to earn money."
+      answer: "No, you cannot skip, fast-forward, or rewind videos. You must watch the complete video from start to finish to earn money.",
+      icon: <Play className="w-4 h-4 text-red-600" />
     },
     {
       question: "How long does verification take?",
-      answer: "Account verification typically takes 24-48 hours after payment of the ₹99 processing fee. Our admin team reviews all submitted documents manually to ensure security."
+      answer: "Account verification typically takes 24-48 hours after payment of the ₹99 processing fee. Our admin team reviews all submitted documents manually to ensure security.",
+      icon: <Clock className="w-4 h-4 text-blue-600" />
     },
     {
       question: "What happens if I don't meet the daily target?",
-      answer: "If you fail to meet the 8-hour daily target for 3 consecutive days, your account will be suspended. To reactivate it, you'll need to pay a ₹49 reactivation fee."
+      answer: "If you fail to meet the 8-hour daily target for 3 consecutive days, your account will be suspended. To reactivate it, you'll need to pay a ₹49 reactivation fee.",
+      icon: <Shield className="w-4 h-4 text-orange-600" />
     }
   ];
 
@@ -77,56 +92,81 @@ export default function Support() {
       
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8 safe-area-padding">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Help & Support</h1>
-          <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">
-            Get professional help with your EarnPay account, earnings, and business operations
-          </p>
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center">
+              <HeadphonesIcon className="w-8 h-8 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight tracking-tight">Professional Support</h1>
+              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">
+                Expert assistance for your EarnPay business operations and account management
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Contact Options */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <Card className="text-center touch-manipulation">
-            <CardContent className="pt-4 sm:pt-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <MessageCircle className="text-primary w-5 h-5 sm:w-6 sm:h-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <Card className="relative bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5"></div>
+            <CardContent className="relative pt-6 pb-6 text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <MessageCircle className="text-blue-600 w-8 h-8" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Live Chat</h3>
-              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
-                Get instant help from our support team via live chat.
+              <h3 className="text-lg font-black text-gray-900 mb-2">Live Chat Support</h3>
+              <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                Get instant professional assistance from our expert support team via live chat
               </p>
-              <p className="text-xs text-gray-500">Available 24/7</p>
+              <div className="bg-blue-100 text-blue-800 text-xs px-3 py-2 rounded-full font-semibold mb-3">
+                ⚡ Available 24/7
+              </div>
+              <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 font-semibold">
+                Start Live Chat
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </CardContent>
           </Card>
 
-          <Card className="text-center touch-manipulation">
-            <CardContent className="pt-4 sm:pt-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/10 rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Mail className="text-secondary w-5 h-5 sm:w-6 sm:h-6" />
+          <Card className="relative bg-gradient-to-br from-green-50 to-emerald-50 border border-green-100 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5"></div>
+            <CardContent className="relative pt-6 pb-6 text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Mail className="text-green-600 w-8 h-8" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Email Support</h3>
-              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
-                Send us an email for detailed inquiries.
+              <h3 className="text-lg font-black text-gray-900 mb-2">Email Support</h3>
+              <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                Send us detailed inquiries for comprehensive account assistance and technical help
               </p>
-              <Button variant="outline" size="sm" className="touch-manipulation text-xs sm:text-sm">
-                <Mail className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <div className="bg-green-100 text-green-800 text-xs px-3 py-2 rounded-full font-semibold mb-3">
+                📧 Professional Support
+              </div>
+              <Button variant="outline" className="w-full border-green-200 text-green-700 hover:bg-green-50 font-semibold">
+                <Mail className="w-4 h-4 mr-2" />
                 support@earnpay.com
               </Button>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </CardContent>
           </Card>
 
-          <Card className="text-center touch-manipulation sm:col-span-2 lg:col-span-1">
-            <CardContent className="pt-4 sm:pt-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Phone className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
+          <Card className="relative bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5"></div>
+            <CardContent className="relative pt-6 pb-6 text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Phone className="text-purple-600 w-8 h-8" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Phone Support</h3>
-              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
-                Call us for urgent issues or account problems.
+              <h3 className="text-lg font-black text-gray-900 mb-2">Priority Phone Support</h3>
+              <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                Call our dedicated support line for urgent issues and immediate account assistance
               </p>
-              <Button variant="outline" size="sm" className="touch-manipulation text-xs sm:text-sm">
-                <Phone className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <div className="bg-purple-100 text-purple-800 text-xs px-3 py-2 rounded-full font-semibold mb-3">
+                🔥 Urgent Issues
+              </div>
+              <Button variant="outline" className="w-full border-purple-200 text-purple-700 hover:bg-purple-50 font-semibold">
+                <Phone className="w-4 h-4 mr-2" />
                 +91-XXXX-XXXX
               </Button>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </CardContent>
           </Card>
         </div>
@@ -182,83 +222,44 @@ export default function Support() {
         </Card>
 
         {/* FAQ Section - Redesigned to match landing page */}
-        <section className="py-8 sm:py-12 px-4 bg-gradient-to-br from-white via-gray-50/30 to-blue-50/20 relative overflow-hidden rounded-3xl border border-gray-100 shadow-xl">
-          {/* Background Decorations */}
-          <div className="absolute inset-0 opacity-[0.02]">
-            <div className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-br from-primary to-blue-500 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-10 left-10 w-64 h-64 bg-gradient-to-tr from-purple-400 to-pink-400 rounded-full blur-3xl"></div>
-          </div>
-          
-          <div className="max-w-4xl mx-auto relative z-10">
-            <div className="text-center mb-8 sm:mb-12">
-              {/* FAQ Icon Badge */}
-              <div className="flex items-center justify-center mb-6">
-                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full">
-                  <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-lg">
-                    <HelpCircle className="w-8 h-8" />
-                  </div>
-                </div>
+        <section className="py-8 sm:py-12 px-6 bg-gradient-to-br from-white via-gray-50/30 to-blue-50/20 relative overflow-hidden rounded-3xl border border-gray-100 shadow-xl">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.05),transparent_50%)]"></div>
+          <div className="relative z-10">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <HelpCircle className="w-8 h-8 text-blue-600" />
               </div>
-              
-              <h2 className="text-3xl lg:text-4xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
-                Frequently Asked
-                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent font-black">
-                  Questions
-                </span>
-              </h2>
-              <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
-                Get instant answers to common questions about your EarnPay professional earnings platform
+              <h2 className="text-3xl font-black text-gray-900 mb-4 tracking-tight">Frequently Asked Questions</h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Find answers to common questions about EarnPay platform features and operations
               </p>
-              
-              {/* Decorative divider */}
-              <div className="flex items-center justify-center mt-8 mb-4">
-                <div className="h-1 w-20 bg-gradient-to-r from-primary to-blue-600 rounded-full"></div>
-                <div className="mx-4 w-3 h-3 bg-gradient-to-br from-primary to-blue-600 rounded-full"></div>
-                <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-primary rounded-full"></div>
-              </div>
             </div>
-
-            <Accordion type="single" collapsible className="w-full space-y-3 md:space-y-4">
-              {faqItems.map((item, index) => {
-                const iconConfigs = [
-                  { icon: Coins, bgClass: "bg-gradient-to-br from-green-100 to-emerald-100", iconClass: "text-green-600" },
-                  { icon: Play, bgClass: "bg-gradient-to-br from-blue-100 to-indigo-100", iconClass: "text-blue-600" },
-                  { icon: Clock, bgClass: "bg-gradient-to-br from-orange-100 to-red-100", iconClass: "text-orange-600" },
-                  { icon: Wallet, bgClass: "bg-gradient-to-br from-purple-100 to-pink-100", iconClass: "text-purple-600" },
-                  { icon: Shield, bgClass: "bg-gradient-to-br from-indigo-100 to-blue-100", iconClass: "text-indigo-600" },
-                  { icon: Users, bgClass: "bg-gradient-to-br from-pink-100 to-rose-100", iconClass: "text-pink-600" },
-                  { icon: CheckCircle, bgClass: "bg-gradient-to-br from-emerald-100 to-green-100", iconClass: "text-emerald-600" },
-                  { icon: HelpCircle, bgClass: "bg-gradient-to-br from-cyan-100 to-blue-100", iconClass: "text-cyan-600" },
-                  { icon: MessageCircle, bgClass: "bg-gradient-to-br from-violet-100 to-purple-100", iconClass: "text-violet-600" },
-                  { icon: Phone, bgClass: "bg-gradient-to-br from-amber-100 to-yellow-100", iconClass: "text-amber-600" },
-                  { icon: Mail, bgClass: "bg-gradient-to-br from-rose-100 to-pink-100", iconClass: "text-rose-600" }
-                ];
-                const config = iconConfigs[index % iconConfigs.length];
-                const IconComponent = config.icon;
-                
-                return (
+            
+            <div className="max-w-4xl mx-auto">
+              <Accordion type="single" collapsible className="space-y-4">
+                {faqItems.map((faq, index) => (
                   <AccordionItem 
                     key={index} 
-                    value={`item-${index + 1}`} 
-                    className="bg-white/80 backdrop-blur-sm border border-gray-100 px-6 md:px-8 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+                    value={`item-${index}`}
+                    className="bg-white/70 backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 px-6 py-2"
                   >
-                    <AccordionTrigger className="text-left text-lg font-semibold text-gray-900 hover:text-primary transition-colors py-6 group-hover:text-blue-600">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 ${config.bgClass} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                          <IconComponent className={`w-5 h-5 ${config.iconClass}`} />
+                    <AccordionTrigger className="text-left hover:no-underline group py-4">
+                      <div className="flex items-center space-x-3 w-full">
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                          {faq.icon}
                         </div>
-                        {item.question}
+                        <span className="font-black text-gray-900 text-lg group-hover:text-blue-600 transition-colors duration-200">{faq.question}</span>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="text-gray-700 pt-2 pb-4 leading-relaxed text-base">
-                      <div className="pl-10 md:pl-13">
-                        {item.answer}
+                    <AccordionContent className="pt-2 pb-4">
+                      <div className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-xl p-4 ml-11 border border-gray-100">
+                        <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
                       </div>
                     </AccordionContent>
                   </AccordionItem>
-                );
-              })}
-            </Accordion>
+                ))}
+              </Accordion>
+            </div>
           </div>
         </section>
 

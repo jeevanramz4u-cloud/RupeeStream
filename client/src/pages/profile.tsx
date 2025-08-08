@@ -19,7 +19,11 @@ import {
   Clock,
   ArrowLeft,
   Eye,
-  EyeOff
+  EyeOff,
+  Shield,
+  Award,
+  Star,
+  Settings
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -99,19 +103,24 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30">
+      {/* Enhanced Header */}
+      <div className="bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-4 flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link href="/dashboard">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="hover:bg-blue-50">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Dashboard
+                  Dashboard
                 </Button>
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
+                  <User className="w-5 h-5 text-blue-600" />
+                </div>
+                <h1 className="text-2xl font-black text-gray-900 tracking-tight">Professional Profile</h1>
+              </div>
             </div>
           </div>
         </div>
@@ -120,10 +129,12 @@ export default function Profile() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Personal Information */}
-          <Card>
+          <Card className="border border-gray-100 shadow-lg bg-gradient-to-br from-white to-gray-50/50">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <User className="w-5 h-5 mr-2" />
+              <CardTitle className="flex items-center text-xl font-black text-gray-900 tracking-tight">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center mr-3">
+                  <User className="w-5 h-5 text-blue-600" />
+                </div>
                 Personal Information
               </CardTitle>
             </CardHeader>
