@@ -1046,6 +1046,62 @@ export default function Admin() {
                           </p>
                         </div>
                       )}
+                      
+                      {/* Admin Actions Section - Always Available */}
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-6">
+                        <h3 className="font-medium text-red-900 mb-3 flex items-center">
+                          <Shield className="w-4 h-4 mr-2" />
+                          Admin Actions
+                        </h3>
+                        <div className="space-y-3">
+                          {/* Account Reactivation */}
+                          {selectedUser.status === 'suspended' ? (
+                            <Button
+                              onClick={() => suspendUserMutation.mutate({
+                                userId: selectedUser.id,
+                                status: 'active'
+                              })}
+                              disabled={suspendUserMutation.isPending}
+                              className="w-full bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              <RotateCcw className="w-4 h-4 mr-2" />
+                              {suspendUserMutation.isPending ? 'Reactivating...' : 'Reactivate Account'}
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={() => suspendUserMutation.mutate({
+                                userId: selectedUser.id,
+                                status: 'suspended'
+                              })}
+                              disabled={suspendUserMutation.isPending}
+                              variant="outline"
+                              className="w-full border-orange-300 text-orange-700 hover:bg-orange-50"
+                            >
+                              <Ban className="w-4 h-4 mr-2" />
+                              {suspendUserMutation.isPending ? 'Suspending...' : 'Suspend Account'}
+                            </Button>
+                          )}
+                          
+                          {/* Delete Profile */}
+                          <Button
+                            onClick={() => {
+                              if (window.confirm(`Are you sure you want to permanently delete ${selectedUser.firstName} ${selectedUser.lastName}'s profile? This action cannot be undone.`)) {
+                                deleteUserMutation.mutate(selectedUser.id);
+                                setSelectedUser(null); // Clear selection after deletion
+                              }
+                            }}
+                            disabled={deleteUserMutation.isPending}
+                            variant="destructive"
+                            className="w-full"
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            {deleteUserMutation.isPending ? 'Deleting...' : 'Delete Profile Permanently'}
+                          </Button>
+                        </div>
+                        <p className="text-xs text-red-600 mt-3">
+                          ⚠️ Use these actions carefully. Account suspension affects user access, and profile deletion is permanent.
+                        </p>
+                      </div>
                     </div>
                   )}
                 </CardContent>
@@ -2798,6 +2854,79 @@ export default function Admin() {
                         </p>
                       </div>
                     )}
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Admin Actions Section for Profile Dialog */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2 text-red-800">
+                    <Shield className="w-5 h-5" />
+                    Admin Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Account Status Management */}
+                    {userProfile.user.status === 'suspended' ? (
+                      <Button
+                        onClick={() => {
+                          suspendUserMutation.mutate({
+                            userId: userProfile.user.id,
+                            status: 'active'
+                          });
+                          setUserProfileDialogOpen(false);
+                        }}
+                        disabled={suspendUserMutation.isPending}
+                        className="bg-green-600 hover:bg-green-700 text-white"
+                      >
+                        <RotateCcw className="w-4 h-4 mr-2" />
+                        {suspendUserMutation.isPending ? 'Reactivating...' : 'Reactivate Account'}
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          suspendUserMutation.mutate({
+                            userId: userProfile.user.id,
+                            status: 'suspended'
+                          });
+                          setUserProfileDialogOpen(false);
+                        }}
+                        disabled={suspendUserMutation.isPending}
+                        variant="outline"
+                        className="border-orange-300 text-orange-700 hover:bg-orange-50"
+                      >
+                        <Ban className="w-4 h-4 mr-2" />
+                        {suspendUserMutation.isPending ? 'Suspending...' : 'Suspend Account'}
+                      </Button>
+                    )}
+                    
+                    {/* Delete Profile */}
+                    <Button
+                      onClick={() => {
+                        if (window.confirm(`Are you sure you want to permanently delete ${userProfile.user.firstName} ${userProfile.user.lastName}'s profile?\n\nThis action will:\n• Delete all user data\n• Remove payment history\n• Remove referral connections\n• Cannot be undone\n\nType the user's email to confirm: ${userProfile.user.email}`)) {
+                          const confirmation = prompt(`To confirm deletion, please type the user's email address:\n${userProfile.user.email}`);
+                          if (confirmation === userProfile.user.email) {
+                            deleteUserMutation.mutate(userProfile.user.id);
+                            setUserProfileDialogOpen(false);
+                            setSelectedUserProfile(null);
+                          } else {
+                            alert('Email confirmation did not match. Deletion cancelled.');
+                          }
+                        }
+                      }}
+                      disabled={deleteUserMutation.isPending}
+                      variant="destructive"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      {deleteUserMutation.isPending ? 'Deleting...' : 'Delete Profile Permanently'}
+                    </Button>
+                  </div>
+                  <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-xs text-red-700">
+                      ⚠️ <strong>Warning:</strong> These are irreversible administrative actions. Account suspension prevents user login and access to earnings. Profile deletion permanently removes all user data from the platform.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
