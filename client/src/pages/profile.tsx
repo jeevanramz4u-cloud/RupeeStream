@@ -26,6 +26,7 @@ import {
   Settings
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Footer from "@/components/Footer";
 
 export default function Profile() {
   const { user } = useAuth();
@@ -119,7 +120,7 @@ export default function Profile() {
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
                   <User className="w-5 h-5 text-blue-600" />
                 </div>
-                <h1 className="text-2xl font-black text-gray-900 tracking-tight">Professional Profile</h1>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 tracking-tight">Professional Profile</h1>
               </div>
             </div>
           </div>
@@ -428,6 +429,8 @@ export default function Profile() {
           </Link>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }

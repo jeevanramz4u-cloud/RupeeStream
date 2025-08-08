@@ -10,6 +10,7 @@ import { ArrowLeft, Coins, Clock, Eye, Play, Info } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import Footer from "@/components/Footer";
 
 export default function VideoPlayer() {
   const { id } = useParams();
@@ -260,14 +261,15 @@ export default function VideoPlayer() {
   const canEarn = !hasCompleted && !hasEarnings;
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-blue-50/40">
+      <header className="bg-white/80 backdrop-blur-lg shadow-sm border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex items-center h-14 sm:h-16">
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => setLocation("/videos")}
+              className="hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 font-medium"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Videos
@@ -276,7 +278,7 @@ export default function VideoPlayer() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-6 pb-20">
+      <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4 lg:py-6 pb-20">
 
 
         {/* Timer Status Alert */}
@@ -313,29 +315,31 @@ export default function VideoPlayer() {
           </Alert>
         ) : null}
 
-        {/* Video Header */}
+        {/* Modern Video Header */}
         <div className="mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">{videoTitle}</h1>
-          <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-500">
-            <span className="flex items-center flex-shrink-0">
-              <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-              {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
-            </span>
-            <span className="flex items-center flex-shrink-0">
-              <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-              {videoViews.toLocaleString()} views
-            </span>
-            <span className="flex items-center text-green-600 font-semibold flex-shrink-0">
-              <Coins className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-              ₹{videoEarning}
-            </span>
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-lg p-4 sm:p-6">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-black text-gray-900 mb-3 leading-tight tracking-tight">{videoTitle}</h1>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
+              <span className="flex items-center bg-gradient-to-r from-blue-100 to-purple-100 px-3 py-1.5 rounded-full text-blue-700 font-medium">
+                <Clock className="w-3 h-3 mr-1.5" />
+                {Math.floor(videoDuration / 60)}:{(videoDuration % 60).toString().padStart(2, '0')}
+              </span>
+              <span className="flex items-center bg-gradient-to-r from-gray-100 to-slate-100 px-3 py-1.5 rounded-full text-gray-700 font-medium">
+                <Eye className="w-3 h-3 mr-1.5" />
+                {videoViews.toLocaleString()}
+              </span>
+              <span className="flex items-center bg-gradient-to-r from-green-100 to-emerald-100 px-3 py-1.5 rounded-full text-green-700 font-semibold">
+                <Coins className="w-3 h-3 mr-1.5" />
+                ₹{videoEarning}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Video Player */}
-        <Card className="mb-3 sm:mb-4 touch-manipulation">
+        {/* Enhanced Video Player */}
+        <Card className="mb-4 sm:mb-6 touch-manipulation border border-gray-100 shadow-xl overflow-hidden">
           <CardContent className="p-0">
-            <div className="bg-gray-900 rounded-t-lg aspect-video flex items-center justify-center relative overflow-hidden">
+            <div className="bg-gradient-to-br from-gray-900 via-slate-900 to-black rounded-t-lg aspect-video flex items-center justify-center relative overflow-hidden">
               {videoUrl ? (
                 isYouTubeVideo ? (
                   // YouTube embedded player
@@ -495,6 +499,8 @@ export default function VideoPlayer() {
           </Card>
         )}
       </main>
+      
+      <Footer />
     </div>
   );
 }

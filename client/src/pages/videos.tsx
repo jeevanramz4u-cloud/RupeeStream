@@ -37,8 +37,8 @@ export default function Videos() {
               <Video className="w-8 h-8 text-purple-600" />
             </div>
             <div>
-              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight tracking-tight">Professional Content Library</h1>
-              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Premium video content designed to maximize your professional earnings potential</p>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 leading-tight tracking-tight">Professional Content Library</h1>
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed font-medium">Premium video content designed to maximize your professional earnings potential</p>
             </div>
           </div>
         </div>

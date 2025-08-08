@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ObjectUploader } from "@/components/ObjectUploader";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -425,12 +426,12 @@ export default function KYC() {
               <Shield className="w-8 h-8 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight tracking-tight">Professional Verification</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 leading-tight tracking-tight">Professional Verification</h1>
               {/* Only show description if KYC not completed */}
               {!(kycData as any)?.kycStatus || (kycData as any)?.kycStatus !== 'approved' || (kycData as any)?.verificationStatus !== 'verified' ? (
-                <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Secure identity verification to unlock professional earnings features</p>
+                <p className="text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed font-medium">Secure identity verification to unlock professional earnings features</p>
               ) : (
-                <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Your professional verification is complete and secure</p>
+                <p className="text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed font-medium">Your professional verification is complete and secure</p>
               )}
             </div>
           </div>
@@ -866,6 +867,8 @@ export default function KYC() {
           </Card>
         ) : null}
       </main>
+      
+      <Footer />
     </div>
   );
 }

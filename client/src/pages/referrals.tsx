@@ -1,6 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -114,8 +115,8 @@ export default function Referrals() {
       
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8 safe-area-padding">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Professional Referral Program</h1>
-          <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Professional Referral Program</h1>
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed font-medium">
             Build your business network and earn ₹49 for every verified professional you refer to our platform
           </p>
         </div>
@@ -472,6 +473,8 @@ export default function Referrals() {
           </CardContent>
         </Card>
       </main>
+      
+      <Footer />
     </div>
   );
 }

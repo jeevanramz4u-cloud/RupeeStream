@@ -2,6 +2,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -201,8 +202,8 @@ export default function Earnings() {
               <PiggyBank className="w-8 h-8 text-green-600" />
             </div>
             <div>
-              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight tracking-tight">Professional Earnings</h1>
-              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Comprehensive income tracking and secure payout management</p>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 leading-tight tracking-tight">Professional Earnings</h1>
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed font-medium">Comprehensive income tracking and secure payout management</p>
             </div>
           </div>
         </div>
@@ -563,6 +564,8 @@ export default function Earnings() {
           </CardContent>
         </Card>
       </main>
+      
+      <Footer />
     </div>
   );
 }
