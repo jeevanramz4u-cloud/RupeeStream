@@ -83,13 +83,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 safe-area-padding">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 safe-area-padding">
       <Header />
       
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Welcome back, {(user as any)?.firstName}!</h1>
-          <p className="text-sm sm:text-base text-gray-600">Here's your profile dashboard</p>
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Welcome back, {(user as any)?.firstName}!</h1>
+          <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Here's your earning dashboard</p>
         </div>
 
         {/* Mobile Balance Banner */}

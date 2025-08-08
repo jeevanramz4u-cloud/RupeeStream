@@ -60,53 +60,62 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 safe-area-padding">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 safe-area-padding">
       <Header />
       
-      <div className="min-h-[calc(100vh-160px)] bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center p-3 sm:p-4">
-      <div className="w-full max-w-md space-y-4 sm:space-y-6">
-        {/* Header */}
-        <div className="text-center">
-          <div className="flex justify-center mb-3 sm:mb-4">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-xl flex items-center justify-center touch-manipulation">
-              <span className="text-xl sm:text-2xl font-bold text-white">E</span>
-            </div>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">Sign in to your EarnPay account</p>
+      <div className="min-h-[calc(100vh-160px)] bg-gradient-to-br from-primary/5 via-blue-50/30 to-purple-50/20 flex items-center justify-center p-3 sm:p-4 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="absolute top-10 left-10 w-40 h-40 bg-primary rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-60 h-60 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-1/3 right-10 w-32 h-32 bg-purple-500 rounded-full blur-3xl animate-pulse"></div>
         </div>
+        
+        <div className="w-full max-w-md space-y-4 sm:space-y-6 relative z-10">
+          {/* Header */}
+          <div className="text-center">
+            <div className="flex justify-center mb-6">
+              <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <LogIn className="text-white w-8 h-8" />
+                </div>
+              </div>
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Welcome Back</h1>
+            <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Sign in to continue earning with EarnPay</p>
+          </div>
 
         {/* Demo Login Info */}
-        <Card className="bg-blue-50 border-blue-200">
-          <CardContent className="pt-4 sm:pt-6">
-            <div className="text-center space-y-2">
-              <h3 className="text-sm sm:text-base font-semibold text-blue-900">Demo Login</h3>
-              <div className="text-xs sm:text-sm text-blue-700">
-                <p><strong>Email:</strong> demo@earnpay.com</p>
-                <p><strong>Password:</strong> demo123</p>
-              </div>
-              <Button 
-                type="button" 
-                variant="outline" 
-                size="sm" 
-                onClick={() => setFormData({ email: 'demo@earnpay.com', password: 'demo123' })}
-                className="text-xs sm:text-sm text-blue-700 border-blue-300 hover:bg-blue-100 touch-manipulation"
-              >
-                Use Demo Login
-              </Button>
+        <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-6 shadow-xl border-2 border-blue-200/50 hover:shadow-2xl transition-all duration-300 overflow-hidden">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-300/20 to-indigo-400/20 rounded-full blur-xl"></div>
+          <div className="relative text-center space-y-4">
+            <h3 className="text-lg font-black text-blue-900 tracking-tight">Demo Access Available</h3>
+            <div className="text-sm text-blue-700 space-y-2 bg-white/50 rounded-2xl p-4">
+              <p className="font-bold"><strong>Email:</strong> demo@earnpay.com</p>
+              <p className="font-bold"><strong>Password:</strong> demo123</p>
             </div>
-          </CardContent>
-        </Card>
+            <Button 
+              type="button" 
+              onClick={() => setFormData({ email: 'demo@earnpay.com', password: 'demo123' })}
+              className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 font-bold text-white px-8 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              Use Demo Login
+            </Button>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-b-3xl"></div>
+        </div>
 
         {/* Login Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <LogIn className="w-5 h-5" />
-              <span>Sign In</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300">
+          <div className="mb-8">
+            <h2 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center">
+                <LogIn className="w-4 h-4 text-white" />
+              </div>
+              Sign In to Your Account
+            </h2>
+          </div>
+          <div>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
@@ -162,49 +171,47 @@ export default function Login() {
 
               <Button 
                 type="submit" 
-                className="w-full h-12 text-base touch-manipulation mobile-tap-target" 
+                className="w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 font-black text-lg px-8 py-6 h-auto rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 touch-manipulation mobile-tap-target" 
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? "Signing in..." : "Sign In to Start Earning"}
               </Button>
             </form>
 
-            <div className="mt-6 space-y-3 text-center">
+            <div className="mt-8 space-y-4 text-center">
               <Link href="/forgot-password">
-                <Button variant="link" className="text-sm text-primary">
+                <Button variant="link" className="text-base text-primary font-bold hover:text-primary/80">
                   Forgot your password?
                 </Button>
               </Link>
               
-              <p className="text-sm text-gray-600">
+              <p className="text-base text-gray-600 font-medium">
                 Don't have an account?{" "}
                 <Link href="/signup">
-                  <Button variant="link" className="p-0 h-auto text-primary font-semibold">
+                  <Button variant="link" className="p-0 h-auto text-primary font-black text-base hover:text-primary/80">
                     Sign up here
                   </Button>
                 </Link>
               </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Quick Access to Replit Auth */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <p className="text-sm text-gray-600 mb-4">
-                Or continue with Replit authentication
-              </p>
-              <Button 
-                onClick={() => window.location.href = '/api/login'}
-                variant="outline"
-                className="w-full"
-              >
-                Continue with Replit
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300">
+          <div className="text-center">
+            <p className="text-base text-gray-600 mb-6 font-medium">
+              Or continue with Replit authentication
+            </p>
+            <Button 
+              onClick={() => window.location.href = '/api/login'}
+              variant="outline"
+              className="w-full border-2 border-gray-300 hover:bg-gray-50 hover:border-primary/50 font-bold text-lg px-8 py-6 h-auto rounded-2xl transition-all duration-300 hover:scale-105"
+            >
+              Continue with Replit
+            </Button>
+          </div>
+        </div>
       </div>
       </div>
       

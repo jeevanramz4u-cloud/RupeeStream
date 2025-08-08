@@ -410,15 +410,15 @@ export default function KYC() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 safe-area-padding">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 safe-area-padding">
       <Header />
       
       <main className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-4 lg:py-6">
         <div className="mb-4 sm:mb-6 lg:mb-8">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4">KYC Verification</h1>
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight tracking-tight">KYC Verification</h1>
           {/* Only show description if KYC not completed */}
           {!(kycData as any)?.kycStatus || (kycData as any)?.kycStatus !== 'approved' || (kycData as any)?.verificationStatus !== 'verified' ? (
-            <p className="text-xs sm:text-sm lg:text-base text-gray-600 leading-relaxed">Complete your identity verification to start earning. One-time ₹99 processing fee required.</p>
+            <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Complete your professional identity verification to access secure earnings. One-time ₹99 processing fee required.</p>
           ) : null}
         </div>
 
@@ -653,6 +653,7 @@ export default function KYC() {
                         maxNumberOfFiles={1}
                         maxFileSize={5 * 1024 * 1024}
                         buttonClassName="w-full h-auto p-0 border-2 border-dashed border-gray-300 hover:border-gray-400 bg-transparent hover:bg-gray-50"
+                        children={null}
                       >
                         <div className="flex items-center justify-center py-4 sm:py-6 px-3 sm:px-4">
                           <div className="text-center">

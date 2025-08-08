@@ -26,13 +26,13 @@ export default function Videos() {
   const categories = Array.from(new Set((videos as any[]).map((video: any) => video.category).filter(Boolean)));
 
   return (
-    <div className="min-h-screen bg-neutral-50 safe-area-padding">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 safe-area-padding">
       <Header />
       
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Available Videos</h1>
-          <p className="text-sm sm:text-base text-gray-600">Watch videos completely to earn money. Remember, you cannot skip or fast-forward!</p>
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Earning Videos</h1>
+          <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Watch professional content completely to maximize your earnings. Complete viewing required!</p>
         </div>
 
         {/* Filters */}
