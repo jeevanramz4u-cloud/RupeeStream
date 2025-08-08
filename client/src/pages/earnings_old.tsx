@@ -53,107 +53,92 @@ export default function Earnings() {
     refetchPayouts();
   };
 
-  const { data: earnings, isLoading: earningsLoading } = useQuery({
+  const { data: earnings = [] } = useQuery({
     queryKey: ["/api/earnings"],
-    enabled: isAuthenticated && !!user,
+    enabled: !!user,
   });
 
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats = {} } = useQuery({
     queryKey: ["/api/earnings/stats"],
-    enabled: isAuthenticated && !!user,
+    enabled: !!user,
   });
 
-  const { 
-    data: payouts, 
-    isLoading: isPayoutsLoading, 
-    error: payoutsError,
-    refetch: refetchPayouts 
-  } = useQuery({
+  const { data: payouts = [], isLoading: isPayoutsLoading, error: payoutsError, refetch: refetchPayouts } = useQuery({
     queryKey: ["/api/payouts"],
-    enabled: isAuthenticated && !!user,
-    retry: 2,
-    staleTime: 30000,
+    enabled: !!user && !authLoading,
+    retry: 3,
   });
 
-  const createPayoutMutation = useMutation({
-    mutationFn: (amount: number) => 
-      apiRequest("POST", "/api/payouts", { amount }),
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Payout request submitted successfully",
-      });
-      setIsPayoutDialogOpen(false);
-      setPayoutAmount("");
-      queryClient.invalidateQueries({ queryKey: ["/api/payouts"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to submit payout request",
-        variant: "destructive",
-      });
-    },
-  });
+  // Debug logging for payouts
+  console.log("Payouts query status:", { payouts, isPayoutsLoading, payoutsError, enabled: !!user && !authLoading, userExists: !!user });
 
-  // Calculate next payout date (next Tuesday)
-  const getNextPayoutDate = () => {
-    const today = new Date();
-    const dayOfWeek = today.getDay();
-    const daysUntilTuesday = dayOfWeek <= 2 ? 2 - dayOfWeek : 9 - dayOfWeek;
-    const nextTuesday = new Date(today);
-    nextTuesday.setDate(today.getDate() + daysUntilTuesday);
-    return nextTuesday.toLocaleDateString('en-IN', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-  };
+  // Check if user needs account suspension for not meeting daily target
+  useEffect(() => {
+    if (stats && (stats as any).dailyWatchTime < 480) { // 8 hours = 480 minutes
+      // Here you could implement logic to suspend accounts
+      // For now, just show a warning
+    }
+  }, [stats]);
 
-  const nextPayoutDate = getNextPayoutDate();
-
-  // Calculate watch progress
-  const watchedHours = (user as any)?.todayWatchTime || 0;
   const targetHours = 8;
+  const watchedHours = (stats as any)?.dailyWatchTime ? (stats as any).dailyWatchTime / 60 : 0;
   const progressPercentage = Math.min((watchedHours / targetHours) * 100, 100);
   const remainingHours = Math.max(targetHours - watchedHours, 0);
 
-  // Format date helper
+  // Calculate next Tuesday for payout
+  const getNextTuesday = () => {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const daysUntilTuesday = dayOfWeek <= 2 ? (2 - dayOfWeek) : (9 - dayOfWeek); // 2 = Tuesday
+    const nextTuesday = new Date(today);
+    nextTuesday.setDate(today.getDate() + daysUntilTuesday);
+    
+    return nextTuesday.toLocaleDateString('en-IN', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long', 
+      day: 'numeric'
+    });
+  };
+
+  const nextPayoutDate = getNextTuesday();
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-IN', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
-          <p className="text-gray-600">Please log in to view your earnings.</p>
-        </div>
-      </div>
-    );
-  }
+  // Payout request mutation
+  const createPayoutMutation = useMutation({
+    mutationFn: async (amount: number) => {
+      await apiRequest("POST", "/api/payouts", { amount });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Payout Requested",
+        description: "Your payout request has been submitted successfully. You'll receive payment on Tuesday.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/payouts"] });
+      setIsPayoutDialogOpen(false);
+      setPayoutAmount("");
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Payout Request Failed",
+        description: error.message || "Failed to create payout request. Please check your bank details and verification status.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handlePayoutSubmit = () => {
     const amount = parseFloat(payoutAmount);
-    
-    if (!amount || amount <= 0) {
+    if (isNaN(amount) || amount <= 0) {
       toast({
         title: "Invalid Amount",
         description: "Please enter a valid payout amount.",
@@ -208,15 +193,13 @@ export default function Earnings() {
         </div>
 
         {/* Signup Bonus Alert */}
-        {!(user as any)?.hasSeenSignupBonus && (
-          <Alert className="mb-6 border-green-200 bg-green-50">
-            <TrendingUp className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-800">
-              <strong>Welcome Bonus:</strong> New users receive ₹1,000 automatically credited to their account. 
-              Check your earnings history below to see all credited amounts.
-            </AlertDescription>
-          </Alert>
-        )}
+        <Alert className="mb-6 border-green-200 bg-green-50">
+          <TrendingUp className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-800">
+            <strong>Welcome Bonus:</strong> New users receive ₹1,000 automatically credited to their account. 
+            Check your earnings history below to see all credited amounts.
+          </AlertDescription>
+        </Alert>
 
         {/* Daily Target Alert */}
         {remainingHours > 0 && (
@@ -398,7 +381,7 @@ export default function Earnings() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {(earnings as any[])?.length === 0 ? (
+              {(earnings as any[]).length === 0 ? (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <Coins className="w-8 h-8 text-green-600" />
@@ -408,7 +391,7 @@ export default function Earnings() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {(earnings as any[])?.slice(0, 10).map((earning: any) => (
+                  {(earnings as any[]).slice(0, 10).map((earning: any) => (
                     <div key={earning.id} className="group hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 p-4 rounded-xl border border-gray-100 hover:border-green-200 transition-all duration-200">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
@@ -434,7 +417,7 @@ export default function Earnings() {
                     </div>
                   ))}
                   
-                  {(earnings as any[])?.length > 10 && (
+                  {(earnings as any[]).length > 10 && (
                     <div className="text-center pt-4">
                       <Button variant="outline" size="sm" className="border-green-200 text-green-700 hover:bg-green-50">
                         View Complete History
@@ -477,7 +460,7 @@ export default function Earnings() {
                   <p className="text-lg font-semibold text-red-600 mb-2">Error Loading Payouts</p>
                   <p className="text-sm text-gray-600">Please refresh the page or contact support</p>
                 </div>
-              ) : (payouts as any[])?.length === 0 ? (
+              ) : (payouts as any[]).length === 0 ? (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <Wallet className="w-8 h-8 text-blue-600" />
@@ -487,7 +470,7 @@ export default function Earnings() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {(payouts as any[])?.map((payout: any) => (
+                  {(payouts as any[]).map((payout: any) => (
                     <div key={payout.id} className="group hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 p-4 rounded-xl border border-gray-100 hover:border-blue-200 transition-all duration-200">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center space-x-3">

@@ -27,7 +27,12 @@ import {
   Users,
   CheckCircle,
   XCircle,
-  Wallet
+  Wallet,
+  TrendingUp,
+  Target,
+  Award,
+  Activity,
+  Coins
 } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -88,23 +93,32 @@ export default function Dashboard() {
       
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Welcome back, {(user as any)?.firstName}!</h1>
-          <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Here's your earning dashboard</p>
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center">
+              <User className="w-8 h-8 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight tracking-tight">Welcome back, {(user as any)?.firstName}!</h1>
+              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Your professional earnings overview</p>
+            </div>
+          </div>
         </div>
 
-        {/* Mobile Balance Banner */}
+        {/* Enhanced Mobile Balance Banner */}
         <div className="md:hidden mb-6">
           <Link href="/earnings">
-            <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white cursor-pointer hover:from-green-600 hover:to-green-700 transition-all touch-manipulation">
-              <CardContent className="p-6">
+            <Card className="relative bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 text-white cursor-pointer hover:shadow-xl transition-all duration-300 touch-manipulation overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 to-emerald-500/20"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+              <CardContent className="relative p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-green-100 text-sm font-medium">Your Balance</p>
-                    <p className="text-3xl font-bold">₹{(user as any)?.balance || '0.00'}</p>
-                    <p className="text-green-100 text-xs mt-1">Tap to view earnings history</p>
+                    <p className="text-green-100 text-sm font-semibold mb-1">Current Balance</p>
+                    <p className="text-4xl font-black mb-2">₹{(user as any)?.balance || '0.00'}</p>
+                    <p className="text-green-100 text-sm font-medium">Tap to view full earnings history</p>
                   </div>
-                  <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
-                    <Wallet className="w-8 h-8 text-white" />
+                  <div className="w-18 h-18 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                    <Wallet className="w-10 h-10 text-white" />
                   </div>
                 </div>
               </CardContent>
@@ -112,69 +126,75 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        {/* Earnings Quick Stats */}
+        {/* Modern Professional Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow touch-manipulation" onClick={() => setLocation("/earnings-history")}>
-            <CardContent className="pt-4">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-green-600 font-semibold text-lg">₹</span>
+          <Card className="relative bg-gradient-to-br from-green-50 to-emerald-50 border border-green-100 shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer overflow-hidden" onClick={() => setLocation("/earnings")}>
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5"></div>
+            <CardContent className="relative pt-6 pb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-green-700 mb-1">Total Earnings</p>
+                  <p className="text-3xl font-black text-gray-900">₹{(stats as any)?.totalEarnings || 0}</p>
+                  <p className="text-xs text-green-600 font-medium">Lifetime accumulation</p>
                 </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-500">Total Earnings</p>
-                  <button
-                    onClick={() => setLocation("/earnings-history")}
-                    className="text-xl font-bold text-gray-900 hover:text-green-600 underline-offset-2 hover:underline text-left"
-                  >
-                    ₹{(stats as any)?.totalEarnings || 0}
-                  </button>
-                  <p className="text-xs text-gray-400">Click to view history</p>
+                <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Coins className="text-green-600 w-7 h-7" />
                 </div>
               </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </CardContent>
           </Card>
 
-          <Card className="touch-manipulation">
-            <CardContent className="pt-4">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-blue-600" />
+          <Card className="relative bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5"></div>
+            <CardContent className="relative pt-6 pb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-blue-700 mb-1">Today's Income</p>
+                  <p className="text-3xl font-black text-gray-900">₹{(stats as any)?.todayEarnings || 0}</p>
+                  <p className="text-xs text-blue-600 font-medium">Current session</p>
                 </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-500">Today's Earnings</p>
-                  <p className="text-xl font-bold text-gray-900">₹{(stats as any)?.todayEarnings || 0}</p>
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <TrendingUp className="text-blue-600 w-7 h-7" />
                 </div>
               </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </CardContent>
           </Card>
 
-          <Card className="touch-manipulation">
-            <CardContent className="pt-4">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-purple-600" />
+          <Card className="relative bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5"></div>
+            <CardContent className="relative pt-6 pb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-purple-700 mb-1">Watch Progress</p>
+                  <p className="text-3xl font-black text-gray-900">{watchedHours.toFixed(1)}h</p>
+                  <p className="text-xs text-purple-600 font-medium">Target: {targetHours}h daily</p>
                 </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-500">Watch Time Today</p>
-                  <p className="text-xl font-bold text-gray-900">{watchedHours.toFixed(1)}h</p>
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Activity className="text-purple-600 w-7 h-7" />
                 </div>
               </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </CardContent>
           </Card>
 
-          <Card className="touch-manipulation">
-            <CardContent className="pt-4">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-orange-600" />
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-500">Account Status</p>
-                  <p className="text-sm font-bold text-gray-900">
+          <Card className="relative bg-gradient-to-br from-orange-50 to-red-50 border border-orange-100 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-red-500/5"></div>
+            <CardContent className="relative pt-6 pb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-orange-700 mb-1">Account Level</p>
+                  <p className="text-2xl font-black text-gray-900">
                     {(user as any)?.verificationStatus === 'verified' ? 'Verified' : 'Pending'}
                   </p>
+                  <p className="text-xs text-orange-600 font-medium">Professional status</p>
+                </div>
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Award className="text-orange-600 w-7 h-7" />
                 </div>
               </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </CardContent>
           </Card>
         </div>
@@ -297,6 +317,121 @@ export default function Dashboard() {
             </AlertDescription>
           </Alert>
         )}
+
+        {/* Enhanced Daily Progress Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mb-8">
+          <Card className="border border-gray-100 shadow-lg">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-xl font-black text-gray-900 tracking-tight">
+                <Target className="w-6 h-6 mr-3 text-blue-600" />
+                Professional Daily Target
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-semibold text-gray-700 mb-1">Watch Time Progress</p>
+                  <p className="text-2xl font-black text-gray-900">{watchedHours.toFixed(1)} / {targetHours} hours</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-gray-600">Completion</p>
+                  <p className="text-3xl font-black text-blue-600">{progressPercentage.toFixed(0)}%</p>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${progressPercentage}%` }}
+                  ></div>
+                </div>
+                
+                {remainingHours > 0 ? (
+                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+                    <p className="text-sm font-semibold text-orange-800 mb-1">Action Required</p>
+                    <p className="text-orange-700 text-sm leading-relaxed">
+                      Complete <span className="font-bold">{remainingHours.toFixed(1)} more hours</span> today to maintain professional account status and avoid suspension.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                    <p className="text-sm font-semibold text-green-800 mb-1">Target Achieved</p>
+                    <p className="text-green-700 text-sm leading-relaxed">
+                      ✓ Excellent! You've completed your daily target and maintained professional standing.
+                    </p>
+                  </div>
+                )}
+              </div>
+              
+              <Button 
+                asChild 
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg font-semibold"
+                size="lg"
+              >
+                <Link href="/videos">
+                  <Play className="w-5 h-5 mr-2" />
+                  Continue Professional Training
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions Card */}
+          <Card className="border border-gray-100 shadow-lg">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-xl font-black text-gray-900 tracking-tight">
+                <Activity className="w-6 h-6 mr-3 text-green-600" />
+                Professional Actions
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 gap-3">
+                <Button asChild variant="outline" className="justify-start h-auto p-4 border-green-200 hover:bg-green-50">
+                  <Link href="/earnings">
+                    <div className="flex items-center space-x-3 w-full">
+                      <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                        <Wallet className="w-5 h-5 text-green-600" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-gray-900">View Earnings</p>
+                        <p className="text-sm text-gray-600">Track income and payouts</p>
+                      </div>
+                    </div>
+                  </Link>
+                </Button>
+
+                <Button asChild variant="outline" className="justify-start h-auto p-4 border-purple-200 hover:bg-purple-50">
+                  <Link href="/referrals">
+                    <div className="flex items-center space-x-3 w-full">
+                      <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <Users className="w-5 h-5 text-purple-600" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-gray-900">Referral Network</p>
+                        <p className="text-sm text-gray-600">Expand professional network</p>
+                      </div>
+                    </div>
+                  </Link>
+                </Button>
+
+                <Button asChild variant="outline" className="justify-start h-auto p-4 border-blue-200 hover:bg-blue-50">
+                  <Link href="/kyc">
+                    <div className="flex items-center space-x-3 w-full">
+                      <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <Shield className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-gray-900">Account Verification</p>
+                        <p className="text-sm text-gray-600">Complete KYC process</p>
+                      </div>
+                    </div>
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Profile Information Card */}
         <Card className="mb-6 sm:mb-8">
