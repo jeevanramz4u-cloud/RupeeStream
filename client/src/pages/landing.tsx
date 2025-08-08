@@ -8,166 +8,169 @@ import { Link } from "wouter";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900 safe-area-padding relative overflow-hidden">
-      {/* Animated background particles */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-2 h-2 bg-blue-400 rounded-full animate-ping"></div>
-        <div className="absolute top-40 right-20 w-1 h-1 bg-purple-400 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce"></div>
-        <div className="absolute top-60 left-1/3 w-1 h-1 bg-pink-400 rounded-full animate-ping"></div>
-        <div className="absolute bottom-20 right-1/3 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20 safe-area-padding relative overflow-hidden">
+      {/* Floating geometric shapes */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blob-animation"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-lg transform rotate-45 blob-animation" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-32 left-1/4 w-20 h-20 bg-gradient-to-br from-green-400/20 to-cyan-400/20 rounded-full blob-animation" style={{animationDelay: '4s'}}></div>
+        <div className="absolute top-60 right-1/3 w-16 h-16 bg-gradient-to-br from-yellow-400/20 to-red-400/20 rounded-lg blob-animation" style={{animationDelay: '6s'}}></div>
       </div>
       
       <Header />
 
       {/* Hero Section */}
-      <section className="relative py-12 sm:py-16 lg:py-20 px-4 sm:px-6 overflow-hidden">
-        {/* Glowing background orbs */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-10 left-10 w-96 h-96 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-3xl animate-pulse floating-animation"></div>
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-3xl animate-pulse" style={{animationDelay: '4s'}}></div>
-        </div>
+      <section className="relative py-16 sm:py-20 lg:py-24 px-4 sm:px-6 overflow-hidden">
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-transparent to-blue-50/40"></div>
         
         <div className="max-w-7xl mx-auto text-center relative z-10">
-          {/* Futuristic Badge */}
-          <div className="inline-flex items-center justify-center mb-8">
-            <div className="glass-effect rounded-2xl p-6 pulse-glow">
-              <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 text-white p-4 rounded-xl shadow-2xl">
-                <Play className="w-10 h-10" />
+          {/* Modern Badge */}
+          <div className="inline-flex items-center justify-center mb-10">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-20"></div>
+              <div className="relative bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-xl">
+                  <Play className="w-8 h-8" />
+                </div>
               </div>
             </div>
           </div>
           
-          <h1 className="font-orbitron text-4xl sm:text-6xl lg:text-8xl font-black text-white mb-6 leading-tight tracking-wider">
-            <span className="block">FUTURE OF</span>
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent neon-text font-black">
-              EARNING
-            </span>
+          <h1 className="font-outfit text-5xl sm:text-6xl lg:text-8xl font-black text-gray-900 mb-8 leading-tight text-shadow">
+            <span className="block mb-2">Transform Your</span>
+            <span className="gradient-text">Free Time</span>
+            <span className="block mt-2 text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-700">into Real Income</span>
           </h1>
           
-          <p className="font-space text-lg sm:text-xl lg:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
-            🚀 <span className="text-cyan-400 font-bold">Revolutionary</span> video monetization platform. 
-            Watch, earn, and unlock your financial freedom in the digital age.
+          <p className="font-inter text-xl sm:text-2xl lg:text-3xl text-gray-600 mb-10 max-w-5xl mx-auto leading-relaxed font-medium">
+            Join the <span className="font-bold text-blue-600">most rewarding</span> video platform where every minute counts. 
+            Watch, earn, and get paid weekly with complete transparency.
           </p>
           
-          {/* Futuristic Earnings Display */}
-          <div className="glass-effect rounded-3xl p-6 sm:p-8 mb-8 max-w-5xl mx-auto glow-effect border border-cyan-500/30">
-            <div className="grid sm:grid-cols-3 gap-6 items-center">
-              <div className="flex items-center gap-4 justify-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg pulse-glow">
-                  <Coins className="w-8 h-8 text-white" />
+          {/* Earnings Stats */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 sm:p-10 mb-12 max-w-6xl mx-auto shadow-xl border border-gray-100">
+            <div className="grid sm:grid-cols-3 gap-8 items-center">
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <Coins className="w-10 h-10 text-white" />
                 </div>
-                <div className="text-left">
-                  <span className="font-mono text-3xl font-black text-green-400 block tracking-wider neon-text">₹2,500</span>
-                  <span className="text-gray-300 font-medium text-sm">Daily Potential</span>
-                </div>
+                <div className="font-code text-4xl font-bold text-emerald-600 mb-1">₹2,500</div>
+                <div className="text-gray-600 font-medium">Daily Potential</div>
               </div>
               
-              <div className="flex items-center gap-4 justify-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg pulse-glow" style={{animationDelay: '1s'}}>
-                  <Zap className="w-8 h-8 text-white" />
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <TrendingUp className="w-10 h-10 text-white" />
                 </div>
-                <div className="text-left">
-                  <span className="font-mono text-3xl font-black text-purple-400 block tracking-wider neon-text">₹15</span>
-                  <span className="text-gray-300 font-medium text-sm">Per Video</span>
-                </div>
+                <div className="font-code text-4xl font-bold text-blue-600 mb-1">₹15</div>
+                <div className="text-gray-600 font-medium">Per Video</div>
               </div>
               
-              <div className="flex items-center gap-4 justify-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg pulse-glow" style={{animationDelay: '2s'}}>
-                  <Award className="w-8 h-8 text-white" />
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <Award className="w-10 h-10 text-white" />
                 </div>
-                <div className="text-left">
-                  <span className="font-mono text-3xl font-black text-cyan-400 block tracking-wider neon-text">₹49</span>
-                  <span className="text-gray-300 font-medium text-sm">Referral Bonus</span>
-                </div>
+                <div className="font-code text-4xl font-bold text-purple-600 mb-1">₹49</div>
+                <div className="text-gray-600 font-medium">Referral Bonus</div>
               </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-3xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-4xl mx-auto">
             <Button 
               size="lg" 
-              className="font-orbitron bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 hover:from-cyan-400 hover:via-blue-400 hover:to-purple-500 h-16 sm:h-20 text-xl font-bold px-10 sm:px-16 rounded-2xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-500 transform hover:scale-110 glow-effect neon-text tracking-wider touch-manipulation"
+              className="font-outfit bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-16 sm:h-18 text-xl font-bold px-12 sm:px-16 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 touch-manipulation"
               onClick={() => window.location.href = '/signup'}
             >
-              <Sparkles className="w-6 h-6 mr-3" />
-              LAUNCH EARNINGS
+              <Play className="w-6 h-6 mr-3" />
+              Start Earning Today
             </Button>
             <Button 
               size="lg" 
               variant="outline"
-              className="font-space h-16 sm:h-20 text-lg border-2 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400 hover:text-cyan-300 px-8 sm:px-12 rounded-2xl transition-all duration-500 glass-effect touch-manipulation"
+              className="font-outfit h-16 sm:h-18 text-xl border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-blue-500 hover:text-blue-600 px-12 sm:px-16 rounded-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl touch-manipulation"
               onClick={() => window.location.href = '/login'}
             >
-              ACCESS PORTAL
+              Already Member?
             </Button>
           </div>
           
-          {/* Futuristic Trust Indicators */}
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            <div className="glass-effect rounded-2xl p-4 border border-green-500/30 hover:border-green-400/50 transition-all duration-500 transform hover:scale-105">
+          {/* Trust Indicators */}
+          <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 hover:border-green-200 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
               <div className="flex items-center justify-center gap-3">
-                <Shield className="w-6 h-6 text-green-400 neon-text" />
-                <span className="font-space text-sm font-bold text-green-300">QUANTUM SECURE</span>
+                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-green-600" />
+                </div>
+                <div>
+                  <div className="font-outfit text-lg font-bold text-gray-900">100% Secure</div>
+                  <div className="text-gray-600 text-sm">Bank-level security</div>
+                </div>
               </div>
             </div>
-            <div className="glass-effect rounded-2xl p-4 border border-blue-500/30 hover:border-blue-400/50 transition-all duration-500 transform hover:scale-105">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 hover:border-blue-200 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
               <div className="flex items-center justify-center gap-3">
-                <CheckCircle className="w-6 h-6 text-blue-400 neon-text" />
-                <span className="font-space text-sm font-bold text-blue-300">VERIFIED TECH</span>
+                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <div className="font-outfit text-lg font-bold text-gray-900">Verified Platform</div>
+                  <div className="text-gray-600 text-sm">Trusted by millions</div>
+                </div>
               </div>
             </div>
-            <div className="glass-effect rounded-2xl p-4 border border-purple-500/30 hover:border-purple-400/50 transition-all duration-500 transform hover:scale-105">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 hover:border-purple-200 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
               <div className="flex items-center justify-center gap-3">
-                <Users className="w-6 h-6 text-purple-400 neon-text" />
-                <span className="font-space text-sm font-bold text-purple-300">200K+ USERS</span>
+                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                  <Users className="w-6 h-6 text-purple-600" />
+                </div>
+                <div>
+                  <div className="font-outfit text-lg font-bold text-gray-900">200K+ Users</div>
+                  <div className="text-gray-600 text-sm">Active community</div>
+                </div>
               </div>
             </div>
           </div>
           
-          {/* Scrolling stats */}
-          <div className="mt-8 glass-effect rounded-full p-3 max-w-md mx-auto border border-cyan-500/30">
-            <div className="font-mono text-cyan-400 text-sm text-center animate-pulse">
-              🔥 Live: ₹2,47,530 earned today • 1,247 active users
+          {/* Live stats ticker */}
+          <div className="mt-12 bg-gradient-to-r from-emerald-50 to-blue-50 rounded-full p-4 max-w-lg mx-auto border border-emerald-200">
+            <div className="font-inter text-center">
+              <span className="text-emerald-600 font-bold">🔥 Live Stats:</span>
+              <span className="text-gray-700 ml-2">₹2,47,530 earned today • 1,247 active users</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 sm:py-20 lg:py-24 px-4 relative overflow-hidden">
-        {/* Animated grid background */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `
-              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
-          }}></div>
+      <section id="features" className="py-20 sm:py-24 lg:py-28 px-4 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-blue-100 rounded-full opacity-20 blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-100 rounded-full opacity-20 blur-3xl"></div>
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-16">
-            {/* Futuristic Features Badge */}
-            <div className="inline-flex items-center justify-center mb-8">
-              <div className="glass-effect rounded-3xl p-6 pulse-glow border border-purple-500/30">
-                <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white p-5 rounded-2xl shadow-2xl">
-                  <Star className="w-10 h-10" />
+          <div className="text-center mb-20">
+            {/* Modern Features Badge */}
+            <div className="inline-flex items-center justify-center mb-10">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur opacity-20"></div>
+                <div className="relative bg-white border border-gray-200 rounded-3xl p-8 shadow-xl">
+                  <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-5 rounded-2xl">
+                    <Star className="w-10 h-10" />
+                  </div>
                 </div>
               </div>
             </div>
             
-            <h2 className="font-orbitron text-4xl lg:text-6xl font-black text-white mb-8 leading-tight tracking-widest">
-              <span className="block">ADVANCED</span>
-              <span className="bg-gradient-to-r from-pink-400 via-purple-500 to-cyan-500 bg-clip-text text-transparent neon-text font-black">
-                FEATURES
-              </span>
+            <h2 className="font-outfit text-5xl lg:text-7xl font-black text-gray-900 mb-8 leading-tight text-shadow">
+              <span className="block mb-2">Why Choose</span>
+              <span className="gradient-text">EarnPay?</span>
             </h2>
-            <p className="font-space text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-medium">
-              🎯 Next-generation technology meets unprecedented earning opportunities. 
-              <span className="text-purple-400 font-bold">Experience the future</span> of digital monetization.
+            <p className="font-inter text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              Experience the most <span className="font-bold text-indigo-600">trusted and rewarding platform</span> for earning money through video engagement. 
+              Join thousands of satisfied users who are already earning.
             </p>
             
             {/* Decorative divider */}
@@ -179,69 +182,69 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-            {/* Quantum Earnings */}
-            <div className="group glass-effect border border-green-500/30 hover:border-green-400/60 transition-all duration-500 transform hover:-translate-y-4 hover:scale-105 glow-effect rounded-3xl p-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-green-400 via-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-500 pulse-glow shadow-2xl">
-                <Coins className="text-white w-10 h-10" />
+            {/* Real Money Earnings */}
+            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 card-hover border border-gray-100 hover:border-emerald-200">
+              <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Coins className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-orbitron text-xl font-bold text-white mb-6 tracking-wider text-center">QUANTUM EARNINGS</h3>
-              <p className="font-space text-gray-300 leading-relaxed text-center">
-                Real cryptocurrency-backed earnings for every completed video. Advanced blockchain verification ensures instant, secure payments.
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Real Money Earnings</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
+                Earn genuine rupees for every video you watch completely. No fake rewards or points - just real cash directly to your bank account.
               </p>
             </div>
 
-            {/* Neural Network */}
-            <div className="group glass-effect border border-blue-500/30 hover:border-blue-400/60 transition-all duration-500 transform hover:-translate-y-4 hover:scale-105 glow-effect rounded-3xl p-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-500 pulse-glow shadow-2xl">
-                <Users className="text-white w-10 h-10" />
+            {/* Referral Program */}
+            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 card-hover border border-gray-100 hover:border-blue-200">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Users className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-orbitron text-xl font-bold text-white mb-6 tracking-wider text-center">NEURAL NETWORK</h3>
-              <p className="font-space text-gray-300 leading-relaxed text-center">
-                AI-powered referral system with exponential rewards. Build your network and unlock passive income streams through smart contracts.
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Smart Referrals</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
+                Earn ₹49 for every friend you refer who completes verification. Build your network and multiply your earnings exponentially.
               </p>
             </div>
 
-            {/* Time Fusion */}
-            <div className="group glass-effect border border-orange-500/30 hover:border-orange-400/60 transition-all duration-500 transform hover:-translate-y-4 hover:scale-105 glow-effect rounded-3xl p-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-orange-400 via-red-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-500 pulse-glow shadow-2xl">
-                <Clock className="text-white w-10 h-10" />
+            {/* Flexible Schedule */}
+            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 card-hover border border-gray-100 hover:border-orange-200">
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Clock className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-orbitron text-xl font-bold text-white mb-6 tracking-wider text-center">TIME FUSION</h3>
-              <p className="font-space text-gray-300 leading-relaxed text-center">
-                Quantum time optimization allows 24/7 earning potential. Advanced scheduling algorithms maximize your earning efficiency.
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Complete Flexibility</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
+                Watch videos anytime, anywhere. Meet the 8-hour daily target at your own pace with complete schedule freedom.
               </p>
             </div>
 
-            {/* Hyper Transfers */}
-            <div className="group glass-effect border border-purple-500/30 hover:border-purple-400/60 transition-all duration-500 transform hover:-translate-y-4 hover:scale-105 glow-effect rounded-3xl p-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-400 via-pink-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-500 pulse-glow shadow-2xl">
-                <Zap className="text-white w-10 h-10" />
+            {/* Weekly Payouts */}
+            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 card-hover border border-gray-100 hover:border-purple-200">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <CheckCircle className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-orbitron text-xl font-bold text-white mb-6 tracking-wider text-center">HYPER TRANSFERS</h3>
-              <p className="font-space text-gray-300 leading-relaxed text-center">
-                Lightning-fast quantum payment processing. Instant transfers with zero fees through advanced blockchain technology.
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Weekly Payouts</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
+                Receive your earnings every Tuesday directly to your bank account. Fast, secure, and reliable payment processing.
               </p>
             </div>
 
-            {/* Cyber Shield */}
-            <div className="group glass-effect border border-cyan-500/30 hover:border-cyan-400/60 transition-all duration-500 transform hover:-translate-y-4 hover:scale-105 glow-effect rounded-3xl p-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-cyan-400 via-teal-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-500 pulse-glow shadow-2xl">
-                <Shield className="text-white w-10 h-10" />
+            {/* Secure Platform */}
+            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 card-hover border border-gray-100 hover:border-cyan-200">
+              <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Shield className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-orbitron text-xl font-bold text-white mb-6 tracking-wider text-center">CYBER SHIELD</h3>
-              <p className="font-space text-gray-300 leading-relaxed text-center">
-                Military-grade encryption with biometric verification. Advanced AI security protocols protect all transactions and data.
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Bank-Level Security</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
+                Government ID verification and encrypted transactions ensure a safe, trusted earning environment for all users.
               </p>
             </div>
 
-            {/* Meta Stream */}
-            <div className="group glass-effect border border-violet-500/30 hover:border-violet-400/60 transition-all duration-500 transform hover:-translate-y-4 hover:scale-105 glow-effect rounded-3xl p-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-violet-400 via-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-500 pulse-glow shadow-2xl">
-                <Play className="text-white w-10 h-10" />
+            {/* Quality Content */}
+            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 card-hover border border-gray-100 hover:border-indigo-200">
+              <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Play className="text-white w-8 h-8" />
               </div>
-              <h3 className="font-orbitron text-xl font-bold text-white mb-6 tracking-wider text-center">META STREAM</h3>
-              <p className="font-space text-gray-300 leading-relaxed text-center">
-                AI-curated premium content from parallel dimensions. Immersive entertainment that adapts to your preferences in real-time.
+              <h3 className="font-outfit text-2xl font-bold text-gray-900 mb-4 text-center">Premium Content</h3>
+              <p className="font-inter text-gray-600 leading-relaxed text-center">
+                Watch curated, high-quality videos across various categories. Entertainment that's both engaging and rewarding.
               </p>
             </div>
           </div>
