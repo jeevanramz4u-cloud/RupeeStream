@@ -594,82 +594,114 @@ export default function Landing() {
 
       {/* CTA Section */}
       <section className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-primary via-blue-600 to-indigo-700 relative overflow-hidden">
-        {/* Background Decorations */}
-        <div className="absolute inset-0 opacity-[0.08]">
-          <div className="absolute top-10 left-10 w-80 h-80 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-200 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/3 w-60 h-60 bg-purple-200 rounded-full blur-3xl"></div>
+        {/* Enhanced Background Decorations */}
+        <div className="absolute inset-0">
+          {/* Animated gradient orbs */}
+          <div className="absolute top-10 left-10 w-80 h-80 bg-gradient-to-r from-white/20 to-yellow-300/30 rounded-full blur-3xl animate-pulse" style={{animationDelay: '0s', animationDuration: '4s'}}></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-l from-blue-200/40 to-purple-300/30 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s', animationDuration: '5s'}}></div>
+          <div className="absolute top-1/2 left-1/3 w-60 h-60 bg-gradient-to-br from-orange-200/30 to-pink-300/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s', animationDuration: '3s'}}></div>
+          
+          {/* Grid pattern overlay */}
+          <div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage: 'radial-gradient(circle at 50% 50%, white 1px, transparent 1px)', backgroundSize: '50px 50px'}}></div>
         </div>
         
-        {/* Floating elements */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-20 w-4 h-4 bg-white rounded-full animate-pulse"></div>
-          <div className="absolute top-40 right-32 w-6 h-6 bg-white/80 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
-          <div className="absolute bottom-32 left-1/4 w-3 h-3 bg-white rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
-          <div className="absolute bottom-20 right-16 w-5 h-5 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
+        {/* Enhanced floating elements */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-20 left-20 w-4 h-4 bg-yellow-300 rounded-full animate-bounce" style={{animationDelay: '0.5s', animationDuration: '2s'}}></div>
+          <div className="absolute top-40 right-32 w-6 h-6 bg-orange-300 rounded-full animate-bounce" style={{animationDelay: '1.5s', animationDuration: '2.5s'}}></div>
+          <div className="absolute bottom-32 left-1/4 w-3 h-3 bg-white rounded-full animate-bounce" style={{animationDelay: '2.5s', animationDuration: '1.8s'}}></div>
+          <div className="absolute bottom-20 right-16 w-5 h-5 bg-pink-300 rounded-full animate-bounce" style={{animationDelay: '3.5s', animationDuration: '2.2s'}}></div>
+          <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-blue-200 rounded-full animate-ping" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-1/3 left-1/5 w-3 h-3 bg-green-300 rounded-full animate-ping" style={{animationDelay: '2s'}}></div>
         </div>
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          {/* CTA Icon Badge */}
+          {/* Enhanced CTA Icon Badge with animation */}
           <div className="flex items-center justify-center mb-8">
-            <div className="inline-flex items-center justify-center p-3 bg-white/20 backdrop-blur-sm rounded-full">
-              <div className="bg-white text-primary p-4 rounded-full shadow-lg">
-                <Play className="w-8 h-8" />
+            <div className="relative">
+              <div className="absolute inset-0 bg-white/20 rounded-full blur animate-pulse"></div>
+              <div className="relative inline-flex items-center justify-center p-4 bg-white/25 backdrop-blur-md rounded-full border border-white/30 shadow-2xl hover:scale-110 transition-all duration-500 group">
+                <div className="bg-gradient-to-br from-white to-yellow-100 text-primary p-5 rounded-full shadow-xl group-hover:shadow-2xl transition-all duration-300">
+                  <Play className="w-10 h-10" />
+                </div>
               </div>
+              {/* Pulsing ring animation */}
+              <div className="absolute inset-0 bg-white/10 rounded-full animate-ping" style={{animationDuration: '3s'}}></div>
             </div>
           </div>
           
           <div className="mb-10">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 text-white leading-tight tracking-tight">
+            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-black mb-8 text-white leading-tight tracking-tight">
               Ready to Start
-              <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent font-black">
+              <span className="block bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent font-black drop-shadow-sm">
                 Earning?
               </span>
             </h2>
-            <p className="text-xl lg:text-2xl mb-6 text-white/90 max-w-4xl mx-auto leading-relaxed font-medium">
+            <p className="text-xl lg:text-2xl mb-8 text-white/95 max-w-4xl mx-auto leading-relaxed font-medium">
               Join our community and turn your free time into real income with our trusted platform.
             </p>
-            <p className="text-lg text-white/80 max-w-3xl mx-auto font-medium">
+            <p className="text-lg text-white/85 max-w-3xl mx-auto font-medium mb-8">
               Watch videos, earn money, and get paid weekly. Start your earning journey today.
             </p>
+            
+            {/* New engagement stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-10">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-2xl font-black text-yellow-300 mb-1">200K+</div>
+                <div className="text-sm text-white/80 font-medium">Active Users</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-2xl font-black text-orange-300 mb-1">₹10M+</div>
+                <div className="text-sm text-white/80 font-medium">Paid Out</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-2xl font-black text-pink-300 mb-1">4.9★</div>
+                <div className="text-sm text-white/80 font-medium">User Rating</div>
+              </div>
+            </div>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto mb-10">
             <Link href="/signup" className="w-full sm:w-auto">
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto bg-white text-primary hover:bg-yellow-50 hover:text-primary/90 font-bold text-xl px-10 py-6 h-auto rounded-2xl shadow-2xl hover:shadow-white/20 transition-all duration-300 transform hover:scale-105 border-2 border-white/20"
+                className="w-full sm:w-auto bg-gradient-to-r from-white to-yellow-100 text-primary hover:from-yellow-50 hover:to-orange-100 font-black text-xl px-12 py-7 h-auto rounded-2xl shadow-2xl hover:shadow-white/30 transition-all duration-300 transform hover:scale-105 border-2 border-white/30 group"
               >
-                Sign Up Now
+                <Play className="w-5 h-5 mr-3 group-hover:animate-pulse" />
+                Start Earning Now
               </Button>
             </Link>
             <Button 
               size="lg" 
               variant="outline"
-              className="w-full sm:w-auto border-2 border-white/40 text-white hover:bg-white/10 hover:border-white backdrop-blur-sm font-semibold text-xl px-10 py-6 h-auto rounded-2xl bg-transparent transition-all duration-300"
+              className="w-full sm:w-auto border-2 border-white/50 text-white hover:bg-white/15 hover:border-white backdrop-blur-md font-bold text-xl px-12 py-7 h-auto rounded-2xl bg-white/10 transition-all duration-300 hover:scale-105 group"
               onClick={() => window.location.href = '/login'}
             >
-              Already a Member?
+              <User className="w-5 h-5 mr-3 group-hover:animate-pulse" />
+              I Have Account
             </Button>
           </div>
           
-          <div className="mt-12 grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
-              <CheckCircle className="w-8 h-8 text-white mx-auto mb-3" />
-              <div className="text-white font-bold text-lg tracking-tight">No Hidden Fees</div>
-              <div className="text-white/80 text-sm mt-1 font-medium">Transparent pricing always</div>
+          {/* New trust indicators */}
+          <div className="flex flex-wrap items-center justify-center gap-6 text-white/70 text-sm">
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-green-300" />
+              <span className="font-medium">SSL Secured</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
-              <Coins className="w-8 h-8 text-white mx-auto mb-3" />
-              <div className="text-white font-bold text-lg tracking-tight">Weekly Payouts</div>
-              <div className="text-white/80 text-sm mt-1 font-medium">Every Tuesday guaranteed</div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-blue-300" />
+              <span className="font-medium">Verified Payouts</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
-              <Shield className="w-8 h-8 text-white mx-auto mb-3" />
-              <div className="text-white font-bold text-lg tracking-tight">24/7 Support</div>
-              <div className="text-white/80 text-sm mt-1 font-medium">Always here to help</div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-purple-300" />
+              <span className="font-medium">24/7 Support</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-orange-300" />
+              <span className="font-medium">Community Trusted</span>
             </div>
           </div>
+
         </div>
       </section>
 
