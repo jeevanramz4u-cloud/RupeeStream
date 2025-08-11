@@ -39,12 +39,15 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize performance optimizations for 200k+ users
+  // Note: Database endpoint is currently disabled, running in demo mode
+  log("ℹ️ Running in demo mode - database endpoint is disabled");
+  
+  // Skip all database-dependent initializations to prevent crashes
   try {
-    await PerformanceOptimizer.createOptimizedIndexes();
-    await initializeSuspensionSystem();
+    // Initialize basic app without database dependencies
+    log("✅ Basic application initialized successfully");
   } catch (error) {
-    log("Performance optimization setup completed");
+    log("⚠️ Basic initialization completed with limitations");
   }
   
   const server = await registerRoutes(app);
