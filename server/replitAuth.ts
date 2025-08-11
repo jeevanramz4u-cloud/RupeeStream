@@ -25,12 +25,12 @@ const getOidcConfig = memoize(
 
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  
-  // Force memory store for demo mode to avoid database issues
-  console.log('Using memory session store for demo mode');
-  const SessionMemoryStore = MemoryStore(session);
-  const sessionStore = new SessionMemoryStore({
-    checkPeriod: 86400000 // prune expired entries every 24h
+  const pgStore = connectPg(session);
+  const sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: false,
+    ttl: sessionTtl,
+    tableName: "sessions",
   });
   
   return session({

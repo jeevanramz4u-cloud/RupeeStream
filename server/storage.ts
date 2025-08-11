@@ -24,98 +24,10 @@ import {
   type PaymentHistory,
   type InsertPaymentHistory,
 } from "@shared/schema";
-import { db, safeDbOperation } from "./db";
+import { db } from "./db";
 import { eq, desc, and, sql, gte } from "drizzle-orm";
 
-// Demo data for fallback when database is unavailable
-const demoUser: User = {
-  id: "demo-user-001",
-  email: "demo@earnpay.com",
-  firstName: "Demo",
-  lastName: "User",
-  profileImageUrl: null,
-  password: "$2b$12$qQdaPKm3HZ7OmudNNcUmIuNB7g7yVoqX/mjTkHUFSGVLkvtHFEoIO",
-  phoneNumber: "9876543210",
-  dateOfBirth: "1990-01-01",
-  gender: null,
-  address: "123 Demo Street, Demo Colony",
-  city: "Mumbai",
-  state: "Maharashtra",
-  pincode: "400001",
-  accountHolderName: "Demo User",
-  accountNumber: "1234567890",
-  ifscCode: "DEMO0001234",
-  bankName: "Demo Bank",
-  governmentIdType: "aadhaar",
-  governmentIdNumber: "123456789012",
-  governmentIdUrl: null,
-  kycStatus: "approved",
-  kycFeePaid: true,
-  kycFeePaymentId: "kyc_payment_1754496719090_demo-user-001",
-  govIdFrontUrl: "test-url",
-  govIdBackUrl: "test-url",
-  selfieWithIdUrl: "test-url",
-  kycSubmittedAt: new Date("2025-08-06T16:07:35.602Z"),
-  kycApprovedAt: new Date("2025-08-06T16:11:59.090Z"),
-  role: "user",
-  balance: "2420.00",
-  referralCode: "DEMO001",
-  referredBy: null,
-  verificationStatus: "verified",
-  status: "active",
-  dailyWatchTime: 0,
-  lastWatchDate: null,
-  lastHourlyBonusAt: new Date("2025-08-08T06:44:38.141Z"),
-  hourlyBonusCount: 7,
-  suspendedAt: null,
-  suspensionReason: null,
-  consecutiveFailedDays: 0,
-  reactivationFeePaid: true,
-  reactivationFeeAmount: "49.00",
-  resetToken: null,
-  resetTokenExpiry: null,
-  createdAt: new Date("2025-08-06T03:18:06.612Z"),
-  updatedAt: new Date("2025-08-07T22:14:56.469Z")
-};
-
-// Demo earnings data for fallback
-const demoEarnings = [
-  {
-    id: "8eeb01f1-51cc-4dee-acac-a72c8409b6f9",
-    userId: "demo-user-001",
-    videoId: null,
-    type: "hourly_bonus" as const,
-    amount: "10.00",
-    description: "🎁 Hourly Login Bonus",
-    createdAt: new Date("2025-08-08T06:44:38.159Z")
-  },
-  {
-    id: "ca94405d-edfa-4c82-bfa4-b7707802684c",
-    userId: "demo-user-001",
-    videoId: null,
-    type: "signup_bonus" as const,
-    amount: "1000.00",
-    description: "🎉 Welcome Bonus",
-    createdAt: new Date("2025-08-06T07:21:41.795Z")
-  }
-];
-
-// Demo videos data for fallback
-const demoVideos = [
-  {
-    id: "demo-video-1",
-    title: "Introduction to EarnPay Platform",
-    description: "Learn how to earn money by watching videos on our platform",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
-    duration: 180,
-    earnings: "5.00",
-    category: "tutorial",
-    isActive: true,
-    createdAt: new Date("2025-08-01T00:00:00.000Z"),
-    updatedAt: new Date("2025-08-01T00:00:00.000Z")
-  }
-];
+// Database storage implementation
 
 export interface IStorage {
   // User operations (required for Replit Auth)
@@ -190,10 +102,8 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: string): Promise<User | undefined> {
-    return safeDbOperation(async () => {
-      const [user] = await db.select().from(users).where(eq(users.id, id));
-      return user;
-    }, id === "demo-user-001" ? demoUser : undefined);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
@@ -216,10 +126,8 @@ export class DatabaseStorage implements IStorage {
 
   // Traditional auth operations
   async getUserByEmail(email: string): Promise<User | undefined> {
-    return safeDbOperation(async () => {
-      const [user] = await db.select().from(users).where(eq(users.email, email));
-      return user;
-    }, email === "demo@earnpay.com" ? demoUser : undefined);
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
   }
 
   async getUserByResetToken(token: string): Promise<User | undefined> {
@@ -378,14 +286,12 @@ export class DatabaseStorage implements IStorage {
 
   // Video operations
   async getVideos(limit = 50): Promise<Video[]> {
-    return safeDbOperation(async () => {
-      return await db
-        .select()
-        .from(videos)
-        .where(eq(videos.isActive, true))
-        .orderBy(desc(videos.createdAt))
-        .limit(limit);
-    }, demoVideos);
+    return await db
+      .select()
+      .from(videos)
+      .where(eq(videos.isActive, true))
+      .orderBy(desc(videos.createdAt))
+      .limit(limit);
   }
 
   async getVideo(id: string): Promise<Video | undefined> {
@@ -505,13 +411,11 @@ export class DatabaseStorage implements IStorage {
 
   // Earnings operations
   async getEarnings(userId: string): Promise<Earning[]> {
-    return safeDbOperation(async () => {
-      return await db
-        .select()
-        .from(earnings)
-        .where(eq(earnings.userId, userId))
-        .orderBy(desc(earnings.createdAt));
-    }, userId === "demo-user-001" ? demoEarnings : []);
+    return await db
+      .select()
+      .from(earnings)
+      .where(eq(earnings.userId, userId))
+      .orderBy(desc(earnings.createdAt));
   }
 
   async createEarning(earning: InsertEarning): Promise<Earning> {
@@ -532,39 +436,37 @@ export class DatabaseStorage implements IStorage {
   }
 
   async checkAndAwardHourlyBonus(userId: string): Promise<{ awarded: boolean; amount?: string }> {
-    return safeDbOperation(async () => {
-      const user = await this.getUser(userId);
-      if (!user) return { awarded: false };
+    const user = await this.getUser(userId);
+    if (!user) return { awarded: false };
 
-      const now = new Date();
-      const lastBonus = user.lastHourlyBonusAt;
+    const now = new Date();
+    const lastBonus = user.lastHourlyBonusAt;
+    
+    // Check if user is eligible for hourly bonus (1 hour since last bonus)
+    if (!lastBonus || (now.getTime() - new Date(lastBonus).getTime()) >= 3600000) { // 1 hour = 3600000ms
+      const bonusAmount = "10.00";
       
-      // Check if user is eligible for hourly bonus (1 hour since last bonus)
-      if (!lastBonus || (now.getTime() - new Date(lastBonus).getTime()) >= 3600000) { // 1 hour = 3600000ms
-        const bonusAmount = "10.00";
-        
-        // Create earning record
-        await this.createEarning({
-          userId: userId,
-          amount: bonusAmount,
-          type: "hourly_bonus",
-          description: "🎁 Hourly Login Bonus"
-        });
-        
-        // Update user's last bonus time and count
-        await db
-          .update(users)
-          .set({ 
-            lastHourlyBonusAt: now,
-            hourlyBonusCount: user.hourlyBonusCount + 1
-          })
-          .where(eq(users.id, userId));
-        
-        return { awarded: true, amount: bonusAmount };
-      }
+      // Create earning record
+      await this.createEarning({
+        userId: userId,
+        amount: bonusAmount,
+        type: "hourly_bonus",
+        description: "🎁 Hourly Login Bonus"
+      });
       
-      return { awarded: false };
-    }, { awarded: false }); // Return no bonus in demo mode to prevent errors
+      // Update user's last bonus time and count
+      await db
+        .update(users)
+        .set({ 
+          lastHourlyBonusAt: now,
+          hourlyBonusCount: user.hourlyBonusCount + 1
+        })
+        .where(eq(users.id, userId));
+      
+      return { awarded: true, amount: bonusAmount };
+    }
+    
+    return { awarded: false };
   }
 
   async getTotalEarnings(userId: string): Promise<number> {
