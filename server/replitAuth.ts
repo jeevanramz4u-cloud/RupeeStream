@@ -7,6 +7,7 @@ import type { Express, RequestHandler } from "express";
 import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
+import MemoryStore from "memorystore";
 
 if (!process.env.REPLIT_DOMAINS) {
   throw new Error("Environment variable REPLIT_DOMAINS not provided");
@@ -25,32 +26,12 @@ const getOidcConfig = memoize(
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   
-  // Use memory store in demo mode when database is unavailable
-  let sessionStore;
-  try {
-    if (process.env.DATABASE_URL) {
-      const pgStore = connectPg(session);
-      sessionStore = new pgStore({
-        conString: process.env.DATABASE_URL,
-        createTableIfMissing: false,
-        ttl: sessionTtl,
-        tableName: "sessions",
-      });
-    } else {
-      // Fallback to memory store
-      console.log('Using memory session store for demo mode');
-      const MemoryStore = require('memorystore')(session);
-      sessionStore = new MemoryStore({
-        checkPeriod: 86400000 // prune expired entries every 24h
-      });
-    }
-  } catch (error) {
-    console.log('Database session store failed, using memory store for demo mode');
-    const MemoryStore = require('memorystore')(session);
-    sessionStore = new MemoryStore({
-      checkPeriod: 86400000 // prune expired entries every 24h
-    });
-  }
+  // Force memory store for demo mode to avoid database issues
+  console.log('Using memory session store for demo mode');
+  const SessionMemoryStore = MemoryStore(session);
+  const sessionStore = new SessionMemoryStore({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  });
   
   return session({
     secret: process.env.SESSION_SECRET || 'demo-secret-key-for-development',
