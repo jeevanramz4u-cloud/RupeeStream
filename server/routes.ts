@@ -1266,7 +1266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get user's referral history (people they referred)
-      let referrals = [];
+      let referrals: any[] = [];
       try {
         referrals = await storage.getReferrals(userId);
       } catch (error) {
@@ -1275,7 +1275,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Get user's earnings history
-      let earnings = [];
+      let earnings: any[] = [];
       try {
         earnings = await storage.getEarnings(userId);
       } catch (error) {
@@ -1284,7 +1284,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Get all users to match referral details
-      let allUsers = [];
+      let allUsers: any[] = [];
       try {
         allUsers = await storage.getAllUsers();
       } catch (error) {
@@ -1654,15 +1654,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Account is not suspended" });
       }
 
-      const reactivationFee = parseFloat(user.reactivationFeeAmount || "49.00");
+      const reactivationFeeAmount = parseFloat(user.reactivationFeeAmount || "49.00");
       
       try {
         // Try to create Cashfree payment
-        const { createCashfreeOrder } = await import('./cashfree');
+        const cashfreeModule = await import('./cashfree');
+        const { createPaymentSession: createCashfreeOrder } = cashfreeModule;
         const orderId = `reactivation_${userId}_${Date.now()}`;
         const cashfreeOrder = await createCashfreeOrder({
           orderId,
-          amount: reactivationFee,
+          amount: reactivationFeeAmount,
           customerDetails: {
             customerId: userId,
             customerEmail: user.email || "user@example.com",
