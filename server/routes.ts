@@ -59,6 +59,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
+  // Demo mode: Auto-login endpoint for development
+  app.get('/api/auth/demo-login', async (req, res) => {
+    try {
+      const demoUser = await storage.getUser("demo-user-001");
+      if (demoUser) {
+        req.session!.userId = demoUser.id;
+        const { password: _, ...userWithoutPassword } = demoUser;
+        res.json({ user: userWithoutPassword, message: "Demo login successful" });
+      } else {
+        res.status(404).json({ message: "Demo user not found" });
+      }
+    } catch (error) {
+      console.error("Demo login error:", error);
+      res.status(500).json({ message: "Demo login failed" });
+    }
+  });
+
   // Auth routes
   app.get('/api/auth/user', isTraditionallyAuthenticated, async (req: any, res) => {
     try {

@@ -532,37 +532,39 @@ export class DatabaseStorage implements IStorage {
   }
 
   async checkAndAwardHourlyBonus(userId: string): Promise<{ awarded: boolean; amount?: string }> {
-    const user = await this.getUser(userId);
-    if (!user) return { awarded: false };
+    return safeDbOperation(async () => {
+      const user = await this.getUser(userId);
+      if (!user) return { awarded: false };
 
-    const now = new Date();
-    const lastBonus = user.lastHourlyBonusAt;
-    
-    // Check if user is eligible for hourly bonus (1 hour since last bonus)
-    if (!lastBonus || (now.getTime() - new Date(lastBonus).getTime()) >= 3600000) { // 1 hour = 3600000ms
-      const bonusAmount = "10.00";
+      const now = new Date();
+      const lastBonus = user.lastHourlyBonusAt;
       
-      // Create earning record
-      await this.createEarning({
-        userId: userId,
-        amount: bonusAmount,
-        type: "hourly_bonus",
-        description: "🎁 Hourly Login Bonus"
-      });
+      // Check if user is eligible for hourly bonus (1 hour since last bonus)
+      if (!lastBonus || (now.getTime() - new Date(lastBonus).getTime()) >= 3600000) { // 1 hour = 3600000ms
+        const bonusAmount = "10.00";
+        
+        // Create earning record
+        await this.createEarning({
+          userId: userId,
+          amount: bonusAmount,
+          type: "hourly_bonus",
+          description: "🎁 Hourly Login Bonus"
+        });
+        
+        // Update user's last bonus time and count
+        await db
+          .update(users)
+          .set({ 
+            lastHourlyBonusAt: now,
+            hourlyBonusCount: user.hourlyBonusCount + 1
+          })
+          .where(eq(users.id, userId));
+        
+        return { awarded: true, amount: bonusAmount };
+      }
       
-      // Update user's last bonus time and count
-      await db
-        .update(users)
-        .set({ 
-          lastHourlyBonusAt: now,
-          hourlyBonusCount: user.hourlyBonusCount + 1
-        })
-        .where(eq(users.id, userId));
-      
-      return { awarded: true, amount: bonusAmount };
-    }
-    
-    return { awarded: false };
+      return { awarded: false };
+    }, { awarded: false }); // Return no bonus in demo mode to prevent errors
   }
 
   async getTotalEarnings(userId: string): Promise<number> {
