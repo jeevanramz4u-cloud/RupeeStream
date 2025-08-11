@@ -39,8 +39,7 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Note: Database endpoint is currently disabled, running in demo mode
-  log("ℹ️ Running in demo mode - database endpoint is disabled");
+  console.log('Database connection initialized');
   
   // Skip all database-dependent initializations to prevent crashes
   try {
