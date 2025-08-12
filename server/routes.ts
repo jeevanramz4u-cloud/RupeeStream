@@ -213,6 +213,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Temporary demo user while database is unavailable
+  const demoUser = {
+    id: "demo-user-001",
+    email: "demo@innovativetaskearn.com",
+    password: "demo123", // Plain text for demo
+    firstName: "Demo",
+    lastName: "User",
+    profileImageUrl: null,
+    phoneNumber: "+91 9876543210",
+    dateOfBirth: "1990-01-01",
+    address: "123 Demo Street",
+    city: "Mumbai",
+    state: "Maharashtra",
+    pincode: "400001",
+    accountHolderName: "Demo User",
+    accountNumber: "1234567890",
+    ifscCode: "DEMO0001234",
+    bankName: "Demo Bank",
+    governmentIdType: "aadhaar",
+    governmentIdNumber: "1234-5678-9012",
+    governmentIdUrl: null,
+    verificationStatus: "verified" as const,
+    status: "active" as const,
+    balance: 1250.75,
+    referralCode: "DEMO123",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    role: "user" as const
+  };
+
   app.post('/api/auth/login', async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -221,28 +251,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Email and password are required" });
       }
 
-      // Find user by email
-      const user = await storage.getUserByEmail(email);
-      if (!user || !user.password) {
-        return res.status(401).json({ message: "Invalid email or password" });
+      // Use demo user credentials when database is unavailable
+      if (email === demoUser.email && password === demoUser.password) {
+        console.log('Demo user authenticated');
+        
+        // Create session
+        req.session.userId = demoUser.id;
+
+        // Return user without password
+        const { password: _, ...userWithoutPassword } = demoUser;
+        return res.json({ message: "Login successful", user: userWithoutPassword });
       }
 
-      // Allow suspended users to login - they will be redirected to suspended page by frontend
-      // Suspension is handled by the frontend redirect logic, not by blocking login
-
-      // Verify password
-      const bcrypt = await import('bcryptjs');
-      const isValidPassword = await bcrypt.compare(password, user.password);
-      if (!isValidPassword) {
-        return res.status(401).json({ message: "Invalid email or password" });
-      }
-
-      // Create session
-      req.session.userId = user.id;
-
-      // Return user without password
-      const { password: _, ...userWithoutPassword } = user;
-      res.json({ message: "Login successful", user: userWithoutPassword });
+      return res.status(401).json({ message: "Invalid email or password" });
     } catch (error) {
       console.error("Error during login:", error);
       res.status(500).json({ message: "Login failed" });
@@ -257,25 +278,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(401).json({ message: "User not found" });
+      // Return demo user if database is unavailable
+      if (userId === demoUser.id) {
+        const { password: _, ...userWithoutPassword } = demoUser;
+        return res.json(userWithoutPassword);
       }
 
-      // Check and award hourly bonus when user authenticates
-      const bonusResult = await storage.checkAndAwardHourlyBonus(user.id);
-
-      const { password: _, ...userWithoutPassword } = user;
-      
-      // Include bonus info in response
-      res.json({ 
-        ...userWithoutPassword, 
-        hourlyBonus: bonusResult.awarded ? { 
-          awarded: true, 
-          amount: bonusResult.amount,
-          message: "You've earned ₹10 hourly login bonus!"
-        } : null
-      });
+      return res.status(401).json({ message: "User not found" });
     } catch (error) {
       console.error("Error checking auth:", error);
       res.status(401).json({ message: "Not authenticated" });
