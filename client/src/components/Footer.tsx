@@ -216,7 +216,7 @@ export default function Footer() {
               <span className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">Video Monetization Platform</span>
             </div>
             <div className="flex flex-col items-center space-y-2 text-center lg:flex-row lg:items-center lg:gap-4 lg:text-right">
-              <span className="text-xs sm:text-sm text-gray-500">© 2024 Innovative Task Earn Technologies. All rights reserved.</span>
+              <span className="text-xs sm:text-sm text-gray-500">© 2024 Innovative Grow Solutions Pvt. Ltd. All rights reserved.</span>
               <span className="hidden lg:block text-gray-400">•</span>
               <span className="text-xs sm:text-sm text-gray-500 font-medium">200K+ Active Users</span>
             </div>

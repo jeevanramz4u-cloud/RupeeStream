@@ -11,6 +11,7 @@ Innovative Task Earn is a video monetization platform designed to reward users f
 - Rebranded How to Earn, Referral Program, and all marketing content
 - Updated Header, Footer, and all component references
 - Platform now consistently uses "Innovative Task Earn" branding
+- Company name updated to "Innovative Grow Solutions Pvt. Ltd." in copyright and contact information
 - Memory-based sessions maintain functionality during database transition
 
 # User Preferences
