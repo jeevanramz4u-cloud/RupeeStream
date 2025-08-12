@@ -225,10 +225,11 @@ export default function Referrals() {
                   </Button>
                   <Button 
                     variant="outline"
-                    className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+                    className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-semibold px-4"
                     onClick={copyReferralCode}
                   >
-                    <Copy className="w-4 h-4" />
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy
                   </Button>
                 </div>
               </CardContent>
