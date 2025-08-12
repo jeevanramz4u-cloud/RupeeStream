@@ -197,21 +197,7 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Quick Access to Replit Auth */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300">
-          <div className="text-center">
-            <p className="text-base text-gray-600 mb-6 font-medium">
-              Or continue with Replit authentication
-            </p>
-            <Button 
-              onClick={() => window.location.href = '/api/login'}
-              variant="outline"
-              className="w-full border-2 border-gray-300 hover:bg-gray-50 hover:border-primary/50 font-bold text-lg px-8 py-6 h-auto rounded-2xl transition-all duration-300 hover:scale-105"
-            >
-              Continue with Replit
-            </Button>
-          </div>
-        </div>
+
       </div>
       </div>
       
