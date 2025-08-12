@@ -216,7 +216,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Temporary demo user while database is unavailable
   const demoUser = {
     id: "demo-user-001",
-    email: "demo@innovativetaskearn.com",
+    email: "demo@innovativetaskearn.online",
     password: "demo123", // Plain text for demo
     firstName: "Demo",
     lastName: "User",
