@@ -41,7 +41,7 @@ export default function Header() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
                 <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">EarnPay</span>
+              <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
             </Link>
             
             {/* Public Navigation */}
@@ -89,7 +89,7 @@ export default function Header() {
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
               <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">EarnPay</span>
+            <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
           </Link>
           
           {/* Navigation */}

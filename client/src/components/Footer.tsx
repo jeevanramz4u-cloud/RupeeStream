@@ -40,7 +40,7 @@ export default function Footer() {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Play className="text-white w-4 h-4" />
               </div>
-              <span className="text-xl font-black text-gray-900 tracking-tight">EarnPay</span>
+              <span className="text-xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
             </div>
             <p className="text-gray-600 mb-4 leading-relaxed text-sm">
               Transform your free time into real income.
@@ -143,7 +143,7 @@ export default function Footer() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
                 <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">EarnPay</span>
+              <span className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
             </div>
             <p className="text-gray-600 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base max-w-md">
               Transform your free time into real income.
@@ -210,13 +210,13 @@ export default function Footer() {
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center">
                   <Play className="text-white w-3 h-3 sm:w-4 sm:h-4" />
                 </div>
-                <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">EarnPay</span>
+                <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
               </div>
               <span className="hidden sm:inline text-sm text-gray-500">•</span>
               <span className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">Video Monetization Platform</span>
             </div>
             <div className="flex flex-col items-center space-y-2 text-center lg:flex-row lg:items-center lg:gap-4 lg:text-right">
-              <span className="text-xs sm:text-sm text-gray-500">© 2024 EarnPay Technologies. All rights reserved.</span>
+              <span className="text-xs sm:text-sm text-gray-500">© 2024 Innovative Task Earn Technologies. All rights reserved.</span>
               <span className="hidden lg:block text-gray-400">•</span>
               <span className="text-xs sm:text-sm text-gray-500 font-medium">200K+ Active Users</span>
             </div>
