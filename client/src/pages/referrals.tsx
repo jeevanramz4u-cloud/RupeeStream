@@ -224,8 +224,7 @@ export default function Referrals() {
                     Share Code
                   </Button>
                   <Button 
-                    variant="outline"
-                    className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-semibold px-4"
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold px-4 shadow-lg"
                     onClick={copyReferralCode}
                   >
                     <Copy className="w-4 h-4 mr-2" />
