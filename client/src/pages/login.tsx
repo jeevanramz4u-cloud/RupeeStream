@@ -82,7 +82,7 @@ export default function Login() {
               </div>
             </div>
             <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Welcome Back</h1>
-            <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Sign in to continue earning with EarnPay</p>
+            <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Sign in to continue earning with Innovative Task Earn</p>
           </div>
 
         {/* Demo Login Info */}
@@ -91,12 +91,12 @@ export default function Login() {
           <div className="relative text-center space-y-4">
             <h3 className="text-lg font-black text-blue-900 tracking-tight">Demo Access Available</h3>
             <div className="text-sm text-blue-700 space-y-2 bg-white/50 rounded-2xl p-4">
-              <p className="font-bold"><strong>Email:</strong> demo@earnpay.com</p>
+              <p className="font-bold"><strong>Email:</strong> demo@innovativetaskearn.online</p>
               <p className="font-bold"><strong>Password:</strong> demo123</p>
             </div>
             <Button 
               type="button" 
-              onClick={() => setFormData({ email: 'demo@earnpay.com', password: 'demo123' })}
+              onClick={() => setFormData({ email: 'demo@innovativetaskearn.online', password: 'demo123' })}
               className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 font-bold text-white px-8 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               Use Demo Login

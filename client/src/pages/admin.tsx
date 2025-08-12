@@ -570,7 +570,7 @@ export default function Admin() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
                 <Shield className="text-white w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="text-lg sm:text-xl font-bold text-gray-900">EarnPay Admin</span>
+              <span className="text-lg sm:text-xl font-bold text-gray-900">Innovative Task Earn Admin</span>
             </div>
             
             <div className="flex items-center space-x-2 sm:space-x-4">

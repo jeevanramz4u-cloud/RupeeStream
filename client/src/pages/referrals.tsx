@@ -39,7 +39,7 @@ export default function Referrals() {
   });
 
   const referralLink = `${window.location.origin}/signup?ref=${(user as any)?.referralCode}`;
-  const referralText = `Join EarnPay and start earning money by watching videos! Use my referral code: ${(user as any)?.referralCode || ''}\n\nSign up here: ${referralLink}`;
+  const referralText = `Join Innovative Task Earn and start earning money by watching videos! Use my referral code: ${(user as any)?.referralCode || ''}\n\nSign up here: ${referralLink}`;
 
   const copyReferralCode = async () => {
     if ((user as any)?.referralCode) {
@@ -81,7 +81,7 @@ export default function Referrals() {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "Join EarnPay - Earn Money Watching Videos",
+          title: "Join Innovative Task Earn - Earn Money Watching Videos",
           text: referralText,
           url: referralLink,
         });
@@ -465,7 +465,7 @@ export default function Referrals() {
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
                   <p className="text-sm text-gray-700 leading-relaxed">
-                    <span className="font-semibold">Program modifications</span> reserved by EarnPay management
+                    <span className="font-semibold">Program modifications</span> reserved by Innovative Task Earn management
                   </p>
                 </div>
               </div>

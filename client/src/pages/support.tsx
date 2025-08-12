@@ -35,7 +35,7 @@ export default function Support() {
       icon: <Coins className="w-4 h-4 text-green-600" />
     },
     {
-      question: "How do I earn money on EarnPay?",
+      question: "How do I earn money on Innovative Task Earn?",
       answer: "You earn money by watching videos completely without skipping or fast-forwarding. Each video has a specific earning amount that gets credited to your account once you finish watching it. Additionally, you earn ₹10 every hour as a login bonus just for being active on the platform.",
       icon: <Play className="w-4 h-4 text-blue-600" />
     },
@@ -99,7 +99,7 @@ export default function Support() {
             <div>
               <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight tracking-tight">Professional Support</h1>
               <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">
-                Expert assistance for your EarnPay business operations and account management
+                Expert assistance for your Innovative Task Earn business operations and account management
               </p>
             </div>
           </div>
@@ -231,7 +231,7 @@ export default function Support() {
               </div>
               <h2 className="text-3xl font-black text-gray-900 mb-4 tracking-tight">Frequently Asked Questions</h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                Find answers to common questions about EarnPay platform features and operations
+                Find answers to common questions about Innovative Task Earn platform features and operations
               </p>
             </div>
             

@@ -588,7 +588,7 @@ export default function Signup() {
               </div>
             </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Join EarnPay</h1>
+          <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Join Innovative Task Earn</h1>
           <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Start your professional earning journey today</p>
         </div>
 

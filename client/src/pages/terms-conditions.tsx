@@ -159,7 +159,7 @@ export default function TermsConditions() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Intellectual Property</h2>
                 <div className="space-y-4 text-gray-700">
                   <p>
-                    All content, videos, and materials on EarnPay are protected by intellectual 
+                    All content, videos, and materials on Innovative Task Earn are protected by intellectual 
                     property rights. Users may not:
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
@@ -186,7 +186,7 @@ export default function TermsConditions() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">11. Limitation of Liability</h2>
                 <div className="space-y-4 text-gray-700">
                   <p>
-                    EarnPay shall not be liable for any indirect, incidental, special, or 
+                    Innovative Task Earn shall not be liable for any indirect, incidental, special, or 
                     consequential damages arising from your use of our platform. Our liability 
                     is limited to the amount of earnings in your account.
                   </p>

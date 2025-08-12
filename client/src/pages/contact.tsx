@@ -88,7 +88,7 @@ export default function Contact() {
                   <div>
                     <h3 className="font-medium">Office Address</h3>
                     <p className="text-sm text-gray-600">
-                      EarnPay Technologies<br />
+                      Innovative Task Earn Technologies<br />
                       India
                     </p>
                   </div>
