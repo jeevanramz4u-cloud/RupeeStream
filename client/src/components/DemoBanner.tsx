@@ -18,7 +18,7 @@ export function DemoBanner({ onClose }: DemoBannerProps) {
       await apiRequest("GET", "/api/auth/demo-login");
       toast({
         title: "Demo Login Successful",
-        description: "Welcome to the EarnPay demo! Explore all features with demo data.",
+        description: "Welcome to the Innovative Task Earn demo! Explore all features with demo data.",
       });
       // Reload the page to reflect login state
       window.location.reload();

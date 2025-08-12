@@ -20,7 +20,7 @@ export default function TermsConditions() {
         <Card className="mb-8">
           <CardContent className="prose prose-gray max-w-none pt-6">
             <p className="text-lg text-gray-700 mb-6">
-              Welcome to EarnPay. These Terms and Conditions govern your use of our video monetization 
+              Welcome to Innovative Task Earn. These Terms and Conditions govern your use of our video monetization 
               platform. By creating an account and using our services, you agree to these terms.
             </p>
 
@@ -29,7 +29,7 @@ export default function TermsConditions() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Acceptance of Terms</h2>
                 <div className="space-y-4 text-gray-700">
                   <p>
-                    By accessing and using EarnPay, you acknowledge that you have read, understood, 
+                    By accessing and using Innovative Task Earn, you acknowledge that you have read, understood, 
                     and agree to be bound by these Terms and Conditions. If you do not agree with 
                     any part of these terms, you must not use our platform.
                   </p>
@@ -39,7 +39,7 @@ export default function TermsConditions() {
               <section>
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Eligibility</h2>
                 <div className="space-y-4 text-gray-700">
-                  <p>To use EarnPay, you must:</p>
+                  <p>To use Innovative Task Earn, you must:</p>
                   <ul className="list-disc pl-6 space-y-2">
                     <li>Be at least 18 years of age</li>
                     <li>Be a resident of India</li>

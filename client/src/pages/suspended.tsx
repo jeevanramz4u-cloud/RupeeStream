@@ -134,7 +134,7 @@ export default function SuspendedPage() {
             
             <div className="text-center text-xs sm:text-sm text-gray-600 space-y-1">
               <p>Your account was suspended on {(user as any)?.suspendedAt ? new Date((user as any).suspendedAt).toLocaleDateString() : 'recently'}.</p>
-              <p>To continue using EarnPay, you need to reactivate your account.</p>
+              <p>To continue using Innovative Task Earn, you need to reactivate your account.</p>
             </div>
           </CardContent>
         </Card>
@@ -225,7 +225,7 @@ export default function SuspendedPage() {
       <footer className="bg-white border-t border-gray-200 py-4 px-3 sm:px-4">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-xs text-gray-500">
-            © 2025 EarnPay. All rights reserved.
+            © 2025 Innovative Task Earn. All rights reserved.
           </p>
         </div>
       </footer>

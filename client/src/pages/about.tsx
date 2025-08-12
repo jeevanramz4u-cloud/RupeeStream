@@ -13,7 +13,7 @@ export default function About() {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            About EarnPay
+            About Innovative Task Earn
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
             Revolutionizing video monetization by rewarding genuine engagement and creating sustainable income opportunities for users worldwide.
@@ -54,7 +54,7 @@ export default function About() {
         {/* Key Features */}
         <div className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8">
-            Why Choose EarnPay?
+            Why Choose Innovative Task Earn?
           </h2>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

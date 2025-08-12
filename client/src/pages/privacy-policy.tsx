@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
         <Card className="mb-8">
           <CardContent className="prose prose-gray max-w-none pt-6">
             <p className="text-lg text-gray-700 mb-6">
-              At EarnPay, we are committed to protecting your privacy and ensuring the security of your personal information. 
+              At Innovative Task Earn, we are committed to protecting your privacy and ensuring the security of your personal information. 
               This Privacy Policy explains how we collect, use, and safeguard your data.
             </p>
 
@@ -165,7 +165,7 @@ export default function PrivacyPolicy() {
                   <p>For privacy-related questions or concerns, please contact us:</p>
                   <ul className="list-none space-y-2">
                     <li><strong>Email:</strong> privacy@earnpay.com</li>
-                    <li><strong>Address:</strong> EarnPay Privacy Office, India</li>
+                    <li><strong>Address:</strong> Innovative Task Earn Privacy Office, India</li>
                     <li><strong>Phone:</strong> +91-XXXX-XXXX</li>
                   </ul>
                 </div>

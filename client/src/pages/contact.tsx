@@ -50,7 +50,7 @@ export default function Contact() {
             Contact Us
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-            Have questions about EarnPay? We're here to help. Reach out to our support team for assistance with your account, payments, or any other inquiries.
+            Have questions about Innovative Task Earn? We're here to help. Reach out to our support team for assistance with your account, payments, or any other inquiries.
           </p>
         </div>
 

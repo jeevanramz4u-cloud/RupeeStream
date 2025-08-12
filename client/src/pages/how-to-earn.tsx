@@ -133,7 +133,7 @@ export default function HowToEarn() {
             How to Earn Money
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-            Start earning real money by watching videos on EarnPay. Follow our simple 5-step process to begin your journey towards financial independence.
+            Start earning real money by watching videos on Innovative Task Earn. Follow our simple 5-step process to begin your journey towards financial independence.
           </p>
         </div>
 
@@ -327,7 +327,7 @@ export default function HowToEarn() {
                   Boost Your Earnings with Referrals
                 </h3>
                 <p className="text-purple-700 max-w-2xl mx-auto">
-                  Share EarnPay with friends and family to earn additional income. Every person you refer who completes KYC verification earns you ₹49 instantly.
+                  Share Innovative Task Earn with friends and family to earn additional income. Every person you refer who completes KYC verification earns you ₹49 instantly.
                 </p>
               </div>
               
@@ -529,7 +529,7 @@ export default function HowToEarn() {
                   <div className="space-y-3 text-sm">
                     <div className="bg-gray-50 p-3 rounded border-l-4 border-blue-500">
                       <p className="italic text-gray-700">
-                        "I'm earning ₹15,000+ monthly by watching videos on EarnPay! 
+                        "I'm earning ₹15,000+ monthly by watching videos on Innovative Task Earn! 
                         Use my code [CODE] to get started and we both benefit. It's genuine and pays on time!"
                       </p>
                     </div>

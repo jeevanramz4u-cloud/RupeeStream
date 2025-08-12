@@ -135,7 +135,7 @@ export default function Landing() {
             <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
               Why Choose
               <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-black">
-                EarnPay?
+                Innovative Task Earn?
               </span>
             </h2>
             <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
@@ -379,7 +379,7 @@ export default function Landing() {
               </span>
             </h2>
             <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
-              Get answers to common questions about earning money with EarnPay
+              Get answers to common questions about earning money with Innovative Task Earn
             </p>
             
             {/* Decorative divider */}

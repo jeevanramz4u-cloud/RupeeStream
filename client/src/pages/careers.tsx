@@ -104,7 +104,7 @@ export default function Careers() {
         {/* Company Culture */}
         <Card className="mb-12">
           <CardHeader>
-            <CardTitle className="text-center">Why Work at EarnPay?</CardTitle>
+            <CardTitle className="text-center">Why Work at Innovative Task Earn?</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -27,7 +27,7 @@ export default function ReferralProgram() {
             <Users className="w-10 h-10 text-purple-600" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            EarnPay Referral Program
+            Innovative Task Earn Referral Program
           </h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
             Earn ₹49 for every friend you refer who completes verification. 
@@ -61,7 +61,7 @@ export default function ReferralProgram() {
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="w-8 h-8 text-blue-600" />
                 </div>
-                <h3 className="font-semibold mb-2">1. Join EarnPay</h3>
+                <h3 className="font-semibold mb-2">1. Join Innovative Task Earn</h3>
                 <p className="text-sm text-gray-600">
                   Sign up and complete your KYC verification to start referring friends.
                 </p>
@@ -170,7 +170,7 @@ export default function ReferralProgram() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-green-600" />
-                Why Refer Friends to EarnPay?
+                Why Refer Friends to Innovative Task Earn?
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -253,7 +253,7 @@ export default function ReferralProgram() {
                   <h4 className="font-medium mb-2 text-blue-700">Effective Message Example</h4>
                   <div className="bg-gray-50 p-3 rounded border-l-4 border-blue-500 text-sm">
                     <p className="italic text-gray-700">
-                      "I'm earning ₹15,000+ monthly by watching videos on EarnPay! 
+                      "I'm earning ₹15,000+ monthly by watching videos on Innovative Task Earn! 
                       Use my code [CODE] to get started. It's genuine and pays on time!"
                     </p>
                   </div>
@@ -276,7 +276,7 @@ export default function ReferralProgram() {
                   <div className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
                     <div>
-                      <p className="text-sm">You must have a verified EarnPay account</p>
+                      <p className="text-sm">You must have a verified Innovative Task Earn account</p>
                     </div>
                   </div>
                   <div className="flex gap-3">
