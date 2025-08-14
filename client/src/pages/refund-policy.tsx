@@ -18,194 +18,189 @@ export default function RefundPolicy() {
 
         <Card className="mb-8">
           <CardContent className="prose prose-gray max-w-none pt-6">
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mb-6">
+              <p className="text-lg font-semibold text-blue-800 mb-2">Important Notice</p>
+              <p className="text-blue-700">
+                <strong>Innovative Task Earn does NOT sell any products, memberships, or subscriptions.</strong> 
+                We are a digital task completion platform that only charges processing fees for specific services.
+              </p>
+            </div>
+
             <p className="text-lg text-gray-700 mb-6">
-              This Refund & Cancellation Policy outlines the terms and conditions for refunds and cancellations 
-              for services provided by INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED through Innovative Task Earn.
+              This Refund & Cancellation Policy applies exclusively to processing fees charged by 
+              INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED through Innovative Task Earn platform.
             </p>
 
             <div className="space-y-8">
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Service Types</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">1. What We Charge For</h2>
                 <div className="space-y-4 text-gray-700">
-                  <p>Our platform provides two main types of services:</p>
+                  <p><strong>We ONLY charge for the following processing services:</strong></p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li><strong>Task Completion Services:</strong> Digital tasks and earning opportunities</li>
-                    <li><strong>Processing Fees:</strong> KYC verification (₹99) and Account Reactivation (₹49)</li>
+                    <li><strong>KYC Verification Fee:</strong> ₹99 (One-time processing fee for document verification)</li>
+                    <li><strong>Account Reactivation Fee:</strong> ₹49 (Fee to unsuspend suspended accounts)</li>
+                  </ul>
+                  
+                  <p className="mt-4"><strong>We do NOT charge for:</strong></p>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>Account registration (Free)</li>
+                    <li>Task completion access (Free)</li>
+                    <li>Platform usage (Free)</li>
+                    <li>Earnings withdrawal (Free)</li>
+                    <li>Any products or memberships (We don't sell any)</li>
                   </ul>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">2. KYC Processing Fee (₹99)</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Non-Refundable Processing Fees</h2>
                 <div className="space-y-4 text-gray-700">
-                  <h3 className="font-medium">Refund Eligibility:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Technical error on our platform during payment processing</li>
-                    <li>Duplicate payment charges due to system malfunction</li>
-                    <li>Service not provided due to company-related issues</li>
-                  </ul>
+                  <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded">
+                    <p className="font-semibold text-red-800">All Processing Fees Are Non-Refundable</p>
+                    <p className="text-red-700 mt-2">
+                      Both KYC Verification Fee (₹99) and Account Reactivation Fee (₹49) are 
+                      <strong> 100% non-refundable</strong> once the payment is successfully processed.
+                    </p>
+                  </div>
                   
-                  <h3 className="font-medium mt-6">Non-Refundable Scenarios:</h3>
+                  <h3 className="font-medium mt-6">KYC Verification Fee (₹99) - NON-REFUNDABLE</h3>
+                  <p>This fee covers administrative costs for:</p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>User provides incorrect or false documentation</li>
-                    <li>User fails to complete the verification process within 30 days</li>
-                    <li>User violates platform terms and conditions</li>
-                    <li>User changes mind after successful verification</li>
-                    <li>Normal processing delays within the stated timeframe</li>
+                    <li>Manual document verification by our team</li>
+                    <li>Identity authentication processes</li>
+                    <li>Compliance and regulatory requirements</li>
+                    <li>System processing and database updates</li>
                   </ul>
-
-                  <h3 className="font-medium mt-6">Refund Timeline:</h3>
+                  <p className="text-sm text-gray-600 mt-2">
+                    <strong>No refunds will be provided regardless of verification outcome.</strong>
+                  </p>
+                  
+                  <h3 className="font-medium mt-6">Account Reactivation Fee (₹49) - NON-REFUNDABLE</h3>
+                  <p>This fee covers:</p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>Refund request review: 2-3 business days</li>
-                    <li>Approved refunds processed: 5-7 business days</li>
-                    <li>Bank credit: 3-5 additional business days</li>
-                    <li>Total refund timeline: 10-15 business days</li>
+                    <li>Administrative review of suspended accounts</li>
+                    <li>Manual account status verification</li>
+                    <li>System reactivation processes</li>
+                    <li>Compliance verification procedures</li>
+                  </ul>
+                  <p className="text-sm text-gray-600 mt-2">
+                    <strong>No refunds will be provided once payment is made.</strong>
+                  </p>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">3. What Is NOT Refundable</h2>
+                <div className="space-y-4 text-gray-700">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-medium text-gray-900 mb-3">Processing Fees Are Never Refunded For:</h3>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Change of mind after payment</li>
+                      <li>KYC rejection due to invalid documents</li>
+                      <li>Account suspension due to policy violations</li>
+                      <li>User-provided incorrect information</li>
+                      <li>Normal processing timeframes</li>
+                      <li>User decides not to continue using platform</li>
+                      <li>Technical issues on user's end</li>
+                      <li>Any other reason after service has been initiated</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Account Cancellation</h2>
+                <div className="space-y-4 text-gray-700">
+                  <p><strong>Users can delete their account at any time, but:</strong></p>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>No refunds will be provided for any processing fees paid</li>
+                    <li>Pending earnings will be processed before account closure</li>
+                    <li>All user data will be permanently deleted within 30 days</li>
+                    <li>Account reactivation after deletion requires new registration</li>
                   </ul>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">3. Account Reactivation Fee (₹49)</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Payment Issues & Support</h2>
                 <div className="space-y-4 text-gray-700">
-                  <h3 className="font-medium">Refund Eligibility:</h3>
+                  <p><strong>For genuine payment issues only:</strong></p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>Account suspension due to technical error</li>
-                    <li>Duplicate payment for reactivation</li>
-                    <li>Proven system malfunction causing account suspension</li>
+                    <li><strong>Duplicate Charges:</strong> If accidentally charged twice, duplicate amount will be refunded</li>
+                    <li><strong>Technical Errors:</strong> If payment failed but amount was debited, we will investigate</li>
+                    <li><strong>System Malfunctions:</strong> Issues caused by our platform will be reviewed case-by-case</li>
                   </ul>
                   
-                  <h3 className="font-medium mt-6">Non-Refundable Scenarios:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Account suspended due to policy violations</li>
-                    <li>User-requested account suspension or deactivation</li>
-                    <li>Legitimate suspension for not meeting requirements</li>
-                    <li>User changes mind after successful reactivation</li>
-                  </ul>
-                </div>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Earnings & Task Payments</h2>
-                <div className="space-y-4 text-gray-700">
-                  <h3 className="font-medium">Earning Disputes:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Task completion disputes reviewed within 24-48 hours</li>
-                    <li>Approved earnings credited within 2-3 business days</li>
-                    <li>Rejected submissions explained with reason</li>
-                    <li>Appeal process available for disputed decisions</li>
-                  </ul>
-                  
-                  <h3 className="font-medium mt-6">Payment Issues:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Failed bank transfers investigated and reprocessed</li>
-                    <li>Incorrect bank details: user responsible for correction</li>
-                    <li>Duplicate payments reversed within 5-7 business days</li>
-                  </ul>
-                </div>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Cancellation Policy</h2>
-                <div className="space-y-4 text-gray-700">
-                  <h3 className="font-medium">Account Cancellation:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Users can request account cancellation anytime</li>
-                    <li>Pending earnings will be processed before closure</li>
-                    <li>No refund for processing fees after successful verification</li>
-                    <li>All data deleted within 30 days of cancellation</li>
-                  </ul>
-                  
-                  <h3 className="font-medium mt-6">Service Interruption:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Planned maintenance: 24-48 hours advance notice</li>
-                    <li>Emergency maintenance: notification as soon as possible</li>
-                    <li>Service credits for extended unplanned downtime (longer than 24 hours)</li>
-                  </ul>
-                </div>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Refund Process</h2>
-                <div className="space-y-4 text-gray-700">
-                  <h3 className="font-medium">How to Request a Refund:</h3>
-                  <ol className="list-decimal pl-6 space-y-2">
-                    <li>Contact support at support@innovativetaskearn.online</li>
-                    <li>Provide transaction details and reason for refund</li>
-                    <li>Submit supporting documentation if required</li>
-                    <li>Wait for review and approval/rejection notification</li>
-                    <li>Approved refunds processed to original payment method</li>
-                  </ol>
-                  
-                  <h3 className="font-medium mt-6">Required Information:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>User ID and registered email address</li>
-                    <li>Transaction ID or payment reference number</li>
-                    <li>Date and amount of payment</li>
-                    <li>Detailed reason for refund request</li>
-                    <li>Screenshots or proof of issue (if applicable)</li>
-                  </ul>
-                </div>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Refund Methods</h2>
-                <div className="space-y-4 text-gray-700">
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li><strong>Bank Transfer:</strong> Direct transfer to original bank account</li>
-                    <li><strong>UPI:</strong> Refund to original UPI ID used for payment</li>
-                    <li><strong>Wallet:</strong> Credit to platform wallet (if applicable)</li>
-                    <li><strong>Payment Gateway:</strong> Automatic reversal to original payment method</li>
-                  </ul>
-                  
-                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mt-4">
-                    <p className="text-sm text-yellow-800">
-                      <strong>Note:</strong> Refunds are processed to the same payment method used for the original transaction. 
-                      Bank processing times may vary and are beyond our control.
+                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded mt-4">
+                    <p className="font-semibold text-yellow-800">Important:</p>
+                    <p className="text-yellow-700 text-sm">
+                      Even in the above cases, refunds are processed only after thorough investigation 
+                      and verification of the technical issue. Processing fees for completed services 
+                      remain non-refundable.
                     </p>
                   </div>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">8. Exceptions & Limitations</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">6. How to Report Payment Issues</h2>
                 <div className="space-y-4 text-gray-700">
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Refund requests must be made within 30 days of payment</li>
-                    <li>No refunds for services already utilized or completed</li>
-                    <li>Processing fees are non-refundable once service is delivered</li>
-                    <li>Fraudulent refund requests may result in account termination</li>
-                    <li>Maximum refund amount limited to original payment</li>
-                  </ul>
-                </div>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Contact Information</h2>
-                <div className="space-y-4 text-gray-700">
-                  <p>For refund and cancellation queries:</p>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p><strong>INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED</strong></p>
-                    <p>Email: support@innovativetaskearn.online</p>
-                    <p>Phone: +91-8000-XXX-XXX</p>
-                    <p>Address: C/O YOGESH, Kharbla 99, VATS STREET, KHARBLA</p>
-                    <p>Hisar, Haryana - 125042</p>
-                    <p>GST: 06AAGCI9044P1ZZ</p>
-                  </div>
+                  <p>Only contact support for genuine technical payment issues:</p>
+                  <ol className="list-decimal pl-6 space-y-2">
+                    <li>Email: support@innovativetaskearn.online</li>
+                    <li>Subject: "Payment Issue - [Your User ID]"</li>
+                    <li>Include: Transaction ID, payment screenshot, issue description</li>
+                    <li>Response within 24-48 hours</li>
+                  </ol>
                   
                   <p className="text-sm text-gray-600 mt-4">
-                    Customer support available Monday to Friday, 9:00 AM to 6:00 PM IST. 
-                    Email support available 24/7 with response within 24 hours.
+                    <strong>Note:</strong> Requests for refunds due to change of mind, 
+                    dissatisfaction, or other non-technical reasons will not be entertained.
                   </p>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">10. Policy Updates</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Final Notice</h2>
+                <div className="space-y-4 text-gray-700">
+                  <div className="bg-red-50 border border-red-200 p-6 rounded-lg">
+                    <h3 className="font-bold text-red-800 text-lg mb-3">READ BEFORE MAKING PAYMENT</h3>
+                    <ul className="text-red-700 space-y-2 text-sm">
+                      <li>✗ We do NOT sell any products, subscriptions, or memberships</li>
+                      <li>✗ KYC Fee (₹99) is 100% NON-REFUNDABLE</li>
+                      <li>✗ Reactivation Fee (₹49) is 100% NON-REFUNDABLE</li>
+                      <li>✗ No refunds for change of mind or dissatisfaction</li>
+                      <li>✗ Payment once made cannot be reversed</li>
+                    </ul>
+                    <p className="text-red-800 font-semibold mt-4">
+                      By making payment, you agree that you understand and accept 
+                      the non-refundable nature of all processing fees.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">8. Contact Information</h2>
+                <div className="space-y-4 text-gray-700">
+                  <p>For payment-related technical issues only:</p>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p><strong>INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED</strong></p>
+                    <p>Email: support@innovativetaskearn.online</p>
+                    <p>Address: C/O YOGESH, Kharbla 99, VATS STREET, KHARBLA</p>
+                    <p>Hisar, Haryana - 125042</p>
+                    <p>GST: 06AAGCI9044P1ZZ</p>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Policy Updates</h2>
                 <div className="space-y-4 text-gray-700">
                   <p>
-                    This policy may be updated periodically to reflect changes in our services or legal requirements. 
-                    Users will be notified of significant changes via email and website notification. 
-                    Continued use of our services after policy updates constitutes acceptance of the revised terms.
+                    This policy may be updated periodically. Users will be notified of 
+                    changes via email and website notification. Continued use of our services 
+                    after policy updates constitutes acceptance of the revised terms.
                   </p>
                 </div>
               </section>
