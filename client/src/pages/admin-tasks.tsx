@@ -420,25 +420,22 @@ export default function AdminTasks() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Category *</Label>
-                    <Select 
+                    <select 
                       value={newTask.category} 
-                      onValueChange={(value) => {
-                        console.log('Category changed to:', value);
-                        setNewTask({ ...newTask, category: value });
+                      onChange={(e) => {
+                        console.log('Category changed to:', e.target.value);
+                        setNewTask({ ...newTask, category: e.target.value });
                       }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      data-testid="select-task-category"
                     >
-                      <SelectTrigger data-testid="select-task-category" className="w-full">
-                        <SelectValue placeholder="Choose a task category" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-[400px] z-50">
-                        <SelectItem value="youtube_video_see">👁️ YouTube Video See Task</SelectItem>
-                        <SelectItem value="app_download">📱 App Download</SelectItem>
-                        <SelectItem value="business_review">⭐ Business Review</SelectItem>
-                        <SelectItem value="product_review">🛍️ Product Review</SelectItem>
-                        <SelectItem value="channel_subscribe">▶️ Channel Subscribe</SelectItem>
-                        <SelectItem value="comment_like">👍 Comments & Likes</SelectItem>
-                      </SelectContent>
-                    </Select>
+                      <option value="youtube_video_see">👁️ YouTube Video See Task</option>
+                      <option value="app_download">📱 App Download</option>
+                      <option value="business_review">⭐ Business Review</option>
+                      <option value="product_review">🛍️ Product Review</option>
+                      <option value="channel_subscribe">▶️ Channel Subscribe</option>
+                      <option value="comment_like">👍 Comments & Likes</option>
+                    </select>
                     <p className="text-xs text-gray-500 mt-1">Current: {newTask.category}</p>
                   </div>
                   
