@@ -76,7 +76,11 @@ export default function Tasks() {
   const submitTaskMutation = useMutation({
     mutationFn: async (data: { taskId: string; proofData: string; proofImages: string[] }) => {
       const response = await apiRequest("POST", "/api/task-completions", data);
-      return response.json();
+      const result = await response.json();
+      if (!response.ok) {
+        throw result;
+      }
+      return result;
     },
     onSuccess: () => {
       toast({
@@ -90,11 +94,26 @@ export default function Tasks() {
       setSelectedTask(null);
     },
     onError: (error: any) => {
-      toast({
-        title: "Submission Failed",
-        description: error.message || "Failed to submit task. Please try again.",
-        variant: "destructive",
-      });
+      // Handle specific error types
+      if (error.errorType === 'kyc_pending') {
+        toast({
+          title: "KYC Verification Required",
+          description: "Please complete your KYC verification to start earning from tasks. Go to Profile > KYC Verification.",
+          variant: "destructive",
+        });
+      } else if (error.errorType === 'suspended') {
+        toast({
+          title: "Account Suspended",
+          description: "Your account is suspended. Please reactivate your account to complete tasks.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Submission Failed",
+          description: error.message || "Failed to submit task. Please try again.",
+          variant: "destructive",
+        });
+      }
     },
   });
 
@@ -252,6 +271,23 @@ export default function Tasks() {
                     ) : status === 'rejected' ? (
                       <Button 
                         onClick={() => {
+                          // Check if user is verified before opening task dialog
+                          if (user?.status === 'suspended') {
+                            toast({
+                              title: "Account Suspended",
+                              description: "Your account is suspended. Please reactivate your account to complete tasks.",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          if (user?.verificationStatus !== 'verified' || user?.kycStatus !== 'approved') {
+                            toast({
+                              title: "KYC Verification Pending",
+                              description: "Please complete your KYC verification to start earning from tasks. Go to Profile > KYC Verification.",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
                           setSelectedTask(task);
                           setIsSubmitDialogOpen(true);
                         }}
@@ -263,6 +299,23 @@ export default function Tasks() {
                     ) : (
                       <Button 
                         onClick={() => {
+                          // Check if user is verified before opening task dialog
+                          if (user?.status === 'suspended') {
+                            toast({
+                              title: "Account Suspended",
+                              description: "Your account is suspended. Please reactivate your account to complete tasks.",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          if (user?.verificationStatus !== 'verified' || user?.kycStatus !== 'approved') {
+                            toast({
+                              title: "KYC Verification Pending",
+                              description: "Please complete your KYC verification to start earning from tasks. Go to Profile > KYC Verification.",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
                           setSelectedTask(task);
                           setIsSubmitDialogOpen(true);
                         }}

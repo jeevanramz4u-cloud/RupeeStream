@@ -1103,6 +1103,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.id;
       const { taskId, proofData, proofImages } = req.body;
 
+      // Check if user is suspended
+      if (req.user.status === 'suspended') {
+        return res.status(403).json({ 
+          message: "Your account is suspended. Please reactivate your account to complete tasks.",
+          errorType: "suspended"
+        });
+      }
+
+      // Check if user has completed KYC verification
+      if (req.user.verificationStatus !== 'verified' || req.user.kycStatus !== 'approved') {
+        return res.status(403).json({ 
+          message: "KYC verification pending. Please complete your KYC verification to start earning from tasks.",
+          errorType: "kyc_pending"
+        });
+      }
+
       // Check if user already submitted this task
       const existing = await storage.getTaskCompletion(userId, taskId);
       if (existing && existing.status !== 'rejected') {
