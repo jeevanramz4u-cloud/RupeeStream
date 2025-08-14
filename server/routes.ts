@@ -12,6 +12,8 @@ import {
   insertVideoProgressSchema, 
   insertPayoutRequestSchema,
   insertChatMessageSchema,
+  insertTaskSchema,
+  insertTaskCompletionSchema,
   users,
   referrals
 } from "@shared/schema";
@@ -917,6 +919,158 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating payout:", error);
       res.status(500).json({ message: "Failed to update payout" });
+    }
+  });
+
+  // Task routes
+  app.get('/api/tasks', isTraditionallyAuthenticated, async (req, res) => {
+    try {
+      const tasks = await storage.getTasks();
+      res.json(tasks);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      res.status(500).json({ message: "Failed to fetch tasks" });
+    }
+  });
+
+  app.get('/api/task-completions', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const completions = await storage.getUserTaskCompletions(userId);
+      res.json(completions);
+    } catch (error) {
+      console.error("Error fetching task completions:", error);
+      res.status(500).json({ message: "Failed to fetch task completions" });
+    }
+  });
+
+  app.post('/api/task-completions', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { taskId, proofData } = req.body;
+
+      // Check if user already submitted this task
+      const existing = await storage.getTaskCompletion(userId, taskId);
+      if (existing && existing.status !== 'rejected') {
+        return res.status(400).json({ message: "Task already submitted" });
+      }
+
+      const completion = await storage.createTaskCompletion({
+        userId,
+        taskId,
+        status: 'submitted',
+        proofData
+      });
+
+      res.json(completion);
+    } catch (error) {
+      console.error("Error submitting task:", error);
+      res.status(500).json({ message: "Failed to submit task" });
+    }
+  });
+
+  // Admin task management routes
+  app.get('/api/admin/tasks', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+      
+      const tasks = await storage.getTasks(100);
+      res.json(tasks);
+    } catch (error) {
+      console.error("Error fetching admin tasks:", error);
+      res.status(500).json({ message: "Failed to fetch tasks" });
+    }
+  });
+
+  app.post('/api/admin/tasks', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const taskData = insertTaskSchema.parse(req.body);
+      const task = await storage.createTask({
+        ...taskData,
+        createdBy: req.session.adminUser.id
+      });
+
+      res.json(task);
+    } catch (error) {
+      console.error("Error creating task:", error);
+      res.status(500).json({ message: "Failed to create task" });
+    }
+  });
+
+  app.put('/api/admin/tasks/:id', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const task = await storage.updateTask(req.params.id, req.body);
+      res.json(task);
+    } catch (error) {
+      console.error("Error updating task:", error);
+      res.status(500).json({ message: "Failed to update task" });
+    }
+  });
+
+  app.delete('/api/admin/tasks/:id', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const success = await storage.deleteTask(req.params.id);
+      res.json({ success });
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      res.status(500).json({ message: "Failed to delete task" });
+    }
+  });
+
+  app.get('/api/admin/task-completions', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+      
+      const completions = await storage.getTaskCompletionsForReview();
+      res.json(completions);
+    } catch (error) {
+      console.error("Error fetching task completions:", error);
+      res.status(500).json({ message: "Failed to fetch task completions" });
+    }
+  });
+
+  app.put('/api/admin/task-completions/:id/approve', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      await storage.approveTaskCompletion(req.params.id, req.session.adminUser.id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error approving task completion:", error);
+      res.status(500).json({ message: "Failed to approve task completion" });
+    }
+  });
+
+  app.put('/api/admin/task-completions/:id/reject', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { reason } = req.body;
+      await storage.rejectTaskCompletion(req.params.id, req.session.adminUser.id, reason);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error rejecting task completion:", error);
+      res.status(500).json({ message: "Failed to reject task completion" });
     }
   });
 

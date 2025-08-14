@@ -24,7 +24,7 @@ export default function Header() {
   // Navigation items for authenticated users (no "How to Earn")
   const authenticatedNavItems = [
     { href: "/dashboard", label: "Dashboard", active: location === "/" || location === "/dashboard" },
-    { href: "/videos", label: "Videos", active: location === "/videos" },
+    { href: "/tasks", label: "Complete Tasks", active: location === "/tasks" },
     { href: "/kyc", label: "KYC", active: location === "/kyc" },
     { href: "/referrals", label: "Referrals", active: location === "/referrals" },
     { href: "/support", label: "Support", active: location === "/support" },

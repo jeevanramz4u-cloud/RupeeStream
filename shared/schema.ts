@@ -53,6 +53,25 @@ export const userRoleEnum = pgEnum("user_role", [
   "admin"
 ]);
 
+// Task category enum
+export const taskCategoryEnum = pgEnum("task_category", [
+  "app_download",
+  "business_review", 
+  "product_review",
+  "channel_subscribe",
+  "comment_like",
+  "survey",
+  "social_media"
+]);
+
+// Task completion status enum
+export const taskCompletionStatusEnum = pgEnum("task_completion_status", [
+  "pending",
+  "submitted", 
+  "approved",
+  "rejected"
+]);
+
 // Admin users table (separate from regular users)
 export const adminUsers = pgTable("admin_users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -141,7 +160,49 @@ export const users = pgTable("users", {
   index("idx_users_created_at").on(table.createdAt),
 ]);
 
-// Videos table
+// Tasks table
+export const tasks = pgTable("tasks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title").notNull(),
+  description: text("description").notNull(),
+  category: taskCategoryEnum("category").notNull(),
+  reward: decimal("reward", { precision: 8, scale: 2 }).notNull(),
+  timeLimit: integer("time_limit"), // in minutes, null for no limit
+  maxCompletions: integer("max_completions"), // null for unlimited
+  currentCompletions: integer("current_completions").default(0).notNull(),
+  requirements: text("requirements"), // JSON string with task requirements
+  verificationMethod: varchar("verification_method"), // "automatic", "manual", "screenshot"
+  isActive: boolean("is_active").default(true).notNull(),
+  expiryDate: timestamp("expiry_date"),
+  createdBy: varchar("created_by").references(() => adminUsers.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_tasks_category").on(table.category),
+  index("idx_tasks_active").on(table.isActive),
+  index("idx_tasks_created_at").on(table.createdAt),
+]);
+
+// Task completions table
+export const taskCompletions = pgTable("task_completions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  taskId: varchar("task_id").references(() => tasks.id).notNull(),
+  status: taskCompletionStatusEnum("status").default("pending").notNull(),
+  proofData: text("proof_data"), // Screenshots, links, etc.
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewedBy: varchar("reviewed_by").references(() => adminUsers.id),
+  rewardCredited: boolean("reward_credited").default(false).notNull(),
+  rejectionReason: text("rejection_reason"),
+}, (table) => [
+  index("idx_task_completions_user").on(table.userId),
+  index("idx_task_completions_task").on(table.taskId),
+  index("idx_task_completions_status").on(table.status),
+  index("idx_task_completions_user_task").on(table.userId, table.taskId),
+]);
+
+// Videos table (kept for compatibility)
 export const videos = pgTable("videos", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: varchar("title").notNull(),
@@ -179,7 +240,8 @@ export const earnings = pgTable("earnings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id).notNull(),
   videoId: varchar("video_id").references(() => videos.id),
-  type: varchar("type").notNull(), // "video", "referral", "hourly_bonus", "signup_bonus"
+  taskId: varchar("task_id").references(() => tasks.id),
+  type: varchar("type").notNull(), // "video", "task", "referral", "hourly_bonus", "signup_bonus"
   amount: decimal("amount", { precision: 8, scale: 2 }).notNull(),
   description: varchar("description"),
   createdAt: timestamp("created_at").defaultNow(),
@@ -251,6 +313,7 @@ export const paymentHistory = pgTable("payment_history", {
 export const usersRelations = relations(users, ({ many, one }) => ({
   earnings: many(earnings),
   videoProgress: many(videoProgress),
+  taskCompletions: many(taskCompletions),
   referralsMade: many(referrals, { relationName: "referrer" }),
   referralsReceived: many(referrals, { relationName: "referred" }),
   payoutRequests: many(payoutRequests),
@@ -259,6 +322,29 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   referredByUser: one(users, {
     fields: [users.referredBy],
     references: [users.id],
+  }),
+}));
+
+export const tasksRelations = relations(tasks, ({ many, one }) => ({
+  completions: many(taskCompletions),
+  createdBy: one(adminUsers, {
+    fields: [tasks.createdBy],
+    references: [adminUsers.id],
+  }),
+}));
+
+export const taskCompletionsRelations = relations(taskCompletions, ({ one }) => ({
+  user: one(users, {
+    fields: [taskCompletions.userId],
+    references: [users.id],
+  }),
+  task: one(tasks, {
+    fields: [taskCompletions.taskId],
+    references: [tasks.id],
+  }),
+  reviewedBy: one(adminUsers, {
+    fields: [taskCompletions.reviewedBy],
+    references: [adminUsers.id],
   }),
 }));
 
@@ -286,6 +372,10 @@ export const earningsRelations = relations(earnings, ({ one }) => ({
   video: one(videos, {
     fields: [earnings.videoId],
     references: [videos.id],
+  }),
+  task: one(tasks, {
+    fields: [earnings.taskId],
+    references: [tasks.id],
   }),
 }));
 
@@ -382,6 +472,20 @@ export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
   lastLoginAt: true,
 });
 
+export const insertTaskSchema = createInsertSchema(tasks).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  currentCompletions: true,
+});
+
+export const insertTaskCompletionSchema = createInsertSchema(taskCompletions).omit({
+  id: true,
+  submittedAt: true,
+  reviewedAt: true,
+  rewardCredited: true,
+});
+
 // Admin login schema
 export const adminLoginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -418,3 +522,7 @@ export type ChatMessage = typeof chatMessages.$inferSelect;
 export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
 export type PaymentHistory = typeof paymentHistory.$inferSelect;
 export type InsertPaymentHistory = z.infer<typeof insertPaymentHistorySchema>;
+export type Task = typeof tasks.$inferSelect;
+export type InsertTask = z.infer<typeof insertTaskSchema>;
+export type TaskCompletion = typeof taskCompletions.$inferSelect;
+export type InsertTaskCompletion = z.infer<typeof insertTaskCompletionSchema>;

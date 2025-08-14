@@ -167,9 +167,9 @@ export default function Dashboard() {
             <CardContent className="relative pt-6 pb-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-purple-700 mb-1">Watch Progress</p>
-                  <p className="text-3xl font-black text-gray-900">{watchedHours.toFixed(1)}h</p>
-                  <p className="text-xs text-purple-600 font-medium">Target: {targetHours}h daily</p>
+                  <p className="text-sm font-semibold text-purple-700 mb-1">Tasks Completed</p>
+                  <p className="text-3xl font-black text-gray-900">{stats?.completedTasks || '0'}</p>
+                  <p className="text-xs text-purple-600 font-medium">This month</p>
                 </div>
                 <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Activity className="text-purple-600 w-7 h-7" />
@@ -324,44 +324,39 @@ export default function Dashboard() {
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center text-xl font-black text-gray-900 tracking-tight">
                 <Target className="w-6 h-6 mr-3 text-blue-600" />
-                Professional Daily Target
+                Available Task Opportunities
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-semibold text-gray-700 mb-1">Watch Time Progress</p>
-                  <p className="text-2xl font-black text-gray-900">{watchedHours.toFixed(1)} / {targetHours} hours</p>
+                  <p className="text-sm font-semibold text-gray-700 mb-1">Tasks Available Today</p>
+                  <p className="text-2xl font-black text-gray-900">5 New Tasks</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium text-gray-600">Completion</p>
-                  <p className="text-3xl font-black text-blue-600">{progressPercentage.toFixed(0)}%</p>
+                  <p className="text-sm font-medium text-gray-600">Potential Earnings</p>
+                  <p className="text-3xl font-black text-blue-600">₹135</p>
                 </div>
               </div>
               
               <div className="space-y-3">
-                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${progressPercentage}%` }}
-                  ></div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-3">
+                    <p className="text-xs font-semibold text-blue-800 mb-1">App Downloads</p>
+                    <p className="text-blue-700 text-sm font-bold">₹25 each</p>
+                  </div>
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-3">
+                    <p className="text-xs font-semibold text-green-800 mb-1">Reviews</p>
+                    <p className="text-green-700 text-sm font-bold">₹35 each</p>
+                  </div>
                 </div>
                 
-                {remainingHours > 0 ? (
-                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
-                    <p className="text-sm font-semibold text-orange-800 mb-1">Action Required</p>
-                    <p className="text-orange-700 text-sm leading-relaxed">
-                      Complete <span className="font-bold">{remainingHours.toFixed(1)} more hours</span> today to maintain professional account status and avoid suspension.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                    <p className="text-sm font-semibold text-green-800 mb-1">Target Achieved</p>
-                    <p className="text-green-700 text-sm leading-relaxed">
-                      ✓ Excellent! You've completed your daily target and maintained professional standing.
-                    </p>
-                  </div>
-                )}
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-4">
+                  <p className="text-sm font-semibold text-purple-800 mb-1">Quick Start</p>
+                  <p className="text-purple-700 text-sm leading-relaxed">
+                    Complete your first task within 10 minutes and start earning immediately. Simple tasks with instant approval!
+                  </p>
+                </div>
               </div>
               
               <Button 
@@ -369,9 +364,9 @@ export default function Dashboard() {
                 className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg font-semibold"
                 size="lg"
               >
-                <Link href="/videos">
-                  <Play className="w-5 h-5 mr-2" />
-                  Continue Professional Training
+                <Link href="/tasks">
+                  <Target className="w-5 h-5 mr-2" />
+                  Complete Tasks & Earn
                 </Link>
               </Button>
             </CardContent>
@@ -416,10 +411,24 @@ export default function Dashboard() {
                 </Button>
 
                 <Button asChild variant="outline" className="justify-start h-auto p-4 border-blue-200 hover:bg-blue-50">
-                  <Link href="/kyc">
+                  <Link href="/tasks">
                     <div className="flex items-center space-x-3 w-full">
                       <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                        <Shield className="w-5 h-5 text-blue-600" />
+                        <Target className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-gray-900">Complete Tasks</p>
+                        <p className="text-sm text-gray-600">Earn money with simple tasks</p>
+                      </div>
+                    </div>
+                  </Link>
+                </Button>
+
+                <Button asChild variant="outline" className="justify-start h-auto p-4 border-orange-200 hover:bg-orange-50">
+                  <Link href="/kyc">
+                    <div className="flex items-center space-x-3 w-full">
+                      <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+                        <Shield className="w-5 h-5 text-orange-600" />
                       </div>
                       <div className="text-left">
                         <p className="font-semibold text-gray-900">Account Verification</p>

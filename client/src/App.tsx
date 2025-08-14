@@ -16,6 +16,8 @@ import ResetPassword from "./pages/reset-password";
 import Dashboard from "./pages/dashboard";
 import Videos from "./pages/videos";
 import VideoPlayer from "./pages/video-player";
+import Tasks from "./pages/tasks";
+import AdminTasks from "./pages/admin-tasks";
 import Earnings from "./pages/earnings";
 import Referrals from "./pages/referrals";
 import Support from "./pages/support";
@@ -150,6 +152,8 @@ function Router() {
       
       {/* Protected routes - redirect to login if not authenticated */}
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
+      <Route path="/tasks" component={() => <ProtectedRoute component={Tasks} />} />
+      <Route path="/admin-tasks" component={AdminTasks} />
       <Route path="/videos" component={() => <ProtectedRoute component={Videos} />} />
       <Route path="/video/:id" component={() => <ProtectedRoute component={VideoPlayer} />} />
       <Route path="/earnings" component={() => <ProtectedRoute component={Earnings} />} />

@@ -7,6 +7,8 @@ import {
   payoutRequests,
   chatMessages,
   paymentHistory,
+  tasks,
+  taskCompletions,
   type User,
   type UpsertUser,
   type Video,
@@ -23,6 +25,10 @@ import {
   type InsertChatMessage,
   type PaymentHistory,
   type InsertPaymentHistory,
+  type Task,
+  type InsertTask,
+  type TaskCompletion,
+  type InsertTaskCompletion,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, gte } from "drizzle-orm";
@@ -91,12 +97,32 @@ export interface IStorage {
   // KYC operations
   updateUserKycDocuments(userId: string, kycData: any): Promise<void>;
   updateUserKycPayment(userId: string, paymentData: any): Promise<void>;
-  createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
+  
+  // Referral helper methods
+  getReferralByReferredId(referredId: string): Promise<Referral | undefined>;
+  updateReferralEarningStatus(referralId: string, credited: boolean): Promise<void>;
+  getReferralsWithUserDetails(userId: string): Promise<any[]>;
   
   // Daily tracking
   updateDailyWatchTime(userId: string, additionalMinutes: number): Promise<void>;
   getDailyWatchTime(userId: string): Promise<number>;
   resetDailyWatchTime(userId: string): Promise<void>;
+  
+  // Task operations
+  getTasks(limit?: number): Promise<Task[]>;
+  getTask(id: string): Promise<Task | undefined>;
+  createTask(task: InsertTask): Promise<Task>;
+  updateTask(id: string, updates: Partial<Task>): Promise<Task | undefined>;
+  deleteTask(id: string): Promise<boolean>;
+  
+  // Task completion operations
+  getUserTaskCompletions(userId: string): Promise<TaskCompletion[]>;
+  getTaskCompletion(userId: string, taskId: string): Promise<TaskCompletion | undefined>;
+  createTaskCompletion(completion: InsertTaskCompletion): Promise<TaskCompletion>;
+  updateTaskCompletion(id: string, updates: Partial<TaskCompletion>): Promise<TaskCompletion | undefined>;
+  approveTaskCompletion(id: string, reviewedBy: string): Promise<void>;
+  rejectTaskCompletion(id: string, reviewedBy: string, reason: string): Promise<void>;
+  getTaskCompletionsForReview(): Promise<TaskCompletion[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -909,6 +935,286 @@ export class DatabaseStorage implements IStorage {
       return payments;
     } catch (error) {
       console.error("Error fetching all payment history:", error);
+      return [];
+    }
+  }
+
+  // Task operations  
+  async getTasks(limit = 50): Promise<Task[]> {
+    try {
+      return await db
+        .select()
+        .from(tasks)
+        .where(eq(tasks.isActive, true))
+        .orderBy(desc(tasks.createdAt))
+        .limit(limit);
+    } catch (error) {
+      console.log("Database disabled, returning sample tasks");
+      // Return sample tasks for demo
+      return [
+        {
+          id: 'task-1',
+          title: 'Download Instagram & Rate 5 Stars',
+          description: 'Download Instagram app from Google Play Store and give it a 5-star rating with a positive review.',
+          category: 'app_download',
+          reward: '25.00',
+          timeLimit: 10,
+          requirements: 'Must provide screenshot of download confirmation and rating submission.',
+          verificationMethod: 'manual',
+          maxCompletions: 100,
+          currentCompletions: 0,
+          isActive: true,
+          createdBy: 'admin',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: 'task-2', 
+          title: 'Write Business Review on Google Maps',
+          description: 'Find "Innovative Grow Solutions" on Google Maps and write a detailed 5-star review about our services.',
+          category: 'business_review',
+          reward: '35.00',
+          timeLimit: 15,
+          requirements: 'Review must be at least 50 words and include specific details about our platform.',
+          verificationMethod: 'manual',
+          maxCompletions: 50,
+          currentCompletions: 0,
+          isActive: true,
+          createdBy: 'admin',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: 'task-3',
+          title: 'Subscribe to YouTube Channel', 
+          description: 'Subscribe to our official YouTube channel and like our latest video about earning opportunities.',
+          category: 'channel_subscribe',
+          reward: '20.00',
+          timeLimit: 5,
+          requirements: 'Must provide screenshot showing subscription confirmation and liked video.',
+          verificationMethod: 'manual',
+          maxCompletions: 200,
+          currentCompletions: 0,
+          isActive: true,
+          createdBy: 'admin',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: 'task-4',
+          title: 'Like & Comment on Facebook Post',
+          description: 'Like our Facebook page and comment on our latest post about task earning opportunities.',
+          category: 'comment_like',
+          reward: '15.00',
+          timeLimit: 5,
+          requirements: 'Comment must be genuine and positive. No spam or generic comments.',
+          verificationMethod: 'manual',
+          maxCompletions: 150,
+          currentCompletions: 0,
+          isActive: true,
+          createdBy: 'admin',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: 'task-5',
+          title: 'Product Review - Smartphone Case',
+          description: 'Write a detailed review for a smartphone case on Amazon with honest feedback.',
+          category: 'product_review',
+          reward: '40.00',
+          timeLimit: 20,
+          requirements: 'Review must be based on actual product experience and include photos.',
+          verificationMethod: 'manual',
+          maxCompletions: 75,
+          currentCompletions: 0,
+          isActive: true,
+          createdBy: 'admin',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ] as Task[];
+    }
+  }
+
+  async getTask(id: string): Promise<Task | undefined> {
+    const [task] = await db.select().from(tasks).where(eq(tasks.id, id));
+    return task;
+  }
+
+  async createTask(task: InsertTask): Promise<Task> {
+    const [newTask] = await db.insert(tasks).values(task).returning();
+    return newTask;
+  }
+
+  async updateTask(id: string, updates: Partial<Task>): Promise<Task | undefined> {
+    const [task] = await db
+      .update(tasks)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(tasks.id, id))
+      .returning();
+    return task;
+  }
+
+  async deleteTask(id: string): Promise<boolean> {
+    const result = await db.delete(tasks).where(eq(tasks.id, id));
+    return result.rowCount ? result.rowCount > 0 : false;
+  }
+
+  // Task completion operations
+  async getUserTaskCompletions(userId: string): Promise<TaskCompletion[]> {
+    try {
+      return await db
+        .select()
+        .from(taskCompletions)
+        .where(eq(taskCompletions.userId, userId))
+        .orderBy(desc(taskCompletions.submittedAt));
+    } catch (error) {
+      console.log("Database disabled, returning sample completions");
+      // Return sample completions for demo
+      return [] as TaskCompletion[];
+    }
+  }
+
+  async getTaskCompletion(userId: string, taskId: string): Promise<TaskCompletion | undefined> {
+    const [completion] = await db
+      .select()
+      .from(taskCompletions)
+      .where(and(
+        eq(taskCompletions.userId, userId),
+        eq(taskCompletions.taskId, taskId)
+      ));
+    return completion;
+  }
+
+  async createTaskCompletion(completion: InsertTaskCompletion): Promise<TaskCompletion> {
+    try {
+      const [newCompletion] = await db
+        .insert(taskCompletions)
+        .values(completion)
+        .returning();
+      return newCompletion;
+    } catch (error) {
+      console.log("Database disabled, returning mock completion");
+      // Return mock completion for demo
+      return {
+        id: 'completion-' + Date.now(),
+        userId: completion.userId,
+        taskId: completion.taskId,
+        status: completion.status || 'submitted',
+        proofData: completion.proofData || '',
+        submittedAt: new Date(),
+        reviewedAt: null,
+        reviewedBy: null,
+        rejectionReason: null,
+        rewardCredited: false
+      } as TaskCompletion;
+    }
+  }
+
+  async updateTaskCompletion(id: string, updates: Partial<TaskCompletion>): Promise<TaskCompletion | undefined> {
+    const [completion] = await db
+      .update(taskCompletions)
+      .set(updates)
+      .where(eq(taskCompletions.id, id))
+      .returning();
+    return completion;
+  }
+
+  async approveTaskCompletion(id: string, reviewedBy: string): Promise<void> {
+    const completion = await db.select().from(taskCompletions).where(eq(taskCompletions.id, id));
+    if (!completion[0]) return;
+    
+    const task = await this.getTask(completion[0].taskId);
+    if (!task) return;
+    
+    // Update completion status
+    await this.updateTaskCompletion(id, {
+      status: 'approved',
+      reviewedAt: new Date(),
+      reviewedBy,
+      rewardCredited: true
+    });
+    
+    // Credit reward to user
+    await this.createEarning({
+      userId: completion[0].userId,
+      taskId: task.id,
+      type: 'task',
+      amount: task.reward,
+      description: `Task completed: ${task.title}`
+    });
+    
+    // Update user balance
+    const user = await this.getUser(completion[0].userId);
+    if (user) {
+      const currentBalance = parseFloat(user.balance || '0');
+      const rewardAmount = parseFloat(task.reward);
+      const newBalance = currentBalance + rewardAmount;
+      
+      await this.updateUser(user.id, { balance: newBalance.toFixed(2) });
+    }
+    
+    // Increment task completions
+    await db
+      .update(tasks)
+      .set({ currentCompletions: sql`${tasks.currentCompletions} + 1` })
+      .where(eq(tasks.id, task.id));
+  }
+
+  async rejectTaskCompletion(id: string, reviewedBy: string, reason: string): Promise<void> {
+    await this.updateTaskCompletion(id, {
+      status: 'rejected',
+      reviewedAt: new Date(),
+      reviewedBy,
+      rejectionReason: reason
+    });
+  }
+
+  async getTaskCompletionsForReview(): Promise<TaskCompletion[]> {
+    return await db
+      .select()
+      .from(taskCompletions)
+      .where(eq(taskCompletions.status, 'submitted'))
+      .orderBy(desc(taskCompletions.submittedAt));
+  }
+
+  // Referral helper methods
+  async getReferralByReferredId(referredId: string): Promise<Referral | undefined> {
+    const [referral] = await db
+      .select()
+      .from(referrals)
+      .where(eq(referrals.referredId, referredId));
+    return referral;
+  }
+
+  async updateReferralEarningStatus(referralId: string, credited: boolean): Promise<void> {
+    await db
+      .update(referrals)
+      .set({ isEarningCredited: credited })
+      .where(eq(referrals.id, referralId));
+  }
+
+  async getReferralsWithUserDetails(userId: string): Promise<any[]> {
+    try {
+      const userReferrals = await db
+        .select({
+          id: referrals.id,
+          referredId: referrals.referredId,
+          isEarningCredited: referrals.isEarningCredited,
+          createdAt: referrals.createdAt,
+          referredUserEmail: users.email,
+          referredUserName: sql<string>`COALESCE(CONCAT(${users.firstName}, ' ', ${users.lastName}), 'Unknown User')`,
+          referredUserStatus: users.verificationStatus,
+          referredUserKycStatus: users.kycStatus
+        })
+        .from(referrals)
+        .leftJoin(users, eq(referrals.referredId, users.id))
+        .where(eq(referrals.referrerId, userId))
+        .orderBy(desc(referrals.createdAt));
+      
+      return userReferrals;
+    } catch (error) {
+      console.error("Error fetching referrals with user details:", error);
       return [];
     }
   }
