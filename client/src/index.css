@@ -17,8 +17,8 @@
   --primary-foreground: hsl(222, 84%, 4.9%);
   --secondary: hsl(153, 60%, 53%);
   --secondary-foreground: hsl(210, 40%, 2%);
-  --accent: hsl(43, 96%, 56%);
-  --accent-foreground: hsl(210, 40%, 2%);
+  --accent: hsl(217, 91%, 95%);
+  --accent-foreground: hsl(217, 91%, 60%);
   --destructive: hsl(0, 84.2%, 60.2%);
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
   --ring: hsl(20, 14.3%, 4.1%);
@@ -45,8 +45,8 @@
   --primary-foreground: hsl(222, 84%, 4.9%);
   --secondary: hsl(153, 60%, 53%);
   --secondary-foreground: hsl(210, 40%, 2%);
-  --accent: hsl(43, 96%, 56%);
-  --accent-foreground: hsl(210, 40%, 2%);
+  --accent: hsl(217, 91%, 15%);
+  --accent-foreground: hsl(217, 91%, 70%);
   --destructive: hsl(0, 62.8%, 30.6%);
   --destructive-foreground: hsl(0, 0%, 98%);
   --ring: hsl(240, 4.9%, 83.9%);
@@ -75,7 +75,7 @@
   }
   
   .text-accent {
-    color: hsl(43, 96%, 56%);
+    color: hsl(217, 91%, 60%);
   }
   
   .text-neutral-600 {
@@ -95,7 +95,7 @@
   }
   
   .bg-accent {
-    background-color: hsl(43, 96%, 56%);
+    background-color: hsl(217, 91%, 95%);
   }
   
   .bg-neutral-50 {
