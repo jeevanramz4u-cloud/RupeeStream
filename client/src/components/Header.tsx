@@ -125,11 +125,11 @@ export default function Header() {
               </div>
             </Link>
             
-            {/* User Menu - Compact Round Button */}
+            {/* User Menu - Clean Round Button */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 sm:h-10 sm:w-10 rounded-full p-0 hover:bg-gray-100 touch-manipulation">
-                  <Avatar className="h-8 w-8 sm:h-9 sm:w-9 ring-2 ring-offset-2 ring-primary/20">
+                <button className="rounded-full touch-manipulation focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                  <Avatar className="h-8 w-8 sm:h-9 sm:w-9 cursor-pointer hover:opacity-80 transition-opacity">
                     <AvatarImage 
                       src={(user as any)?.profileImageUrl || ''} 
                       alt={(user as any)?.firstName || 'User'} 
@@ -139,7 +139,7 @@ export default function Header() {
                       {(user as any)?.firstName?.charAt(0)?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
-                </Button>
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-64 sm:w-72" align="end">
                 {/* User Info with Balance */}
