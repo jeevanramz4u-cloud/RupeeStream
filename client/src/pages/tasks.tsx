@@ -28,6 +28,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
+import { ImageUpload } from "@/components/image-upload";
 
 const taskCategoryIcons = {
   app_download: Smartphone,
@@ -55,6 +56,7 @@ export default function Tasks() {
   const queryClient = useQueryClient();
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [proofData, setProofData] = useState("");
+  const [proofImages, setProofImages] = useState<string[]>([]);
   const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false);
 
   const { data: tasks = [], isLoading: tasksLoading } = useQuery({
@@ -72,7 +74,7 @@ export default function Tasks() {
   const safeCompletions = Array.isArray(completions) ? completions : [];
 
   const submitTaskMutation = useMutation({
-    mutationFn: async (data: { taskId: string; proofData: string }) => {
+    mutationFn: async (data: { taskId: string; proofData: string; proofImages: string[] }) => {
       const response = await apiRequest("POST", "/api/task-completions", data);
       return response.json();
     },
@@ -84,6 +86,7 @@ export default function Tasks() {
       queryClient.invalidateQueries({ queryKey: ["/api/task-completions"] });
       setIsSubmitDialogOpen(false);
       setProofData("");
+      setProofImages([]);
       setSelectedTask(null);
     },
     onError: (error: any) => {
@@ -96,10 +99,10 @@ export default function Tasks() {
   });
 
   const handleSubmitTask = () => {
-    if (!selectedTask || !proofData.trim()) {
+    if (!selectedTask || (!proofData.trim() && proofImages.length === 0)) {
       toast({
         title: "Missing Information",
-        description: "Please provide proof of task completion.",
+        description: "Please provide proof of task completion (text description or screenshots).",
         variant: "destructive",
       });
       return;
@@ -107,7 +110,8 @@ export default function Tasks() {
 
     submitTaskMutation.mutate({
       taskId: selectedTask.id,
-      proofData: proofData.trim()
+      proofData: proofData.trim(),
+      proofImages: proofImages,
     });
   };
 
@@ -284,19 +288,27 @@ export default function Tasks() {
               </DialogTitle>
             </DialogHeader>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
+              {/* Image Upload Section */}
+              <ImageUpload 
+                onImagesChange={setProofImages} 
+                currentImages={proofImages}
+                maxImages={3}
+              />
+              
+              {/* Text Description Section */}
               <div>
                 <Label className="text-sm font-semibold text-gray-700">
-                  Proof of Completion
+                  Additional Details (Optional)
                 </Label>
                 <Textarea
-                  placeholder="Provide links, screenshots, or detailed description of task completion..."
+                  placeholder="Provide additional context, links, or descriptions to supplement your screenshots..."
                   value={proofData}
                   onChange={(e) => setProofData(e.target.value)}
-                  className="mt-2 min-h-[120px]"
+                  className="mt-2 min-h-[100px]"
                 />
                 <p className="text-xs text-gray-500 mt-2">
-                  Include screenshot links, completion confirmations, or any other proof that you completed the task successfully.
+                  Screenshots are the primary proof. Use this field for additional details if needed.
                 </p>
               </div>
               
@@ -307,17 +319,20 @@ export default function Tasks() {
                   onClick={() => {
                     setIsSubmitDialogOpen(false);
                     setProofData("");
+                    setProofImages([]);
                     setSelectedTask(null);
                   }}
                   className="w-full sm:flex-1"
+                  data-testid="cancel-task-submission"
                 >
                   Cancel
                 </Button>
                 <Button
                   size="lg"
                   onClick={handleSubmitTask}
-                  disabled={submitTaskMutation.isPending || !proofData.trim()}
+                  disabled={submitTaskMutation.isPending || (proofData.trim() === "" && proofImages.length === 0)}
                   className="w-full sm:flex-1 bg-gradient-to-r from-primary to-blue-600"
+                  data-testid="submit-task-button"
                 >
                   {submitTaskMutation.isPending ? "Submitting..." : "Submit Task"}
                 </Button>

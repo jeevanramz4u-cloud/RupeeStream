@@ -1130,20 +1130,23 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return newCompletion;
     } catch (error) {
-      console.log("Database disabled, returning mock completion");
-      // Return mock completion for demo
-      return {
-        id: 'completion-' + Date.now(),
-        userId: completion.userId,
-        taskId: completion.taskId,
-        status: completion.status || 'submitted',
-        proofData: completion.proofData || '',
-        submittedAt: new Date(),
-        reviewedAt: null,
-        reviewedBy: null,
-        rejectionReason: null,
-        rewardCredited: false
-      } as TaskCompletion;
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Task completion simulated (database unavailable)");
+        return {
+          id: 'dev-completion-' + Date.now(),
+          userId: completion.userId,
+          taskId: completion.taskId,
+          status: completion.status || 'submitted',
+          proofData: completion.proofData || '',
+          proofImages: completion.proofImages || [],
+          submittedAt: new Date(),
+          reviewedAt: null,
+          reviewedBy: null,
+          rejectionReason: null,
+          rewardCredited: false
+        } as TaskCompletion;
+      }
+      throw error;
     }
   }
 

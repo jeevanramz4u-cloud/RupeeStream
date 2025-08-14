@@ -190,6 +190,7 @@ export const taskCompletions = pgTable("task_completions", {
   taskId: varchar("task_id").references(() => tasks.id).notNull(),
   status: taskCompletionStatusEnum("status").default("pending").notNull(),
   proofData: text("proof_data"), // Screenshots, links, etc.
+  proofImages: text("proof_images").array(), // Array of uploaded image URLs
   submittedAt: timestamp("submitted_at").defaultNow(),
   reviewedAt: timestamp("reviewed_at"),
   reviewedBy: varchar("reviewed_by").references(() => adminUsers.id),

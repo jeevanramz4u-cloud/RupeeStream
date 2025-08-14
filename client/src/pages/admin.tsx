@@ -584,10 +584,31 @@ const TaskManagementContent = () => {
                       {completion.status}
                     </Badge>
                   </div>
-                  {completion.proof && (
-                    <div className="mt-2">
-                      <p className="text-sm font-medium">Proof:</p>
-                      <p className="text-sm text-gray-600">{completion.proof}</p>
+                  {/* Proof Images */}
+                  {completion.proofImages && completion.proofImages.length > 0 && (
+                    <div className="mt-3">
+                      <p className="text-sm font-medium mb-2">Proof Screenshots:</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {completion.proofImages.map((imageUrl: string, index: number) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={imageUrl}
+                              alt={`Proof ${index + 1}`}
+                              className="w-full h-24 object-cover rounded border cursor-pointer hover:opacity-80 transition-opacity"
+                              onClick={() => window.open(imageUrl, '_blank')}
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded transition-colors pointer-events-none" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Text Proof */}
+                  {completion.proofData && (
+                    <div className="mt-3">
+                      <p className="text-sm font-medium">Additional Details:</p>
+                      <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded mt-1">{completion.proofData}</p>
                     </div>
                   )}
                   {completion.status === 'pending' && (

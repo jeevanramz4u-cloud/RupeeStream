@@ -937,7 +937,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/task-completions', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
-      const { taskId, proofData } = req.body;
+      const { taskId, proofData, proofImages } = req.body;
 
       // Check if user already submitted this task
       const existing = await storage.getTaskCompletion(userId, taskId);
@@ -949,7 +949,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId,
         taskId,
         status: 'submitted',
-        proofData
+        proofData,
+        proofImages: proofImages || []
       });
 
       res.json(completion);
