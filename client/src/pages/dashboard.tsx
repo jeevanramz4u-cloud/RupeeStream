@@ -544,12 +544,14 @@ export default function Dashboard() {
                   <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
                   <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Account Status:</span>
                   <span className={`text-xs sm:text-sm font-medium px-2 py-1 rounded-full ${
-                    (user as any)?.verificationStatus === 'verified' ? 'bg-green-100 text-green-800' : 
-                    (user as any)?.verificationStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                    ((user as any)?.verificationStatus === 'verified' && (user as any)?.kycStatus === 'approved') ? 'bg-green-100 text-green-800' : 
+                    ((user as any)?.verificationStatus === 'verified' && (user as any)?.kycStatus === 'submitted') ? 'bg-blue-100 text-blue-800' :
+                    ((user as any)?.verificationStatus === 'pending' || (user as any)?.kycStatus === 'pending') ? 'bg-yellow-100 text-yellow-800' : 
                     'bg-red-100 text-red-800'
                   }`}>
-                    {(user as any)?.verificationStatus === 'verified' ? 'Verified' :
-                     (user as any)?.verificationStatus === 'pending' ? 'Pending Review' : 'Not Verified'}
+                    {((user as any)?.verificationStatus === 'verified' && (user as any)?.kycStatus === 'approved') ? 'Approved' :
+                     ((user as any)?.verificationStatus === 'verified' && (user as any)?.kycStatus === 'submitted') ? 'Payment Pending' :
+                     ((user as any)?.verificationStatus === 'pending' || (user as any)?.kycStatus === 'pending') ? 'Pending Review' : 'Not Verified'}
                   </span>
                 </div>
               </div>
