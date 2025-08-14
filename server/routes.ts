@@ -1894,23 +1894,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const cashfreeModule = await import('./cashfree');
         const { createPaymentSession: createCashfreeOrder } = cashfreeModule;
         const orderId = `reactivation_${userId}_${Date.now()}`;
-        const cashfreeOrder = await createCashfreeOrder({
+        const cashfreeOrder = await createCashfreeOrder(
           orderId,
-          amount: reactivationFeeAmount,
-          customerDetails: {
+          reactivationFeeAmount,
+          {
             customerId: userId,
             customerEmail: user.email || "user@example.com",
             customerPhone: user.phoneNumber || "9999999999",
             customerName: `${user.firstName || 'User'} ${user.lastName || 'Account'}`
           }
-        });
+        );
 
         console.log('Cashfree reactivation order created:', cashfreeOrder);
         
-        if (cashfreeOrder.paymentSessionId) {
+        if (cashfreeOrder.payment_session_id) {
           res.json({
             paymentUrl: `https://payments-test.cashfree.com/pgappsdksandbox/login?order_id=${orderId}`,
-            sessionId: cashfreeOrder.paymentSessionId,
+            sessionId: cashfreeOrder.payment_session_id,
             orderId: orderId
           });
           return;
@@ -1935,7 +1935,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         await storage.addPaymentHistory(userId, {
           type: 'reactivation',
-          amount: reactivationFee,
+          amount: reactivationFeeAmount.toString(),
           orderId: `reactivation_${userId}_${Date.now()}`,
           paymentMethod: 'development_fallback',
           status: 'completed'
@@ -1949,7 +1949,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({
         success: true,
         message: "🎉 Your account has been successfully reactivated! You can now start earning again.",
-        amount: reactivationFee,
+        amount: reactivationFeeAmount.toString(),
         newStatus: 'active',
         paymentRecorded: true,
         nextSteps: "Visit your dashboard to continue watching videos and earning rewards."
@@ -2005,7 +2005,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           try {
             await storage.addPaymentHistory(userId, {
               orderId: orderId,
-              amount: parseFloat(user.reactivationFeeAmount || "49.00"),
+              amount: (parseFloat(user.reactivationFeeAmount || "49.00")).toString(),
               type: 'reactivation',
               status: 'completed',
               paymentMethod: 'cashfree'
@@ -2277,7 +2277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let task, completionData = [];
       try {
         task = await storage.getTask(taskId);
-        completionData = await storage.getTaskCompletions(taskId);
+        completionData = await storage.getUserTaskCompletions(taskId);
       } catch (error) {
         // If database is disabled, use sample data
         task = { 

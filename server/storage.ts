@@ -1178,46 +1178,7 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(taskCompletions.submittedAt));
   }
 
-  // Referral helper methods
-  async getReferralByReferredId(referredId: string): Promise<Referral | undefined> {
-    const [referral] = await db
-      .select()
-      .from(referrals)
-      .where(eq(referrals.referredId, referredId));
-    return referral;
-  }
 
-  async updateReferralEarningStatus(referralId: string, credited: boolean): Promise<void> {
-    await db
-      .update(referrals)
-      .set({ isEarningCredited: credited })
-      .where(eq(referrals.id, referralId));
-  }
-
-  async getReferralsWithUserDetails(userId: string): Promise<any[]> {
-    try {
-      const userReferrals = await db
-        .select({
-          id: referrals.id,
-          referredId: referrals.referredId,
-          isEarningCredited: referrals.isEarningCredited,
-          createdAt: referrals.createdAt,
-          referredUserEmail: users.email,
-          referredUserName: sql<string>`COALESCE(CONCAT(${users.firstName}, ' ', ${users.lastName}), 'Unknown User')`,
-          referredUserStatus: users.verificationStatus,
-          referredUserKycStatus: users.kycStatus
-        })
-        .from(referrals)
-        .leftJoin(users, eq(referrals.referredId, users.id))
-        .where(eq(referrals.referrerId, userId))
-        .orderBy(desc(referrals.createdAt));
-      
-      return userReferrals;
-    } catch (error) {
-      console.error("Error fetching referrals with user details:", error);
-      return [];
-    }
-  }
 }
 
 export const storage = new DatabaseStorage();
