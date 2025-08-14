@@ -1115,34 +1115,112 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getReferrals(userId: string): Promise<Referral[]> {
-    return await db
-      .select()
-      .from(referrals)
-      .where(eq(referrals.referrerId, userId))
-      .orderBy(desc(referrals.createdAt));
+    try {
+      return await db
+        .select()
+        .from(referrals)
+        .where(eq(referrals.referrerId, userId))
+        .orderBy(desc(referrals.createdAt));
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Basic referrals simulated (database unavailable)");
+        
+        const sampleReferrals: Referral[] = [
+          {
+            id: 'dev-referral-1',
+            referrerId: userId,
+            referredId: 'dev-referred-1',
+            isEarningCredited: true,
+            createdAt: new Date(Date.now() - 86400000 * 2)
+          },
+          {
+            id: 'dev-referral-2',
+            referrerId: userId,
+            referredId: 'dev-referred-2',
+            isEarningCredited: true,
+            createdAt: new Date(Date.now() - 86400000 * 5)
+          }
+        ];
+        
+        return sampleReferrals;
+      }
+      throw error;
+    }
   }
 
   async getReferralsWithUserDetails(userId: string): Promise<any[]> {
-    const result = await db
-      .select({
-        id: referrals.id,
-        isEarningCredited: referrals.isEarningCredited,
-        createdAt: referrals.createdAt,
-        referredUser: {
-          id: users.id,
-          firstName: users.firstName,
-          lastName: users.lastName,
-          email: users.email,
-          verificationStatus: users.verificationStatus,
-          kycStatus: users.kycStatus
-        }
-      })
-      .from(referrals)
-      .innerJoin(users, eq(referrals.referredId, users.id))
-      .where(eq(referrals.referrerId, userId))
-      .orderBy(desc(referrals.createdAt));
-    
-    return result;
+    try {
+      const result = await db
+        .select({
+          id: referrals.id,
+          isEarningCredited: referrals.isEarningCredited,
+          createdAt: referrals.createdAt,
+          referredUser: {
+            id: users.id,
+            firstName: users.firstName,
+            lastName: users.lastName,
+            email: users.email,
+            verificationStatus: users.verificationStatus,
+            kycStatus: users.kycStatus
+          }
+        })
+        .from(referrals)
+        .innerJoin(users, eq(referrals.referredId, users.id))
+        .where(eq(referrals.referrerId, userId))
+        .orderBy(desc(referrals.createdAt));
+      
+      return result;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Referrals simulated (database unavailable)");
+        
+        // Generate sample referrals data
+        const sampleReferrals = [
+          {
+            id: 'dev-referral-1',
+            isEarningCredited: true,
+            createdAt: new Date(Date.now() - 86400000 * 2), // 2 days ago
+            referredUser: {
+              id: 'dev-referred-1',
+              firstName: 'Priya',
+              lastName: 'Sharma',
+              email: 'priya.sharma@example.com',
+              verificationStatus: 'verified',
+              kycStatus: 'approved'
+            }
+          },
+          {
+            id: 'dev-referral-2',
+            isEarningCredited: true,
+            createdAt: new Date(Date.now() - 86400000 * 5), // 5 days ago
+            referredUser: {
+              id: 'dev-referred-2',
+              firstName: 'Rahul',
+              lastName: 'Patel',
+              email: 'rahul.patel@example.com',
+              verificationStatus: 'verified',
+              kycStatus: 'approved'
+            }
+          },
+          {
+            id: 'dev-referral-3',
+            isEarningCredited: false,
+            createdAt: new Date(Date.now() - 86400000 * 1), // 1 day ago
+            referredUser: {
+              id: 'dev-referred-3',
+              firstName: 'Anjali',
+              lastName: 'Singh',
+              email: 'anjali.singh@example.com',
+              verificationStatus: 'pending',
+              kycStatus: 'pending'
+            }
+          }
+        ];
+        
+        return sampleReferrals;
+      }
+      throw error;
+    }
   }
 
   async getReferralByReferredId(referredId: string): Promise<Referral | undefined> {
