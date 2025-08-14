@@ -347,7 +347,12 @@ export default function KYC() {
     });
   };
 
-  const getKycStatusBadge = (status: string) => {
+  const getKycStatusBadge = (status: string, feePaid?: boolean) => {
+    // Check if documents submitted but fee not paid
+    if (status === 'submitted' && !feePaid) {
+      return <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200"><CreditCard className="w-3 h-3 mr-1" />Payment Pending</Badge>;
+    }
+    
     switch (status) {
       case 'pending':
         return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
@@ -459,7 +464,7 @@ export default function KYC() {
                 <Shield className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-600" />
                 Verification Status
               </CardTitle>
-              {kycData ? getKycStatusBadge((kycData as any).kycStatus || 'pending') : null}
+              {kycData ? getKycStatusBadge((kycData as any).kycStatus || 'pending', (kycData as any).kycFeePaid) : null}
             </div>
           </CardHeader>
           <CardContent className="pt-0">
@@ -486,6 +491,15 @@ export default function KYC() {
                   <Info className="h-4 w-4 text-orange-600" />
                   <AlertDescription className="text-orange-800">
                     <strong>Re-verification Required</strong> - Our team has requested additional verification. Please re-upload your documents below to complete the process.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {(kycData as any)?.kycStatus === 'submitted' && !(kycData as any)?.kycFeePaid && (
+                <Alert className="bg-orange-50 border-orange-200">
+                  <CreditCard className="h-4 w-4 text-orange-600" />
+                  <AlertDescription className="text-orange-800">
+                    <strong>Payment Required</strong> - Your documents have been submitted but the ₹99 processing fee is pending. Please complete the payment to proceed with verification.
                   </AlertDescription>
                 </Alert>
               )}

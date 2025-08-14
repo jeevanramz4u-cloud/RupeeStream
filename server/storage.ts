@@ -1184,17 +1184,60 @@ export class DatabaseStorage implements IStorage {
 
   // KYC operations
   async updateUserKycDocuments(userId: string, kycData: any): Promise<void> {
-    await db
-      .update(users)
-      .set(kycData)
-      .where(eq(users.id, userId));
+    try {
+      await db
+        .update(users)
+        .set(kycData)
+        .where(eq(users.id, userId));
+    } catch (error) {
+      // Handle development mode fallback
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log(`Development mode: Updating KYC documents for user ${userId}`);
+        const user = devModeUsers.get(userId);
+        if (user) {
+          const updatedUser = {
+            ...user,
+            ...kycData,
+            kycFeePaid: user.kycFeePaid || false // Preserve existing payment status
+          };
+          devModeUsers.set(userId, updatedUser);
+          console.log(`✅ KYC documents updated in memory for user: ${user.firstName} ${user.lastName}`);
+          console.log(`   Status: ${kycData.kycStatus}, Fee Paid: ${updatedUser.kycFeePaid}`);
+          return;
+        }
+        throw new Error(`User not found: ${userId}`);
+      }
+      console.error("Error updating KYC documents:", error);
+      throw error;
+    }
   }
 
   async updateUserKycPayment(userId: string, paymentData: any): Promise<void> {
-    await db
-      .update(users)
-      .set(paymentData)
-      .where(eq(users.id, userId));
+    try {
+      await db
+        .update(users)
+        .set(paymentData)
+        .where(eq(users.id, userId));
+    } catch (error) {
+      // Handle development mode fallback
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log(`Development mode: Updating KYC payment for user ${userId}`);
+        const user = devModeUsers.get(userId);
+        if (user) {
+          const updatedUser = {
+            ...user,
+            ...paymentData
+          };
+          devModeUsers.set(userId, updatedUser);
+          console.log(`✅ KYC payment updated in memory for user: ${user.firstName} ${user.lastName}`);
+          console.log(`   Fee Paid: ${paymentData.kycFeePaid}, Status: ${paymentData.kycStatus}`);
+          return;
+        }
+        throw new Error(`User not found: ${userId}`);
+      }
+      console.error("Error updating KYC payment:", error);
+      throw error;
+    }
   }
 
   async updateUserKycPaymentAndApprove(userId: string, approvalData: any): Promise<User | undefined> {
