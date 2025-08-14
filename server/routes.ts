@@ -465,6 +465,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Cashfree webhook endpoint for KYC payment notifications
+  app.post('/api/kyc/payment-webhook', async (req, res) => {
+    try {
+      console.log('Cashfree payment webhook received:', req.body);
+      
+      const { orderId, orderAmount, paymentStatus, signature } = req.body;
+      
+      // Verify webhook signature (implement signature verification for security)
+      // const isValidSignature = verifyWebhookSignature(req.body, signature);
+      // if (!isValidSignature) {
+      //   return res.status(400).json({ message: "Invalid signature" });
+      // }
+      
+      if (paymentStatus === 'SUCCESS' && orderId?.startsWith('kyc_')) {
+        // Extract user ID from order ID format: kyc_{userId}_{timestamp}
+        const userIdMatch = orderId.match(/^kyc_([^_]+)_/);
+        if (userIdMatch) {
+          const userId = userIdMatch[1];
+          
+          try {
+            // Update user's KYC payment status and approve automatically
+            await storage.updateUserKycPaymentAndApprove(userId, {
+              kycFeePaid: true,
+              kycFeePaymentId: orderId,
+              kycStatus: "approved",
+              verificationStatus: "verified",
+              kycApprovedAt: new Date(),
+            });
+            
+            console.log(`Webhook: KYC payment verified and approved for user ${userId}, order: ${orderId}`);
+          } catch (dbError) {
+            console.error('Database error in webhook:', dbError);
+            // Still return success to Cashfree to avoid retries
+          }
+        }
+      }
+      
+      // Always return 200 to acknowledge receipt
+      res.json({ message: "Webhook processed successfully" });
+    } catch (error) {
+      console.error("Error processing Cashfree webhook:", error);
+      res.status(200).json({ message: "Webhook received" }); // Still return 200 to stop retries
+    }
+  });
+
+  // KYC payment success redirect handler
+  app.get('/api/kyc/payment-success', async (req, res) => {
+    try {
+      const { order_id } = req.query;
+      console.log(`Payment success redirect for order: ${order_id}`);
+      
+      // Redirect to KYC page with success parameter
+      res.redirect(`/kyc?payment=success&order=${order_id}`);
+    } catch (error) {
+      console.error("Error handling payment success:", error);
+      res.redirect('/kyc?payment=error');
+    }
+  });
+
   // The endpoint for getting the upload URL for an object entity (authenticated users)
   app.post("/api/objects/upload", isTraditionallyAuthenticated, async (req, res) => {
     const objectStorageService = new ObjectStorageService();
@@ -600,63 +659,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user;
       const orderId = `kyc_${userId}_${Date.now()}`;
       
-      try {
-        const paymentSession = await createPaymentSession(
-          orderId,
-          99, // KYC fee amount
-          user.phoneNumber || '9999999999',
-          user.email,
-          `${user.firstName} ${user.lastName}`,
-          'kyc_fee'
-        );
+      const paymentSession = await createPaymentSession(
+        orderId,
+        99, // KYC fee amount
+        user.phoneNumber || '9999999999',
+        user.email,
+        `${user.firstName} ${user.lastName}`,
+        'kyc_fee'
+      );
 
-        res.json({
-          orderId: paymentSession.order_id,
-          paymentSessionId: paymentSession.payment_session_id,
-          amount: paymentSession.order_amount,
-          currency: paymentSession.order_currency
-        });
-      } catch (cashfreeError) {
-        console.error("Cashfree API authentication failed, using development payment:", cashfreeError);
-        
-        // Development payment simulation when Cashfree API fails
-        const mockSession = {
-          order_id: orderId,
-          payment_session_id: `dev_${Date.now()}`,
-          order_amount: 99,
-          order_currency: 'INR'
-        };
-        
-        // Simulate successful payment immediately for development
-        await storage.updateUserKycPayment(userId, { kycFeePaid: true });
-        
-        console.log(`Development payment completed for user ${userId}, amount: ₹99`);
-        
-        res.json({
-          orderId: mockSession.order_id,
-          paymentSessionId: mockSession.payment_session_id,
-          amount: mockSession.order_amount,
-          currency: mockSession.order_currency,
-          status: 'development_payment_completed'
-        });
-      }
+      console.log(`Production Cashfree payment session created for KYC: ${paymentSession.payment_session_id}`);
+      
+      res.json({
+        orderId: paymentSession.order_id,
+        paymentSessionId: paymentSession.payment_session_id,
+        amount: paymentSession.order_amount,
+        currency: paymentSession.order_currency,
+        paymentUrl: `https://payments.cashfree.com/order/${paymentSession.payment_session_id}`,
+        status: 'production_payment_session_created'
+      });
     } catch (error) {
       console.error("Error creating KYC payment session:", error);
       res.status(500).json({ message: "Failed to create payment session" });
     }
   });
 
-  // Verify KYC payment
+  // Verify KYC payment using production Cashfree API
   app.post("/api/kyc/verify-payment", isTraditionallyAuthenticated, async (req: any, res) => {
     try {
       const { orderId } = req.body;
       const userId = req.user.id;
       
-      const orderDetails = await getOrderDetails(orderId);
+      console.log(`Verifying production Cashfree payment for order: ${orderId}`);
       
-      // For demo purposes, we'll simulate the payment verification process
-      // In production, this would check actual Cashfree payment status
-      console.log("Verifying Cashfree payment for order:", orderId);
+      const orderDetails = await getOrderDetails(orderId);
       
       if (orderDetails && orderDetails.order_status === 'PAID') {
         // Update payment status and automatically approve KYC
@@ -668,17 +704,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
           kycApprovedAt: new Date(),
         });
 
+        console.log(`Production KYC payment verified and approved for user ${userId}`);
+
         res.json({ 
-          message: "KYC fee payment successful via Cashfree - Verification completed!",
+          message: "KYC fee payment successful via production Cashfree - Verification completed!",
           paymentId: orderId,
-          kycStatus: "approved"
+          kycStatus: "approved",
+          verificationStatus: "verified"
         });
       } else {
-        res.status(400).json({ message: "Payment not completed. Please complete payment via Cashfree." });
+        const status = orderDetails?.order_status || 'UNKNOWN';
+        console.log(`Payment verification failed - Order status: ${status}`);
+        
+        res.status(400).json({ 
+          message: `Payment not completed. Current status: ${status}. Please complete payment via Cashfree.`,
+          orderStatus: status
+        });
       }
     } catch (error) {
-      console.error("Error verifying KYC payment:", error);
-      res.status(500).json({ message: "Failed to verify payment" });
+      console.error("Error verifying production KYC payment:", error);
+      res.status(500).json({ message: "Failed to verify payment with Cashfree production API" });
     }
   });
 

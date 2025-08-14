@@ -190,29 +190,29 @@ export default function KYC() {
       return response.json();
     },
     onSuccess: (data) => {
-      console.log("Payment session created:", data);
+      console.log("Production Cashfree payment session created:", data);
       
-      // Check if this is a development payment completion
-      if (data.status === 'development_payment_completed') {
-        toast({
-          title: "Payment Completed",
-          description: "KYC payment processed successfully!",
-        });
-        
-        // Automatically trigger verification since payment is complete
+      toast({
+        title: "Payment Gateway Ready",
+        description: "Redirecting to secure Cashfree payment gateway for KYC fee processing...",
+      });
+      
+      // Redirect to production Cashfree payment gateway
+      if (data.paymentUrl) {
         setTimeout(() => {
-          verifyPaymentMutation.mutate({ orderId: data.orderId });
-        }, 1000);
+          window.open(data.paymentUrl, '_blank', 'noopener,noreferrer');
+          
+          // Start polling for payment completion
+          setTimeout(() => {
+            verifyPaymentMutation.mutate({ orderId: data.orderId });
+          }, 5000);
+        }, 1500);
       } else {
         toast({
-          title: "Payment Session Created",
-          description: "Redirecting to Cashfree payment gateway...",
+          title: "Payment Gateway Error",
+          description: "Failed to initialize payment gateway. Please try again.",
+          variant: "destructive",
         });
-        
-        // For real Cashfree payments, redirect to payment URL
-        setTimeout(() => {
-          verifyPaymentMutation.mutate({ orderId: data.orderId });
-        }, 2000);
       }
     },
     onError: (error) => {
@@ -231,19 +231,28 @@ export default function KYC() {
       return response.json();
     },
     onSuccess: (data) => {
-      toast({
-        title: "Payment Successful",
-        description: "KYC processing fee paid successfully via Cashfree. Your verification is now approved!",
-      });
+      if (data.kycStatus === 'approved') {
+        toast({
+          title: "KYC Approved! 🎉",
+          description: "Your production payment has been verified and KYC is now approved. You can now access all earning features!",
+        });
+      } else {
+        toast({
+          title: "Payment Verification Status",
+          description: data.message || "Payment verification in progress via production Cashfree API. Please check back shortly.",
+        });
+      }
+      
       queryClient.invalidateQueries({ queryKey: ["/api/kyc/status"] });
       setTimeout(() => {
         refetchKycData();
       }, 1000);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      const errorMessage = error?.message || "Unable to verify payment status with production Cashfree API";
       toast({
-        title: "Payment Verification Failed",
-        description: "Payment verification failed. Please contact support.",
+        title: "Payment Verification Status",
+        description: `${errorMessage}. If you completed the payment, it may take a few minutes to process.`,
         variant: "destructive",
       });
     },

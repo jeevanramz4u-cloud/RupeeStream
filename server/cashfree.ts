@@ -1,9 +1,10 @@
 // Real Cashfree integration with HTTP API calls
+// For KYC payments, always use production API for real transactions
 const cashfreeConfig = {
   appId: process.env.CASHFREE_APP_ID!,
   secretKey: process.env.CASHFREE_SECRET_KEY!,
-  environment: process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'SANDBOX',
-  baseUrl: process.env.NODE_ENV === 'production' ? 'https://api.cashfree.com' : 'https://sandbox.cashfree.com'
+  environment: 'PRODUCTION', // Always use production for KYC payments
+  baseUrl: 'https://api.cashfree.com' // Production API URL for real payments
 };
 
 // Debug: Check if credentials are present
@@ -52,8 +53,8 @@ export async function createPaymentSession(
         customer_name: customerName
       },
       order_meta: {
-        return_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/api/kyc/payment-success`,
-        notify_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/api/kyc/payment-webhook`,
+        return_url: `${process.env.REPLIT_DEV_DOMAIN || 'https://innovativetaskearn.online'}/kyc?payment=success`,
+        notify_url: `${process.env.REPLIT_DEV_DOMAIN || 'https://innovativetaskearn.online'}/api/kyc/payment-webhook`,
         payment_methods: ""
       }
     };
