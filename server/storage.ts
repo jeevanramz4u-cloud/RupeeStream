@@ -167,9 +167,73 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       if (isDevelopment() && config.database.fallbackEnabled) {
         console.log("Development mode: User lookup simulated (database unavailable)");
-        // Return demo user for development mode testing
-        if (email === "demo@innovativetaskearn.online") {
-          return {
+        // Return test users for development mode authentication
+        const testUsers: Record<string, User> = {
+          "rahul.sharma@test.com": {
+            id: 'dev-user-1755205507947',
+            email: 'rahul.sharma@test.com',
+            firstName: 'Rahul',
+            lastName: 'Sharma',
+            profileImageUrl: null,
+            password: '$2b$12$vFplrKfrRse7njVSDS1q3uJrAz76PNrq7f.tYHb.wH4NraV66cyH.', // "test123"
+            phoneNumber: '9876543211',
+            dateOfBirth: '1995-03-15',
+            address: '456 MG Road',
+            city: 'Bangalore',
+            state: 'Karnataka',
+            pincode: '560001',
+            accountHolderName: 'Rahul Sharma',
+            accountNumber: '1234567890',
+            ifscCode: 'ICIC0000001',
+            bankName: 'ICICI Bank',
+            governmentIdType: null,
+            governmentIdNumber: null,
+            governmentIdUrl: null,
+            verificationStatus: 'pending',
+            kycStatus: 'pending',
+            status: 'active',
+            balance: '125.00',
+            referralCode: 'HHJIYY',
+            createdAt: new Date('2025-08-14T21:05:07.947Z'),
+            updatedAt: new Date(),
+            resetToken: null,
+            resetTokenExpiry: null,
+            kycApprovedAt: null,
+            suspensionReason: null
+          },
+          "priya.patel@test.com": {
+            id: 'dev-user-1755205510611',
+            email: 'priya.patel@test.com',
+            firstName: 'Priya',
+            lastName: 'Patel',
+            profileImageUrl: null,
+            password: '$2b$12$NgyWkMxqOhZbqqv93WPeden1UuTgQJSP07zbcugDI9il3.HEXjjDe', // "test123"
+            phoneNumber: '9876543212',
+            dateOfBirth: '1992-07-22',
+            address: '789 Park Street',
+            city: 'Delhi',
+            state: 'Delhi',
+            pincode: '110001',
+            accountHolderName: 'Priya Patel',
+            accountNumber: '2345678901',
+            ifscCode: 'SBIN0000001',
+            bankName: 'State Bank of India',
+            governmentIdType: 'Aadhaar',
+            governmentIdNumber: '1234-5678-9012',
+            governmentIdUrl: 'https://example.com/kyc-doc.jpg',
+            verificationStatus: 'verified',
+            kycStatus: 'approved',
+            status: 'active',
+            balance: '89.50',
+            referralCode: 'QEPSXO',
+            createdAt: new Date('2025-08-14T21:05:10.611Z'),
+            updatedAt: new Date(),
+            resetToken: null,
+            resetTokenExpiry: null,
+            kycApprovedAt: new Date('2025-08-14T15:30:00.000Z'),
+            suspensionReason: null
+          },
+          "demo@innovativetaskearn.online": {
             id: 'dev-demo-user',
             email: 'demo@innovativetaskearn.online',
             firstName: 'Demo',
@@ -189,8 +253,8 @@ export class DatabaseStorage implements IStorage {
             governmentIdType: 'aadhaar',
             governmentIdNumber: '123456789012',
             governmentIdUrl: 'demo-kyc-doc.jpg',
-            verificationStatus: 'pending',
-            kycStatus: 'pending',
+            verificationStatus: 'verified',
+            kycStatus: 'approved',
             status: 'active',
             balance: '1000.00',
             referralCode: 'DEMO123',
@@ -198,11 +262,12 @@ export class DatabaseStorage implements IStorage {
             updatedAt: new Date(),
             resetToken: null,
             resetTokenExpiry: null,
-            kycApprovedAt: null,
+            kycApprovedAt: new Date(),
             suspensionReason: null
-          } as User;
-        }
-        return undefined; // Allow new user creation in dev mode for other emails
+          }
+        };
+        
+        return testUsers[email] || undefined;
       }
       throw error;
     }
@@ -453,18 +518,143 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUsersForVerification(): Promise<User[]> {
-    return await db
-      .select()
-      .from(users)
-      .where(eq(users.verificationStatus, "pending"))
-      .orderBy(desc(users.createdAt));
+    try {
+      return await db
+        .select()
+        .from(users)
+        .where(eq(users.verificationStatus, "pending"))
+        .orderBy(desc(users.createdAt));
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Users for verification simulated (database unavailable)");
+        return [
+          {
+            id: 'dev-user-1755205507947',
+            email: 'rahul.sharma@test.com',
+            firstName: 'Rahul',
+            lastName: 'Sharma',
+            verificationStatus: 'pending',
+            kycStatus: 'pending',
+            status: 'active',
+            balance: '125.00'
+          }
+        ] as User[];
+      }
+      throw error;
+    }
   }
 
   async getAllUsers(): Promise<User[]> {
-    return await db
-      .select()
-      .from(users)
-      .orderBy(desc(users.createdAt));
+    try {
+      return await db
+        .select()
+        .from(users)
+        .orderBy(desc(users.createdAt));
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Users list simulated (database unavailable)");
+        // Return our test users for admin panel
+        return [
+          {
+            id: 'dev-user-1755205393601',
+            email: 'suspended@test.com',
+            firstName: 'Suspended',
+            lastName: 'User',
+            profileImageUrl: null,
+            password: '$2b$12$kA6/.QZxE0FAk7p1X2NdRu/Bn3cEyXiGKJaiBaXCR6J9hXe/yGGGG',
+            phoneNumber: '9876543210',
+            dateOfBirth: '1990-01-01',
+            address: '123 Test Street',
+            city: 'Mumbai',
+            state: 'Maharashtra',
+            pincode: '400001',
+            accountHolderName: 'Suspended User',
+            accountNumber: '9876543210',
+            ifscCode: 'HDFC0000456',
+            bankName: 'HDFC Bank',
+            governmentIdType: null,
+            governmentIdNumber: null,
+            governmentIdUrl: null,
+            verificationStatus: 'pending',
+            kycStatus: 'pending',
+            status: 'suspended',
+            balance: '0.00',
+            referralCode: 'ZCZA8U',
+            createdAt: new Date('2025-08-14T21:03:13.601Z'),
+            updatedAt: new Date(),
+            resetToken: null,
+            resetTokenExpiry: null,
+            kycApprovedAt: null,
+            suspensionReason: 'Account suspended by admin for demonstration'
+          },
+          {
+            id: 'dev-user-1755205507947',
+            email: 'rahul.sharma@test.com',
+            firstName: 'Rahul',
+            lastName: 'Sharma',
+            profileImageUrl: null,
+            password: '$2b$12$vFplrKfrRse7njVSDS1q3uJrAz76PNrq7f.tYHb.wH4NraV66cyH.',
+            phoneNumber: '9876543211',
+            dateOfBirth: '1995-03-15',
+            address: '456 MG Road',
+            city: 'Bangalore',
+            state: 'Karnataka',
+            pincode: '560001',
+            accountHolderName: 'Rahul Sharma',
+            accountNumber: '1234567890',
+            ifscCode: 'ICIC0000001',
+            bankName: 'ICICI Bank',
+            governmentIdType: null,
+            governmentIdNumber: null,
+            governmentIdUrl: null,
+            verificationStatus: 'pending',
+            kycStatus: 'pending',
+            status: 'active',
+            balance: '125.00',
+            referralCode: 'HHJIYY',
+            createdAt: new Date('2025-08-14T21:05:07.947Z'),
+            updatedAt: new Date(),
+            resetToken: null,
+            resetTokenExpiry: null,
+            kycApprovedAt: null,
+            suspensionReason: null
+          },
+          {
+            id: 'dev-user-1755205510611',
+            email: 'priya.patel@test.com',
+            firstName: 'Priya',
+            lastName: 'Patel',
+            profileImageUrl: null,
+            password: '$2b$12$NgyWkMxqOhZbqqv93WPeden1UuTgQJSP07zbcugDI9il3.HEXjjDe',
+            phoneNumber: '9876543212',
+            dateOfBirth: '1992-07-22',
+            address: '789 Park Street',
+            city: 'Delhi',
+            state: 'Delhi',
+            pincode: '110001',
+            accountHolderName: 'Priya Patel',
+            accountNumber: '2345678901',
+            ifscCode: 'SBIN0000001',
+            bankName: 'State Bank of India',
+            governmentIdType: 'Aadhaar',
+            governmentIdNumber: '1234-5678-9012',
+            governmentIdUrl: 'https://example.com/kyc-doc.jpg',
+            verificationStatus: 'verified',
+            kycStatus: 'approved',
+            status: 'active',
+            balance: '89.50',
+            referralCode: 'QEPSXO',
+            createdAt: new Date('2025-08-14T21:05:10.611Z'),
+            updatedAt: new Date(),
+            resetToken: null,
+            resetTokenExpiry: null,
+            kycApprovedAt: new Date('2025-08-14T15:30:00.000Z'),
+            suspensionReason: null
+          }
+        ] as User[];
+      }
+      throw error;
+    }
   }
 
   async deleteUser(id: string): Promise<boolean> {
@@ -499,12 +689,20 @@ export class DatabaseStorage implements IStorage {
 
   // Video operations
   async getVideos(limit = 50): Promise<Video[]> {
-    return await db
-      .select()
-      .from(videos)
-      .where(eq(videos.isActive, true))
-      .orderBy(desc(videos.createdAt))
-      .limit(limit);
+    try {
+      return await db
+        .select()
+        .from(videos)
+        .where(eq(videos.isActive, true))
+        .orderBy(desc(videos.createdAt))
+        .limit(limit);
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Videos simulated (database unavailable)");
+        return []; // Return empty array for video analytics
+      }
+      throw error;
+    }
   }
 
   async getVideo(id: string): Promise<Video | undefined> {
@@ -821,18 +1019,45 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPayoutRequests(userId?: string): Promise<PayoutRequest[]> {
-    if (userId) {
+    try {
+      if (userId) {
+        return await db
+          .select()
+          .from(payoutRequests)
+          .where(eq(payoutRequests.userId, userId))
+          .orderBy(desc(payoutRequests.requestedAt));
+      }
+      
       return await db
         .select()
         .from(payoutRequests)
-        .where(eq(payoutRequests.userId, userId))
         .orderBy(desc(payoutRequests.requestedAt));
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Payouts simulated (database unavailable)");
+        return [
+          {
+            id: 'payout-1',
+            userId: 'dev-user-1755205507947',
+            amount: '150.00',
+            status: 'pending',
+            requestedAt: new Date('2025-08-14T15:30:00.000Z'),
+            processedAt: null,
+            reason: null
+          },
+          {
+            id: 'payout-2',
+            userId: 'dev-user-1755205510611',
+            amount: '89.50',
+            status: 'completed',
+            requestedAt: new Date('2025-08-14T10:15:00.000Z'),
+            processedAt: new Date('2025-08-14T16:20:00.000Z'),
+            reason: null
+          }
+        ] as PayoutRequest[];
+      }
+      throw error;
     }
-    
-    return await db
-      .select()
-      .from(payoutRequests)
-      .orderBy(desc(payoutRequests.requestedAt));
   }
 
   async updatePayoutStatus(id: string, status: string, reason?: string): Promise<PayoutRequest | undefined> {
