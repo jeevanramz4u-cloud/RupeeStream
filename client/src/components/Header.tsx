@@ -116,7 +116,7 @@ export default function Header() {
           </nav>
 
           {/* User Section */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Earnings Display - Always Visible */}
             <Link href="/earnings">
               <div className="flex items-center space-x-1 sm:space-x-2 bg-green-50 hover:bg-green-100 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors cursor-pointer touch-manipulation">
@@ -125,49 +125,69 @@ export default function Header() {
               </div>
             </Link>
             
-            {/* User Menu */}
+            {/* User Menu - Compact Round Button */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-full touch-manipulation">
-                  <Avatar className="h-7 w-7 sm:h-9 sm:w-9">
+                <Button variant="ghost" className="relative h-9 w-9 sm:h-10 sm:w-10 rounded-full p-0 hover:bg-gray-100 touch-manipulation">
+                  <Avatar className="h-8 w-8 sm:h-9 sm:w-9 ring-2 ring-offset-2 ring-primary/20">
                     <AvatarImage 
                       src={(user as any)?.profileImageUrl || ''} 
                       alt={(user as any)?.firstName || 'User'} 
                       className="object-cover"
                     />
-                    <AvatarFallback className="bg-primary text-white text-xs sm:text-sm">
-                      {(user as any)?.firstName?.charAt(0) || 'U'}
+                    <AvatarFallback className="bg-primary text-white text-sm font-medium">
+                      {(user as any)?.firstName?.charAt(0)?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48 sm:w-56" align="end">
-                <div className="flex items-center justify-start gap-2 p-2">
-                  <div className="flex flex-col space-y-1 leading-none min-w-0">
-                    <p className="font-medium text-sm truncate">
+              <DropdownMenuContent className="w-64 sm:w-72" align="end">
+                {/* User Info with Balance */}
+                <div className="flex items-center justify-start gap-3 p-3 border-b">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage 
+                      src={(user as any)?.profileImageUrl || ''} 
+                      alt={(user as any)?.firstName || 'User'} 
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-primary text-white text-sm font-medium">
+                      {(user as any)?.firstName?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col space-y-1 leading-none min-w-0 flex-1">
+                    <p className="font-semibold text-sm truncate">
                       {(user as any)?.firstName} {(user as any)?.lastName}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">
                       {(user as any)?.email}
                     </p>
+                    <div className="flex items-center space-x-1 mt-1">
+                      <Coins className="text-green-600 w-3 h-3" />
+                      <span className="font-bold text-green-700 text-xs">Balance: ₹{(user as any)?.balance || '0.00'}</span>
+                    </div>
                   </div>
                 </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center text-sm touch-manipulation">
-                    <User className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-sm touch-manipulation">
-                  <Settings className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => window.location.href = '/api/logout'} className="text-sm touch-manipulation">
-                  <LogOut className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  Log out
-                </DropdownMenuItem>
+                
+                {/* Menu Items */}
+                <div className="py-1">
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="flex items-center px-3 py-2 text-sm touch-manipulation">
+                      <User className="mr-3 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center px-3 py-2 text-sm touch-manipulation">
+                    <Settings className="mr-3 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                </div>
+                
+                <div className="border-t py-1">
+                  <DropdownMenuItem onClick={() => window.location.href = '/api/logout'} className="flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 touch-manipulation">
+                    <LogOut className="mr-3 h-4 w-4" />
+                    Log out
+                  </DropdownMenuItem>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
