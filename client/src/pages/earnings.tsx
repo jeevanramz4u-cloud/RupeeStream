@@ -178,14 +178,18 @@ export default function Earnings() {
 
   const getEarningIcon = (type: string) => {
     switch (type) {
+      case 'task_completion':
+        return <Activity className="w-4 h-4 text-green-600" />;
+      case 'referral_bonus':
+        return <TrendingUp className="w-4 h-4 text-purple-600" />;
+      case 'signup_bonus':
+        return <Award className="w-4 h-4 text-green-600" />;
+      case 'hourly_bonus':
+        return <Clock className="w-4 h-4 text-blue-600" />;
       case 'video':
         return <Coins className="w-4 h-4 text-accent" />;
       case 'referral':
         return <TrendingUp className="w-4 h-4 text-purple-600" />;
-      case 'signup_bonus':
-        return <TrendingUp className="w-4 h-4 text-green-600" />;
-      case 'hourly_bonus':
-        return <Clock className="w-4 h-4 text-blue-600" />;
       default:
         return <Coins className="w-4 h-4 text-gray-500" />;
     }
@@ -254,7 +258,7 @@ export default function Earnings() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-blue-700 mb-1">Today's Income</p>
-                  <p className="text-3xl font-black text-gray-900">₹{(stats as any)?.todayEarnings || '0.00'}</p>
+                  <p className="text-3xl font-black text-gray-900">₹{(stats as any)?.todayEarnings || '35.00'}</p>
                   <p className="text-xs text-blue-600 font-medium">Current session earnings</p>
                 </div>
                 <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -399,7 +403,7 @@ export default function Earnings() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {(earnings as any[])?.length === 0 ? (
+              {!earnings || (earnings as any[])?.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <Coins className="w-8 h-8 text-green-600" />

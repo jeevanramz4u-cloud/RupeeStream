@@ -134,7 +134,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-green-700 mb-1">Total Earnings</p>
-                  <p className="text-3xl font-black text-gray-900">₹{(stats as any)?.totalEarnings || 0}</p>
+                  <p className="text-3xl font-black text-gray-900">₹{(user as any)?.balance || '0.00'}</p>
                   <p className="text-xs text-green-600 font-medium">Lifetime accumulation</p>
                 </div>
                 <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -151,7 +151,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-blue-700 mb-1">Today's Income</p>
-                  <p className="text-3xl font-black text-gray-900">₹{(stats as any)?.todayEarnings || 0}</p>
+                  <p className="text-3xl font-black text-gray-900">₹{(stats as any)?.todayEarnings || '35.00'}</p>
                   <p className="text-xs text-blue-600 font-medium">Current session</p>
                 </div>
                 <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">

@@ -909,11 +909,88 @@ export class DatabaseStorage implements IStorage {
 
   // Earnings operations
   async getEarnings(userId: string): Promise<Earning[]> {
-    return await db
-      .select()
-      .from(earnings)
-      .where(eq(earnings.userId, userId))
-      .orderBy(desc(earnings.createdAt));
+    try {
+      return await db
+        .select()
+        .from(earnings)
+        .where(eq(earnings.userId, userId))
+        .orderBy(desc(earnings.createdAt));
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Earnings simulated (database unavailable)");
+        
+        // Generate sample earnings history including bonuses and task completions
+        const sampleEarnings: Earning[] = [
+          {
+            id: 'dev-earning-1',
+            userId: userId,
+            amount: '25.00',
+            type: 'task_completion',
+            description: '📱 App Download - Instagram Reels',
+            createdAt: new Date(Date.now() - 86400000 * 1) // 1 day ago
+          },
+          {
+            id: 'dev-earning-2',
+            userId: userId,
+            amount: '35.00',
+            type: 'task_completion', 
+            description: '⭐ Business Review - Local Restaurant',
+            createdAt: new Date(Date.now() - 86400000 * 2) // 2 days ago
+          },
+          {
+            id: 'dev-earning-3',
+            userId: userId,
+            amount: '10.00',
+            type: 'hourly_bonus',
+            description: '🎁 Hourly Login Bonus',
+            createdAt: new Date(Date.now() - 86400000 * 2) // 2 days ago
+          },
+          {
+            id: 'dev-earning-4',
+            userId: userId,
+            amount: '30.00',
+            type: 'task_completion',
+            description: '🛍️ Product Review - Electronics',
+            createdAt: new Date(Date.now() - 86400000 * 3) // 3 days ago
+          },
+          {
+            id: 'dev-earning-5',
+            userId: userId,
+            amount: '49.00',
+            type: 'referral_bonus',
+            description: '👥 Referral Bonus - Friend joined',
+            createdAt: new Date(Date.now() - 86400000 * 4) // 4 days ago
+          },
+          {
+            id: 'dev-earning-6',
+            userId: userId,
+            amount: '20.00',
+            type: 'task_completion',
+            description: '📺 Channel Subscribe - YouTube',
+            createdAt: new Date(Date.now() - 86400000 * 5) // 5 days ago
+          },
+          {
+            id: 'dev-earning-7',
+            userId: userId,
+            amount: '10.00',
+            type: 'hourly_bonus',
+            description: '🎁 Hourly Login Bonus',
+            createdAt: new Date(Date.now() - 86400000 * 5) // 5 days ago
+          },
+          {
+            id: 'dev-earning-8',
+            userId: userId,
+            amount: '15.00',
+            type: 'task_completion',
+            description: '👍 Comments & Likes - Social Media',
+            createdAt: new Date(Date.now() - 86400000 * 6) // 6 days ago
+          }
+        ];
+        
+        return sampleEarnings;
+      }
+      throw error;
+    }
   }
 
   async createEarning(earning: InsertEarning): Promise<Earning> {
@@ -993,18 +1070,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTodayEarnings(userId: string): Promise<number> {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    const result = await db
-      .select({ total: sql<number>`COALESCE(SUM(${earnings.amount}), 0)` })
-      .from(earnings)
-      .where(and(
-        eq(earnings.userId, userId),
-        gte(earnings.createdAt, today)
-      ));
-    
-    return Number(result[0]?.total) || 0;
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const result = await db
+        .select({ total: sql<number>`COALESCE(SUM(${earnings.amount}), 0)` })
+        .from(earnings)
+        .where(and(
+          eq(earnings.userId, userId),
+          gte(earnings.createdAt, today)
+        ));
+      
+      return Number(result[0]?.total) || 0;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Today's earnings simulated (database unavailable)");
+        // Return sample today's earnings
+        return 35.00;
+      }
+      throw error;
+    }
   }
 
   // Referral operations
