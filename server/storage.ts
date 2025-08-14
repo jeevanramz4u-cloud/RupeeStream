@@ -1664,14 +1664,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTaskCompletion(userId: string, taskId: string): Promise<TaskCompletion | undefined> {
-    const [completion] = await db
-      .select()
-      .from(taskCompletions)
-      .where(and(
-        eq(taskCompletions.userId, userId),
-        eq(taskCompletions.taskId, taskId)
-      ));
-    return completion;
+    try {
+      const [completion] = await db
+        .select()
+        .from(taskCompletions)
+        .where(and(
+          eq(taskCompletions.userId, userId),
+          eq(taskCompletions.taskId, taskId)
+        ));
+      return completion;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log(`Development mode: Checking task completion for user ${userId}, task ${taskId}`);
+        // Return undefined to allow new submissions in development
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   async createTaskCompletion(completion: InsertTaskCompletion): Promise<TaskCompletion> {
@@ -1683,8 +1692,7 @@ export class DatabaseStorage implements IStorage {
       return newCompletion;
     } catch (error) {
       if (isDevelopment() && config.database.fallbackEnabled) {
-        console.log("Development mode: Task completion simulated (database unavailable)");
-        return {
+        const newCompletion = {
           id: 'dev-completion-' + Date.now(),
           userId: completion.userId,
           taskId: completion.taskId,
@@ -1697,68 +1705,170 @@ export class DatabaseStorage implements IStorage {
           rejectionReason: null,
           rewardCredited: false
         } as TaskCompletion;
+        
+        // Store in memory for development mode
+        if (!globalThis.devTaskCompletions) {
+          globalThis.devTaskCompletions = [];
+        }
+        globalThis.devTaskCompletions.push(newCompletion);
+        
+        console.log("✅ Development mode: Task completion created");
+        console.log(`   ID: ${newCompletion.id}`);
+        console.log(`   User: ${newCompletion.userId}`);
+        console.log(`   Task: ${newCompletion.taskId}`);
+        console.log(`   Status: ${newCompletion.status}`);
+        
+        return newCompletion;
       }
       throw error;
     }
   }
 
   async updateTaskCompletion(id: string, updates: Partial<TaskCompletion>): Promise<TaskCompletion | undefined> {
-    const [completion] = await db
-      .update(taskCompletions)
-      .set(updates)
-      .where(eq(taskCompletions.id, id))
-      .returning();
-    return completion;
+    try {
+      const [completion] = await db
+        .update(taskCompletions)
+        .set(updates)
+        .where(eq(taskCompletions.id, id))
+        .returning();
+      return completion;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log(`Development mode: Updating task completion ${id}`);
+        // Return a simulated updated completion
+        return {
+          id,
+          userId: 'dev-demo-user',
+          taskId: 'task-1',
+          status: updates.status || 'submitted',
+          proofData: 'Test proof data',
+          proofImages: [],
+          submittedAt: new Date(),
+          reviewedAt: updates.reviewedAt || null,
+          reviewedBy: updates.reviewedBy || null,
+          rejectionReason: updates.rejectionReason || null,
+          rewardCredited: updates.rewardCredited || false
+        } as TaskCompletion;
+      }
+      throw error;
+    }
   }
 
   async approveTaskCompletion(id: string, reviewedBy: string): Promise<void> {
-    const completion = await db.select().from(taskCompletions).where(eq(taskCompletions.id, id));
-    if (!completion[0]) return;
-    
-    const task = await this.getTask(completion[0].taskId);
-    if (!task) return;
-    
-    // Update completion status
-    await this.updateTaskCompletion(id, {
-      status: 'approved',
-      reviewedAt: new Date(),
-      reviewedBy,
-      rewardCredited: true
-    });
-    
-    // Credit reward to user
-    await this.createEarning({
-      userId: completion[0].userId,
-      taskId: task.id,
-      type: 'task',
-      amount: task.reward,
-      description: `Task completed: ${task.title}`
-    });
-    
-    // Update user balance
-    const user = await this.getUser(completion[0].userId);
-    if (user) {
-      const currentBalance = parseFloat(user.balance || '0');
-      const rewardAmount = parseFloat(task.reward);
-      const newBalance = currentBalance + rewardAmount;
+    try {
+      const completion = await db.select().from(taskCompletions).where(eq(taskCompletions.id, id));
+      if (!completion[0]) return;
       
-      await this.updateUser(user.id, { balance: newBalance.toFixed(2) });
+      const task = await this.getTask(completion[0].taskId);
+      if (!task) return;
+      
+      // Update completion status
+      await this.updateTaskCompletion(id, {
+        status: 'approved',
+        reviewedAt: new Date(),
+        reviewedBy,
+        rewardCredited: true
+      });
+      
+      // Credit reward to user
+      await this.createEarning({
+        userId: completion[0].userId,
+        taskId: task.id,
+        type: 'task',
+        amount: task.reward,
+        description: `Task completed: ${task.title}`
+      });
+      
+      // Update user balance
+      const user = await this.getUser(completion[0].userId);
+      if (user) {
+        const currentBalance = parseFloat(user.balance || '0');
+        const rewardAmount = parseFloat(task.reward);
+        const newBalance = currentBalance + rewardAmount;
+        
+        await this.updateUser(user.id, { balance: newBalance.toFixed(2) });
+      }
+      
+      // Increment task completions
+      await db
+        .update(tasks)
+        .set({ currentCompletions: sql`${tasks.currentCompletions} + 1` })
+        .where(eq(tasks.id, task.id));
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log(`Development mode: Approving task completion ${id}`);
+        
+        // For development mode, we'll use hardcoded completion data for testing
+        // Since we don't have a persistent store, we'll simulate the approval
+        const completion = globalThis.devTaskCompletions?.find(tc => tc.id === id) || {
+          id,
+          userId: 'dev-demo-user',
+          taskId: 'task-1',
+          status: 'submitted'
+        };
+        
+        // Update completion status in memory if it exists
+        if (globalThis.devTaskCompletions) {
+          const index = globalThis.devTaskCompletions.findIndex(tc => tc.id === id);
+          if (index !== -1) {
+            globalThis.devTaskCompletions[index] = {
+              ...globalThis.devTaskCompletions[index],
+              status: 'approved',
+              reviewedAt: new Date(),
+              reviewedBy,
+              rewardCredited: true
+            };
+          }
+        }
+        
+        // Find task details - use first task for development testing
+        const task = devModeTasks.find(t => t.id === (completion.taskId || 'task-1')) || devModeTasks[0];
+        if (!task) {
+          console.log("❌ No tasks available in development mode");
+          return;
+        }
+        
+        // Find and update user balance
+        const user = devModeUsers.get(completion.userId);
+        if (user) {
+          const currentBalance = parseFloat(user.balance || '0');
+          const rewardAmount = parseFloat(task.reward);
+          const newBalance = currentBalance + rewardAmount;
+          
+          // Update user balance in memory
+          const updatedUser = { ...user, balance: newBalance.toFixed(2) };
+          devModeUsers.set(user.id, updatedUser);
+          
+          console.log(`✅ Task approved in development mode:`);
+          console.log(`   User: ${user.firstName} ${user.lastName}`);
+          console.log(`   Task: ${task.title}`);
+          console.log(`   Reward: ₹${task.reward}`);
+          console.log(`   Previous Balance: ₹${currentBalance}`);
+          console.log(`   New Balance: ₹${newBalance}`);
+        }
+        return;
+      }
+      throw error;
     }
-    
-    // Increment task completions
-    await db
-      .update(tasks)
-      .set({ currentCompletions: sql`${tasks.currentCompletions} + 1` })
-      .where(eq(tasks.id, task.id));
   }
 
   async rejectTaskCompletion(id: string, reviewedBy: string, reason: string): Promise<void> {
-    await this.updateTaskCompletion(id, {
-      status: 'rejected',
-      reviewedAt: new Date(),
-      reviewedBy,
-      rejectionReason: reason
-    });
+    try {
+      await this.updateTaskCompletion(id, {
+        status: 'rejected',
+        reviewedAt: new Date(),
+        reviewedBy,
+        rejectionReason: reason
+      });
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log(`Development mode: Rejecting task completion ${id}`);
+        console.log(`   Reviewed by: ${reviewedBy}`);
+        console.log(`   Reason: ${reason}`);
+        return;
+      }
+      throw error;
+    }
   }
 
   async getTaskCompletionsForReview(): Promise<TaskCompletion[]> {
@@ -1770,7 +1880,11 @@ export class DatabaseStorage implements IStorage {
         .orderBy(desc(taskCompletions.submittedAt));
     } catch (error) {
       if (isDevelopment() && config.database.fallbackEnabled) {
-        console.log("Development mode: Returning empty task completions (database unavailable)");
+        console.log("Development mode: Returning task completions from memory");
+        // Return task completions from memory
+        if (globalThis.devTaskCompletions) {
+          return globalThis.devTaskCompletions.filter(tc => tc.status === 'submitted');
+        }
         return [];
       }
       throw error;
