@@ -182,7 +182,7 @@ export default function AdminTasks() {
   };
 
   const viewTaskCompletions = (taskId: string) => {
-    const taskCompletions = completions.filter((c: any) => c.taskId === taskId);
+    const taskCompletions = Array.isArray(completions) ? completions.filter((c: any) => c.taskId === taskId) : [];
     setSelectedTaskCompletions(taskCompletions);
     setIsCompletionsDialogOpen(true);
   };
@@ -276,25 +276,25 @@ export default function AdminTasks() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="pt-6">
-              <div className="text-2xl font-bold">{tasks.length}</div>
+              <div className="text-2xl font-bold">{Array.isArray(tasks) ? tasks.length : 0}</div>
               <p className="text-sm text-gray-600">Total Tasks</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <div className="text-2xl font-bold">{tasks.filter((t: any) => t.isActive).length}</div>
+              <div className="text-2xl font-bold">{Array.isArray(tasks) ? tasks.filter((t: any) => t.isActive).length : 0}</div>
               <p className="text-sm text-gray-600">Active Tasks</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <div className="text-2xl font-bold">{completions.filter((c: any) => c.status === 'submitted').length}</div>
+              <div className="text-2xl font-bold">{Array.isArray(completions) ? completions.filter((c: any) => c.status === 'submitted').length : 0}</div>
               <p className="text-sm text-gray-600">Pending Review</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <div className="text-2xl font-bold">{completions.filter((c: any) => c.status === 'approved').length}</div>
+              <div className="text-2xl font-bold">{Array.isArray(completions) ? completions.filter((c: any) => c.status === 'approved').length : 0}</div>
               <p className="text-sm text-gray-600">Approved Today</p>
             </CardContent>
           </Card>
@@ -302,9 +302,9 @@ export default function AdminTasks() {
 
         {/* Tasks List */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tasks.map((task: any) => {
+          {Array.isArray(tasks) && tasks.map((task: any) => {
             const IconComponent = taskCategoryIcons[task.category as keyof typeof taskCategoryIcons] || FileText;
-            const taskCompletions = completions.filter((c: any) => c.taskId === task.id);
+            const taskCompletions = Array.isArray(completions) ? completions.filter((c: any) => c.taskId === task.id) : [];
             const pendingCount = taskCompletions.filter((c: any) => c.status === 'submitted').length;
 
             return (

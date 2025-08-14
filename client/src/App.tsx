@@ -59,6 +59,27 @@ function AdminRoute() {
   }
 }
 
+function AdminTasksRoute() {
+  const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
+  
+  if (adminLoading) {
+    return (
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Verifying admin access...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (isAdminAuth) {
+    return <AdminTasks />;
+  } else {
+    return <AdminLogin />;
+  }
+}
+
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, isAuthenticated, isLoading } = useAuth();
   
@@ -111,6 +132,7 @@ function Router() {
     <Switch>
       {/* Admin routes - separate from regular user auth */}
       <Route path="/admin" component={AdminRoute} />
+      <Route path="/admin/tasks" component={AdminTasksRoute} />
       <Route path="/admin-login" component={AdminLogin} />
       
       {/* Public routes - always accessible */}
@@ -157,7 +179,6 @@ function Router() {
       {/* Protected routes - redirect to login if not authenticated */}
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/tasks" component={() => <ProtectedRoute component={Tasks} />} />
-      <Route path="/admin-tasks" component={AdminTasks} />
       <Route path="/videos" component={() => <ProtectedRoute component={Videos} />} />
       <Route path="/video/:id" component={() => <ProtectedRoute component={VideoPlayer} />} />
       <Route path="/earnings" component={() => <ProtectedRoute component={Earnings} />} />
