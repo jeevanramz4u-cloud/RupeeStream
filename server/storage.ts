@@ -1114,8 +1114,25 @@ export class DatabaseStorage implements IStorage {
 
   // Payout operations
   async createPayoutRequest(request: InsertPayoutRequest): Promise<PayoutRequest> {
-    const [newRequest] = await db.insert(payoutRequests).values(request).returning();
-    return newRequest;
+    try {
+      const [newRequest] = await db.insert(payoutRequests).values(request).returning();
+      return newRequest;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Payout creation simulated (database unavailable)");
+        const newPayout: PayoutRequest = {
+          id: `dev-payout-${Date.now()}`,
+          userId: request.userId,
+          amount: request.amount,
+          status: 'pending',
+          requestedAt: new Date(),
+          processedAt: null,
+          reason: null
+        };
+        return newPayout;
+      }
+      throw error;
+    }
   }
 
   async getPayoutRequests(userId?: string): Promise<PayoutRequest[]> {
@@ -1161,44 +1178,103 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updatePayoutStatus(id: string, status: string, reason?: string): Promise<PayoutRequest | undefined> {
-    const updateData: any = { status, processedAt: new Date() };
-    if (reason) {
-      updateData.reason = reason;
-    }
-    
-    // Get the payout request first to get the amount and userId
-    const [existingRequest] = await db
-      .select()
-      .from(payoutRequests)
-      .where(eq(payoutRequests.id, id));
-    
-    if (!existingRequest) {
-      throw new Error("Payout request not found");
-    }
-    
-    // Update the payout status
-    const [request] = await db
-      .update(payoutRequests)
-      .set(updateData)
-      .where(eq(payoutRequests.id, id))
-      .returning();
-    
-    // If status is completed, deduct the amount from user's balance
-    if (status === 'completed' && existingRequest.status !== 'completed') {
-      const user = await this.getUser(existingRequest.userId);
-      if (user) {
-        const currentBalance = parseFloat(user.balance || '0');
-        const payoutAmount = parseFloat(existingRequest.amount);
-        const newBalance = Math.max(0, currentBalance - payoutAmount); // Ensure balance doesn't go negative
-        
-        await db
-          .update(users)
-          .set({ balance: newBalance.toFixed(2) })
-          .where(eq(users.id, existingRequest.userId));
+    try {
+      const updateData: any = { status, processedAt: new Date() };
+      if (reason) {
+        updateData.reason = reason;
       }
+      
+      // Get the payout request first to get the amount and userId
+      const [existingRequest] = await db
+        .select()
+        .from(payoutRequests)
+        .where(eq(payoutRequests.id, id));
+      
+      if (!existingRequest) {
+        throw new Error("Payout request not found");
+      }
+      
+      // Update the payout status
+      const [request] = await db
+        .update(payoutRequests)
+        .set(updateData)
+        .where(eq(payoutRequests.id, id))
+        .returning();
+      
+      // If status is completed, deduct the amount from user's balance
+      if (status === 'completed' && existingRequest.status !== 'completed') {
+        const user = await this.getUser(existingRequest.userId);
+        if (user) {
+          const currentBalance = parseFloat(user.balance || '0');
+          const payoutAmount = parseFloat(existingRequest.amount);
+          const newBalance = Math.max(0, currentBalance - payoutAmount); // Ensure balance doesn't go negative
+          
+          await db
+            .update(users)
+            .set({ balance: newBalance.toFixed(2) })
+            .where(eq(users.id, existingRequest.userId));
+        }
+      }
+      
+      return request;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Payout update simulated (database unavailable)");
+        
+        // Simulate finding and updating the payout
+        const samplePayouts = [
+          {
+            id: 'payout-1',
+            userId: 'dev-user-1755205507947',
+            amount: '150.00',
+            status: 'pending',
+            requestedAt: new Date('2025-08-14T15:30:00.000Z'),
+            processedAt: null,
+            reason: null
+          },
+          {
+            id: 'payout-2',
+            userId: 'dev-user-1755205510611',
+            amount: '89.50',
+            status: 'completed',
+            requestedAt: new Date('2025-08-14T10:15:00.000Z'),
+            processedAt: new Date('2025-08-14T16:20:00.000Z'),
+            reason: null
+          }
+        ];
+        
+        const payout = samplePayouts.find(p => p.id === id);
+        if (payout) {
+          payout.status = status;
+          payout.processedAt = new Date();
+          if (reason) {
+            payout.reason = reason;
+          }
+          console.log(`✅ Payout ${id} updated to ${status}${reason ? ` with reason: ${reason}` : ''}`);
+          
+          // Simulate notification to user
+          if (status === 'approved') {
+            console.log(`📧 NOTIFICATION: Dear user, your payout request of ₹${payout.amount} has been APPROVED and will be processed within 24 hours.`);
+          } else if (status === 'rejected') {
+            console.log(`📧 NOTIFICATION: Dear user, your payout request of ₹${payout.amount} has been REJECTED. Reason: ${reason}`);
+          }
+          
+          return payout as PayoutRequest;
+        }
+        
+        // For any other payout ID, create a new simulated payout
+        return {
+          id: id,
+          userId: 'dev-demo-user',
+          amount: '500.00',
+          status: status,
+          requestedAt: new Date(),
+          processedAt: new Date(),
+          reason: reason || null
+        } as PayoutRequest;
+      }
+      throw error;
     }
-    
-    return request;
   }
 
   // Chat operations
