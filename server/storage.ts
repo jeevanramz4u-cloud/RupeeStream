@@ -300,7 +300,7 @@ export class DatabaseStorage implements IStorage {
       if (isDevelopment() && config.database.fallbackEnabled) {
         console.log(`Development mode: User update simulated (database unavailable) - Status: ${updates.status}`);
         // Return updated user data for suspension demo
-        if (id === 'dev-user-1755205393601' && updates.status === 'suspended') {
+        if ((id === 'dev-user-1755205393601' || id === 'dev-user-1755205510611' || id === 'dev-user-1755205527714') && updates.status === 'suspended') {
           return {
             id: 'dev-user-1755205393601',
             email: 'suspended@test.com',
@@ -395,7 +395,7 @@ export class DatabaseStorage implements IStorage {
       if (isDevelopment() && config.database.fallbackEnabled) {
         console.log(`Development mode: User status update simulated (database unavailable) - Status: ${status}`);
         // Return updated user data for suspension demo
-        if (id === 'dev-user-1755205393601') {
+        if (id === 'dev-user-1755205393601' || id === 'dev-user-1755205510611' || id === 'dev-user-1755205527714') {
           return {
             id: 'dev-user-1755205393601',
             email: 'suspended@test.com',
