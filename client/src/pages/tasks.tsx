@@ -299,6 +299,16 @@ export default function Tasks() {
                     ) : (
                       <Button 
                         onClick={() => {
+                          // Debug user data
+                          console.log("Start Task clicked - User verification check:", {
+                            userId: user?.id,
+                            status: user?.status,
+                            verificationStatus: user?.verificationStatus,
+                            kycStatus: user?.kycStatus,
+                            kycFeePaid: user?.kycFeePaid,
+                            canAccessTasks: user?.status !== 'suspended' && user?.verificationStatus === 'verified' && user?.kycStatus === 'approved'
+                          });
+                          
                           // Check if user is verified before opening task dialog
                           if (user?.status === 'suspended') {
                             toast({
@@ -311,7 +321,7 @@ export default function Tasks() {
                           if (user?.verificationStatus !== 'verified' || user?.kycStatus !== 'approved') {
                             toast({
                               title: "KYC Verification Pending",
-                              description: "Please complete your KYC verification to start earning from tasks. Go to Profile > KYC Verification.",
+                              description: `Verification required. Status: ${user?.verificationStatus || 'unknown'}, KYC: ${user?.kycStatus || 'unknown'}. Please complete your KYC verification to start earning from tasks.`,
                               variant: "destructive",
                             });
                             return;
