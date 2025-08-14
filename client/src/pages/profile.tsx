@@ -26,6 +26,7 @@ import {
   Settings
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function Profile() {
@@ -105,29 +106,53 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30">
-      {/* Enhanced Header */}
+      {/* Main Navigation Header */}
+      <Header />
+      
+      {/* Page Title Section */}
       <div className="bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-4 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm" className="hover:bg-blue-50">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Dashboard
-                </Button>
-              </Link>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
-                  <User className="w-5 h-5 text-blue-600" />
-                </div>
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 tracking-tight">Professional Profile</h1>
-              </div>
+          <div className="py-4 flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
+              <User className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">My Profile</h1>
+              <p className="text-sm text-gray-600">Manage your personal and verification details</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Quick Action Buttons */}
+        <div className="mb-6 flex flex-wrap gap-3">
+          <Link href="/dashboard">
+            <Button variant="outline" className="hover:bg-blue-50">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          </Link>
+          <Link href="/kyc">
+            <Button variant="outline" className="hover:bg-green-50">
+              <Shield className="w-4 h-4 mr-2" />
+              KYC Verification
+            </Button>
+          </Link>
+          <Link href="/earnings">
+            <Button variant="outline" className="hover:bg-yellow-50">
+              <CreditCard className="w-4 h-4 mr-2" />
+              My Earnings
+            </Button>
+          </Link>
+          <Link href="/referrals">
+            <Button variant="outline" className="hover:bg-purple-50">
+              <Award className="w-4 h-4 mr-2" />
+              Referral Program
+            </Button>
+          </Link>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Personal Information */}
           <Card className="border border-gray-100 shadow-lg bg-gradient-to-br from-white to-gray-50/50">
