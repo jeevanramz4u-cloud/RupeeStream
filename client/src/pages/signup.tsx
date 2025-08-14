@@ -647,16 +647,17 @@ export default function Signup() {
 
               {renderStepContent()}
 
-              <div className="flex space-x-4">
+              <div className="button-group">
                 {currentStep > 1 && (
                   <Button
                     type="button"
                     variant="outline"
+                    size="lg"
                     onClick={() => {
                       setCurrentStep(currentStep - 1);
                       setError("");
                     }}
-                    className="flex-1"
+                    className="w-full sm:flex-1"
                   >
                     Previous
                   </Button>
@@ -664,7 +665,8 @@ export default function Signup() {
                 
                 <Button 
                   type="submit" 
-                  className="flex-1 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 font-black text-lg px-8 py-6 h-auto rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105" 
+                  size="lg"
+                  className="w-full sm:flex-1 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 font-bold" 
                   disabled={isLoading}
                 >
                   {isLoading ? (

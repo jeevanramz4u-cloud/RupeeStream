@@ -155,8 +155,8 @@ export default function Login() {
                   <Button
                     type="button"
                     variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent touch-manipulation mobile-tap-target"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isLoading}
                   >
@@ -171,7 +171,8 @@ export default function Login() {
 
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 font-black text-lg px-8 py-6 h-auto rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 touch-manipulation mobile-tap-target" 
+                size="full"
+                className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 font-bold" 
                 disabled={isLoading}
               >
                 {isLoading ? "Signing in..." : "Sign In to Start Earning"}

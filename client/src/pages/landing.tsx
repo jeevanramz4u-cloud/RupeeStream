@@ -73,16 +73,16 @@ export default function Landing() {
           </div>
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center max-w-2xl mx-auto">
             <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 h-14 sm:h-16 text-lg font-semibold px-8 sm:px-12 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 touch-manipulation"
+              size="xl" 
+              className="w-full sm:w-auto bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700"
               onClick={() => window.location.href = '/signup'}
             >
               Start Earning Now
             </Button>
             <Button 
-              size="lg" 
+              size="xl" 
               variant="outline"
-              className="h-14 sm:h-16 text-lg border-2 border-gray-300 hover:bg-gray-50 hover:border-primary/50 px-8 sm:px-12 rounded-2xl transition-all duration-300 touch-manipulation"
+              className="w-full sm:w-auto border-2 border-gray-300 hover:bg-gray-50 hover:border-primary/50"
               onClick={() => window.location.href = '/login'}
             >
               Already Have Account?

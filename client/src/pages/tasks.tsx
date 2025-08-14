@@ -300,22 +300,24 @@ export default function Tasks() {
                 </p>
               </div>
               
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   variant="outline"
+                  size="lg"
                   onClick={() => {
                     setIsSubmitDialogOpen(false);
                     setProofData("");
                     setSelectedTask(null);
                   }}
-                  className="flex-1"
+                  className="w-full sm:flex-1"
                 >
                   Cancel
                 </Button>
                 <Button
+                  size="lg"
                   onClick={handleSubmitTask}
                   disabled={submitTaskMutation.isPending || !proofData.trim()}
-                  className="flex-1 bg-gradient-to-r from-primary to-blue-600"
+                  className="w-full sm:flex-1 bg-gradient-to-r from-primary to-blue-600"
                 >
                   {submitTaskMutation.isPending ? "Submitting..." : "Submit Task"}
                 </Button>

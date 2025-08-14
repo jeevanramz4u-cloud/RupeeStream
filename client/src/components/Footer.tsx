@@ -55,7 +55,7 @@ export default function Footer() {
             <div className="border-b border-gray-100 pb-4">
               <button
                 onClick={() => toggleSection('company')}
-                className="flex items-center justify-between w-full text-left"
+                className="flex items-center justify-between w-full text-left py-3 px-1 touch-manipulation hover:bg-gray-50 rounded-lg transition-colors"
               >
                 <h3 className="text-gray-900 font-bold text-base">Company</h3>
                 {openSections.company ? 
@@ -83,7 +83,7 @@ export default function Footer() {
             <div className="border-b border-gray-100 pb-4">
               <button
                 onClick={() => toggleSection('earn')}
-                className="flex items-center justify-between w-full text-left"
+                className="flex items-center justify-between w-full text-left py-3 px-1 touch-manipulation hover:bg-gray-50 rounded-lg transition-colors"
               >
                 <h3 className="text-gray-900 font-bold text-base">Earn Money</h3>
                 {openSections.earn ? 
