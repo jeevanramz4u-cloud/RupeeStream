@@ -60,6 +60,7 @@ export const taskCategoryEnum = pgEnum("task_category", [
   "product_review",
   "channel_subscribe",
   "comment_like",
+  "youtube_video_see",
   "survey",
   "social_media"
 ]);
@@ -172,6 +173,7 @@ export const tasks = pgTable("tasks", {
   currentCompletions: integer("current_completions").default(0).notNull(),
   requirements: text("requirements"), // JSON string with task requirements
   verificationMethod: varchar("verification_method"), // "automatic", "manual", "screenshot"
+  taskLink: varchar("task_link").notNull(), // Mandatory link for direct task access
   isActive: boolean("is_active").default(true).notNull(),
   expiryDate: timestamp("expiry_date"),
   createdBy: varchar("created_by").references(() => adminUsers.id),

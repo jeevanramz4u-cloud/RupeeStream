@@ -38,6 +38,7 @@ const taskCategoryIcons = {
   product_review: FileText,
   channel_subscribe: Youtube,
   comment_like: MessageCircle,
+  youtube_video_see: Eye,
   survey: FileText,
   social_media: ThumbsUp
 };
@@ -60,6 +61,7 @@ export default function AdminTasks() {
     timeLimit: "",
     maxCompletions: "",
     requirements: "",
+    taskLink: "",
     verificationMethod: "manual"
   });
 
@@ -150,10 +152,10 @@ export default function AdminTasks() {
   };
 
   const handleCreateTask = () => {
-    if (!newTask.title || !newTask.description || !newTask.reward) {
+    if (!newTask.title || !newTask.description || !newTask.reward || !newTask.taskLink) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all required fields.",
+        description: "Please fill in all required fields including task link.",
         variant: "destructive",
       });
       return;
@@ -196,7 +198,8 @@ export default function AdminTasks() {
       category: suggestion.category,
       reward: suggestion.estimatedReward.toString(),
       timeLimit: suggestion.estimatedTimeLimit.toString(),
-      requirements: "Please provide proof of completion as described."
+      requirements: "Please provide proof of completion as described.",
+      taskLink: ""
     });
     setShowAISuggestions(false);
     setIsCreateDialogOpen(true);
@@ -238,6 +241,7 @@ export default function AdminTasks() {
       timeLimit: "",
       maxCompletions: "",
       requirements: "",
+      taskLink: "",
       verificationMethod: "manual"
     });
     setAiAnalysis(null);
@@ -424,6 +428,9 @@ export default function AdminTasks() {
                         <SelectItem value="business_review">Business Review</SelectItem>
                         <SelectItem value="product_review">Product Review</SelectItem>
                         <SelectItem value="channel_subscribe">Channel Subscribe</SelectItem>
+                        <SelectItem value="comment_like">Comments & Likes</SelectItem>
+                        <SelectItem value="youtube_video_see">YouTube Video See Task</SelectItem>
+                        <SelectItem value="channel_subscribe">Channel Subscribe</SelectItem>
                         <SelectItem value="comment_like">Comment & Like</SelectItem>
                         <SelectItem value="survey">Survey</SelectItem>
                         <SelectItem value="social_media">Social Media</SelectItem>
@@ -465,6 +472,17 @@ export default function AdminTasks() {
                       data-testid="input-task-max-completions"
                     />
                   </div>
+                </div>
+                
+                <div>
+                  <Label>Task Link *</Label>
+                  <Input
+                    value={newTask.taskLink}
+                    onChange={(e) => setNewTask({ ...newTask, taskLink: e.target.value })}
+                    placeholder="https://example.com/direct-task-link"
+                    data-testid="input-task-link"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Direct link where users can complete the task</p>
                 </div>
                 
                 <div>
