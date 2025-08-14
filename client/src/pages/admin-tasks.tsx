@@ -430,13 +430,13 @@ export default function AdminTasks() {
                       <SelectTrigger data-testid="select-task-category" className="w-full">
                         <SelectValue placeholder="Choose a task category" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="max-h-[400px] z-50">
+                        <SelectItem value="youtube_video_see">👁️ YouTube Video See Task</SelectItem>
                         <SelectItem value="app_download">📱 App Download</SelectItem>
                         <SelectItem value="business_review">⭐ Business Review</SelectItem>
                         <SelectItem value="product_review">🛍️ Product Review</SelectItem>
                         <SelectItem value="channel_subscribe">▶️ Channel Subscribe</SelectItem>
                         <SelectItem value="comment_like">👍 Comments & Likes</SelectItem>
-                        <SelectItem value="youtube_video_see">👁️ YouTube Video See Task</SelectItem>
                       </SelectContent>
                     </Select>
                     <p className="text-xs text-gray-500 mt-1">Current: {newTask.category}</p>
