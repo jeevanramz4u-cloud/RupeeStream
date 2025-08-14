@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
-import { Play, Coins, User, Settings, LogOut } from "lucide-react";
+import { Play, Coins, LogOut } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 export default function Header() {
@@ -141,8 +141,8 @@ export default function Header() {
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-64 sm:w-72" align="end">
-                {/* User Info with Balance */}
+              <DropdownMenuContent className="w-56" align="end">
+                {/* User Info */}
                 <div className="flex items-center justify-start gap-3 p-3 border-b">
                   <Avatar className="h-10 w-10">
                     <AvatarImage 
@@ -161,28 +161,11 @@ export default function Header() {
                     <p className="text-xs text-muted-foreground truncate">
                       {(user as any)?.email}
                     </p>
-                    <div className="flex items-center space-x-1 mt-1">
-                      <Coins className="text-green-600 w-3 h-3" />
-                      <span className="font-bold text-green-700 text-xs">Balance: ₹{(user as any)?.balance || '0.00'}</span>
-                    </div>
                   </div>
                 </div>
                 
-                {/* Menu Items */}
+                {/* Only Logout Button */}
                 <div className="py-1">
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile" className="flex items-center px-3 py-2 text-sm touch-manipulation">
-                      <User className="mr-3 h-4 w-4" />
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center px-3 py-2 text-sm touch-manipulation">
-                    <Settings className="mr-3 h-4 w-4" />
-                    Settings
-                  </DropdownMenuItem>
-                </div>
-                
-                <div className="border-t py-1">
                   <DropdownMenuItem onClick={() => window.location.href = '/api/logout'} className="flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 touch-manipulation">
                     <LogOut className="mr-3 h-4 w-4" />
                     Log out
