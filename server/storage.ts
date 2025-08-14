@@ -984,6 +984,30 @@ export class DatabaseStorage implements IStorage {
             type: 'task_completion',
             description: '👍 Comments & Likes - Social Media',
             createdAt: new Date(Date.now() - 86400000 * 6) // 6 days ago
+          },
+          {
+            id: 'dev-earning-9',
+            userId: userId,
+            amount: '49.00',
+            type: 'referral_bonus',
+            description: '👥 Referral Bonus - Priya Sharma joined',
+            createdAt: new Date(Date.now() - 86400000 * 2) // 2 days ago
+          },
+          {
+            id: 'dev-earning-10',
+            userId: userId,
+            amount: '49.00',
+            type: 'referral_bonus',
+            description: '👥 Referral Bonus - Rahul Patel joined',
+            createdAt: new Date(Date.now() - 86400000 * 5) // 5 days ago
+          },
+          {
+            id: 'dev-earning-11',
+            userId: userId,
+            amount: '1000.00',
+            type: 'signup_bonus',
+            description: '🎉 Welcome Signup Bonus',
+            createdAt: new Date(Date.now() - 86400000 * 7) // 7 days ago
           }
         ];
         

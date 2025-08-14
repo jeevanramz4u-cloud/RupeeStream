@@ -403,6 +403,39 @@ export default function Earnings() {
               </CardTitle>
             </CardHeader>
             <CardContent>
+              {/* Earnings Summary */}
+              {earnings && (earnings as any[])?.length > 0 && (
+                <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200">
+                    <div className="flex items-center space-x-2">
+                      <Activity className="w-4 h-4 text-green-600" />
+                      <span className="text-xs font-semibold text-green-700">Task Earnings</span>
+                    </div>
+                    <p className="text-lg font-black text-green-600 mt-1">
+                      ₹{(earnings as any[])?.filter(e => e.type === 'task_completion').reduce((sum, e) => sum + parseFloat(e.amount), 0).toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-br from-purple-50 to-violet-50 p-4 rounded-xl border border-purple-200">
+                    <div className="flex items-center space-x-2">
+                      <TrendingUp className="w-4 h-4 text-purple-600" />
+                      <span className="text-xs font-semibold text-purple-700">Referral Bonuses</span>
+                    </div>
+                    <p className="text-lg font-black text-purple-600 mt-1">
+                      ₹{(earnings as any[])?.filter(e => e.type === 'referral_bonus').reduce((sum, e) => sum + parseFloat(e.amount), 0).toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
+                    <div className="flex items-center space-x-2">
+                      <Clock className="w-4 h-4 text-blue-600" />
+                      <span className="text-xs font-semibold text-blue-700">Bonus Earnings</span>
+                    </div>
+                    <p className="text-lg font-black text-blue-600 mt-1">
+                      ₹{(earnings as any[])?.filter(e => e.type === 'hourly_bonus' || e.type === 'signup_bonus').reduce((sum, e) => sum + parseFloat(e.amount), 0).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              )}
+              
               {!earnings || (earnings as any[])?.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -417,7 +450,13 @@ export default function Earnings() {
                     <div key={earning.id} className="group hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 p-4 rounded-xl border border-gray-100 hover:border-green-200 transition-all duration-200">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                            earning.type === 'referral_bonus' 
+                              ? 'bg-gradient-to-br from-purple-100 to-violet-100' 
+                              : earning.type === 'signup_bonus'
+                              ? 'bg-gradient-to-br from-yellow-100 to-amber-100'
+                              : 'bg-gradient-to-br from-green-100 to-emerald-100'
+                          }`}>
                             {getEarningIcon(earning.type)}
                           </div>
                           <div>
@@ -427,10 +466,18 @@ export default function Earnings() {
                             <p className="text-xs text-gray-600">
                               {formatDate(earning.createdAt)}
                             </p>
+                            {earning.type === 'referral_bonus' && (
+                              <span className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full mt-1">
+                                Referral Reward
+                              </span>
+                            )}
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-lg font-black text-green-600 flex items-center">
+                          <p className={`text-lg font-black flex items-center ${
+                            earning.type === 'referral_bonus' ? 'text-purple-600' :
+                            earning.type === 'signup_bonus' ? 'text-yellow-600' : 'text-green-600'
+                          }`}>
                             <ArrowUpRight className="w-4 h-4 mr-1" />
                             ₹{earning.amount}
                           </p>
