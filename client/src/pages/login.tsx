@@ -14,8 +14,8 @@ export default function Login() {
   const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: "demo@innovativetaskearn.online", // Pre-fill with demo credentials for easier testing
+    password: "demo123",
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);

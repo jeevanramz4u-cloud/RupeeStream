@@ -301,6 +301,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     status: "active" as const,
     balance: 1250.75,
     referralCode: "DEMO123",
+    kycStatus: "approved" as const,
+    kycFeePaid: true,
     createdAt: new Date(),
     updatedAt: new Date(),
     role: "user" as const
