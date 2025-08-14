@@ -47,32 +47,33 @@ export default function HowToEarn() {
     },
     {
       number: 3,
-      title: "Start Watching Videos",
-      description: "Watch videos completely to earn money",
-      icon: <Play className="w-6 h-6" />,
+      title: "Complete Simple Tasks",
+      description: "Choose from 5 different task categories",
+      icon: <Target className="w-6 h-6" />,
       details: [
-        "Browse available video catalog",
-        "Select videos you want to watch",
-        "Watch videos completely (no skipping)",
-        "Earn money immediately upon completion"
+        "App Downloads: Download apps and rate them (₹15-25 each)",
+        "Business Reviews: Write Google Maps reviews (₹30-35 each)",
+        "Product Reviews: Review products on Amazon (₹25-40 each)",
+        "Channel Subscribe: Subscribe to YouTube channels (₹15-20 each)",
+        "Comments & Likes: Like and comment on social posts (₹10-15 each)"
       ]
     },
     {
       number: 4,
-      title: "Meet Daily Targets",
-      description: "Watch 8 hours daily to maintain account status",
-      icon: <Target className="w-6 h-6" />,
+      title: "Submit Proof & Get Approved",
+      description: "Upload screenshots and await admin approval",
+      icon: <CheckCircle className="w-6 h-6" />,
       details: [
-        "Complete minimum 8 hours daily",
-        "Track progress in real-time",
-        "Maintain consistency for best results",
-        "Avoid account suspension"
+        "Take clear screenshots of completed tasks",
+        "Submit proof through our secure platform",
+        "Admin reviews within 24 hours",
+        "Earnings credited automatically upon approval"
       ]
     },
     {
       number: 5,
       title: "Get Weekly Payouts",
-      description: "Receive earnings every Tuesday",
+      description: "Receive earnings every Tuesday after approval",
       icon: <Calendar className="w-6 h-6" />,
       details: [
         "Automatic payout processing",

@@ -67,6 +67,10 @@ export default function Tasks() {
     enabled: !!user,
   });
 
+  // Ensure tasks is always an array
+  const safeTasks = Array.isArray(tasks) ? tasks : [];
+  const safeCompletions = Array.isArray(completions) ? completions : [];
+
   const submitTaskMutation = useMutation({
     mutationFn: async (data: { taskId: string; proofData: string }) => {
       const response = await apiRequest("POST", "/api/task-completions", data);
@@ -108,7 +112,7 @@ export default function Tasks() {
   };
 
   const getTaskCompletion = (taskId: string) => {
-    return completions.find((c: any) => c.taskId === taskId);
+    return safeCompletions.find((c: any) => c.taskId === taskId);
   };
 
   const isTaskCompleted = (taskId: string) => {
@@ -170,7 +174,7 @@ export default function Tasks() {
             <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-600 font-medium">Loading available tasks...</p>
           </div>
-        ) : tasks.length === 0 ? (
+        ) : safeTasks.length === 0 ? (
           <div className="text-center py-16">
             <Zap className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-700 mb-2">No Tasks Available</h3>
@@ -178,7 +182,7 @@ export default function Tasks() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tasks.map((task: any) => {
+            {safeTasks.map((task: any) => {
               const IconComponent = taskCategoryIcons[task.category as keyof typeof taskCategoryIcons] || FileText;
               const colorClass = taskCategoryColors[task.category as keyof typeof taskCategoryColors] || "bg-gray-100 text-gray-700 border-gray-200";
               const completion = getTaskCompletion(task.id);

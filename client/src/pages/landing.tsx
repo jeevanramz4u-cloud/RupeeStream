@@ -29,14 +29,14 @@ export default function Landing() {
           </div>
           
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-gray-900 mb-4 sm:mb-6 leading-tight tracking-tight">
-            Transform Your Time Into<br />
+            Complete Simple Tasks<br />
             <span className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent font-black">
-              Real Income
+              Earn Real Money
             </span>
           </h1>
           <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
-            Join India's most trusted video monetization platform. Watch premium content from top brands, 
-            meet daily engagement targets, and earn sustainable income with our professional ecosystem.
+            Join India's most trusted task completion platform. Complete simple tasks like app downloads, 
+            reviews, and social media activities to earn sustainable income with our professional ecosystem.
           </p>
           
           {/* Enhanced Bonus Features */}
@@ -63,9 +63,9 @@ export default function Landing() {
                   <Clock className="w-8 h-8 text-white" />
                 </div>
                 <div className="text-left">
-                  <span className="text-3xl font-black text-blue-700 block tracking-tight leading-none">₹10/Hour</span>
-                  <span className="text-blue-600 font-bold text-sm mt-1 block">Hourly Earnings</span>
-                  <span className="text-xs text-blue-500 font-medium">Daily Active Bonus</span>
+                  <span className="text-3xl font-black text-blue-700 block tracking-tight leading-none">₹15-40</span>
+                  <span className="text-blue-600 font-bold text-sm mt-1 block">Per Task</span>
+                  <span className="text-xs text-blue-500 font-medium">Simple 5-20 min tasks</span>
                 </div>
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-b-3xl"></div>
@@ -257,7 +257,7 @@ export default function Landing() {
               </span>
             </h2>
             <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
-              Professional earning process designed for sustainable income generation through video engagement
+              Professional earning process designed for sustainable income generation through simple task completion
             </p>
           </div>
 
@@ -292,8 +292,8 @@ export default function Landing() {
                     <Play className="text-blue-600 w-8 h-8 lg:w-10 lg:h-10" />
                   </div>
                 </div>
-                <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Engage with Content</h3>
-                <p className="text-gray-600 text-center leading-relaxed font-medium">Access premium video content from advertising partners. Complete viewing ensures legitimate engagement metrics for brands.</p>
+                <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Complete Simple Tasks</h3>
+                <p className="text-gray-600 text-center leading-relaxed font-medium">Choose from 5 task categories including app downloads, reviews, and social media activities. Each task takes 5-20 minutes to complete.</p>
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
             </div>
@@ -397,13 +397,13 @@ export default function Landing() {
                   <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Coins className="w-5 h-5 text-green-600" />
                   </div>
-                  How much can I earn per video?
+                  How much can I earn per task?
                 </div>
               </AccordionTrigger>
               <AccordionContent className="text-gray-700 pt-2 pb-4 leading-relaxed text-base">
                 <div className="pl-10 md:pl-13">
-                  Earnings per video vary based on video length and category. Typically, you can earn between <span className="font-semibold text-green-600">₹5-₹25 per video</span>. 
-                  Longer videos and premium content offer higher earnings. All earnings are credited immediately after completing the full video.
+                  Earnings per task vary based on task type and complexity. You can earn between <span className="font-semibold text-green-600">₹10-₹40 per task</span>. 
+                  App downloads and reviews offer higher earnings. All earnings are credited after admin approval of your submission.
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -425,7 +425,7 @@ export default function Landing() {
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <div><strong className="text-blue-600">Hourly Login Bonus:</strong> Earn <span className="font-semibold">₹10 for every hour</span> you stay logged in and active.</div>
+                    <div><strong className="text-blue-600">Task Completion Bonus:</strong> Earn <span className="font-semibold">bonus rewards</span> for completing multiple tasks in a day.</div>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
@@ -455,7 +455,7 @@ export default function Landing() {
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <div><strong className="text-orange-600">Reactivation Fee:</strong> <span className="font-semibold">₹49 fee</span> to reactivate suspended accounts for missing daily targets.</div>
+                    <div><strong className="text-orange-600">Reactivation Fee:</strong> <span className="font-semibold">₹49 fee</span> to reactivate suspended accounts (if applicable).</div>
                   </div>
                   <div className="mt-4 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
                     <span className="text-sm text-gray-600">These fees ensure platform security and help maintain a genuine user base.</span>
@@ -470,13 +470,14 @@ export default function Landing() {
                   <div className="w-10 h-10 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Play className="w-5 h-5 text-indigo-600" />
                   </div>
-                  Can I skip or fast-forward videos?
+                  What types of tasks are available?
                 </div>
               </AccordionTrigger>
               <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
                 <div className="pl-13">
-                  No, you must watch videos completely without skipping or fast-forwarding. Our system monitors viewing behavior 
-                  to ensure fair compensation. Attempting to skip content will not credit earnings and may result in account penalties.
+                  We offer 5 main categories: <span className="font-semibold text-indigo-600">App Downloads</span> (₹15-25), <span className="font-semibold text-indigo-600">Business Reviews</span> (₹30-35), 
+                  <span className="font-semibold text-indigo-600">Product Reviews</span> (₹25-40), <span className="font-semibold text-indigo-600">Channel Subscribe</span> (₹15-20), and <span className="font-semibold text-indigo-600">Comments & Likes</span> (₹10-15). 
+                  Each task takes 5-20 minutes and requires proof submission for approval.
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -521,13 +522,13 @@ export default function Landing() {
                   <div className="w-10 h-10 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Clock className="w-5 h-5 text-yellow-600" />
                   </div>
-                  What is the 8-hour daily requirement?
+                  How do I submit proof of task completion?
                 </div>
               </AccordionTrigger>
               <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
                 <div className="pl-13">
-                  To maintain your account in good standing and maximize earnings, you need to watch videos for <span className="font-semibold text-yellow-600">8 hours daily</span>. 
-                  This can be spread throughout the day. Missing this target for 3 consecutive days may result in account suspension.
+                  After completing a task, take clear screenshots showing proof of completion. Upload these images in the task submission form. 
+                  Include app download confirmations, review screenshots, subscription confirmations, or social media activity as required.
                 </div>
               </AccordionContent>
             </AccordionItem>
