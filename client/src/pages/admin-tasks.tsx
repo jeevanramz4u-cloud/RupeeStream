@@ -21,11 +21,16 @@ import {
   Users,
   CheckCircle,
   XCircle,
-  Eye
+  Eye,
+  Brain,
+  Sparkles
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
+import AITaskSuggestions from "@/components/AITaskSuggestions";
+import AISmartCategorization from "@/components/AISmartCategorization";
+import AIContentOptimizer from "@/components/AIContentOptimizer";
 
 const taskCategoryIcons = {
   app_download: Smartphone,
@@ -44,6 +49,8 @@ export default function AdminTasks() {
   const [editingTask, setEditingTask] = useState<any>(null);
   const [isCompletionsDialogOpen, setIsCompletionsDialogOpen] = useState(false);
   const [selectedTaskCompletions, setSelectedTaskCompletions] = useState<any[]>([]);
+  const [showAISuggestions, setShowAISuggestions] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
 
   const [newTask, setNewTask] = useState({
     title: "",
@@ -73,7 +80,7 @@ export default function AdminTasks() {
       toast({ title: "Task Created", description: "New task has been created successfully." });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/tasks"] });
       setIsCreateDialogOpen(false);
-      resetForm();
+      resetTaskForm();
     },
     onError: (error: any) => {
       toast({
@@ -180,6 +187,62 @@ export default function AdminTasks() {
     setIsCompletionsDialogOpen(true);
   };
 
+  // AI functionality handlers
+  const handleTaskSuggestionSelect = (suggestion: any) => {
+    setNewTask({
+      ...newTask,
+      title: suggestion.suggestedTitle || "",
+      description: suggestion.suggestedDescription || "",
+      category: suggestion.category,
+      reward: suggestion.estimatedReward.toString(),
+      timeLimit: suggestion.estimatedTimeLimit.toString(),
+      requirements: "Please provide proof of completion as described."
+    });
+    setShowAISuggestions(false);
+    setIsCreateDialogOpen(true);
+    toast({
+      title: "AI Suggestion Applied",
+      description: "Task form has been pre-filled with AI suggestions",
+    });
+  };
+
+  const handleCategorySuggestion = (suggestion: any) => {
+    setNewTask({
+      ...newTask,
+      category: suggestion.category,
+      reward: suggestion.estimatedReward.toString(),
+      timeLimit: suggestion.estimatedTimeLimit.toString()
+    });
+    setAiAnalysis(suggestion);
+  };
+
+  const handleContentOptimization = (optimization: any) => {
+    setNewTask({
+      ...newTask,
+      title: optimization.optimizedTitle,
+      description: optimization.optimizedDescription,
+      requirements: optimization.optimizedRequirements
+    });
+    toast({
+      title: "Content Optimized",
+      description: "Task content has been enhanced with AI optimization",
+    });
+  };
+
+  const resetTaskForm = () => {
+    setNewTask({
+      title: "",
+      description: "",
+      category: "app_download",
+      reward: "",
+      timeLimit: "",
+      maxCompletions: "",
+      requirements: "",
+      verificationMethod: "manual"
+    });
+    setAiAnalysis(null);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -188,13 +251,25 @@ export default function AdminTasks() {
             <h1 className="text-3xl font-black text-gray-900">Task Management</h1>
             <p className="text-gray-600 mt-2">Create and manage tasks for users to complete</p>
           </div>
-          <Button 
-            onClick={() => setIsCreateDialogOpen(true)}
-            className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create Task
-          </Button>
+          <div className="flex gap-3">
+            <Button 
+              onClick={() => setShowAISuggestions(true)}
+              variant="outline"
+              className="border-purple-200 text-purple-700 hover:bg-purple-50"
+              data-testid="button-ai-suggestions"
+            >
+              <Brain className="w-4 h-4 mr-2" />
+              AI Suggestions
+            </Button>
+            <Button 
+              onClick={() => setIsCreateDialogOpen(true)}
+              className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700"
+              data-testid="button-create-task"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create Task
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -299,19 +374,30 @@ export default function AdminTasks() {
 
         {/* Create Task Dialog */}
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Create New Task</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                <Plus className="h-5 w-5" />
+                Create New Task
+                {aiAnalysis && (
+                  <Badge className="bg-purple-100 text-purple-700">
+                    <Brain className="w-3 h-3 mr-1" />
+                    AI Enhanced
+                  </Badge>
+                )}
+              </DialogTitle>
             </DialogHeader>
             
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4 col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column - Task Form */}
+              <div className="space-y-4">
                 <div>
                   <Label>Task Title *</Label>
                   <Input
                     value={newTask.title}
                     onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                     placeholder="Enter task title"
+                    data-testid="input-task-title"
                   />
                 </div>
                 
@@ -321,76 +407,105 @@ export default function AdminTasks() {
                     value={newTask.description}
                     onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
                     placeholder="Describe what users need to do"
+                    className="min-h-[100px]"
+                    data-testid="textarea-task-description"
                   />
                 </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Category</Label>
+                    <Select value={newTask.category} onValueChange={(value) => setNewTask({ ...newTask, category: value })}>
+                      <SelectTrigger data-testid="select-task-category">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="app_download">App Download</SelectItem>
+                        <SelectItem value="business_review">Business Review</SelectItem>
+                        <SelectItem value="product_review">Product Review</SelectItem>
+                        <SelectItem value="channel_subscribe">Channel Subscribe</SelectItem>
+                        <SelectItem value="comment_like">Comment & Like</SelectItem>
+                        <SelectItem value="survey">Survey</SelectItem>
+                        <SelectItem value="social_media">Social Media</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Reward (₹) *</Label>
+                    <Input
+                      type="number"
+                      value={newTask.reward}
+                      onChange={(e) => setNewTask({ ...newTask, reward: e.target.value })}
+                      placeholder="0.00"
+                      data-testid="input-task-reward"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Time Limit (minutes)</Label>
+                    <Input
+                      type="number"
+                      value={newTask.timeLimit}
+                      onChange={(e) => setNewTask({ ...newTask, timeLimit: e.target.value })}
+                      placeholder="Optional"
+                      data-testid="input-task-time-limit"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Max Completions</Label>
+                    <Input
+                      type="number"
+                      value={newTask.maxCompletions}
+                      onChange={(e) => setNewTask({ ...newTask, maxCompletions: e.target.value })}
+                      placeholder="Unlimited"
+                      data-testid="input-task-max-completions"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label>Requirements</Label>
+                  <Textarea
+                    value={newTask.requirements}
+                    onChange={(e) => setNewTask({ ...newTask, requirements: e.target.value })}
+                    placeholder="Specific requirements for task completion"
+                    className="min-h-[80px]"
+                    data-testid="textarea-task-requirements"
+                  />
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)} className="flex-1" data-testid="button-cancel-task">
+                    Cancel
+                  </Button>
+                  <Button onClick={handleCreateTask} disabled={createTaskMutation.isPending} className="flex-1" data-testid="button-submit-task">
+                    {createTaskMutation.isPending ? "Creating..." : "Create Task"}
+                  </Button>
+                </div>
               </div>
-              
-              <div>
-                <Label>Category</Label>
-                <Select value={newTask.category} onValueChange={(value) => setNewTask({ ...newTask, category: value })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="app_download">App Download</SelectItem>
-                    <SelectItem value="business_review">Business Review</SelectItem>
-                    <SelectItem value="product_review">Product Review</SelectItem>
-                    <SelectItem value="channel_subscribe">Channel Subscribe</SelectItem>
-                    <SelectItem value="comment_like">Comment & Like</SelectItem>
-                    <SelectItem value="survey">Survey</SelectItem>
-                    <SelectItem value="social_media">Social Media</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <Label>Reward (₹) *</Label>
-                <Input
-                  type="number"
-                  value={newTask.reward}
-                  onChange={(e) => setNewTask({ ...newTask, reward: e.target.value })}
-                  placeholder="0.00"
+
+              {/* Right Column - AI Features */}
+              <div className="space-y-4">
+                <AISmartCategorization
+                  title={newTask.title}
+                  description={newTask.description}
+                  onCategorySuggestion={handleCategorySuggestion}
                 />
-              </div>
-              
-              <div>
-                <Label>Time Limit (minutes)</Label>
-                <Input
-                  type="number"
-                  value={newTask.timeLimit}
-                  onChange={(e) => setNewTask({ ...newTask, timeLimit: e.target.value })}
-                  placeholder="Optional"
+                
+                <AIContentOptimizer
+                  title={newTask.title}
+                  description={newTask.description}
+                  requirements={newTask.requirements}
+                  onOptimization={handleContentOptimization}
                 />
-              </div>
-              
-              <div>
-                <Label>Max Completions</Label>
-                <Input
-                  type="number"
-                  value={newTask.maxCompletions}
-                  onChange={(e) => setNewTask({ ...newTask, maxCompletions: e.target.value })}
-                  placeholder="Unlimited"
-                />
-              </div>
-              
-              <div className="col-span-2">
-                <Label>Requirements</Label>
-                <Textarea
-                  value={newTask.requirements}
-                  onChange={(e) => setNewTask({ ...newTask, requirements: e.target.value })}
-                  placeholder="Specific requirements for task completion"
-                />
-              </div>
-              
-              <div className="col-span-2 flex gap-3">
-                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)} className="flex-1">
-                  Cancel
-                </Button>
-                <Button onClick={handleCreateTask} disabled={createTaskMutation.isPending} className="flex-1">
-                  {createTaskMutation.isPending ? "Creating..." : "Create Task"}
-                </Button>
               </div>
             </div>
+              
+
           </DialogContent>
         </Dialog>
 
@@ -461,6 +576,19 @@ export default function AdminTasks() {
                 <p className="text-center text-gray-500 py-8">No completions found for this task.</p>
               )}
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* AI Task Suggestions Dialog */}
+        <Dialog open={showAISuggestions} onOpenChange={setShowAISuggestions}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-purple-600" />
+                AI-Powered Task Suggestions
+              </DialogTitle>
+            </DialogHeader>
+            <AITaskSuggestions onTaskSuggestionSelect={handleTaskSuggestionSelect} />
           </DialogContent>
         </Dialog>
       </div>

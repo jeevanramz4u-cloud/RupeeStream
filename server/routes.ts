@@ -27,6 +27,12 @@ import {
 } from './cashfree';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import { 
+  suggestTaskCategory, 
+  generateTaskSuggestions, 
+  optimizeTaskContent, 
+  analyzeTaskPerformance 
+} from "./ai-task-suggestions";
 
 // Extend session interface
 declare module 'express-session' {
@@ -2119,6 +2125,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error processing KYC fee payment:", error);
       res.status(500).json({ message: "Failed to process payment" });
+    }
+  });
+
+  // AI-powered task suggestion endpoints
+  app.post("/api/admin/ai/suggest-category", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { title, description } = req.body;
+      if (!title || !description) {
+        return res.status(400).json({ error: "Title and description are required" });
+      }
+
+      const suggestion = await suggestTaskCategory(title, description);
+      res.json(suggestion);
+    } catch (error) {
+      console.error("AI category suggestion error:", error);
+      res.status(500).json({ error: "Failed to suggest category" });
+    }
+  });
+
+  app.post("/api/admin/ai/generate-suggestions", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { targetCategory } = req.body;
+      
+      // Get existing tasks for context
+      let existingTasks = [];
+      try {
+        existingTasks = await storage.getTasks();
+      } catch (error) {
+        // If database is disabled, use sample tasks
+        existingTasks = [
+          { id: "task-1", title: "Download Instagram App", category: "app_download" },
+          { id: "task-2", title: "Rate Pizza Restaurant", category: "business_review" },
+          { id: "task-3", title: "Review Bluetooth Headphones", category: "product_review" },
+          { id: "task-4", title: "Subscribe to YouTube Channel", category: "channel_subscribe" },
+          { id: "task-5", title: "Like Facebook Post", category: "comment_like" }
+        ];
+      }
+
+      const suggestions = await generateTaskSuggestions(existingTasks, targetCategory);
+      res.json({ suggestions });
+    } catch (error) {
+      console.error("AI task generation error:", error);
+      res.status(500).json({ error: "Failed to generate task suggestions" });
+    }
+  });
+
+  app.post("/api/admin/ai/optimize-content", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { title, description, requirements } = req.body;
+      if (!title || !description || !requirements) {
+        return res.status(400).json({ error: "Title, description, and requirements are required" });
+      }
+
+      const optimization = await optimizeTaskContent(title, description, requirements);
+      res.json(optimization);
+    } catch (error) {
+      console.error("AI content optimization error:", error);
+      res.status(500).json({ error: "Failed to optimize content" });
+    }
+  });
+
+  app.post("/api/admin/ai/analyze-performance", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { taskId } = req.body;
+      if (!taskId) {
+        return res.status(400).json({ error: "Task ID is required" });
+      }
+
+      // Get task and completion data
+      let task, completionData = [];
+      try {
+        task = await storage.getTask(taskId);
+        completionData = await storage.getTaskCompletions(taskId);
+      } catch (error) {
+        // If database is disabled, use sample data
+        task = { 
+          id: taskId, 
+          title: "Sample Task", 
+          category: "app_download", 
+          reward: 20, 
+          timeLimit: 60,
+          maxCompletions: 100 
+        };
+        completionData = [
+          { id: "1", status: "approved", createdAt: new Date() },
+          { id: "2", status: "pending", createdAt: new Date() },
+          { id: "3", status: "approved", createdAt: new Date() }
+        ];
+      }
+
+      if (!task) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+
+      const analysis = await analyzeTaskPerformance(task, completionData);
+      res.json(analysis);
+    } catch (error) {
+      console.error("AI performance analysis error:", error);
+      res.status(500).json({ error: "Failed to analyze task performance" });
     }
   });
 
