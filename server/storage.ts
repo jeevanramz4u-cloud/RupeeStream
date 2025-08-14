@@ -129,8 +129,16 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    try {
+      const [user] = await db.select().from(users).where(eq(users.id, id));
+      return user;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: User lookup simulated (database unavailable)");
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
@@ -153,8 +161,51 @@ export class DatabaseStorage implements IStorage {
 
   // Traditional auth operations
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user;
+    try {
+      const [user] = await db.select().from(users).where(eq(users.email, email));
+      return user;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: User lookup simulated (database unavailable)");
+        // Return demo user for development mode testing
+        if (email === "demo@innovativetaskearn.online") {
+          return {
+            id: 'dev-demo-user',
+            email: 'demo@innovativetaskearn.online',
+            firstName: 'Demo',
+            lastName: 'User',
+            profileImageUrl: null,
+            password: '$2b$12$GsdpSXb2HbpLLWhFqT2QR.QVyT0nnirL9vFXuE.0xF3kRfxOSOXfW', // "demo123"
+            phoneNumber: '9876543210',
+            dateOfBirth: '1990-01-01',
+            address: '123 Demo Street',
+            city: 'Mumbai',
+            state: 'Maharashtra',
+            pincode: '400001',
+            accountHolderName: 'Demo User',
+            accountNumber: '1234567890',
+            ifscCode: 'HDFC0000123',
+            bankName: 'HDFC Bank',
+            governmentIdType: 'aadhaar',
+            governmentIdNumber: '123456789012',
+            governmentIdUrl: 'demo-kyc-doc.jpg',
+            verificationStatus: 'pending',
+            kycStatus: 'pending',
+            status: 'active',
+            balance: '1000.00',
+            referralCode: 'DEMO123',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            resetToken: null,
+            resetTokenExpiry: null,
+            kycApprovedAt: null,
+            suspensionReason: null
+          } as User;
+        }
+        return undefined; // Allow new user creation in dev mode for other emails
+      }
+      throw error;
+    }
   }
 
   async getUserByResetToken(token: string): Promise<User | undefined> {
@@ -163,37 +214,78 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUserWithTraditionalAuth(userData: any): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values({
-        id: Math.random().toString(36).substring(2, 15),
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        profileImageUrl: null,
-        password: userData.password,
-        phoneNumber: userData.phoneNumber,
-        dateOfBirth: userData.dateOfBirth,
-        address: userData.address,
-        city: userData.city,
-        state: userData.state,
-        pincode: userData.pincode,
-        accountHolderName: userData.accountHolderName,
-        accountNumber: userData.accountNumber,
-        ifscCode: userData.ifscCode,
-        bankName: userData.bankName,
-        governmentIdType: userData.governmentIdType,
-        governmentIdNumber: userData.governmentIdNumber,
-        governmentIdUrl: userData.governmentIdUrl,
-        verificationStatus: userData.verificationStatus || 'pending',
-        status: userData.status || 'active',
-        balance: userData.balance || 0,
-        referralCode: userData.referralCode || this.generateReferralCode(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .returning();
-    return user;
+    try {
+      const [user] = await db
+        .insert(users)
+        .values({
+          id: Math.random().toString(36).substring(2, 15),
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          profileImageUrl: null,
+          password: userData.password,
+          phoneNumber: userData.phoneNumber,
+          dateOfBirth: userData.dateOfBirth,
+          address: userData.address,
+          city: userData.city,
+          state: userData.state,
+          pincode: userData.pincode,
+          accountHolderName: userData.accountHolderName,
+          accountNumber: userData.accountNumber,
+          ifscCode: userData.ifscCode,
+          bankName: userData.bankName,
+          governmentIdType: userData.governmentIdType,
+          governmentIdNumber: userData.governmentIdNumber,
+          governmentIdUrl: userData.governmentIdUrl,
+          verificationStatus: userData.verificationStatus || 'pending',
+          kycStatus: 'pending',
+          status: userData.status || 'active',
+          balance: userData.balance || "0.00",
+          referralCode: userData.referralCode || this.generateReferralCode(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+      return user;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: User creation simulated (database unavailable)");
+        const devUser: User = {
+          id: 'dev-user-' + Date.now(),
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          profileImageUrl: null,
+          password: userData.password,
+          phoneNumber: userData.phoneNumber,
+          dateOfBirth: userData.dateOfBirth,
+          address: userData.address,
+          city: userData.city,
+          state: userData.state,
+          pincode: userData.pincode,
+          accountHolderName: userData.accountHolderName,
+          accountNumber: userData.accountNumber,
+          ifscCode: userData.ifscCode,
+          bankName: userData.bankName,
+          governmentIdType: userData.governmentIdType,
+          governmentIdNumber: userData.governmentIdNumber,
+          governmentIdUrl: userData.governmentIdUrl,
+          verificationStatus: userData.verificationStatus || 'pending',
+          kycStatus: 'pending',
+          status: userData.status || 'active',
+          balance: userData.balance || "0.00",
+          referralCode: userData.referralCode || this.generateReferralCode(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          resetToken: null,
+          resetTokenExpiry: null,
+          kycApprovedAt: null,
+          suspensionReason: null
+        };
+        return devUser;
+      }
+      throw error;
+    }
   }
 
   async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
@@ -262,8 +354,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByReferralCode(code: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.referralCode, code));
-    return user;
+    try {
+      const [user] = await db.select().from(users).where(eq(users.referralCode, code));
+      return user;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Referral lookup simulated (database unavailable)");
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   async getUsersForVerification(): Promise<User[]> {
@@ -446,20 +546,36 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createEarning(earning: InsertEarning): Promise<Earning> {
-    const [newEarning] = await db.insert(earnings).values(earning).returning();
-    
-    // Update user balance
-    const currentUser = await this.getUser(earning.userId);
-    if (currentUser) {
-      const currentBalance = parseFloat(currentUser.balance.toString());
-      const newBalance = currentBalance + parseFloat(earning.amount.toString());
-      await db
-        .update(users)
-        .set({ balance: newBalance.toFixed(2) })
-        .where(eq(users.id, earning.userId));
+    try {
+      const [newEarning] = await db.insert(earnings).values(earning).returning();
+      
+      // Update user balance
+      const currentUser = await this.getUser(earning.userId);
+      if (currentUser) {
+        const currentBalance = parseFloat(currentUser.balance.toString());
+        const newBalance = currentBalance + parseFloat(earning.amount.toString());
+        await db
+          .update(users)
+          .set({ balance: newBalance.toFixed(2) })
+          .where(eq(users.id, earning.userId));
+      }
+      
+      return newEarning;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Earning creation simulated (database unavailable)");
+        const devEarning: Earning = {
+          id: 'dev-earning-' + Date.now(),
+          userId: earning.userId,
+          amount: earning.amount,
+          type: earning.type,
+          description: earning.description,
+          createdAt: new Date()
+        };
+        return devEarning;
+      }
+      throw error;
     }
-    
-    return newEarning;
   }
 
   async checkAndAwardHourlyBonus(userId: string): Promise<{ awarded: boolean; amount?: string }> {
@@ -522,8 +638,23 @@ export class DatabaseStorage implements IStorage {
 
   // Referral operations
   async createReferral(referral: InsertReferral): Promise<Referral> {
-    const [newReferral] = await db.insert(referrals).values(referral).returning();
-    return newReferral;
+    try {
+      const [newReferral] = await db.insert(referrals).values(referral).returning();
+      return newReferral;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Referral creation simulated (database unavailable)");
+        const devReferral: Referral = {
+          id: 'dev-referral-' + Date.now(),
+          referrerId: referral.referrerId,
+          referredId: referral.referredId,
+          rewardCredited: false,
+          createdAt: new Date()
+        };
+        return devReferral;
+      }
+      throw error;
+    }
   }
 
   async getReferrals(userId: string): Promise<Referral[]> {
