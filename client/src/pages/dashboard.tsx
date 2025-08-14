@@ -544,16 +544,26 @@ export default function Dashboard() {
                   <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
                   <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Account Status:</span>
                   <span className={`text-xs sm:text-sm font-medium px-2 py-1 rounded-full ${
+                    // Check if account is suspended first
+                    (user as any)?.status === 'suspended' ? 'bg-red-100 text-red-800' :
                     ((user as any)?.verificationStatus === 'verified' && (user as any)?.kycStatus === 'approved') ? 'bg-green-100 text-green-800' : 
                     ((user as any)?.verificationStatus === 'verified' && (user as any)?.kycStatus === 'submitted') ? 'bg-blue-100 text-blue-800' :
                     ((user as any)?.verificationStatus === 'pending' || (user as any)?.kycStatus === 'pending') ? 'bg-yellow-100 text-yellow-800' : 
                     'bg-red-100 text-red-800'
                   }`}>
-                    {((user as any)?.verificationStatus === 'verified' && (user as any)?.kycStatus === 'approved') ? 'Approved' :
+                    {// Check if account is suspended first
+                    (user as any)?.status === 'suspended' ? 'Suspended' :
+                    ((user as any)?.verificationStatus === 'verified' && (user as any)?.kycStatus === 'approved') ? 'Approved' :
                      ((user as any)?.verificationStatus === 'verified' && (user as any)?.kycStatus === 'submitted') ? 'Payment Pending' :
                      ((user as any)?.verificationStatus === 'pending' || (user as any)?.kycStatus === 'pending') ? 'Pending Review' : 'Not Verified'}
                   </span>
                 </div>
+                {/* Debug Info - Remove in production */}
+                {process.env.NODE_ENV === 'development' && (
+                  <div className="text-xs text-gray-500 mt-2 p-2 bg-gray-50 rounded">
+                    Debug: status={`${(user as any)?.status}`}, verificationStatus={`${(user as any)?.verificationStatus}`}, kycStatus={`${(user as any)?.kycStatus}`}
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
