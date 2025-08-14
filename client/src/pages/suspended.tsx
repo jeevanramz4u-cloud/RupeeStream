@@ -203,21 +203,33 @@ export default function SuspendedPage() {
               </div>
             </div>
 
+            {/* Payment Instructions */}
+            <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-3 sm:p-4">
+              <h3 className="font-bold text-sm sm:text-base text-yellow-800 mb-2">🔔 How to Reactivate:</h3>
+              <ol className="list-decimal list-inside space-y-1 text-xs sm:text-sm text-yellow-700">
+                <li>Click the "Pay ₹{reactivationFee} via Cashfree" button below</li>
+                <li>You'll be redirected to secure payment gateway</li>
+                <li>Complete payment using UPI, Card, or Net Banking</li>
+                <li>Account will be instantly reactivated</li>
+                <li>You'll return to your dashboard automatically!</li>
+              </ol>
+            </div>
+
             {/* What happens after reactivation */}
             <div className="space-y-2 sm:space-y-3">
               <h3 className="font-medium text-sm sm:text-base text-gray-900">After Reactivation:</h3>
               <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
-                  <span>Immediate access to dashboard and videos</span>
+                  <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
+                  <span>Immediate access to dashboard and all features</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
-                  <span>Fresh start with daily watch time requirements</span>
+                  <span>Fresh start with task completion system</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CreditCard className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
-                  <span>Resume earning money by watching videos</span>
+                  <span>Resume earning money by completing tasks</span>
                 </div>
               </div>
             </div>

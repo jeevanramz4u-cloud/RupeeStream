@@ -36,11 +36,19 @@ export default function Login() {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        
         // Invalidate auth query to refetch user data
         queryClient.invalidateQueries({ queryKey: ["/api/auth/check"] });
         
-        // Redirect to dashboard after successful login
-        window.location.href = '/dashboard';
+        // Check if user is suspended and redirect accordingly
+        if (data.user && data.user.status === 'suspended') {
+          console.log('Suspended user logged in - redirecting to suspended page');
+          window.location.href = '/suspended';
+        } else {
+          // Redirect to dashboard after successful login
+          window.location.href = '/dashboard';
+        }
       } else {
         const data = await response.json();
         setError(data.message || 'Login failed');
