@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { DemoBanner } from "@/components/DemoBanner";
+
 import NotFound from "./pages/not-found";
 import Landing from "./pages/landing";
 import Login from "./pages/login";
@@ -195,14 +195,9 @@ function Router() {
 }
 
 function App() {
-  const [showDemoBanner, setShowDemoBanner] = useState(true);
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        {showDemoBanner && (
-          <DemoBanner onClose={() => setShowDemoBanner(false)} />
-        )}
         <Toaster />
         <Router />
       </TooltipProvider>

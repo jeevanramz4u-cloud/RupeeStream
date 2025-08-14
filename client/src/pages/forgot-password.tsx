@@ -34,18 +34,10 @@ export default function ForgotPassword() {
         const data = await response.json();
         setIsEmailSent(true);
         
-        if (data.devNote) {
-          // Show development-specific instructions
-          toast({
-            title: "Reset Link Generated",
-            description: "Check the browser console for the reset link (development mode).",
-          });
-        } else {
-          toast({
-            title: "Reset Email Sent",
-            description: "Check your email for password reset instructions.",
-          });
-        }
+        toast({
+          title: "Reset Email Sent",
+          description: "Check your email for password reset instructions.",
+        });
       } else {
         const data = await response.json();
         setError(data.message || 'Failed to send reset email');
@@ -89,14 +81,7 @@ export default function ForgotPassword() {
                     We've sent a password reset link to <strong>{email}</strong>. 
                     Please check your email and follow the instructions to reset your password.
                   </p>
-                  {process.env.NODE_ENV === 'development' && (
-                    <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mb-4">
-                      <p className="text-yellow-800 text-xs font-medium">Development Mode:</p>
-                      <p className="text-yellow-700 text-xs">
-                        Check your browser console for the reset link (simulates email delivery).
-                      </p>
-                    </div>
-                  )}
+
                   <p className="text-gray-500 text-xs">
                     Didn't receive the email? Check your spam folder or try again.
                   </p>
