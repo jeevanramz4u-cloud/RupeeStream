@@ -31,6 +31,7 @@ import {
   type InsertTaskCompletion,
 } from "@shared/schema";
 import { db } from "./db";
+import { config, isDevelopment } from "./config";
 import { eq, desc, and, sql, gte } from "drizzle-orm";
 
 // Database storage implementation
@@ -949,9 +950,103 @@ export class DatabaseStorage implements IStorage {
         .orderBy(desc(tasks.createdAt))
         .limit(limit);
     } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Using sample tasks (database unavailable)");
+        return this.getSampleTasks();
+      }
       console.error("Database error fetching tasks:", error);
       throw new Error("Database connection required. Please enable the database endpoint in your Neon dashboard.");
     }
+  }
+  
+  private getSampleTasks(): Task[] {
+    return [
+      {
+        id: 'dev-task-1',
+        title: 'Download Instagram & Rate 5 Stars',
+        description: 'Download Instagram app from Google Play Store and give it a 5-star rating with a positive review.',
+        category: 'app_download',
+        reward: '25',
+        timeLimit: 10,
+        requirements: 'Must provide screenshot of download confirmation and rating submission.',
+        verificationMethod: 'manual',
+        maxCompletions: 100,
+        currentCompletions: 0,
+        isActive: true,
+        createdBy: 'dev-admin',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        expiryDate: null
+      },
+      {
+        id: 'dev-task-2',
+        title: 'Write Business Review on Google Maps',
+        description: 'Find "Innovative Grow Solutions" on Google Maps and write a detailed 5-star review about our services.',
+        category: 'business_review',
+        reward: '35',
+        timeLimit: 15,
+        requirements: 'Review must be at least 50 words and include specific details about our platform.',
+        verificationMethod: 'manual',
+        maxCompletions: 50,
+        currentCompletions: 0,
+        isActive: true,
+        createdBy: 'dev-admin',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        expiryDate: null
+      },
+      {
+        id: 'dev-task-3',
+        title: 'Subscribe to YouTube Channel',
+        description: 'Subscribe to our official YouTube channel and like our latest video about earning opportunities.',
+        category: 'channel_subscribe',
+        reward: '20',
+        timeLimit: 5,
+        requirements: 'Must provide screenshot showing subscription confirmation and liked video.',
+        verificationMethod: 'manual',
+        maxCompletions: 75,
+        currentCompletions: 0,
+        isActive: true,
+        createdBy: 'dev-admin',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        expiryDate: null
+      },
+      {
+        id: 'dev-task-4',
+        title: 'Like & Comment on Facebook Post',
+        description: 'Like our Facebook page and comment on our latest post about task earning opportunities.',
+        category: 'comment_like',
+        reward: '15',
+        timeLimit: 5,
+        requirements: 'Comment must be genuine and positive. No spam or generic comments.',
+        verificationMethod: 'manual',
+        maxCompletions: 150,
+        currentCompletions: 0,
+        isActive: true,
+        createdBy: 'dev-admin',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        expiryDate: null
+      },
+      {
+        id: 'dev-task-5',
+        title: 'Product Review - Smartphone Case',
+        description: 'Write a detailed review for a smartphone case on Amazon with honest feedback.',
+        category: 'product_review',
+        reward: '40',
+        timeLimit: 20,
+        requirements: 'Review must be based on actual product experience and include photos.',
+        verificationMethod: 'manual',
+        maxCompletions: 75,
+        currentCompletions: 0,
+        isActive: true,
+        createdBy: 'dev-admin',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        expiryDate: null
+      }
+    ] as Task[];
   }
 
   async getTask(id: string): Promise<Task | undefined> {
@@ -960,8 +1055,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTask(task: InsertTask): Promise<Task> {
-    const [newTask] = await db.insert(tasks).values(task).returning();
-    return newTask;
+    try {
+      const [newTask] = await db.insert(tasks).values(task).returning();
+      return newTask;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Task creation simulated (database unavailable)");
+        const newTask: Task = {
+          id: `dev-task-${Date.now()}`,
+          ...task,
+          currentCompletions: 0,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        return newTask;
+      }
+      throw error;
+    }
   }
 
   async updateTask(id: string, updates: Partial<Task>): Promise<Task | undefined> {
@@ -974,8 +1084,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteTask(id: string): Promise<boolean> {
-    const result = await db.delete(tasks).where(eq(tasks.id, id));
-    return result.rowCount ? result.rowCount > 0 : false;
+    try {
+      const result = await db.delete(tasks).where(eq(tasks.id, id));
+      return result.rowCount ? result.rowCount > 0 : false;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Task deletion simulated (database unavailable)");
+        return true; // Simulate successful deletion
+      }
+      throw error;
+    }
   }
 
   // Task completion operations
@@ -1089,11 +1207,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTaskCompletionsForReview(): Promise<TaskCompletion[]> {
-    return await db
-      .select()
-      .from(taskCompletions)
-      .where(eq(taskCompletions.status, 'submitted'))
-      .orderBy(desc(taskCompletions.submittedAt));
+    try {
+      return await db
+        .select()
+        .from(taskCompletions)
+        .where(eq(taskCompletions.status, 'submitted'))
+        .orderBy(desc(taskCompletions.submittedAt));
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Returning empty task completions (database unavailable)");
+        return [];
+      }
+      throw error;
+    }
   }
 
 

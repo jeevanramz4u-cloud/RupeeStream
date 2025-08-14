@@ -51,6 +51,7 @@ import {
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import { ModeIndicator } from "@/components/mode-indicator";
 
 
 // Task Management Component
@@ -1130,6 +1131,7 @@ export default function Admin() {
       </header>
       
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <ModeIndicator />
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Admin Dashboard</h1>
           <p className="text-sm sm:text-base text-gray-600">Manage users, tasks, and platform operations.</p>

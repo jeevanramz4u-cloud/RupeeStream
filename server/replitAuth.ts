@@ -8,6 +8,7 @@ import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 import MemoryStore from "memorystore";
+import { config, isDevelopment } from "./config";
 
 if (!process.env.REPLIT_DOMAINS) {
   throw new Error("Environment variable REPLIT_DOMAINS not provided");
@@ -26,25 +27,29 @@ const getOidcConfig = memoize(
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   
-  if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL must be set for production. Enable the database endpoint in your Neon dashboard.");
-  }
-
-  // Production-only: Use PostgreSQL session store
-  const PgSession = connectPg(session);
-  const sessionStore = new PgSession({
-    conString: process.env.DATABASE_URL,
-    tableName: 'session', 
-    ttl: sessionTtl / 1000, // Convert to seconds
-    createTableIfMissing: true,
-  });
-
-  if (!process.env.SESSION_SECRET) {
-    throw new Error("SESSION_SECRET environment variable must be set for production.");
+  let sessionStore;
+  
+  if (config.session.usePostgreSQLStore && process.env.DATABASE_URL) {
+    // Production mode: Use PostgreSQL session store
+    console.log('Using PostgreSQL session store (production mode)');
+    const PgSession = connectPg(session);
+    sessionStore = new PgSession({
+      conString: process.env.DATABASE_URL,
+      tableName: 'session', 
+      ttl: sessionTtl / 1000,
+      createTableIfMissing: true,
+    });
+  } else {
+    // Development mode: Use memory store as fallback
+    console.log('Using memory session store (development mode)');
+    const SessionMemoryStore = MemoryStore(session);
+    sessionStore = new SessionMemoryStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    });
   }
   
   return session({
-    secret: process.env.SESSION_SECRET,
+    secret: config.session.secret,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
