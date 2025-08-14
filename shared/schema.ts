@@ -166,7 +166,7 @@ export const tasks = pgTable("tasks", {
   title: varchar("title").notNull(),
   description: text("description").notNull(),
   category: taskCategoryEnum("category").notNull(),
-  reward: decimal("reward", { precision: 8, scale: 2 }).notNull(),
+  reward: varchar("reward").notNull(),
   timeLimit: integer("time_limit"), // in minutes, null for no limit
   maxCompletions: integer("max_completions"), // null for unlimited
   currentCompletions: integer("current_completions").default(0).notNull(),
