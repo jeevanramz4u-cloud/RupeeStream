@@ -957,6 +957,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Donation payment routes
+  app.post('/api/donate/create-payment', async (req: any, res) => {
+    try {
+      const { amount, donorName, donorEmail } = req.body;
+      
+      if (!amount || amount < 1) {
+        return res.status(400).json({ message: "Invalid donation amount" });
+      }
+      
+      if (!donorName || !donorEmail) {
+        return res.status(400).json({ message: "Donor name and email are required" });
+      }
+      
+      const orderId = `donate_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+      
+      const paymentSession = await createPaymentSession(
+        orderId,
+        amount,
+        '9999999999', // Default phone for donations
+        donorEmail,
+        donorName,
+        'platform_donation'
+      );
+
+      console.log(`Donation payment session created: ${paymentSession.payment_session_id} for ₹${amount}`);
+      
+      res.json({
+        orderId: paymentSession.order_id,
+        paymentSessionId: paymentSession.payment_session_id,
+        amount: paymentSession.order_amount,
+        currency: paymentSession.order_currency,
+        paymentUrl: `https://payments.cashfree.com/order/${paymentSession.payment_session_id}`,
+        status: 'donation_payment_session_created'
+      });
+    } catch (error) {
+      console.error("Error creating donation payment session:", error);
+      res.status(500).json({ message: "Failed to create donation payment session" });
+    }
+  });
+
+  app.post('/api/donate/verify-payment', async (req: any, res) => {
+    try {
+      const { orderId } = req.body;
+      
+      console.log(`Verifying donation payment for order: ${orderId}`);
+      
+      const orderDetails = await getOrderDetails(orderId);
+      
+      if (orderDetails && orderDetails.order_status === 'PAID') {
+        console.log(`Donation payment verified: ${orderId} - Amount: ₹${orderDetails.order_amount}`);
+
+        res.json({ 
+          message: "Thank you for your generous donation! Your support helps us grow and serve more users.",
+          paymentId: orderId,
+          amount: orderDetails.order_amount,
+          status: "completed",
+          success: true
+        });
+      } else {
+        const status = orderDetails?.order_status || 'UNKNOWN';
+        console.log(`Donation payment verification failed - Order status: ${status}`);
+        
+        res.status(400).json({ 
+          message: `Donation payment not completed. Current status: ${status}. Please complete payment via Cashfree.`,
+          orderStatus: status
+        });
+      }
+    } catch (error) {
+      console.error("Error verifying donation payment:", error);
+      res.status(500).json({ message: "Failed to verify donation payment" });
+    }
+  });
+
   // Legacy reactivation route (kept for compatibility)
   app.post('/api/user/pay-reactivation-fee', isTraditionallyAuthenticated, async (req: any, res) => {
     try {

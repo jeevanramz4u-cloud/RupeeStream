@@ -1,9 +1,21 @@
 import { Link } from "wouter";
-import { Play, Mail, Phone, MapPin, ChevronDown, ChevronUp } from "lucide-react";
+import { Play, Mail, Phone, MapPin, ChevronDown, ChevronUp, Heart } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function Footer() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const [isDonateDialogOpen, setIsDonateDialogOpen] = useState(false);
+  const [donationAmount, setDonationAmount] = useState("");
+  const [donorName, setDonorName] = useState("");
+  const [donorEmail, setDonorEmail] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
 
   const toggleSection = (section: string) => {
     setOpenSections(prev => ({
@@ -11,6 +23,66 @@ export default function Footer() {
       [section]: !prev[section]
     }));
   };
+
+  const handleDonation = async () => {
+    if (!donationAmount || !donorName || !donorEmail) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const amount = parseFloat(donationAmount);
+    if (isNaN(amount) || amount < 1) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid donation amount (minimum ₹1).",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      const response = await apiRequest("POST", "/api/donate/create-payment", {
+        amount: amount,
+        donorName: donorName,
+        donorEmail: donorEmail,
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw result;
+      }
+
+      toast({
+        title: "Redirecting to Payment",
+        description: "Opening Cashfree payment gateway...",
+      });
+
+      // Redirect to Cashfree payment page
+      window.open(result.paymentUrl, '_blank');
+      
+      // Reset form and close dialog
+      setDonationAmount("");
+      setDonorName("");
+      setDonorEmail("");
+      setIsDonateDialogOpen(false);
+      
+    } catch (error: any) {
+      toast({
+        title: "Payment Failed",
+        description: error.message || "Failed to create donation payment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const predefinedAmounts = [50, 100, 250, 500, 1000];
 
   const companyLinks = [
     { href: "/about", label: "About Us" },
@@ -204,8 +276,106 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Section */}
+        {/* Donation Section */}
         <div className="border-t border-gray-200 mt-6 sm:mt-8 lg:mt-12 pt-4 sm:pt-6 lg:pt-8">
+          <div className="flex flex-col items-center text-center mb-6">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">Support Our Mission</h3>
+            <p className="text-sm text-gray-600 mb-4 max-w-md">Help us grow and serve more users by making a donation to support our platform.</p>
+            
+            <Dialog open={isDonateDialogOpen} onOpenChange={setIsDonateDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <Heart className="w-4 h-4 mr-2" />
+                  Donate Now
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-bold text-center">
+                    Support Innovative Task Earn
+                  </DialogTitle>
+                </DialogHeader>
+                
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="donor-name" className="text-sm font-medium">Full Name *</Label>
+                    <Input
+                      id="donor-name"
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={donorName}
+                      onChange={(e) => setDonorName(e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="donor-email" className="text-sm font-medium">Email *</Label>
+                    <Input
+                      id="donor-email"
+                      type="email"
+                      placeholder="Enter your email address"
+                      value={donorEmail}
+                      onChange={(e) => setDonorEmail(e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="amount" className="text-sm font-medium">Donation Amount (₹) *</Label>
+                    <div className="grid grid-cols-3 gap-2 mt-2 mb-3">
+                      {predefinedAmounts.map((amount) => (
+                        <Button
+                          key={amount}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setDonationAmount(amount.toString())}
+                          className={`${donationAmount === amount.toString() ? 'bg-primary text-white border-primary' : ''}`}
+                        >
+                          ₹{amount}
+                        </Button>
+                      ))}
+                    </div>
+                    <Input
+                      id="amount"
+                      type="number"
+                      placeholder="Enter custom amount"
+                      value={donationAmount}
+                      onChange={(e) => setDonationAmount(e.target.value)}
+                      min="1"
+                      className="mt-1"
+                    />
+                  </div>
+                  
+                  <Button
+                    onClick={handleDonation}
+                    disabled={isProcessing}
+                    className="w-full bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold"
+                  >
+                    {isProcessing ? (
+                      <div className="flex items-center">
+                        <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                        Processing...
+                      </div>
+                    ) : (
+                      <>
+                        <Heart className="w-4 h-4 mr-2" />
+                        Donate ₹{donationAmount || "0"}
+                      </>
+                    )}
+                  </Button>
+                  
+                  <p className="text-xs text-gray-500 text-center">
+                    Secure payment powered by Cashfree. Your donation helps us improve our platform and serve more users.
+                  </p>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div className="border-t border-gray-200 pt-4 sm:pt-6 lg:pt-8">
           <div className="flex flex-col space-y-4 lg:flex-row lg:justify-between lg:items-center lg:space-y-0">
             <div className="flex flex-col items-center space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-3">
               <div className="flex items-center space-x-2">
@@ -215,7 +385,7 @@ export default function Footer() {
                 <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
               </div>
               <span className="hidden sm:inline text-sm text-gray-500">•</span>
-              <span className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">Video Monetization Platform</span>
+              <span className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">Task Completion Platform</span>
             </div>
             <div className="flex flex-col items-center space-y-2 text-center lg:flex-row lg:items-center lg:gap-4 lg:text-right">
               <span className="text-xs sm:text-sm text-gray-500">© 2024 Innovative Grow Solutions Pvt. Ltd. All rights reserved.</span>
