@@ -647,7 +647,7 @@ export default function Signup() {
 
               {renderStepContent()}
 
-              <div className="button-group">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
                 {currentStep > 1 && (
                   <Button
                     type="button"
@@ -657,7 +657,8 @@ export default function Signup() {
                       setCurrentStep(currentStep - 1);
                       setError("");
                     }}
-                    className="w-full sm:flex-1"
+                    className="w-full sm:w-auto min-w-[140px] font-semibold"
+                    data-testid="button-previous"
                   >
                     Previous
                   </Button>
@@ -666,8 +667,9 @@ export default function Signup() {
                 <Button 
                   type="submit" 
                   size="lg"
-                  className="w-full sm:flex-1 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 font-bold" 
+                  className="w-full sm:w-auto min-w-[200px] bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 font-bold text-center justify-center" 
                   disabled={isLoading}
+                  data-testid="button-continue"
                 >
                   {isLoading ? (
                     "Processing..."
