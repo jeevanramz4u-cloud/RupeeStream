@@ -34,6 +34,151 @@ import { db } from "./db";
 import { config, isDevelopment } from "./config";
 import { eq, desc, and, sql, gte } from "drizzle-orm";
 
+// Memory stores for development mode
+const devModeUsers: Map<string, User> = new Map();
+const devModeTasks: Task[] = [];
+const devModeTaskCompletions: TaskCompletion[] = [];
+
+// Initialize with default test users
+function initializeDevUsers() {
+  if (devModeUsers.size === 0) {
+    const testUsers = [
+      {
+        id: 'dev-user-1755205393601',
+        email: 'suspended@test.com',
+        firstName: 'Suspended',
+        lastName: 'User',
+        profileImageUrl: null,
+        password: '$2b$12$kA6/.QZxE0FAk7p1X2NdRu/Bn3cEyXiGKJaiBaXCR6J9hXe/yGGGG',
+        phoneNumber: '9876543210',
+        dateOfBirth: '1990-01-01',
+        address: '123 Test Street',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        pincode: '400001',
+        accountHolderName: 'Suspended User',
+        accountNumber: '9876543210',
+        ifscCode: 'HDFC0000456',
+        bankName: 'HDFC Bank',
+        governmentIdType: null,
+        governmentIdNumber: null,
+        governmentIdUrl: null,
+        verificationStatus: 'pending',
+        kycStatus: 'pending',
+        status: 'suspended',
+        balance: '0.00',
+        referralCode: 'ZCZA8U',
+        createdAt: new Date('2025-08-14T21:03:13.601Z'),
+        updatedAt: new Date(),
+        resetToken: null,
+        resetTokenExpiry: null,
+        kycApprovedAt: null,
+        suspensionReason: 'Account suspended by admin for demonstration'
+      },
+      {
+        id: 'dev-user-1755205507947',
+        email: 'rahul.sharma@test.com',
+        firstName: 'Rahul',
+        lastName: 'Sharma',
+        profileImageUrl: null,
+        password: '$2b$12$vFplrKfrRse7njVSDS1q3uJrAz76PNrq7f.tYHb.wH4NraV66cyH.',
+        phoneNumber: '9876543211',
+        dateOfBirth: '1995-03-15',
+        address: '456 MG Road',
+        city: 'Bangalore',
+        state: 'Karnataka',
+        pincode: '560001',
+        accountHolderName: 'Rahul Sharma',
+        accountNumber: '1234567890',
+        ifscCode: 'ICIC0000001',
+        bankName: 'ICICI Bank',
+        governmentIdType: null,
+        governmentIdNumber: null,
+        governmentIdUrl: null,
+        verificationStatus: 'pending',
+        kycStatus: 'pending',
+        status: 'active',
+        balance: '125.00',
+        referralCode: 'HHJIYY',
+        createdAt: new Date('2025-08-14T21:05:07.947Z'),
+        updatedAt: new Date(),
+        resetToken: null,
+        resetTokenExpiry: null,
+        kycApprovedAt: null,
+        suspensionReason: null
+      },
+      {
+        id: 'dev-user-1755205510611',
+        email: 'priya.patel@test.com',
+        firstName: 'Priya',
+        lastName: 'Patel',
+        profileImageUrl: null,
+        password: '$2b$12$NgyWkMxqOhZbqqv93WPeden1UuTgQJSP07zbcugDI9il3.HEXjjDe',
+        phoneNumber: '9876543212',
+        dateOfBirth: '1992-07-22',
+        address: '789 Park Street',
+        city: 'Delhi',
+        state: 'Delhi',
+        pincode: '110001',
+        accountHolderName: 'Priya Patel',
+        accountNumber: '2345678901',
+        ifscCode: 'SBIN0000001',
+        bankName: 'State Bank of India',
+        governmentIdType: 'Aadhaar',
+        governmentIdNumber: '1234-5678-9012',
+        governmentIdUrl: 'https://example.com/kyc-doc.jpg',
+        verificationStatus: 'verified',
+        kycStatus: 'approved',
+        status: 'active',
+        balance: '89.50',
+        referralCode: 'QEPSXO',
+        createdAt: new Date('2025-08-14T21:05:10.611Z'),
+        updatedAt: new Date(),
+        resetToken: null,
+        resetTokenExpiry: null,
+        kycApprovedAt: new Date('2025-08-14T15:30:00.000Z'),
+        suspensionReason: null
+      },
+      {
+        id: 'dev-demo-user',
+        email: 'demo@innovativetaskearn.online',
+        firstName: 'Demo',
+        lastName: 'User',
+        profileImageUrl: null,
+        password: '$2b$12$GsdpSXb2HbpLLWhFqT2QR.QVyT0nnirL9vFXuE.0xF3kRfxOSOXfW',
+        phoneNumber: '9876543210',
+        dateOfBirth: '1990-01-01',
+        address: '123 Demo Street',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        pincode: '400001',
+        accountHolderName: 'Demo User',
+        accountNumber: '1234567890',
+        ifscCode: 'HDFC0000123',
+        bankName: 'HDFC Bank',
+        governmentIdType: 'aadhaar',
+        governmentIdNumber: '123456789012',
+        governmentIdUrl: 'demo-kyc-doc.jpg',
+        verificationStatus: 'verified',
+        kycStatus: 'approved',
+        status: 'active',
+        balance: '1000.00',
+        referralCode: 'DEMO123',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        resetToken: null,
+        resetTokenExpiry: null,
+        kycApprovedAt: new Date(),
+        suspensionReason: null
+      }
+    ];
+    
+    testUsers.forEach(user => {
+      devModeUsers.set(user.id, user as User);
+    });
+  }
+}
+
 // Database storage implementation
 
 export interface IStorage {
@@ -447,6 +592,13 @@ export class DatabaseStorage implements IStorage {
           kycApprovedAt: null,
           suspensionReason: null
         };
+        
+        // Store the new user in memory for development mode
+        initializeDevUsers();
+        devModeUsers.set(devUser.id, devUser);
+        console.log(`✅ New user created in development mode: ${devUser.email} (ID: ${devUser.id})`);
+        console.log(`📊 Total users in memory: ${devModeUsers.size}`);
+        
         return devUser;
       }
       throw error;
@@ -653,105 +805,19 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       if (isDevelopment() && config.database.fallbackEnabled) {
         console.log("Development mode: Users list simulated (database unavailable)");
-        // Return our test users for admin panel
-        return [
-          {
-            id: 'dev-user-1755205393601',
-            email: 'suspended@test.com',
-            firstName: 'Suspended',
-            lastName: 'User',
-            profileImageUrl: null,
-            password: '$2b$12$kA6/.QZxE0FAk7p1X2NdRu/Bn3cEyXiGKJaiBaXCR6J9hXe/yGGGG',
-            phoneNumber: '9876543210',
-            dateOfBirth: '1990-01-01',
-            address: '123 Test Street',
-            city: 'Mumbai',
-            state: 'Maharashtra',
-            pincode: '400001',
-            accountHolderName: 'Suspended User',
-            accountNumber: '9876543210',
-            ifscCode: 'HDFC0000456',
-            bankName: 'HDFC Bank',
-            governmentIdType: null,
-            governmentIdNumber: null,
-            governmentIdUrl: null,
-            verificationStatus: 'pending',
-            kycStatus: 'pending',
-            status: 'suspended',
-            balance: '0.00',
-            referralCode: 'ZCZA8U',
-            createdAt: new Date('2025-08-14T21:03:13.601Z'),
-            updatedAt: new Date(),
-            resetToken: null,
-            resetTokenExpiry: null,
-            kycApprovedAt: null,
-            suspensionReason: 'Account suspended by admin for demonstration'
-          },
-          {
-            id: 'dev-user-1755205507947',
-            email: 'rahul.sharma@test.com',
-            firstName: 'Rahul',
-            lastName: 'Sharma',
-            profileImageUrl: null,
-            password: '$2b$12$vFplrKfrRse7njVSDS1q3uJrAz76PNrq7f.tYHb.wH4NraV66cyH.',
-            phoneNumber: '9876543211',
-            dateOfBirth: '1995-03-15',
-            address: '456 MG Road',
-            city: 'Bangalore',
-            state: 'Karnataka',
-            pincode: '560001',
-            accountHolderName: 'Rahul Sharma',
-            accountNumber: '1234567890',
-            ifscCode: 'ICIC0000001',
-            bankName: 'ICICI Bank',
-            governmentIdType: null,
-            governmentIdNumber: null,
-            governmentIdUrl: null,
-            verificationStatus: 'pending',
-            kycStatus: 'pending',
-            status: 'active',
-            balance: '125.00',
-            referralCode: 'HHJIYY',
-            createdAt: new Date('2025-08-14T21:05:07.947Z'),
-            updatedAt: new Date(),
-            resetToken: null,
-            resetTokenExpiry: null,
-            kycApprovedAt: null,
-            suspensionReason: null
-          },
-          {
-            id: 'dev-user-1755205510611',
-            email: 'priya.patel@test.com',
-            firstName: 'Priya',
-            lastName: 'Patel',
-            profileImageUrl: null,
-            password: '$2b$12$NgyWkMxqOhZbqqv93WPeden1UuTgQJSP07zbcugDI9il3.HEXjjDe',
-            phoneNumber: '9876543212',
-            dateOfBirth: '1992-07-22',
-            address: '789 Park Street',
-            city: 'Delhi',
-            state: 'Delhi',
-            pincode: '110001',
-            accountHolderName: 'Priya Patel',
-            accountNumber: '2345678901',
-            ifscCode: 'SBIN0000001',
-            bankName: 'State Bank of India',
-            governmentIdType: 'Aadhaar',
-            governmentIdNumber: '1234-5678-9012',
-            governmentIdUrl: 'https://example.com/kyc-doc.jpg',
-            verificationStatus: 'verified',
-            kycStatus: 'approved',
-            status: 'active',
-            balance: '89.50',
-            referralCode: 'QEPSXO',
-            createdAt: new Date('2025-08-14T21:05:10.611Z'),
-            updatedAt: new Date(),
-            resetToken: null,
-            resetTokenExpiry: null,
-            kycApprovedAt: new Date('2025-08-14T15:30:00.000Z'),
-            suspensionReason: null
-          }
-        ] as User[];
+        
+        // Initialize test users if not already done
+        initializeDevUsers();
+        
+        // Return all users from memory store (includes test users and newly created ones)
+        const allUsers = Array.from(devModeUsers.values()).sort((a, b) => {
+          const dateA = a.createdAt instanceof Date ? a.createdAt.getTime() : new Date(a.createdAt).getTime();
+          const dateB = b.createdAt instanceof Date ? b.createdAt.getTime() : new Date(b.createdAt).getTime();
+          return dateB - dateA; // Sort by newest first
+        });
+        
+        console.log(`📊 Returning ${allUsers.length} users from memory store for admin panel`);
+        return allUsers;
       }
       throw error;
     }
