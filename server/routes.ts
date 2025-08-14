@@ -1821,7 +1821,107 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update user status (active/suspended)
+  // POST endpoints for admin user suspension/reactivation (used by frontend)
+  app.post("/api/admin/users/:id/suspend", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      const { reason } = req.body;
+      
+      const user = await storage.updateUserAccountStatus(id, "suspended");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Update suspension reason if provided
+      if (reason) {
+        await storage.updateUser(id, { suspensionReason: reason });
+      }
+
+      console.log(`✅ Admin suspended user ${id}: ${reason || 'No reason provided'}`);
+      res.json({ message: "User suspended successfully", user });
+    } catch (error) {
+      console.error("Error suspending user:", error);
+      res.status(500).json({ message: "Failed to suspend user" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/reactivate", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      const { reason } = req.body;
+      
+      const user = await storage.updateUserAccountStatus(id, "active");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Clear suspension reason
+      await storage.updateUser(id, { 
+        suspensionReason: null,
+        reactivationFeePaid: true 
+      });
+
+      console.log(`✅ Admin reactivated user ${id}: ${reason || 'No reason provided'}`);
+      res.json({ message: "User reactivated successfully", user });
+    } catch (error) {
+      console.error("Error reactivating user:", error);
+      res.status(500).json({ message: "Failed to reactivate user" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/kyc-approve", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      const { reason } = req.body;
+      
+      const user = await storage.updateUserVerification(id, "verified");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      console.log(`✅ Admin approved KYC for user ${id}: ${reason || 'No reason provided'}`);
+      res.json({ message: "KYC approved successfully", user });
+    } catch (error) {
+      console.error("Error approving KYC:", error);
+      res.status(500).json({ message: "Failed to approve KYC" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/kyc-deny", async (req: any, res) => {
+    try {
+      if (!req.session.adminUser) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      const { id } = req.params;
+      const { reason } = req.body;
+      
+      const user = await storage.updateUserVerification(id, "rejected");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      console.log(`✅ Admin denied KYC for user ${id}: ${reason || 'No reason provided'}`);
+      res.json({ message: "KYC denied successfully", user });
+    } catch (error) {
+      console.error("Error denying KYC:", error);
+      res.status(500).json({ message: "Failed to deny KYC" });
+    }
+  });
+
+  // Update user status (active/suspended) - PUT endpoint for backward compatibility
   app.put("/api/admin/users/:id/status", async (req: any, res) => {
     try {
       // Check admin authentication
@@ -1836,7 +1936,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Valid status is required (active or suspended)" });
       }
       
-      const user = await storage.updateUser(id, { status });
+      const user = await storage.updateUserAccountStatus(id, status);
       res.json(user);
     } catch (error) {
       console.error("Error updating user status:", error);

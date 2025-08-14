@@ -573,46 +573,70 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUserVerification(id: string, status: "pending" | "verified" | "rejected"): Promise<User | undefined> {
-    // Map verification status to KYC status
-    const kycStatusMap = {
-      "pending": "pending" as const,
-      "verified": "approved" as const,
-      "rejected": "rejected" as const
-    };
+    try {
+      // Map verification status to KYC status
+      const kycStatusMap = {
+        "pending": "pending" as const,
+        "verified": "approved" as const,
+        "rejected": "rejected" as const
+      };
 
-    const updateData: any = { 
-      verificationStatus: status, 
-      kycStatus: kycStatusMap[status],
-      updatedAt: new Date() 
-    };
+      const updateData: any = { 
+        verificationStatus: status, 
+        kycStatus: kycStatusMap[status],
+        updatedAt: new Date() 
+      };
 
-    // Set approval timestamp if verified
-    if (status === "verified") {
-      updateData.kycApprovedAt = new Date();
-      
-      // Credit referral earning when user gets verified
-      const userRecord = await db.select().from(users).where(eq(users.id, id));
-      if (userRecord.length > 0 && userRecord[0].referredBy) {
-        const referralRecord = await db
-          .select()
-          .from(referrals)
-          .where(and(
-            eq(referrals.referrerId, userRecord[0].referredBy),
-            eq(referrals.referredId, id)
-          ));
+      // Set approval timestamp if verified
+      if (status === "verified") {
+        updateData.kycApprovedAt = new Date();
         
-        if (referralRecord.length > 0 && !referralRecord[0].isEarningCredited) {
-          await this.creditReferralEarning(referralRecord[0].id);
+        // Credit referral earning when user gets verified
+        const userRecord = await db.select().from(users).where(eq(users.id, id));
+        if (userRecord.length > 0 && userRecord[0].referredBy) {
+          const referralRecord = await db
+            .select()
+            .from(referrals)
+            .where(and(
+              eq(referrals.referrerId, userRecord[0].referredBy),
+              eq(referrals.referredId, id)
+            ));
+          
+          if (referralRecord.length > 0 && !referralRecord[0].isEarningCredited) {
+            await this.creditReferralEarning(referralRecord[0].id);
+          }
         }
       }
-    }
 
-    const [user] = await db
-      .update(users)
-      .set(updateData)
-      .where(eq(users.id, id))
-      .returning();
-    return user;
+      const [user] = await db
+        .update(users)
+        .set(updateData)
+        .where(eq(users.id, id))
+        .returning();
+      return user;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log(`Development mode: User verification update simulated (database unavailable) - Status: ${status}`);
+        
+        // Update the in-memory user verification status
+        for (let user of devModeUsers.values()) {
+          if (user.id === id) {
+            user.verificationStatus = status;
+            user.kycStatus = status === "verified" ? "approved" : status === "rejected" ? "rejected" : "pending";
+            user.updatedAt = new Date();
+            if (status === "verified") {
+              user.kycApprovedAt = new Date();
+            }
+            console.log(`✅ Updated user ${id} verification status to ${status} in memory store`);
+            return user;
+          }
+        }
+        
+        console.log(`❌ User ${id} not found in memory store`);
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   async updateUserAccountStatus(id: string, status: "active" | "suspended" | "banned"): Promise<User | undefined> {
@@ -626,41 +650,23 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       if (isDevelopment() && config.database.fallbackEnabled) {
         console.log(`Development mode: User status update simulated (database unavailable) - Status: ${status}`);
-        // Return updated user data for suspension demo
-        if (id === 'dev-user-1755205393601' || id === 'dev-user-1755205510611' || id === 'dev-user-1755205527714') {
-          return {
-            id: 'dev-user-1755205393601',
-            email: 'suspended@test.com',
-            firstName: 'Suspended',
-            lastName: 'User',
-            profileImageUrl: null,
-            password: '$2b$12$kA6/.QZxE0FAk7p1X2NdRu/Bn3cEyXiGKJaiBaXCR6J9hXe/yGGGG',
-            phoneNumber: '9876543210',
-            dateOfBirth: '1990-01-01',
-            address: '123 Test Street',
-            city: 'Mumbai',
-            state: 'Maharashtra',
-            pincode: '400001',
-            accountHolderName: 'Suspended User',
-            accountNumber: '9876543210',
-            ifscCode: 'HDFC0000456',
-            bankName: 'HDFC Bank',
-            governmentIdType: null,
-            governmentIdNumber: null,
-            governmentIdUrl: null,
-            verificationStatus: 'pending',
-            kycStatus: 'pending',
-            status: status,
-            balance: '0.00',
-            referralCode: 'ZCZA8U',
-            createdAt: new Date('2025-08-14T21:03:13.601Z'),
-            updatedAt: new Date(),
-            resetToken: null,
-            resetTokenExpiry: null,
-            kycApprovedAt: null,
-            suspensionReason: status === 'suspended' ? 'Account suspended by admin for demonstration' : null
-          } as User;
+        
+        // Update the in-memory user status
+        for (let user of devModeUsers.values()) {
+          if (user.id === id) {
+            user.status = status;
+            user.updatedAt = new Date();
+            if (status === 'suspended' && !user.suspensionReason) {
+              user.suspensionReason = 'Account suspended by admin';
+            } else if (status === 'active') {
+              user.suspensionReason = null;
+            }
+            console.log(`✅ Updated user ${id} status to ${status} in memory store`);
+            return user;
+          }
         }
+        
+        console.log(`❌ User ${id} not found in memory store`);
         return undefined;
       }
       throw error;
