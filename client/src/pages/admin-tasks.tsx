@@ -147,6 +147,7 @@ export default function AdminTasks() {
       timeLimit: "",
       maxCompletions: "",
       requirements: "",
+      taskLink: "",
       verificationMethod: "manual"
     });
   };
@@ -430,10 +431,6 @@ export default function AdminTasks() {
                         <SelectItem value="channel_subscribe">Channel Subscribe</SelectItem>
                         <SelectItem value="comment_like">Comments & Likes</SelectItem>
                         <SelectItem value="youtube_video_see">YouTube Video See Task</SelectItem>
-                        <SelectItem value="channel_subscribe">Channel Subscribe</SelectItem>
-                        <SelectItem value="comment_like">Comment & Like</SelectItem>
-                        <SelectItem value="survey">Survey</SelectItem>
-                        <SelectItem value="social_media">Social Media</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
