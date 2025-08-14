@@ -90,7 +90,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Demo mode: Auto-login endpoint for development
   app.get('/api/auth/demo-login', async (req, res) => {
     try {
-      const demoUser = await storage.getUser("demo-user-001");
+      let demoUser;
+      try {
+        demoUser = await storage.getUser("demo-user-001");
+      } catch (dbError) {
+        // Database fallback - create demo user session
+        demoUser = {
+          id: "demo-user-001",
+          email: "demo@innovativetaskearn.online",
+          firstName: "Demo",
+          lastName: "User",
+          profileImageUrl: null,
+          phoneNumber: "+91 9876543210",
+          dateOfBirth: "1990-01-01",
+          address: "123 Demo Street",
+          city: "Mumbai",
+          state: "Maharashtra",
+          pincode: "400001",
+          accountHolderName: "Demo User",
+          accountNumber: "1234567890",
+          ifscCode: "DEMO0001234",
+          bankName: "Demo Bank",
+          governmentIdType: "aadhaar",
+          governmentIdNumber: "1234-5678-9012",
+          governmentIdUrl: null,
+          verificationStatus: "verified",
+          status: "active",
+          balance: "1250.75",
+          referralCode: "DEMO123",
+          kycStatus: "approved",
+          kycFeePaid: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          role: "user"
+        };
+      }
+      
       if (demoUser) {
         req.session!.userId = demoUser.id;
         const { password: _, ...userWithoutPassword } = demoUser;
