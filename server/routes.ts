@@ -221,13 +221,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid email or password" });
       }
 
-      // Check if user is suspended
-      if (user.status === 'suspended') {
-        return res.status(403).json({ 
-          message: "Your account has been suspended. Please contact support.",
-          suspensionReason: user.suspensionReason || "Account suspended"
-        });
-      }
+      // Allow suspended users to login so they can access reactivation payment
+      // The frontend will handle redirecting them to the suspended page
 
       // Check password
       const bcrypt = await import('bcryptjs');
@@ -248,7 +243,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastName: user.lastName,
           verificationStatus: user.verificationStatus,
           kycStatus: user.kycStatus,
-          balance: user.balance
+          balance: user.balance,
+          status: user.status,
+          suspensionReason: user.suspensionReason
         }
       });
     } catch (error) {
@@ -398,6 +395,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Cashfree webhook endpoint for KYC payment notifications
+  // Payment webhook for both KYC and reactivation payments
+  app.post('/api/payment-webhook', async (req, res) => {
+    try {
+      const { order_id, payment_status } = req.body;
+      
+      console.log(`Payment webhook received for order: ${order_id}, status: ${payment_status}`);
+      
+      if (payment_status === 'SUCCESS' || payment_status === 'PAID') {
+        // Handle KYC payment
+        if (order_id.startsWith('kyc_')) {
+          const userId = order_id.split('_')[1];
+          await storage.updateUserKycPaymentAndApprove(userId, {
+            kycFeePaid: true,
+            kycFeePaymentId: order_id,
+            kycStatus: "approved",
+            verificationStatus: "verified",
+            kycApprovedAt: new Date(),
+          });
+          console.log(`KYC payment verified via webhook for user ${userId}`);
+        }
+        // Handle reactivation payment
+        else if (order_id.startsWith('reactivate_')) {
+          const userId = order_id.split('_')[1];
+          await storage.updateUser(userId, { 
+            status: 'active',
+            suspensionReason: null
+          });
+          console.log(`Reactivation payment verified via webhook for user ${userId}`);
+        }
+      }
+      
+      res.json({ received: true });
+    } catch (error) {
+      console.error("Error processing payment webhook:", error);
+      res.status(500).json({ message: "Webhook processing failed" });
+    }
+  });
+
+  // Legacy KYC webhook (redirects to unified webhook)
   app.post('/api/kyc/payment-webhook', async (req, res) => {
     try {
       console.log('Cashfree payment webhook received:', req.body);
@@ -844,7 +880,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Reactivation fee payment route
+  // Create payment session for reactivation fee
+  app.post('/api/account/reactivate-payment', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const user = req.user;
+      
+      // Check if user is actually suspended
+      if (user.status !== 'suspended') {
+        return res.status(400).json({ message: "Account is not suspended" });
+      }
+      
+      const orderId = `reactivate_${userId}_${Date.now()}`;
+      
+      const paymentSession = await createPaymentSession(
+        orderId,
+        49, // Reactivation fee amount
+        user.phoneNumber || '9999999999',
+        user.email,
+        `${user.firstName} ${user.lastName}`,
+        'reactivation_fee'
+      );
+
+      console.log(`Production Cashfree payment session created for reactivation: ${paymentSession.payment_session_id}`);
+      
+      res.json({
+        orderId: paymentSession.order_id,
+        paymentSessionId: paymentSession.payment_session_id,
+        amount: paymentSession.order_amount,
+        currency: paymentSession.order_currency,
+        paymentUrl: `https://payments.cashfree.com/order/${paymentSession.payment_session_id}`,
+        status: 'production_payment_session_created'
+      });
+    } catch (error) {
+      console.error("Error creating reactivation payment session:", error);
+      res.status(500).json({ message: "Failed to create payment session" });
+    }
+  });
+  
+  // Verify reactivation payment using production Cashfree API
+  app.post('/api/account/verify-reactivation-payment', isTraditionallyAuthenticated, async (req: any, res) => {
+    try {
+      const { orderId } = req.body;
+      const userId = req.user.id;
+      const user = req.user;
+      
+      console.log(`Verifying production Cashfree payment for reactivation order: ${orderId}`);
+      
+      const orderDetails = await getOrderDetails(orderId);
+      
+      if (orderDetails && orderDetails.order_status === 'PAID') {
+        // Update user status to active
+        await storage.updateUser(userId, { 
+          status: 'active',
+          suspensionReason: null
+        });
+
+        console.log(`Reactivation payment verified and account activated for user ${userId}`);
+
+        res.json({ 
+          message: "Reactivation fee payment successful via production Cashfree - Account reactivated!",
+          paymentId: orderId,
+          status: "active",
+          success: true
+        });
+      } else {
+        res.json({ 
+          message: "Payment verification pending via production Cashfree API. Please wait or contact support.",
+          paymentId: orderId,
+          status: "pending"
+        });
+      }
+    } catch (error) {
+      console.error("Error verifying reactivation payment:", error);
+      res.status(500).json({ message: "Failed to verify payment via production Cashfree API" });
+    }
+  });
+
+  // Legacy reactivation route (kept for compatibility)
   app.post('/api/user/pay-reactivation-fee', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;

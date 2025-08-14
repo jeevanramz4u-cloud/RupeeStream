@@ -40,37 +40,78 @@ export default function SuspendedPage() {
   const reactivationMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/account/reactivate-payment"),
     onSuccess: (data: any) => {
+      console.log("Reactivation payment session created:", data);
+      
       if (data.paymentUrl) {
-        // Redirect to payment gateway
-        window.location.href = data.paymentUrl;
-      } else {
-        // Development payment completed
-        // Show professional success modal
-        setShowSuccessModal(true);
-        
         toast({
-          title: "Account Successfully Reactivated!",
-          description: data.message || "Your account is now active. Payment recorded successfully. You can start earning again!",
-          duration: 5000,
+          title: "Payment Gateway Ready",
+          description: "Redirecting to secure Cashfree payment gateway for reactivation fee processing...",
         });
         
-        // Auto-redirect after showing success message
+        // Redirect to Cashfree payment gateway
         setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey: ["/api/auth/check"] });
-          setLocation("/dashboard");
-        }, 4000);
+          window.open(data.paymentUrl, '_blank', 'noopener,noreferrer');
+          
+          // Start polling for payment completion
+          setTimeout(() => {
+            verifyPaymentMutation.mutate({ orderId: data.orderId });
+          }, 5000);
+        }, 1500);
+      } else {
+        toast({
+          title: "Payment Gateway Error",
+          description: "Failed to initialize payment gateway. Please try again.",
+          variant: "destructive",
+        });
       }
     },
     onError: (error: any) => {
       toast({
-        title: "Payment Failed",
-        description: error.message || "Failed to process reactivation payment. Please try again.",
+        title: "Payment Session Failed",
+        description: error.message || "Failed to create payment session. Please try again.",
         variant: "destructive",
       });
     },
     onSettled: () => {
       setIsProcessingPayment(false);
     }
+  });
+  
+  // Verify reactivation payment mutation
+  const verifyPaymentMutation = useMutation({
+    mutationFn: async ({ orderId }: { orderId: string }) => {
+      const response = await apiRequest("POST", "/api/account/verify-reactivation-payment", { orderId });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        setShowSuccessModal(true);
+        
+        toast({
+          title: "Account Successfully Reactivated! 🎉",
+          description: "Your production payment has been verified and account is now active. You can start earning again!",
+        });
+        
+        // Auto-redirect after showing success message
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ["/api/auth/check"] });
+          setLocation("/dashboard");
+        }, 3000);
+      } else {
+        toast({
+          title: "Payment Verification Status",
+          description: data.message || "Payment verification in progress via production Cashfree API. Please check back shortly.",
+        });
+      }
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.message || "Unable to verify payment status with production Cashfree API";
+      toast({
+        title: "Payment Verification Status",
+        description: `${errorMessage}. If you completed the payment, it may take a few minutes to process.`,
+        variant: "destructive",
+      });
+    },
   });
 
   const handleReactivateAccount = () => {
@@ -196,7 +237,7 @@ export default function SuspendedPage() {
               ) : (
                 <>
                   <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  <span className="text-sm sm:text-base">Pay ₹{reactivationFee} & Reactivate Account</span>
+                  <span className="text-sm sm:text-base">Pay ₹{reactivationFee} via Cashfree</span>
                 </>
               )}
             </Button>
