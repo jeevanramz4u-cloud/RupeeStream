@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Truck, ArrowLeft } from "lucide-react";
+import { Monitor, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
 export default function ShippingPolicy() {
@@ -11,128 +11,104 @@ export default function ShippingPolicy() {
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
-          <Truck className="w-16 h-16 text-primary mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Shipping & Delivery Policy</h1>
+          <Monitor className="w-16 h-16 text-primary mx-auto mb-4" />
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Digital Service Delivery Policy</h1>
           <p className="text-gray-600">Last updated: {new Date().toLocaleDateString('en-IN')}</p>
         </div>
 
         <Card className="mb-8">
           <CardContent className="prose prose-gray max-w-none pt-6">
             <p className="text-lg text-gray-700 mb-6">
-              This Shipping & Delivery Policy outlines the terms and conditions for any physical deliveries 
-              related to services provided by INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED through Innovative Task Earn.
+              This Digital Service Delivery Policy clarifies that INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED 
+              through Innovative Task Earn operates as a 100% digital platform and does not sell or ship 
+              any physical products or items.
             </p>
 
             <div className="space-y-8">
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Service Type</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Digital Service Platform</h2>
                 <div className="space-y-4 text-gray-700">
                   <p>
-                    Innovative Task Earn is primarily a digital task completion platform. Most of our services 
-                    are delivered electronically and do not require physical shipping.
+                    <strong>Innovative Task Earn is a completely digital service platform.</strong> We provide 
+                    task completion opportunities and digital earnings management services only.
                   </p>
                   <p>
-                    This policy applies to any physical items that may be sent to users, including:
+                    We do NOT:
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>KYC verification documents (if returned)</li>
-                    <li>Welcome kits or promotional materials (if applicable)</li>
-                    <li>Any physical rewards or certificates</li>
+                    <li>Sell any physical products or items</li>
+                    <li>Provide shipping or delivery services</li>
+                    <li>Handle physical merchandise of any kind</li>
+                    <li>Offer product catalogs or e-commerce services</li>
+                    <li>Manage inventory or physical goods</li>
                   </ul>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Shipping Coverage</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Our Digital Services</h2>
                 <div className="space-y-4 text-gray-700">
-                  <p>We provide shipping services within India only.</p>
-                  <h3 className="font-medium">Shipping Zones:</h3>
+                  <p>We provide the following digital services only:</p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li><strong>Zone 1:</strong> Haryana, Delhi, Punjab - 2-3 business days</li>
-                    <li><strong>Zone 2:</strong> Northern India (UP, Rajasthan, HP) - 3-5 business days</li>
-                    <li><strong>Zone 3:</strong> Rest of India - 5-7 business days</li>
+                    <li><strong>Task Completion Platform:</strong> Access to various micro-tasks</li>
+                    <li><strong>Earnings Management:</strong> Digital wallet and payout system</li>
+                    <li><strong>Referral Program:</strong> Digital referral tracking and bonuses</li>
+                    <li><strong>KYC Verification:</strong> Online document verification system</li>
+                    <li><strong>Customer Support:</strong> Digital chat and email support</li>
                   </ul>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">3. Delivery Timeline</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">3. Service Delivery Method</h2>
                 <div className="space-y-4 text-gray-700">
-                  <p>Standard delivery timelines:</p>
+                  <p>All our services are delivered digitally:</p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li><strong>Processing Time:</strong> 1-2 business days</li>
-                    <li><strong>Shipping Time:</strong> 2-7 business days (depending on location)</li>
-                    <li><strong>Total Delivery Time:</strong> 3-9 business days</li>
+                    <li><strong>Instant Access:</strong> Services available immediately upon registration</li>
+                    <li><strong>Real-time Processing:</strong> Task approvals and earnings credit within minutes</li>
+                    <li><strong>Digital Notifications:</strong> SMS and email updates for all activities</li>
+                    <li><strong>Online Management:</strong> Complete account management through web platform</li>
                   </ul>
                   <p>
-                    Business days exclude Sundays and national holidays. Delivery may be delayed 
-                    during festive seasons or due to unforeseen circumstances.
-                  </p>
-                </div>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Shipping Charges</h2>
-                <div className="space-y-4 text-gray-700">
-                  <p>Shipping charges (if applicable):</p>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Zone 1: ₹50 for documents, ₹100 for packages</li>
-                    <li>Zone 2: ₹75 for documents, ₹150 for packages</li>
-                    <li>Zone 3: ₹100 for documents, ₹200 for packages</li>
-                  </ul>
-                  <p>
-                    Free shipping may be provided for promotional materials or in case of 
-                    company-initiated returns.
+                    No physical delivery is required for any of our services.
                   </p>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Tracking & Updates</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Payment & Earnings Delivery</h2>
                 <div className="space-y-4 text-gray-700">
+                  <p>Financial transactions are processed digitally:</p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>All shipments include tracking numbers</li>
-                    <li>SMS and email notifications for shipping updates</li>
-                    <li>Real-time tracking through our logistics partners</li>
-                    <li>Customer support available for shipping queries</li>
+                    <li><strong>Digital Payments:</strong> All payments via bank transfer (IMPS/NEFT)</li>
+                    <li><strong>No Cash Transactions:</strong> We do not handle physical cash</li>
+                    <li><strong>Weekly Payouts:</strong> Earnings transferred directly to your bank account</li>
+                    <li><strong>Transaction Tracking:</strong> Complete digital record of all transactions</li>
                   </ul>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Delivery Requirements</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Important Notice</h2>
                 <div className="space-y-4 text-gray-700">
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Accurate and complete delivery address required</li>
-                    <li>Valid contact number for delivery coordination</li>
-                    <li>Someone must be available to receive the package</li>
-                    <li>Valid ID proof may be required for verification</li>
-                  </ul>
+                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+                    <p className="font-semibold text-yellow-800">Please Note:</p>
+                    <p className="text-yellow-700">
+                      If you have received any communication claiming physical product delivery 
+                      or shipping from Innovative Task Earn, please verify with our official 
+                      support team immediately. We do not engage in any physical commerce activities.
+                    </p>
+                  </div>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Failed Delivery</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Contact Information</h2>
                 <div className="space-y-4 text-gray-700">
-                  <p>In case of failed delivery attempts:</p>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Up to 3 delivery attempts will be made</li>
-                    <li>Package will be held at local delivery center for 7 days</li>
-                    <li>Customer will be notified via SMS/email</li>
-                    <li>After 7 days, package will be returned to sender</li>
-                    <li>Re-delivery charges may apply for subsequent attempts</li>
-                  </ul>
-                </div>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">8. Contact Information</h2>
-                <div className="space-y-4 text-gray-700">
-                  <p>For shipping-related queries:</p>
+                  <p>For service-related queries:</p>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <p><strong>INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED</strong></p>
                     <p>Email: support@innovativetaskearn.online</p>
-                    <p>Phone: +91-8000-XXX-XXX</p>
                     <p>Address: C/O YOGESH, Kharbla 99, VATS STREET, KHARBLA</p>
                     <p>Hisar, Haryana - 125042</p>
                     <p>GST: 06AAGCI9044P1ZZ</p>
@@ -141,10 +117,10 @@ export default function ShippingPolicy() {
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Policy Updates</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Policy Updates</h2>
                 <div className="space-y-4 text-gray-700">
                   <p>
-                    We reserve the right to update this shipping policy at any time. 
+                    We reserve the right to update this digital service delivery policy at any time. 
                     Changes will be posted on our website and users will be notified 
                     of significant changes via email.
                   </p>
