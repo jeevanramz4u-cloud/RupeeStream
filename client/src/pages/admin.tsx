@@ -41,12 +41,642 @@ import {
   CreditCard,
   Building2,
   Coins,
-  ExternalLink
+  ExternalLink,
+  Smartphone,
+  Star,
+  Youtube,
+  MessageCircle,
+  ThumbsUp
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { useForm } from "react-hook-form";
+
+
+// Task Management Component
+const TaskManagementContent = () => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<any>(null);
+  const [isCompletionsDialogOpen, setIsCompletionsDialogOpen] = useState(false);
+  const [selectedTaskCompletions, setSelectedTaskCompletions] = useState<any[]>([]);
+
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    category: "app_download",
+    reward: "",
+    timeLimit: "",
+    maxCompletions: "",
+    requirements: "",
+    verificationMethod: "manual"
+  });
+
+  const taskCategories = {
+    app_download: { 
+      name: "App Downloads", 
+      icon: Smartphone,
+      description: "Download and install mobile apps",
+      rewardRange: "₹15-25"
+    },
+    business_review: { 
+      name: "Business Reviews", 
+      icon: Star,
+      description: "Write reviews for businesses on Google, Zomato etc",
+      rewardRange: "₹30-35"
+    },
+    product_review: { 
+      name: "Product Reviews", 
+      icon: FileText,
+      description: "Review products on e-commerce platforms",
+      rewardRange: "₹25-40"
+    },
+    channel_subscribe: { 
+      name: "Channel Subscribe", 
+      icon: Youtube,
+      description: "Subscribe to YouTube channels and social media",
+      rewardRange: "₹15-20"
+    },
+    comment_like: { 
+      name: "Comments & Likes", 
+      icon: MessageCircle,
+      description: "Like posts, comment on content, engage with social media",
+      rewardRange: "₹10-15"
+    }
+  };
+
+  const { data: tasks = [], isLoading: tasksLoading } = useQuery({
+    queryKey: ["/api/admin/tasks"],
+  });
+
+  const { data: completions = [] } = useQuery({
+    queryKey: ["/api/admin/task-completions"],
+  });
+
+  const createTaskMutation = useMutation({
+    mutationFn: async (taskData: any) => {
+      const response = await apiRequest("POST", "/api/admin/tasks", taskData);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Task Created", description: "New task has been created successfully." });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/tasks"] });
+      setIsCreateDialogOpen(false);
+      setNewTask({
+        title: "",
+        description: "",
+        category: "app_download",
+        reward: "",
+        timeLimit: "",
+        maxCompletions: "",
+        requirements: "",
+        verificationMethod: "manual"
+      });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to create task",
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const updateTaskMutation = useMutation({
+    mutationFn: async ({ taskId, updates }: { taskId: string; updates: any }) => {
+      await apiRequest("PUT", `/api/admin/tasks/${taskId}`, updates);
+    },
+    onSuccess: () => {
+      toast({ title: "Task Updated", description: "Task has been updated successfully." });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/tasks"] });
+      setEditingTask(null);
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: "Failed to update task",
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const deleteTaskMutation = useMutation({
+    mutationFn: async (taskId: string) => {
+      await apiRequest("DELETE", `/api/admin/tasks/${taskId}`);
+    },
+    onSuccess: () => {
+      toast({ title: "Task Deleted", description: "Task has been deleted successfully." });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/tasks"] });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: "Failed to delete task",
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const approveCompletionMutation = useMutation({
+    mutationFn: async ({ completionId, status }: { completionId: string; status: 'approved' | 'rejected' }) => {
+      await apiRequest("PUT", `/api/admin/task-completions/${completionId}`, { status });
+    },
+    onSuccess: () => {
+      toast({ title: "Status Updated", description: "Task completion status has been updated." });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/task-completions"] });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: "Failed to update completion status",
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const handleCreateTask = () => {
+    if (!newTask.title || !newTask.description || !newTask.reward) {
+      toast({ 
+        title: "Validation Error", 
+        description: "Please fill in all required fields",
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    createTaskMutation.mutate({
+      ...newTask,
+      reward: parseFloat(newTask.reward),
+      timeLimit: parseInt(newTask.timeLimit) || 60,
+      maxCompletions: parseInt(newTask.maxCompletions) || 100,
+      isActive: true
+    });
+  };
+
+  const pendingCompletions = completions.filter((c: any) => c.status === 'pending');
+  const getTaskCompletions = (taskId: string) => completions.filter((c: any) => c.taskId === taskId);
+
+  return (
+    <div className="space-y-4 sm:space-y-6">
+      {/* Task Management Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+        <div>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Task Management</h2>
+          <p className="text-sm text-gray-600 mt-1">Create and manage tasks across all categories</p>
+        </div>
+        <Button 
+          onClick={() => setIsCreateDialogOpen(true)}
+          size="sm"
+          className="text-xs sm:text-sm"
+          data-testid="button-create-task"
+        >
+          <Plus className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+          <span className="hidden sm:inline">Create New Task</span>
+          <span className="sm:hidden">Create</span>
+        </Button>
+      </div>
+
+      {/* Task Categories Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {Object.entries(taskCategories).map(([key, category]) => {
+          const Icon = category.icon;
+          const categoryTasks = tasks.filter((task: any) => task.category === key);
+          
+          return (
+            <Card key={key} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900">{category.name}</h3>
+                    <p className="text-xs text-gray-600">{category.rewardRange}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 mb-3">{category.description}</p>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500">
+                    {categoryTasks.length} task{categoryTasks.length !== 1 ? 's' : ''}
+                  </span>
+                  <Badge variant="outline" className="text-xs">
+                    {categoryTasks.filter((t: any) => t.isActive).length} active
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Active Tasks List */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>All Tasks</CardTitle>
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary">
+              {tasks.length} Total
+            </Badge>
+            <Badge variant="outline">
+              {tasks.filter((t: any) => t.isActive).length} Active
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {tasks.length === 0 ? (
+            <div className="text-center py-8">
+              <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-500">No tasks created yet</p>
+              <Button 
+                onClick={() => setIsCreateDialogOpen(true)}
+                variant="outline"
+                className="mt-4"
+              >
+                Create Your First Task
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {tasks.map((task: any) => {
+                const category = taskCategories[task.category as keyof typeof taskCategories];
+                const Icon = category?.icon || FileText;
+                const taskCompletions = getTaskCompletions(task.id);
+                const pendingCount = taskCompletions.filter((c: any) => c.status === 'pending').length;
+                
+                return (
+                  <div key={task.id} className="p-4 border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                          <Icon className="w-5 h-5 text-primary" />
+                        </div>
+                        
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">{task.title}</h3>
+                            <Badge variant={task.isActive ? "default" : "secondary"} className="text-xs">
+                              {task.isActive ? "Active" : "Inactive"}
+                            </Badge>
+                          </div>
+                          <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{task.description}</p>
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-xs text-gray-500">
+                            <span className="flex items-center">
+                              <Coins className="w-3 h-3 mr-1" />
+                              ₹{task.reward}
+                            </span>
+                            <span className="flex items-center">
+                              <Clock className="w-3 h-3 mr-1" />
+                              {task.timeLimit}min
+                            </span>
+                            <span className="flex items-center">
+                              <Users className="w-3 h-3 mr-1" />
+                              {taskCompletions.length}/{task.maxCompletions}
+                            </span>
+                            {pendingCount > 0 && (
+                              <Badge variant="outline" className="text-orange-600 border-orange-200">
+                                {pendingCount} pending
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-row sm:flex-col gap-1.5 sm:gap-2 flex-shrink-0">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setEditingTask(task)}
+                          data-testid={`button-edit-task-${task.id}`}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedTaskCompletions(taskCompletions);
+                            setIsCompletionsDialogOpen(true);
+                          }}
+                          className="text-blue-600 hover:bg-blue-50"
+                          data-testid={`button-view-completions-${task.id}`}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => {
+                            if (window.confirm('Are you sure you want to delete this task?')) {
+                              deleteTaskMutation.mutate(task.id);
+                            }
+                          }}
+                          data-testid={`button-delete-task-${task.id}`}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Pending Approvals */}
+      {pendingCompletions.length > 0 && (
+        <Card className="border-orange-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-orange-800">
+              <Clock className="w-5 h-5" />
+              Pending Approvals ({pendingCompletions.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {pendingCompletions.slice(0, 5).map((completion: any) => {
+                const task = tasks.find((t: any) => t.id === completion.taskId);
+                
+                return (
+                  <div key={completion.id} className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900 text-sm">{task?.title || 'Unknown Task'}</p>
+                        <p className="text-xs text-gray-600">User: {completion.userId} • Submitted: {new Date(completion.submittedAt).toLocaleDateString()}</p>
+                      </div>
+                      <div className="flex gap-2 ml-4">
+                        <Button
+                          size="sm"
+                          onClick={() => approveCompletionMutation.mutate({ completionId: completion.id, status: 'approved' })}
+                          className="bg-green-600 hover:bg-green-700 text-white"
+                          data-testid={`button-approve-completion-${completion.id}`}
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => approveCompletionMutation.mutate({ completionId: completion.id, status: 'rejected' })}
+                          data-testid={`button-reject-completion-${completion.id}`}
+                        >
+                          <XCircle className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Create Task Dialog */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create New Task</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-sm font-medium">Task Category</Label>
+              <Select value={newTask.category} onValueChange={(value) => setNewTask({ ...newTask, category: value })}>
+                <SelectTrigger data-testid="select-task-category">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(taskCategories).map(([key, category]) => {
+                    const Icon = category.icon;
+                    return (
+                      <SelectItem key={key} value={key}>
+                        <div className="flex items-center gap-2">
+                          <Icon className="w-4 h-4" />
+                          <span>{category.name}</span>
+                          <span className="text-xs text-gray-500">({category.rewardRange})</span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Task Title</Label>
+              <Input
+                value={newTask.title}
+                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                placeholder="Enter task title"
+                data-testid="input-task-title"
+              />
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Description</Label>
+              <Textarea
+                value={newTask.description}
+                onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                placeholder="Describe what users need to do"
+                className="min-h-[80px]"
+                data-testid="textarea-task-description"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <Label className="text-sm font-medium">Reward (₹)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={newTask.reward}
+                  onChange={(e) => setNewTask({ ...newTask, reward: e.target.value })}
+                  placeholder="15.00"
+                  data-testid="input-task-reward"
+                />
+              </div>
+              <div>
+                <Label className="text-sm font-medium">Time Limit (minutes)</Label>
+                <Input
+                  type="number"
+                  value={newTask.timeLimit}
+                  onChange={(e) => setNewTask({ ...newTask, timeLimit: e.target.value })}
+                  placeholder="60"
+                  data-testid="input-task-time-limit"
+                />
+              </div>
+              <div>
+                <Label className="text-sm font-medium">Max Completions</Label>
+                <Input
+                  type="number"
+                  value={newTask.maxCompletions}
+                  onChange={(e) => setNewTask({ ...newTask, maxCompletions: e.target.value })}
+                  placeholder="100"
+                  data-testid="input-task-max-completions"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Requirements & Instructions</Label>
+              <Textarea
+                value={newTask.requirements}
+                onChange={(e) => setNewTask({ ...newTask, requirements: e.target.value })}
+                placeholder="Detailed instructions for task completion"
+                className="min-h-[100px]"
+                data-testid="textarea-task-requirements"
+              />
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Verification Method</Label>
+              <Select value={newTask.verificationMethod} onValueChange={(value) => setNewTask({ ...newTask, verificationMethod: value })}>
+                <SelectTrigger data-testid="select-verification-method">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="manual">Manual Review</SelectItem>
+                  <SelectItem value="screenshot">Screenshot Required</SelectItem>
+                  <SelectItem value="automatic">Automatic</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleCreateTask}
+              disabled={createTaskMutation.isPending}
+              data-testid="button-submit-create-task"
+            >
+              {createTaskMutation.isPending ? 'Creating...' : 'Create Task'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Task Completions Dialog */}
+      <Dialog open={isCompletionsDialogOpen} onOpenChange={setIsCompletionsDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Task Completions</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {selectedTaskCompletions.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">No completions for this task yet</p>
+            ) : (
+              selectedTaskCompletions.map((completion: any) => (
+                <div key={completion.id} className="p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <p className="font-medium">User: {completion.userId}</p>
+                      <p className="text-sm text-gray-600">Submitted: {new Date(completion.submittedAt).toLocaleDateString()}</p>
+                    </div>
+                    <Badge className={
+                      completion.status === 'approved' ? 'bg-green-500' :
+                      completion.status === 'rejected' ? 'bg-red-500' :
+                      'bg-yellow-500'
+                    }>
+                      {completion.status}
+                    </Badge>
+                  </div>
+                  {completion.proof && (
+                    <div className="mt-2">
+                      <p className="text-sm font-medium">Proof:</p>
+                      <p className="text-sm text-gray-600">{completion.proof}</p>
+                    </div>
+                  )}
+                  {completion.status === 'pending' && (
+                    <div className="flex gap-2 mt-3">
+                      <Button
+                        size="sm"
+                        onClick={() => approveCompletionMutation.mutate({ completionId: completion.id, status: 'approved' })}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => approveCompletionMutation.mutate({ completionId: completion.id, status: 'rejected' })}
+                      >
+                        Reject
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Task Dialog */}
+      {editingTask && (
+        <Dialog open={!!editingTask} onOpenChange={() => setEditingTask(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Task</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label>Task Title</Label>
+                <Input
+                  value={editingTask.title}
+                  onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Description</Label>
+                <Textarea
+                  value={editingTask.description}
+                  onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Reward (₹)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={editingTask.reward}
+                    onChange={(e) => setEditingTask({ ...editingTask, reward: parseFloat(e.target.value) })}
+                  />
+                </div>
+                <div>
+                  <Label>Status</Label>
+                  <Select value={editingTask.isActive ? "active" : "inactive"} onValueChange={(value) => setEditingTask({ ...editingTask, isActive: value === "active" })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditingTask(null)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => updateTaskMutation.mutate({ taskId: editingTask.id, updates: editingTask })}
+                disabled={updateTaskMutation.isPending}
+              >
+                {updateTaskMutation.isPending ? 'Updating...' : 'Update Task'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  );
+};
 
 export default function Admin() {
   const { adminUser, isLoading: isAdminLoading, isAuthenticated } = useAdminAuth();
@@ -55,8 +685,6 @@ export default function Admin() {
   const queryClient = useQueryClient();
   
   const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [editingVideo, setEditingVideo] = useState<any>(null);
-  const [showNewVideoForm, setShowNewVideoForm] = useState(false);
   const [userProfileDialogOpen, setUserProfileDialogOpen] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<any>(null);
   const [showSensitiveInfo, setShowSensitiveInfo] = useState(true);
@@ -189,10 +817,7 @@ export default function Admin() {
     enabled: isAuthenticated,
   });
 
-  const { data: videos = [] } = useQuery({
-    queryKey: ["/api/videos"],
-    enabled: isAuthenticated,
-  });
+
 
   const { data: payouts = [] } = useQuery({
     queryKey: ["/api/admin/payouts"],
@@ -388,68 +1013,7 @@ export default function Admin() {
     },
   });
 
-  const createVideoMutation = useMutation({
-    mutationFn: async (videoData: any) => {
-      await apiRequest("POST", "/api/admin/videos", videoData);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Video created successfully",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/videos"] });
-      setShowNewVideoForm(false);
-      reset();
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to create video",
-        variant: "destructive",
-      });
-    },
-  });
 
-  const updateVideoMutation = useMutation({
-    mutationFn: async ({ videoId, updates }: { videoId: string; updates: any }) => {
-      await apiRequest("PUT", `/api/admin/videos/${videoId}`, updates);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Video updated successfully",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/videos"] });
-      setEditingVideo(null);
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to update video",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const deleteVideoMutation = useMutation({
-    mutationFn: async (videoId: string) => {
-      await apiRequest("DELETE", `/api/admin/videos/${videoId}`);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Video deleted successfully",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/videos"] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to delete video",
-        variant: "destructive",
-      });
-    },
-  });
 
   const processReferralsMutation = useMutation({
     mutationFn: async () => {
@@ -482,44 +1046,7 @@ export default function Admin() {
     setShowSensitiveInfo(true); // Show all sensitive info by default for admins
   };
 
-  // Function to extract YouTube video ID from URL
-  const extractYouTubeId = (url: string): string | null => {
-    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-    const match = url.match(regex);
-    return match ? match[1] : null;
-  };
 
-  // Function to generate YouTube thumbnail URL
-  const getYouTubeThumbnail = (url: string): string | null => {
-    const videoId = extractYouTubeId(url);
-    return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null;
-  };
-
-  const onSubmitVideo = (data: any) => {
-    // Generate thumbnail URL from YouTube video
-    const thumbnailUrl = getYouTubeThumbnail(data.url || "");
-    
-    // Prepare video data with default values
-    const videoData = {
-      title: data.title || "Untitled Video",
-      description: data.description || "",
-      url: data.url || "",
-      thumbnailUrl: thumbnailUrl, // Auto-generated from YouTube
-      duration: 300, // Default 5 minutes - will be auto-detected later
-      category: null, // Not used anymore  
-      earning: data.earning || "0.00",
-      isActive: true
-    };
-
-    if (editingVideo) {
-      updateVideoMutation.mutate({
-        videoId: editingVideo.id,
-        updates: videoData,
-      });
-    } else {
-      createVideoMutation.mutate(videoData);
-    }
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-IN', {
@@ -605,7 +1132,7 @@ export default function Admin() {
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Admin Dashboard</h1>
-          <p className="text-sm sm:text-base text-gray-600">Manage users, videos, and platform operations.</p>
+          <p className="text-sm sm:text-base text-gray-600">Manage users, tasks, and platform operations.</p>
           
           {/* Quick Actions Section removed as requested by user */}
         </div>
@@ -620,9 +1147,9 @@ export default function Admin() {
               <span className="hidden sm:inline">User Profiles</span>
               <span className="sm:hidden">Profiles</span>
             </TabsTrigger>
-            <TabsTrigger value="videos" className="text-xs sm:text-sm px-2 py-2">
-              <span className="hidden sm:inline">Video Management</span>
-              <span className="sm:hidden">Videos</span>
+            <TabsTrigger value="tasks" className="text-xs sm:text-sm px-2 py-2">
+              <span className="hidden sm:inline">Task Management</span>
+              <span className="sm:hidden">Tasks</span>
             </TabsTrigger>
             <TabsTrigger value="payouts" className="text-xs sm:text-sm px-2 py-2">
               <span className="hidden sm:inline">Payouts</span>
@@ -1322,176 +1849,8 @@ export default function Admin() {
             </div>
           </TabsContent>
 
-          <TabsContent value="videos">
-            <div className="space-y-4 sm:space-y-6">
-              {/* Video Management Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
-                <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Video Management</h2>
-                <Button size="sm" onClick={() => setShowNewVideoForm(true)}>
-                  <Plus className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Add Video</span>
-                  <span className="sm:hidden">Add</span>
-                </Button>
-              </div>
-
-              {/* New/Edit Video Form */}
-              {(showNewVideoForm || editingVideo) && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>
-                      {editingVideo ? 'Edit Video' : 'Add New Video'}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleSubmit(onSubmitVideo)} className="space-y-3 sm:space-y-4">
-                      <div>
-                        <Label htmlFor="title" className="text-sm">Title</Label>
-                        <Input
-                          {...register("title", { required: true })}
-                          defaultValue={editingVideo?.title}
-                          className="text-sm"
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="description" className="text-sm">Description</Label>
-                        <Textarea
-                          {...register("description")}
-                          defaultValue={editingVideo?.description}
-                          className="text-sm"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                        <div>
-                          <Label htmlFor="url" className="text-sm">YouTube Video URL</Label>
-                          <Input
-                            {...register("url", { required: true })}
-                            defaultValue={editingVideo?.url}
-                            className="text-sm"
-                            placeholder="https://www.youtube.com/watch?v=..."
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="earning" className="text-sm">Earning Amount (₹)</Label>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...register("earning", { required: true })}
-                            defaultValue={editingVideo?.earning}
-                            className="text-sm"
-                            placeholder="5.00"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col-reverse sm:flex-row gap-2 sm:space-x-2">
-                        <Button 
-                          type="button" 
-                          variant="outline"
-                          size="sm"
-                          className="text-xs sm:text-sm"
-                          onClick={() => {
-                            setShowNewVideoForm(false);
-                            setEditingVideo(null);
-                            reset();
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                        <Button 
-                          type="submit" 
-                          size="sm"
-                          className="text-xs sm:text-sm"
-                          disabled={createVideoMutation.isPending || updateVideoMutation.isPending}
-                        >
-                          {editingVideo ? 'Update Video' : 'Create Video'}
-                        </Button>
-                      </div>
-                    </form>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Videos List */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>All Videos</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {(videos as any[]).length === 0 ? (
-                    <div className="text-center py-8">
-                      <Video className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-500">No videos added yet</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {(videos as any[]).map((video: any) => (
-                        <div key={video.id} className="p-3 sm:p-4 border border-gray-200 rounded-lg">
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div className="flex items-start gap-3 flex-1 min-w-0">
-                              {/* Video thumbnail */}
-                              {video.thumbnailUrl && (
-                                <div className="flex-shrink-0">
-                                  <img 
-                                    src={video.thumbnailUrl} 
-                                    alt={video.title}
-                                    className="w-16 h-12 object-cover rounded"
-                                  />
-                                </div>
-                              )}
-                              
-                              <div className="flex-1 min-w-0">
-                                <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">{video.title}</h3>
-                                <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{video.description}</p>
-                                <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-xs text-gray-500">
-                                  <span className="flex items-center">
-                                    <Clock className="w-3 h-3 mr-1" />
-                                    {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
-                                  </span>
-                                  <span className="flex items-center">
-                                    <Eye className="w-3 h-3 mr-1" />
-                                    {video.views} views
-                                  </span>
-                                  <span className="flex items-center">
-                                    <Coins className="w-3 h-3 mr-1" />
-                                    ₹{video.earning}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="flex flex-row sm:flex-col gap-1.5 sm:gap-2 flex-shrink-0">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => {
-                                  setEditingVideo(video);
-                                  reset(video);
-                                }}
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => {
-                                  if (window.confirm('Are you sure you want to delete this video?')) {
-                                    deleteVideoMutation.mutate(video.id);
-                                  }
-                                }}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
+          <TabsContent value="tasks">
+            <TaskManagementContent />
           </TabsContent>
 
           <TabsContent value="payouts">
