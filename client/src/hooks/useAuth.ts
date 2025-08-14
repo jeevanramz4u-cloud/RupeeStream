@@ -7,12 +7,26 @@ export function useAuth() {
   const toastShownRef = useRef(false);
   
   // Use traditional auth for our demo login system with retry disabled to prevent infinite loops
-  const { data: user, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["/api/auth/check"],
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Debug: Log the actual response data structure
+  console.log("useAuth - Raw API response:", data);
+  
+  // Extract user from the response data
+  const user = data?.user || null;
+  
+  console.log("useAuth - Extracted user object:", {
+    userId: user?.id,
+    status: user?.status,
+    verificationStatus: user?.verificationStatus,
+    kycStatus: user?.kycStatus,
+    hasUser: !!user
   });
 
   // Removed persistent hourly bonus notification to prevent spam
