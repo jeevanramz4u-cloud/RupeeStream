@@ -56,7 +56,7 @@ export default function AdminTasks() {
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
-    category: "app_download",
+    category: "youtube_video_see",
     reward: "",
     timeLimit: "",
     maxCompletions: "",
@@ -237,7 +237,7 @@ export default function AdminTasks() {
     setNewTask({
       title: "",
       description: "",
-      category: "app_download",
+      category: "youtube_video_see",
       reward: "",
       timeLimit: "",
       maxCompletions: "",
@@ -436,7 +436,10 @@ export default function AdminTasks() {
                       <option value="channel_subscribe">▶️ Channel Subscribe</option>
                       <option value="comment_like">👍 Comments & Likes</option>
                     </select>
-                    <p className="text-xs text-gray-500 mt-1">Current: {newTask.category}</p>
+                    <div className="text-xs text-gray-500 mt-1">
+                      <p>Current: {newTask.category}</p>
+                      <p>All available options: youtube_video_see, app_download, business_review, product_review, channel_subscribe, comment_like</p>
+                    </div>
                   </div>
                   
                   <div>
