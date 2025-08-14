@@ -69,7 +69,7 @@ export default function Contact() {
                   <Mail className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <h3 className="font-medium">Email Support</h3>
-                    <p className="text-sm text-gray-600">Available through contact form</p>
+                    <p className="text-sm text-gray-600">support@innovativetaskearn.online</p>
                     <p className="text-xs text-gray-500">24/7 email support</p>
                   </div>
                 </div>
@@ -78,7 +78,7 @@ export default function Contact() {
                   <Phone className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <h3 className="font-medium">Phone Support</h3>
-                    <p className="text-sm text-gray-600">Available upon request</p>
+                    <p className="text-sm text-gray-600">+91-8000-XXX-XXX</p>
                     <p className="text-xs text-gray-500">Mon-Fri: 9 AM - 6 PM IST</p>
                   </div>
                 </div>
@@ -88,9 +88,13 @@ export default function Contact() {
                   <div>
                     <h3 className="font-medium">Office Address</h3>
                     <p className="text-sm text-gray-600">
-                      Innovative Grow Solutions Pvt. Ltd.<br />
+                      INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED<br />
+                      C/O YOGESH, Kharbla 99<br />
+                      VATS STREET, KHARBLA<br />
+                      Hisar, Haryana - 125042<br />
                       India
                     </p>
+                    <p className="text-xs text-gray-500 mt-1">GST: 06AAGCI9044P1ZZ</p>
                   </div>
                 </div>
 

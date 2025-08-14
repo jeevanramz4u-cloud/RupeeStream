@@ -20,8 +20,8 @@ export default function TermsConditions() {
         <Card className="mb-8">
           <CardContent className="prose prose-gray max-w-none pt-6">
             <p className="text-lg text-gray-700 mb-6">
-              Welcome to Innovative Task Earn. These Terms and Conditions govern your use of our video monetization 
-              platform. By creating an account and using our services, you agree to these terms.
+              Welcome to Innovative Task Earn, operated by INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED (GST: 06AAGCI9044P1ZZ). 
+              These Terms and Conditions govern your use of our task completion platform. By creating an account and using our services, you agree to these terms.
             </p>
 
             <div className="space-y-8">
@@ -68,21 +68,22 @@ export default function TermsConditions() {
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Earning Requirements</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Task Completion Requirements</h2>
                 <div className="space-y-4 text-gray-700">
-                  <h3 className="font-medium">Daily Target</h3>
+                  <h3 className="font-medium">Task Categories</h3>
                   <p>
-                    You must watch videos for a minimum of 8 hours daily to maintain your account 
-                    in good standing. Failure to meet this requirement may result in account suspension.
+                    Available task categories include App Downloads, Business Reviews, Product Reviews, Channel Subscribe, and Comments & Likes. 
+                    Each task must be completed as per provided instructions with proper proof submission.
                   </p>
 
-                  <h3 className="font-medium mt-6">Video Watching Rules</h3>
+                  <h3 className="font-medium mt-6">Task Completion Rules</h3>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>Videos must be watched completely from start to finish</li>
-                    <li>Skipping, fast-forwarding, or rewinding is prohibited</li>
-                    <li>Only one device per account may be used simultaneously</li>
-                    <li>Automated viewing tools or bots are strictly forbidden</li>
-                    <li>Each video can only earn money once per account</li>
+                    <li>Tasks must be completed exactly as per instructions</li>
+                    <li>Proper proof submission (screenshots, confirmations) required</li>
+                    <li>Each task can only be completed once per account</li>
+                    <li>Automated tools or bots are strictly prohibited</li>
+                    <li>False submissions may result in account termination</li>
+                    <li>Admin approval required before payment processing</li>
                   </ul>
                 </div>
               </section>
@@ -128,7 +129,7 @@ export default function TermsConditions() {
                   <ul className="list-disc pl-6 space-y-2">
                     <li>Creating multiple accounts</li>
                     <li>Using automated tools or bots</li>
-                    <li>Manipulating video viewing metrics</li>
+                    <li>Submitting false or fraudulent task proof</li>
                     <li>Sharing account credentials</li>
                     <li>Attempting to circumvent platform restrictions</li>
                     <li>Engaging in fraudulent activities</li>
@@ -227,7 +228,15 @@ export default function TermsConditions() {
               <section>
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">15. Contact Information</h2>
                 <div className="space-y-4 text-gray-700">
-                  <p>For questions about these terms, contact us through our support channels or legal department.</p>
+                  <p>For questions about these terms, please contact us:</p>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p><strong>INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED</strong></p>
+                    <p><strong>Email:</strong> support@innovativetaskearn.online</p>
+                    <p><strong>Phone:</strong> +91-8000-XXX-XXX</p>
+                    <p><strong>Address:</strong> C/O YOGESH, Kharbla 99, VATS STREET, KHARBLA</p>
+                    <p>Hisar, Haryana - 125042, India</p>
+                    <p><strong>GST:</strong> 06AAGCI9044P1ZZ</p>
+                  </div>
                 </div>
               </section>
             </div>

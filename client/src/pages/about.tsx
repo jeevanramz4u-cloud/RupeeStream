@@ -16,7 +16,7 @@ export default function About() {
             About Innovative Task Earn
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-            Revolutionizing video monetization by rewarding genuine engagement and creating sustainable income opportunities for users worldwide.
+            Revolutionizing task completion rewards by providing genuine earning opportunities through simple online tasks for users across India.
           </p>
         </div>
 
@@ -31,7 +31,7 @@ export default function About() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600">
-                To provide a transparent, fair, and sustainable platform where users can earn real money by engaging with quality video content, while ensuring authentic viewership through strict anti-fraud measures.
+                To provide a transparent, fair, and sustainable platform where users can earn real money by completing simple online tasks like app downloads, reviews, and social media activities, while ensuring genuine participation through proper verification.
               </p>
             </CardContent>
           </Card>
@@ -45,7 +45,7 @@ export default function About() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600">
-                To become the world's leading video monetization platform that bridges content creators and viewers, creating value for both parties through innovative technology and user-centric design.
+                To become India's leading task completion platform that bridges businesses and users, creating value for both parties through innovative technology and user-centric task management.
               </p>
             </CardContent>
           </Card>
@@ -160,8 +160,8 @@ export default function About() {
                 <div className="text-sm text-gray-600">Paid Out</div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1">1M+</div>
-                <div className="text-sm text-gray-600">Videos Watched</div>
+                <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1">5K+</div>
+                <div className="text-sm text-gray-600">Tasks Completed</div>
               </div>
               <div>
                 <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1">99.9%</div>
@@ -221,6 +221,35 @@ export default function About() {
             </Card>
           </div>
         </div>
+
+        {/* Company Information */}
+        <Card className="mb-12 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+          <CardHeader>
+            <CardTitle className="text-center text-2xl text-gray-900">Company Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="font-semibold text-lg text-gray-900 mb-4">Legal Entity</h3>
+                <div className="space-y-2 text-gray-700">
+                  <p><strong>Company Name:</strong> INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED</p>
+                  <p><strong>GST Number:</strong> 06AAGCI9044P1ZZ</p>
+                  <p><strong>Registration:</strong> Private Limited Company</p>
+                  <p><strong>Domain:</strong> innovativetaskearn.online</p>
+                </div>
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg text-gray-900 mb-4">Registered Address</h3>
+                <div className="space-y-2 text-gray-700">
+                  <p>C/O YOGESH, Kharbla 99</p>
+                  <p>VATS STREET, KHARBLA</p>
+                  <p>Hisar, Haryana - 125042</p>
+                  <p>India</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Company Values */}
         <Card>

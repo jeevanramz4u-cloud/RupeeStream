@@ -20,7 +20,8 @@ export default function PrivacyPolicy() {
         <Card className="mb-8">
           <CardContent className="prose prose-gray max-w-none pt-6">
             <p className="text-lg text-gray-700 mb-6">
-              At Innovative Task Earn, we are committed to protecting your privacy and ensuring the security of your personal information. 
+              At Innovative Task Earn, operated by INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED (GST: 06AAGCI9044P1ZZ), 
+              we are committed to protecting your privacy and ensuring the security of your personal information. 
               This Privacy Policy explains how we collect, use, and safeguard your data.
             </p>
 
@@ -38,15 +39,15 @@ export default function PrivacyPolicy() {
 
                   <h3 className="font-medium mt-6">Usage Information</h3>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>Video watching history and preferences</li>
-                    <li>Time spent on the platform and viewing patterns</li>
+                    <li>Task completion history and preferences</li>
+                    <li>Time spent on the platform and task patterns</li>
                     <li>Device information and browser details</li>
                     <li>IP address and location data</li>
                   </ul>
 
                   <h3 className="font-medium mt-6">Financial Information</h3>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>Earnings and transaction history</li>
+                    <li>Task earnings and transaction history</li>
                     <li>Payout requests and payment status</li>
                     <li>Referral activities and bonuses</li>
                   </ul>
@@ -163,11 +164,14 @@ export default function PrivacyPolicy() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">10. Contact Information</h2>
                 <div className="space-y-4 text-gray-700">
                   <p>For privacy-related questions or concerns, please contact us:</p>
-                  <ul className="list-none space-y-2">
-                    <li><strong>Email:</strong> privacy@earnpay.com</li>
-                    <li><strong>Address:</strong> Innovative Task Earn Privacy Office, India</li>
-                    <li><strong>Phone:</strong> +91-XXXX-XXXX</li>
-                  </ul>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p><strong>INNOVATIVE GROW SOLUTIONS PRIVATE LIMITED</strong></p>
+                    <p><strong>Email:</strong> support@innovativetaskearn.online</p>
+                    <p><strong>Phone:</strong> +91-8000-XXX-XXX</p>
+                    <p><strong>Address:</strong> C/O YOGESH, Kharbla 99, VATS STREET, KHARBLA</p>
+                    <p>Hisar, Haryana - 125042, India</p>
+                    <p><strong>GST:</strong> 06AAGCI9044P1ZZ</p>
+                  </div>
                 </div>
               </section>
 

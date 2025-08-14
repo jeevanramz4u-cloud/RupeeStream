@@ -35,6 +35,8 @@ import Contact from "./pages/contact";
 import Careers from "./pages/careers";
 import PayoutSchedule from "./pages/payout-schedule";
 import ReferralProgram from "./pages/referral-program";
+import ShippingPolicy from "./pages/shipping-policy";
+import RefundPolicy from "./pages/refund-policy";
 
 function AdminRoute() {
   const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
@@ -118,6 +120,8 @@ function Router() {
       <Route path="/reset-password" component={ResetPassword} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-conditions" component={TermsConditions} />
+      <Route path="/shipping-policy" component={ShippingPolicy} />
+      <Route path="/refund-policy" component={RefundPolicy} />
       <Route path="/how-to-earn" component={HowToEarn} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
