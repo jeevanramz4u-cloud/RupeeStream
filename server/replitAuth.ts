@@ -26,15 +26,25 @@ const getOidcConfig = memoize(
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   
-  // Use memory store when database is unavailable
-  console.log('Using memory session store (database endpoint disabled)');
-  const SessionMemoryStore = MemoryStore(session);
-  const sessionStore = new SessionMemoryStore({
-    checkPeriod: 86400000 // prune expired entries every 24h
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL must be set for production. Enable the database endpoint in your Neon dashboard.");
+  }
+
+  // Production-only: Use PostgreSQL session store
+  const PgSession = connectPg(session);
+  const sessionStore = new PgSession({
+    conString: process.env.DATABASE_URL,
+    tableName: 'session', 
+    ttl: sessionTtl / 1000, // Convert to seconds
+    createTableIfMissing: true,
   });
+
+  if (!process.env.SESSION_SECRET) {
+    throw new Error("SESSION_SECRET environment variable must be set for production.");
+  }
   
   return session({
-    secret: process.env.SESSION_SECRET || 'demo-secret-key-for-development',
+    secret: process.env.SESSION_SECRET,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,

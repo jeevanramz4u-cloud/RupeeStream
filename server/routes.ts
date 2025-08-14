@@ -45,7 +45,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
-  // Traditional auth middleware with database fallback
+  // Production auth middleware - requires database connection
   const isTraditionallyAuthenticated = async (req: any, res: any, next: any) => {
     try {
       const userId = req.session?.userId;
@@ -54,90 +54,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Unauthorized" });
       }
       
-      try {
-        const user = await storage.getUser(userId);
-        if (!user) {
-          return res.status(401).json({ message: "User not found" });
-        }
-        req.user = user;
-        next();
-      } catch (dbError) {
-        // Database fallback - use session-based demo user for testing
-        if (userId === "demo-user-001") {
-          req.user = {
-            id: "demo-user-001",
-            email: "demo@innovativetaskearn.online",
-            firstName: "Demo",
-            lastName: "User",
-            balance: "125.50",
-            verificationStatus: "verified",
-            kycStatus: "approved",
-            kycFeePaid: true,
-            referralCode: "DEMO123",
-            status: "active"
-          };
-          next();
-        } else {
-          return res.status(401).json({ message: "Unauthorized" });
-        }
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
       }
+      req.user = user;
+      next();
     } catch (error) {
-      console.error("Auth middleware error:", error);
-      res.status(401).json({ message: "Unauthorized" });
+      console.error("Authentication error:", error);
+      res.status(500).json({ message: "Authentication failed" });
     }
   };
 
-  // Demo mode: Auto-login endpoint for development
-  app.get('/api/auth/demo-login', async (req, res) => {
-    try {
-      let demoUser;
-      try {
-        demoUser = await storage.getUser("demo-user-001");
-      } catch (dbError) {
-        // Database fallback - create demo user session
-        demoUser = {
-          id: "demo-user-001",
-          email: "demo@innovativetaskearn.online",
-          firstName: "Demo",
-          lastName: "User",
-          profileImageUrl: null,
-          phoneNumber: "+91 9876543210",
-          dateOfBirth: "1990-01-01",
-          address: "123 Demo Street",
-          city: "Mumbai",
-          state: "Maharashtra",
-          pincode: "400001",
-          accountHolderName: "Demo User",
-          accountNumber: "1234567890",
-          ifscCode: "DEMO0001234",
-          bankName: "Demo Bank",
-          governmentIdType: "aadhaar",
-          governmentIdNumber: "1234-5678-9012",
-          governmentIdUrl: null,
-          verificationStatus: "verified",
-          status: "active",
-          balance: "1250.75",
-          referralCode: "DEMO123",
-          kycStatus: "approved",
-          kycFeePaid: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          role: "user"
-        };
-      }
-      
-      if (demoUser) {
-        req.session!.userId = demoUser.id;
-        const { password: _, ...userWithoutPassword } = demoUser;
-        res.json({ user: userWithoutPassword, message: "Demo login successful" });
-      } else {
-        res.status(404).json({ message: "Demo user not found" });
-      }
-    } catch (error) {
-      console.error("Demo login error:", error);
-      res.status(500).json({ message: "Demo login failed" });
-    }
-  });
+
 
   // Auth routes
   app.get('/api/auth/user', isTraditionallyAuthenticated, async (req: any, res) => {
@@ -276,37 +205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Temporary demo user while database is unavailable
-  const demoUser = {
-    id: "demo-user-001",
-    email: "demo@innovativetaskearn.online",
-    password: "demo123", // Plain text for demo
-    firstName: "Demo",
-    lastName: "User",
-    profileImageUrl: null,
-    phoneNumber: "+91 9876543210",
-    dateOfBirth: "1990-01-01",
-    address: "123 Demo Street",
-    city: "Mumbai",
-    state: "Maharashtra",
-    pincode: "400001",
-    accountHolderName: "Demo User",
-    accountNumber: "1234567890",
-    ifscCode: "DEMO0001234",
-    bankName: "Demo Bank",
-    governmentIdType: "aadhaar",
-    governmentIdNumber: "1234-5678-9012",
-    governmentIdUrl: null,
-    verificationStatus: "verified" as const,
-    status: "active" as const,
-    balance: 1250.75,
-    referralCode: "DEMO123",
-    kycStatus: "approved" as const,
-    kycFeePaid: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    role: "user" as const
-  };
+
 
   app.post('/api/auth/login', async (req, res) => {
     try {
@@ -314,18 +213,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (!email || !password) {
         return res.status(400).json({ message: "Email and password are required" });
-      }
-
-      // Use demo user credentials when database is unavailable
-      if (email === demoUser.email && password === demoUser.password) {
-        console.log('Demo user authenticated');
-        
-        // Create session
-        req.session.userId = demoUser.id;
-
-        // Return user without password
-        const { password: _, ...userWithoutPassword } = demoUser;
-        return res.json({ message: "Login successful", user: userWithoutPassword });
       }
 
       return res.status(401).json({ message: "Invalid email or password" });
@@ -341,12 +228,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session?.userId;
       if (!userId) {
         return res.status(401).json({ message: "Not authenticated" });
-      }
-
-      // Return demo user if database is unavailable
-      if (userId === demoUser.id) {
-        const { password: _, ...userWithoutPassword } = demoUser;
-        return res.json(userWithoutPassword);
       }
 
       return res.status(401).json({ message: "User not found" });
@@ -949,16 +830,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Use the user's balance as the authoritative total earnings source
       const totalEarnings = parseFloat(user.balance.toString());
       
-      let todayEarnings, dailyWatchTime;
-      try {
-        todayEarnings = await storage.getTodayEarnings(userId);
-        dailyWatchTime = await storage.getDailyWatchTime(userId);
-      } catch (dbError) {
-        // Database fallback for demo
-        console.log("Database disabled, using fallback earnings stats");
-        todayEarnings = 85.50;
-        dailyWatchTime = 0; // No watch time in task-based system
-      }
+      const todayEarnings = await storage.getTodayEarnings(userId);
+      const dailyWatchTime = await storage.getDailyWatchTime(userId);
       
       res.json({
         totalEarnings,
@@ -1107,39 +980,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Admin authentication required" });
       }
 
-      // Simple validation for required fields when database is disabled
-      const { title, description, category, reward } = req.body;
-      
-      if (!title || !description || !category || !reward) {
-        return res.status(400).json({ 
-          message: "Required fields: title, description, category, reward" 
-        });
-      }
-      
-      const taskData = req.body;
-      
-      // Since database is disabled, create task in memory directly
-      console.log("Database disabled, creating in-memory task");
-      
-      const memoryTask = {
-        id: `task-${Date.now()}`,
-        title: taskData.title,
-        description: taskData.description,
-        category: taskData.category,
-        reward: taskData.reward,
-        timeLimit: taskData.timeLimit || 30,
-        requirements: taskData.requirements || '',
-        verificationMethod: taskData.verificationMethod || 'manual',
-        maxCompletions: taskData.maxCompletions || 100,
-        currentCompletions: 0,
-        isActive: taskData.isActive !== false,
-        createdBy: req.session.adminUser.id,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      
-      console.log("Memory task created successfully:", memoryTask.title);
-      res.json(memoryTask);
+      const taskData = insertTaskSchema.parse(req.body);
+      const task = await storage.createTask({
+        ...taskData,
+        createdBy: req.session.adminUser.id
+      });
+
+      res.json(task);
     } catch (error) {
       console.error("Error creating task:", error);
       
@@ -1371,98 +1218,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Admin authentication required" });
       }
 
-      try {
-        const users = await storage.getAllUsers();
-        console.log(`Admin API: Retrieved ${users.length} users for admin panel`);
-        res.json(users);
-      } catch (dbError) {
-        console.log("Database disabled, returning sample users data");
-        
-        // Fallback: Return sample users when database is disabled
-        const sampleUsers = [
-          {
-            id: "demo-user-001",
-            email: "demo@innovativetaskearn.online",
-            firstName: "Demo",
-            lastName: "User",
-            phoneNumber: "+91 9876543210",
-            city: "Mumbai",
-            state: "Maharashtra",
-            pincode: "400001",
-            accountHolderName: "Demo User",
-            accountNumber: "123456789012",
-            ifscCode: "HDFC0000123",
-            bankName: "HDFC Bank",
-            governmentIdType: "aadhaar",
-            governmentIdNumber: "1234-5678-9012",
-            kycStatus: "approved",
-            kycFeePaid: true,
-            verificationStatus: "verified",
-            status: "active",
-            balance: "145.50",
-            referralCode: "DEMO001",
-            role: "user",
-            createdAt: "2025-08-10T10:30:00Z",
-            kycSubmittedAt: "2025-08-10T10:45:00Z",
-            kycApprovedAt: "2025-08-10T11:00:00Z"
-          },
-          {
-            id: "demo-user-002", 
-            email: "john.doe@example.com",
-            firstName: "John",
-            lastName: "Doe",
-            phoneNumber: "+91 8765432109",
-            city: "Delhi",
-            state: "Delhi",
-            pincode: "110001",
-            accountHolderName: "John Doe",
-            accountNumber: "987654321098",
-            ifscCode: "ICICI000456",
-            bankName: "ICICI Bank",
-            governmentIdType: "pan",
-            governmentIdNumber: "ABCDE1234F",
-            kycStatus: "pending",
-            kycFeePaid: true,
-            verificationStatus: "pending",
-            status: "active",
-            balance: "89.25",
-            referralCode: "JOHN002",
-            role: "user",
-            createdAt: "2025-08-12T14:20:00Z",
-            kycSubmittedAt: "2025-08-12T14:35:00Z",
-            kycApprovedAt: null
-          },
-          {
-            id: "demo-user-003",
-            email: "priya.sharma@example.com", 
-            firstName: "Priya",
-            lastName: "Sharma",
-            phoneNumber: "+91 7654321098",
-            city: "Bangalore",
-            state: "Karnataka",
-            pincode: "560001",
-            accountHolderName: "Priya Sharma",
-            accountNumber: "456789123456",
-            ifscCode: "SBI0001234",
-            bankName: "State Bank of India",
-            governmentIdType: "aadhaar",
-            governmentIdNumber: "9876-5432-1098",
-            kycStatus: "rejected",
-            kycFeePaid: true,
-            verificationStatus: "rejected",
-            status: "active",
-            balance: "0.00",
-            referralCode: "PRIYA003",
-            role: "user",
-            createdAt: "2025-08-13T09:15:00Z",
-            kycSubmittedAt: "2025-08-13T09:30:00Z",
-            kycApprovedAt: null
-          }
-        ];
-        
-        console.log(`Admin API: Returning ${sampleUsers.length} sample users for demo`);
-        res.json(sampleUsers);
-      }
+      const users = await storage.getAllUsers();
+      console.log(`Admin API: Retrieved ${users.length} users for admin panel`);
+      res.json(users);
     } catch (error) {
       console.error("Error fetching users:", error);
       res.status(500).json({ message: "Failed to fetch users" });
@@ -1842,92 +1600,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Demo data creation endpoint (for development)
-  app.post("/api/admin/create-demo-users", async (req: any, res) => {
-    try {
-      if (!req.session.adminUser) {
-        return res.status(401).json({ message: "Admin authentication required" });
-      }
 
-      const demoUsers = [
-        {
-          email: "user1@example.com",
-          firstName: "Rajesh",
-          lastName: "Kumar",
-          phoneNumber: "+91-9876543210",
-          dateOfBirth: "1995-06-15",
-          address: "123 MG Road",
-          city: "Mumbai",
-          state: "Maharashtra", 
-          pincode: "400001",
-          accountHolderName: "Rajesh Kumar",
-          accountNumber: "1234567890123456",
-          ifscCode: "HDFC0000123",
-          bankName: "HDFC Bank",
-          governmentIdType: "Aadhaar",
-          governmentIdNumber: "123456789012",
-          verificationStatus: "verified",
-          status: "active",
-          balance: 125.50
-        },
-        {
-          email: "user2@example.com",
-          firstName: "Priya",
-          lastName: "Sharma",
-          phoneNumber: "+91-9876543211",
-          dateOfBirth: "1992-03-22",
-          address: "456 Park Street",
-          city: "Delhi",
-          state: "Delhi",
-          pincode: "110001",
-          accountHolderName: "Priya Sharma",
-          accountNumber: "2345678901234567",
-          ifscCode: "ICIC0000456",
-          bankName: "ICICI Bank",
-          governmentIdType: "PAN",
-          governmentIdNumber: "ABCDE1234F",
-          verificationStatus: "pending",
-          status: "active",
-          balance: 87.25
-        },
-        {
-          email: "user3@example.com",
-          firstName: "Amit",
-          lastName: "Patel",
-          phoneNumber: "+91-9876543212",
-          dateOfBirth: "1988-11-10",
-          address: "789 Sardar Patel Road",
-          city: "Ahmedabad",
-          state: "Gujarat",
-          pincode: "380001",
-          accountHolderName: "Amit Patel",
-          accountNumber: "3456789012345678",
-          ifscCode: "SBIN0000789",
-          bankName: "State Bank of India",
-          governmentIdType: "Driving License",
-          governmentIdNumber: "GJ1420110012345",
-          verificationStatus: "rejected",
-          status: "suspended",
-          balance: 0.00
-        }
-      ];
-
-      const createdUsers = [];
-      for (const userData of demoUsers) {
-        try {
-          const user = await storage.createUserWithTraditionalAuth(userData);
-          createdUsers.push(user);
-        } catch (error) {
-          // User might already exist, skip
-          console.log(`Demo user ${userData.email} might already exist`);
-        }
-      }
-
-      res.json({ message: "Demo users created", users: createdUsers });
-    } catch (error) {
-      console.error("Error creating demo users:", error);
-      res.status(500).json({ message: "Failed to create demo users" });
-    }
-  });
 
   app.put('/api/admin/users/:id/verify', async (req: any, res) => {
     try {
@@ -2084,41 +1757,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.warn('Cashfree reactivation payment failed, using development fallback:', cashfreeError);
       }
 
-      // Development fallback - automatically reactivate account and record payment
-      await storage.updateUser(userId, { 
-        status: 'active',
-        reactivationFeePaid: true,
-        suspendedAt: null,
-        suspensionReason: null,
-        consecutiveFailedDays: 0
-      });
-
-      // Invalidate any cached admin data to show updated status immediately
-      console.log(`✅ User ${userId} reactivated - status updated to 'active'`);
-
-      // Try to record payment history
-      try {
-        await storage.addPaymentHistory(userId, {
-          type: 'reactivation',
-          amount: reactivationFeeAmount.toString(),
-          orderId: `reactivation_${userId}_${Date.now()}`,
-          paymentMethod: 'development_fallback',
-          status: 'completed'
-        });
-      } catch (historyError) {
-        console.warn('Failed to record payment history:', historyError);
-      }
-
-      console.log(`✅ User ${userId} (${user.email}) reactivated - status: suspended → active`);
-      
-      res.json({
-        success: true,
-        message: "🎉 Your account has been successfully reactivated! You can now start earning again.",
-        amount: reactivationFeeAmount.toString(),
-        newStatus: 'active',
-        paymentRecorded: true,
-        nextSteps: "Visit your dashboard to continue watching videos and earning rewards."
-      });
+      // No development fallback - require successful Cashfree payment
+      return res.status(500).json({ message: "Payment processing failed. Please try again." });
 
     } catch (error) {
       console.error("Error processing reactivation payment:", error);
@@ -2387,18 +2027,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get existing tasks for context
       let existingTasks = [];
-      try {
-        existingTasks = await storage.getTasks();
-      } catch (error) {
-        // If database is disabled, use sample tasks
-        existingTasks = [
-          { id: "task-1", title: "Download Instagram App", category: "app_download" },
-          { id: "task-2", title: "Rate Pizza Restaurant", category: "business_review" },
-          { id: "task-3", title: "Review Bluetooth Headphones", category: "product_review" },
-          { id: "task-4", title: "Subscribe to YouTube Channel", category: "channel_subscribe" },
-          { id: "task-5", title: "Like Facebook Post", category: "comment_like" }
-        ];
-      }
+      existingTasks = await storage.getTasks();
 
       const suggestions = await generateTaskSuggestions(existingTasks, targetCategory);
       res.json({ suggestions });
@@ -2439,26 +2068,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get task and completion data
-      let task, completionData = [];
-      try {
-        task = await storage.getTask(taskId);
-        completionData = await storage.getUserTaskCompletions(taskId);
-      } catch (error) {
-        // If database is disabled, use sample data
-        task = { 
-          id: taskId, 
-          title: "Sample Task", 
-          category: "app_download", 
-          reward: 20, 
-          timeLimit: 60,
-          maxCompletions: 100 
-        };
-        completionData = [
-          { id: "1", status: "approved", createdAt: new Date() },
-          { id: "2", status: "pending", createdAt: new Date() },
-          { id: "3", status: "approved", createdAt: new Date() }
-        ];
-      }
+      const task = await storage.getTask(taskId);
+      const completionData = await storage.getUserTaskCompletions(taskId);
 
       if (!task) {
         return res.status(404).json({ error: "Task not found" });
