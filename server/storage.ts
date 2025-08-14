@@ -1771,9 +1771,66 @@ export class DatabaseStorage implements IStorage {
       
       return payments;
     } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Payment history simulated (database unavailable)");
+        return this.getSamplePaymentHistory();
+      }
       console.error("Error fetching all payment history:", error);
       return [];
     }
+  }
+
+  private getSamplePaymentHistory(): any[] {
+    return [
+      {
+        id: 'payment-kyc-001',
+        userId: 'dev-demo-user',
+        userEmail: 'demo@innovativetaskearn.online',
+        userName: 'Demo User',
+        type: 'kyc',
+        amount: '99',
+        orderId: 'order_O3KJR8nWvt1K2g',
+        paymentMethod: 'UPI',
+        status: 'completed',
+        createdAt: new Date('2025-01-10T10:30:00Z')
+      },
+      {
+        id: 'payment-kyc-002',
+        userId: 'dev-user-17521421',
+        userEmail: 'ruhi@example.com',
+        userName: 'ruhi r',
+        type: 'kyc',
+        amount: '99',
+        orderId: 'order_P4LKS9oXwu2L3h',
+        paymentMethod: 'CARD',
+        status: 'completed',
+        createdAt: new Date('2025-01-12T14:15:00Z')
+      },
+      {
+        id: 'payment-reactivation-001',
+        userId: 'dev-alex-kumar',
+        userEmail: 'alex.kumar@example.com',
+        userName: 'Alex Kumar',
+        type: 'reactivation',
+        amount: '49',
+        orderId: 'order_Q5MNT0pYxv3M4i',
+        paymentMethod: 'WALLET',
+        status: 'completed',
+        createdAt: new Date('2025-01-14T16:45:00Z')
+      },
+      {
+        id: 'payment-kyc-003',
+        userId: 'dev-sara-123',
+        userEmail: 'sara@example.com',
+        userName: 'Sara Patel',
+        type: 'kyc',
+        amount: '99',
+        orderId: 'order_R6OUV1qZyw4N5j',
+        paymentMethod: 'UPI',
+        status: 'pending',
+        createdAt: new Date('2025-01-14T18:20:00Z')
+      }
+    ];
   }
 
   // Task operations  
