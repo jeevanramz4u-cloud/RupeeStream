@@ -134,8 +134,108 @@ export class DatabaseStorage implements IStorage {
       return user;
     } catch (error) {
       if (isDevelopment() && config.database.fallbackEnabled) {
-        console.log("Development mode: User lookup simulated (database unavailable)");
-        return undefined;
+        console.log("Development mode: User getUser simulated (database unavailable)");
+        // Return test users for development mode
+        const testUsers: Record<string, User> = {
+          'dev-demo-user': {
+            id: 'dev-demo-user',
+            email: 'demo@innovativetaskearn.online',
+            firstName: 'Demo',
+            lastName: 'User',
+            profileImageUrl: null,
+            password: '$2b$12$GsdpSXb2HbpLLWhFqT2QR.QVyT0nnirL9vFXuE.0xF3kRfxOSOXfW',
+            phoneNumber: '9876543210',
+            dateOfBirth: '1990-01-01',
+            address: '123 Demo Street',
+            city: 'Mumbai',
+            state: 'Maharashtra',
+            pincode: '400001',
+            accountHolderName: 'Demo User',
+            accountNumber: '1234567890',
+            ifscCode: 'HDFC0000123',
+            bankName: 'HDFC Bank',
+            governmentIdType: 'aadhaar',
+            governmentIdNumber: '123456789012',
+            governmentIdUrl: 'demo-kyc-doc.jpg',
+            verificationStatus: 'verified',
+            kycStatus: 'approved',
+            status: 'active',
+            balance: '1000.00',
+            referralCode: 'DEMO123',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            resetToken: null,
+            resetTokenExpiry: null,
+            kycApprovedAt: new Date(),
+            suspensionReason: null
+          },
+          'dev-user-1755205507947': {
+            id: 'dev-user-1755205507947',
+            email: 'rahul.sharma@test.com',
+            firstName: 'Rahul',
+            lastName: 'Sharma',
+            profileImageUrl: null,
+            password: '$2b$12$vFplrKfrRse7njVSDS1q3uJrAz76PNrq7f.tYHb.wH4NraV66cyH.',
+            phoneNumber: '9876543211',
+            dateOfBirth: '1995-03-15',
+            address: '456 MG Road',
+            city: 'Bangalore',
+            state: 'Karnataka',
+            pincode: '560001',
+            accountHolderName: 'Rahul Sharma',
+            accountNumber: '1234567890',
+            ifscCode: 'ICIC0000001',
+            bankName: 'ICICI Bank',
+            governmentIdType: null,
+            governmentIdNumber: null,
+            governmentIdUrl: null,
+            verificationStatus: 'pending',
+            kycStatus: 'pending',
+            status: 'active',
+            balance: '125.00',
+            referralCode: 'HHJIYY',
+            createdAt: new Date('2025-08-14T21:05:07.947Z'),
+            updatedAt: new Date(),
+            resetToken: null,
+            resetTokenExpiry: null,
+            kycApprovedAt: null,
+            suspensionReason: null
+          },
+          'dev-user-1755205510611': {
+            id: 'dev-user-1755205510611',
+            email: 'priya.patel@test.com',
+            firstName: 'Priya',
+            lastName: 'Patel',
+            profileImageUrl: null,
+            password: '$2b$12$NgyWkMxqOhZbqqv93WPeden1UuTgQJSP07zbcugDI9il3.HEXjjDe',
+            phoneNumber: '9876543212',
+            dateOfBirth: '1992-07-22',
+            address: '789 Park Street',
+            city: 'Delhi',
+            state: 'Delhi',
+            pincode: '110001',
+            accountHolderName: 'Priya Patel',
+            accountNumber: '2345678901',
+            ifscCode: 'SBIN0000001',
+            bankName: 'State Bank of India',
+            governmentIdType: 'Aadhaar',
+            governmentIdNumber: '1234-5678-9012',
+            governmentIdUrl: 'https://example.com/kyc-doc.jpg',
+            verificationStatus: 'verified',
+            kycStatus: 'approved',
+            status: 'active',
+            balance: '89.50',
+            referralCode: 'QEPSXO',
+            createdAt: new Date('2025-08-14T21:05:10.611Z'),
+            updatedAt: new Date(),
+            resetToken: null,
+            resetTokenExpiry: null,
+            kycApprovedAt: new Date('2025-08-14T15:30:00.000Z'),
+            suspensionReason: null
+          }
+        };
+        
+        return testUsers[id] || undefined;
       }
       throw error;
     }

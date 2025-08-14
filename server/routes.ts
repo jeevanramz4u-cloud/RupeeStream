@@ -215,7 +215,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Email and password are required" });
       }
 
-      return res.status(401).json({ message: "Invalid email or password" });
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      // Check if user is suspended
+      if (user.status === 'suspended') {
+        return res.status(403).json({ 
+          message: "Your account has been suspended. Please contact support.",
+          suspensionReason: user.suspensionReason || "Account suspended"
+        });
+      }
+
+      // Check password
+      const bcrypt = await import('bcryptjs');
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      // Create session
+      req.session.userId = user.id;
+      
+      res.json({ 
+        message: "Login successful", 
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          verificationStatus: user.verificationStatus,
+          kycStatus: user.kycStatus,
+          balance: user.balance
+        }
+      });
     } catch (error) {
       console.error("Error during login:", error);
       res.status(500).json({ message: "Login failed" });
@@ -230,7 +265,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      return res.status(401).json({ message: "User not found" });
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      res.json({
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          verificationStatus: user.verificationStatus,
+          kycStatus: user.kycStatus,
+          balance: user.balance,
+          status: user.status
+        }
+      });
     } catch (error) {
       console.error("Error checking auth:", error);
       res.status(401).json({ message: "Not authenticated" });
