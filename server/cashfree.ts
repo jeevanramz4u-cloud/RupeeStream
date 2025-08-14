@@ -47,14 +47,14 @@ export async function createPaymentSession(
       order_currency: 'INR',
       order_id: orderId,
       customer_details: {
-        customer_id: customerEmail.replace('@', '_').replace('.', '_'),
+        customer_id: customerEmail.replace('@', '_').replace(/\./g, '_'), // Replace all dots with underscores
         customer_email: customerEmail,
         customer_phone: customerPhone,
         customer_name: customerName
       },
       order_meta: {
-        return_url: `${process.env.REPLIT_DEV_DOMAIN || 'https://innovativetaskearn.online'}/kyc?payment=success`,
-        notify_url: `${process.env.REPLIT_DEV_DOMAIN || 'https://innovativetaskearn.online'}/api/kyc/payment-webhook`,
+        return_url: `https://${process.env.REPLIT_DEV_DOMAIN || 'innovativetaskearn.online'}/kyc?payment=success`,
+        notify_url: `https://${process.env.REPLIT_DEV_DOMAIN || 'innovativetaskearn.online'}/api/kyc/payment-webhook`,
         payment_methods: ""
       }
     };
