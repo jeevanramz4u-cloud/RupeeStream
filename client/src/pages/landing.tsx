@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Play, Users, Coins, Clock, CheckCircle, Shield, User, TrendingUp, CreditCard, BarChart3, Lock, Building2, Headphones, Smartphone, Star, FileText, Youtube, ThumbsUp, MessageCircle } from "lucide-react";
+import { Play, Users, Coins, Clock, CheckCircle, Shield, User, TrendingUp, CreditCard, BarChart3, Lock, Building2, Headphones, Smartphone, Star, FileText, Youtube, ThumbsUp, MessageCircle, Eye } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Landing() {
@@ -63,7 +63,7 @@ export default function Landing() {
                   <Clock className="w-8 h-8 text-white" />
                 </div>
                 <div className="text-left">
-                  <span className="text-3xl font-black text-blue-700 block tracking-tight leading-none">₹15-40</span>
+                  <span className="text-3xl font-black text-blue-700 block tracking-tight leading-none">₹10-40</span>
                   <span className="text-blue-600 font-bold text-sm mt-1 block">Per Task</span>
                   <span className="text-xs text-blue-500 font-medium">Simple 5-20 min tasks</span>
                 </div>
@@ -139,7 +139,7 @@ export default function Landing() {
               </span>
             </h2>
             <p className="text-sm sm:text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-medium">
-              Choose from 5 different task categories designed to fit your skills and schedule. Each task is simple, clear, and pays instantly upon approval.
+              Choose from 6 different task categories designed to fit your skills and schedule. Each task is simple, clear, and pays instantly upon approval.
             </p>
             
             {/* Decorative divider */}
@@ -236,7 +236,7 @@ export default function Landing() {
             </div>
 
             {/* Task Type 5 - Comments & Likes */}
-            <div className="group relative bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-purple-100 hover:shadow-2xl hover:border-purple-300 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] sm:col-span-2 lg:col-span-1">
+            <div className="group relative bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-purple-100 hover:shadow-2xl hover:border-purple-300 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
               <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-purple-400 to-violet-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
               <div className="flex items-center justify-center mb-6">
                 <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-purple-100 to-violet-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
@@ -255,13 +255,34 @@ export default function Landing() {
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-purple-500 to-violet-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
             </div>
+
+            {/* Task Type 6 - YouTube Video View */}
+            <div className="group relative bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-pink-100 hover:shadow-2xl hover:border-pink-300 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-pink-100 to-rose-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Eye className="text-pink-600 w-10 h-10 lg:w-12 lg:h-12" />
+                </div>
+              </div>
+              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">YouTube Video View</h3>
+              <div className="text-center mb-4">
+                <span className="text-2xl lg:text-3xl font-black text-pink-600">₹20-30</span>
+                <span className="text-sm text-gray-500 block">per task</span>
+              </div>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Watch YouTube videos for specified duration and provide proof of completion.</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <span className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-medium">Easy</span>
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">5-15 min</span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-pink-500 to-rose-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
+            </div>
           </div>
 
           {/* Call to Action */}
           <div className="text-center mt-12">
             <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-100 max-w-2xl mx-auto">
               <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-4 tracking-tight">Ready to Start Earning?</h3>
-              <p className="text-gray-600 mb-6 font-medium">Join thousands of users already earning with our task completion platform.</p>
+              <p className="text-gray-600 mb-6 font-medium">Join thousands of users already earning with our 6-category task completion platform.</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg" 
@@ -649,9 +670,9 @@ export default function Landing() {
               </AccordionTrigger>
               <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
                 <div className="pl-13">
-                  We offer 5 main categories: <span className="font-semibold text-indigo-600">App Downloads</span> (₹15-25), <span className="font-semibold text-indigo-600">Business Reviews</span> (₹30-35), 
-                  <span className="font-semibold text-indigo-600">Product Reviews</span> (₹25-40), <span className="font-semibold text-indigo-600">Channel Subscribe</span> (₹15-20), and <span className="font-semibold text-indigo-600">Comments & Likes</span> (₹10-15). 
-                  Each task takes 5-20 minutes and requires proof submission for approval.
+                  We offer 6 main categories: <span className="font-semibold text-indigo-600">App Downloads</span> (₹15-25), <span className="font-semibold text-indigo-600">Business Reviews</span> (₹30-35), 
+                  <span className="font-semibold text-indigo-600">Product Reviews</span> (₹25-40), <span className="font-semibold text-indigo-600">Channel Subscribe</span> (₹15-20), <span className="font-semibold text-indigo-600">Comments & Likes</span> (₹10-15), and <span className="font-semibold text-indigo-600">YouTube Video View</span> (₹20-30). 
+                  Each task takes 2-20 minutes and requires proof submission for approval.
                 </div>
               </AccordionContent>
             </AccordionItem>

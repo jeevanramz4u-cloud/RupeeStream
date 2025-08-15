@@ -23,7 +23,8 @@ import {
   Upload,
   ExternalLink,
   Coins,
-  Zap
+  Zap,
+  Eye
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
@@ -36,6 +37,7 @@ const taskCategoryIcons = {
   product_review: FileText,
   channel_subscribe: Youtube,
   comment_like: MessageCircle,
+  youtube_video_see: Eye,
   survey: FileText,
   social_media: ThumbsUp
 };
@@ -46,8 +48,9 @@ const taskCategoryColors = {
   product_review: "bg-green-100 text-green-700 border-green-200",
   channel_subscribe: "bg-red-100 text-red-700 border-red-200",
   comment_like: "bg-purple-100 text-purple-700 border-purple-200",
+  youtube_video_see: "bg-pink-100 text-pink-700 border-pink-200",
   survey: "bg-indigo-100 text-indigo-700 border-indigo-200",
-  social_media: "bg-pink-100 text-pink-700 border-pink-200"
+  social_media: "bg-teal-100 text-teal-700 border-teal-200"
 };
 
 export default function Tasks() {
@@ -187,6 +190,10 @@ export default function Tasks() {
             <Badge variant="outline" className="px-4 py-2 text-purple-700 border-purple-200 bg-purple-50">
               <ThumbsUp className="w-4 h-4 mr-2" />
               Comments & Likes
+            </Badge>
+            <Badge variant="outline" className="px-4 py-2 text-pink-700 border-pink-200 bg-pink-50">
+              <Eye className="w-4 h-4 mr-2" />
+              YouTube Video View
             </Badge>
           </div>
         </div>

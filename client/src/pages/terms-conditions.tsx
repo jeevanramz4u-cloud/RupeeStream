@@ -72,7 +72,7 @@ export default function TermsConditions() {
                 <div className="space-y-4 text-gray-700">
                   <h3 className="font-medium">Task Categories</h3>
                   <p>
-                    Available task categories include App Downloads, Business Reviews, Product Reviews, Channel Subscribe, and Comments & Likes. 
+                    Available task categories include App Downloads, Business Reviews, Product Reviews, Channel Subscribe, Comments & Likes, and YouTube Video View. 
                     Each task must be completed as per provided instructions with proper proof submission.
                   </p>
 

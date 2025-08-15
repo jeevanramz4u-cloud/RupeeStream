@@ -26,7 +26,7 @@ const categoryLabels = {
   product_review: "Product Review",
   channel_subscribe: "Channel Subscribe",
   comment_like: "Comments & Likes",
-  youtube_video_see: "YouTube Video See Task"
+  youtube_video_see: "YouTube Video View"
 };
 
 const categoryIcons = {
