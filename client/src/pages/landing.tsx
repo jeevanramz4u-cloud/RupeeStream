@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Play, Users, Coins, Clock, CheckCircle, Shield, User, TrendingUp, CreditCard, BarChart3, Lock, Building2, Headphones } from "lucide-react";
+import { Play, Users, Coins, Clock, CheckCircle, Shield, User, TrendingUp, CreditCard, BarChart3, Lock, Building2, Headphones, Smartphone, Star, FileText, Youtube, ThumbsUp, MessageCircle } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Landing() {
@@ -108,6 +108,180 @@ export default function Landing() {
             <Button size="sm" variant="outline" className="text-xs touch-manipulation rounded-xl">
               <a href="#how-it-works">Learn How It Works</a>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Task Types Section */}
+      <section className="py-12 sm:py-16 lg:py-20 px-3 sm:px-4 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="absolute top-20 left-10 w-60 h-60 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-10 right-20 w-80 h-80 bg-gradient-to-tr from-purple-400 to-pink-500 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-1/2 left-1/3 w-40 h-40 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full blur-3xl animate-pulse"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-12">
+            {/* Task Types Icon Badge */}
+            <div className="flex items-center justify-center mb-6">
+              <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full">
+                <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-lg">
+                  <Coins className="w-8 h-8" />
+                </div>
+              </div>
+            </div>
+            
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
+              What Types of Tasks
+              <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent font-black">
+                Do We Provide?
+              </span>
+            </h2>
+            <p className="text-sm sm:text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-medium">
+              Choose from 5 different task categories designed to fit your skills and schedule. Each task is simple, clear, and pays instantly upon approval.
+            </p>
+            
+            {/* Decorative divider */}
+            <div className="flex items-center justify-center mt-8 mb-4">
+              <div className="h-1 w-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full"></div>
+              <div className="mx-4 w-3 h-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full"></div>
+              <div className="h-1 w-20 bg-gradient-to-r from-indigo-600 to-blue-500 rounded-full"></div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
+            {/* Task Type 1 - App Downloads */}
+            <div className="group relative bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-100 hover:shadow-2xl hover:border-blue-300 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Smartphone className="text-blue-600 w-10 h-10 lg:w-12 lg:h-12" />
+                </div>
+              </div>
+              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">App Downloads</h3>
+              <div className="text-center mb-4">
+                <span className="text-2xl lg:text-3xl font-black text-blue-600">₹15-25</span>
+                <span className="text-sm text-gray-500 block">per task</span>
+              </div>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Download apps, register, and provide screenshots as proof. Takes 5-10 minutes.</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Easy</span>
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">5-10 min</span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
+            </div>
+
+            {/* Task Type 2 - Business Reviews */}
+            <div className="group relative bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-yellow-100 hover:shadow-2xl hover:border-yellow-300 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Star className="text-yellow-600 w-10 h-10 lg:w-12 lg:h-12" />
+                </div>
+              </div>
+              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Business Reviews</h3>
+              <div className="text-center mb-4">
+                <span className="text-2xl lg:text-3xl font-black text-yellow-600">₹30-35</span>
+                <span className="text-sm text-gray-500 block">per task</span>
+              </div>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Write genuine reviews for businesses on Google, Facebook, and other platforms.</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Medium</span>
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">10-15 min</span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-yellow-500 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
+            </div>
+
+            {/* Task Type 3 - Product Reviews */}
+            <div className="group relative bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-green-100 hover:shadow-2xl hover:border-green-300 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-100 to-emerald-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <FileText className="text-green-600 w-10 h-10 lg:w-12 lg:h-12" />
+                </div>
+              </div>
+              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Product Reviews</h3>
+              <div className="text-center mb-4">
+                <span className="text-2xl lg:text-3xl font-black text-green-600">₹25-40</span>
+                <span className="text-sm text-gray-500 block">per task</span>
+              </div>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Review products on e-commerce sites like Amazon, Flipkart with detailed feedback.</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Medium</span>
+                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">15-20 min</span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
+            </div>
+
+            {/* Task Type 4 - Channel Subscribe */}
+            <div className="group relative bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-red-100 hover:shadow-2xl hover:border-red-300 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-red-400 to-pink-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-red-100 to-pink-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Youtube className="text-red-600 w-10 h-10 lg:w-12 lg:h-12" />
+                </div>
+              </div>
+              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Channel Subscribe</h3>
+              <div className="text-center mb-4">
+                <span className="text-2xl lg:text-3xl font-black text-red-600">₹15-20</span>
+                <span className="text-sm text-gray-500 block">per task</span>
+              </div>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Subscribe to YouTube channels, Instagram pages, and social media accounts.</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Easy</span>
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">3-5 min</span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-red-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
+            </div>
+
+            {/* Task Type 5 - Comments & Likes */}
+            <div className="group relative bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-purple-100 hover:shadow-2xl hover:border-purple-300 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] sm:col-span-2 lg:col-span-1">
+              <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-purple-400 to-violet-500 rounded-full opacity-90 group-hover:opacity-100 transition-opacity shadow-lg"></div>
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-purple-100 to-violet-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <ThumbsUp className="text-purple-600 w-10 h-10 lg:w-12 lg:h-12" />
+                </div>
+              </div>
+              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Comments & Likes</h3>
+              <div className="text-center mb-4">
+                <span className="text-2xl lg:text-3xl font-black text-purple-600">₹10-15</span>
+                <span className="text-sm text-gray-500 block">per task</span>
+              </div>
+              <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Like posts, leave comments, and engage with social media content.</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">Easy</span>
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">2-5 min</span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-purple-500 to-violet-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"></div>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center mt-12">
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-100 max-w-2xl mx-auto">
+              <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-4 tracking-tight">Ready to Start Earning?</h3>
+              <p className="text-gray-600 mb-6 font-medium">Join thousands of users already earning with our task completion platform.</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 font-bold"
+                  onClick={() => window.location.href = '/signup'}
+                  data-testid="cta-signup-tasks"
+                >
+                  Get Started Now
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="border-2 border-gray-300 hover:bg-gray-50 hover:border-primary/50 font-bold"
+                  onClick={() => window.location.href = '/login'}
+                  data-testid="cta-login-tasks"
+                >
+                  Login & Browse Tasks
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
