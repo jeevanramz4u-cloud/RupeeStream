@@ -37,17 +37,17 @@ import { FloatingChat } from "./components/FloatingChat";
 // Component to conditionally show floating chat
 function FloatingChatWidget() {
   const [location] = useLocation();
-  const { hasUser } = useAuth();
+  const { isAuthenticated } = useAuth();
   
   // Don't show chat on login, signup, or admin pages
   const hiddenPages = ['/login', '/signup', '/admin', '/admin-login', '/admin-tasks', '/admin-inquiries', '/admin-live-chat'];
-  const shouldShowChat = hasUser && !hiddenPages.some(page => location.startsWith(page));
+  const shouldShowChat = isAuthenticated && !hiddenPages.some(page => location.startsWith(page));
   
   return shouldShowChat ? <FloatingChat /> : null;
 }
 
 function AdminRoute() {
-  const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
+  const { isAdminAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
   
   if (adminLoading) {
     return (
@@ -110,7 +110,7 @@ function AdminInquiriesRoute() {
 }
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
-  const { fullUser: user, hasUser: isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   
   if (isLoading) {
     return (
@@ -130,7 +130,7 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
   }
   
   // Global suspension check - force suspended users to suspended page for ALL routes
-  if ((user as any)?.status === 'suspended') {
+  if (user?.status === 'suspended') {
     const currentPath = window.location.pathname;
     
     // If user is suspended and not on suspended page, force redirect
@@ -246,7 +246,7 @@ const queryClient = new QueryClient({
 });
 
 function AppContent() {
-  const { hasUser } = useAuth();
+  const { isAuthenticated } = useAuth();
   
   return (
     <>
