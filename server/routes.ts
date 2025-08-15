@@ -1149,8 +1149,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Task routes
-  app.get('/api/tasks', isTraditionallyAuthenticated, async (req, res) => {
+  // Task routes - Allow public access for browsing
+  app.get('/api/tasks', async (req, res) => {
     try {
       const tasks = await storage.getTasks();
       res.json(tasks);
@@ -2463,6 +2463,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("AI performance analysis error:", error);
       res.status(500).json({ error: "Failed to analyze task performance" });
+    }
+  });
+
+  // Advertiser Inquiry Routes
+  app.post("/api/advertiser-inquiry", async (req, res) => {
+    try {
+      const inquiry = await storage.createAdvertiserInquiry(req.body);
+      res.json(inquiry);
+    } catch (error: any) {
+      console.error("Error creating advertiser inquiry:", error);
+      res.status(500).json({ error: "Failed to submit inquiry" });
+    }
+  });
+
+  app.get("/api/advertiser-inquiries", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      
+      const inquiries = await storage.getAdvertiserInquiries();
+      res.json(inquiries);
+    } catch (error: any) {
+      console.error("Error fetching advertiser inquiries:", error);
+      res.status(500).json({ error: "Failed to fetch inquiries" });
+    }
+  });
+
+  app.put("/api/advertiser-inquiry/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      
+      const { id } = req.params;
+      const updated = await storage.updateAdvertiserInquiry(id, req.body);
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating advertiser inquiry:", error);
+      res.status(500).json({ error: "Failed to update inquiry" });
+    }
+  });
+
+  // Contact Inquiry Routes
+  app.post("/api/contact-inquiry", async (req, res) => {
+    try {
+      const inquiry = await storage.createContactInquiry(req.body);
+      res.json(inquiry);
+    } catch (error: any) {
+      console.error("Error creating contact inquiry:", error);
+      res.status(500).json({ error: "Failed to submit inquiry" });
+    }
+  });
+
+  app.get("/api/contact-inquiries", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      
+      const inquiries = await storage.getContactInquiries();
+      res.json(inquiries);
+    } catch (error: any) {
+      console.error("Error fetching contact inquiries:", error);
+      res.status(500).json({ error: "Failed to fetch inquiries" });
+    }
+  });
+
+  app.put("/api/contact-inquiry/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      
+      const { id } = req.params;
+      const updated = await storage.updateContactInquiry(id, req.body);
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating contact inquiry:", error);
+      res.status(500).json({ error: "Failed to update inquiry" });
     }
   });
 

@@ -653,6 +653,54 @@ export const chatInvitations = pgTable("chat_invitations", {
   index("idx_chat_invitations_email").on(table.email),
 ]);
 
+// Advertiser Inquiries table
+export const advertiserInquiries = pgTable("advertiser_inquiries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()::text`),
+  companyName: varchar("company_name", { length: 255 }).notNull(),
+  contactPerson: varchar("contact_person", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 20 }).notNull(),
+  website: varchar("website", { length: 500 }),
+  industry: varchar("industry", { length: 100 }).notNull(),
+  campaignBudget: varchar("campaign_budget", { length: 50 }).notNull(),
+  taskTypes: jsonb("task_types").notNull(), // Array of selected task type IDs
+  campaignObjective: text("campaign_objective").notNull(),
+  targetAudience: text("target_audience").notNull(),
+  campaignDuration: varchar("campaign_duration", { length: 50 }).notNull(),
+  additionalRequirements: text("additional_requirements"),
+  status: varchar("status", { length: 20 }).notNull().default("pending"), // pending, contacted, in_progress, completed, rejected
+  assignedTo: varchar("assigned_to", { length: 255 }), // Admin user ID who handles this inquiry
+  notes: text("notes"), // Internal notes from admin team
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+  updatedAt: timestamp("updated_at").notNull().default(sql`now()`),
+});
+
+// Contact Form Inquiries table  
+export const contactInquiries = pgTable("contact_inquiries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()::text`),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 20 }),
+  subject: varchar("subject", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  inquiryType: varchar("inquiry_type", { length: 50 }).notNull(), // general, support, business, complaint, suggestion
+  status: varchar("status", { length: 20 }).notNull().default("pending"), // pending, responded, resolved, closed
+  assignedTo: varchar("assigned_to", { length: 255 }), // Admin user ID who handles this inquiry
+  adminResponse: text("admin_response"), // Response from admin team
+  responseDate: timestamp("response_date"),
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+  updatedAt: timestamp("updated_at").notNull().default(sql`now()`),
+});
+
+// Schema exports and types
+export const insertAdvertiserInquirySchema = createInsertSchema(advertiserInquiries);
+export const insertContactInquirySchema = createInsertSchema(contactInquiries);
+
+export type AdvertiserInquiry = typeof advertiserInquiries.$inferSelect;
+export type ContactInquiry = typeof contactInquiries.$inferSelect;
+export type InsertAdvertiserInquiry = z.infer<typeof insertAdvertiserInquirySchema>;
+export type InsertContactInquiry = z.infer<typeof insertContactInquirySchema>;
+
 // Chat system types
 export type SupportTeam = typeof supportTeam.$inferSelect;
 export type FaqCategory = typeof faqCategories.$inferSelect;

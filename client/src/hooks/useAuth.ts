@@ -19,7 +19,7 @@ export function useAuth() {
   console.log("useAuth - Raw API response:", data);
   
   // Extract user from the response data
-  const user = data?.user || null;
+  const user = (data as any)?.user || null;
   
   console.log("useAuth - Extracted user object:", {
     userId: user?.id,

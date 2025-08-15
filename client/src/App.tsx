@@ -17,11 +17,13 @@ import KYC from "./pages/kyc";
 import Suspended from "./pages/suspended";
 import AdminLogin from "./pages/admin-login";
 import AdminTasks from "./pages/admin-tasks";
+import AdminInquiries from "./pages/admin-inquiries";
 import Landing from "./pages/landing";
 import PrivacyPolicy from "./pages/privacy-policy";
 import TermsConditions from "./pages/terms-conditions";
 import About from "./pages/about";
 import Contact from "./pages/contact";
+import Advertisers from "./pages/advertisers";
 import HowToEarn from "./pages/how-to-earn";
 import Careers from "./pages/careers";
 import PayoutSchedule from "./pages/payout-schedule";
@@ -69,6 +71,27 @@ function AdminTasksRoute() {
   
   if (isAdminAuth) {
     return <AdminTasks />;
+  } else {
+    return <AdminLogin />;
+  }
+}
+
+function AdminInquiriesRoute() {
+  const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
+  
+  if (adminLoading) {
+    return (
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Verifying admin access...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (isAdminAuth) {
+    return <AdminInquiries />;
   } else {
     return <AdminLogin />;
   }
@@ -127,6 +150,7 @@ function Router() {
       {/* Admin routes - separate from regular user auth */}
       <Route path="/admin" component={AdminRoute} />
       <Route path="/admin/tasks" component={AdminTasksRoute} />
+      <Route path="/admin/inquiries" component={AdminInquiriesRoute} />
       <Route path="/admin/live-chat" component={() => <AdminLiveChat />} />
       <Route path="/admin-login" component={AdminLogin} />
       
@@ -142,6 +166,7 @@ function Router() {
       <Route path="/how-to-earn" component={HowToEarn} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
+      <Route path="/advertisers" component={Advertisers} />
       <Route path="/careers" component={Careers} />
       <Route path="/payout-schedule" component={PayoutSchedule} />
       <Route path="/referral-program" component={ReferralProgram} />

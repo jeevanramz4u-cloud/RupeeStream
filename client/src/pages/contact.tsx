@@ -6,38 +6,94 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Mail, Phone, MapPin, Clock, MessageSquare, HeadphonesIcon } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, MessageSquare, HeadphonesIcon, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+const contactFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Valid email is required"),
+  phone: z.string().optional(),
+  subject: z.string().min(5, "Subject must be at least 5 characters"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+  inquiryType: z.string().min(1, "Please select an inquiry type"),
+});
+
+type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export default function Contact() {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    category: '',
-    message: ''
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const form = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+      inquiryType: "",
+    },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll get back to you within 24 hours.",
-    });
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      category: '',
-      message: ''
-    });
+  const submitContactMutation = useMutation({
+    mutationFn: (data: ContactFormData) =>
+      apiRequest("POST", "/api/contact-inquiry", data),
+    onSuccess: () => {
+      setIsSubmitted(true);
+      toast({
+        title: "Message Sent Successfully!",
+        description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to Send Message",
+        description: "Please try again or contact us directly via email.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const onSubmit = (data: ContactFormData) => {
+    submitContactMutation.mutate(data);
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-neutral-50 safe-area-padding">
+        <Header />
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8 flex items-center justify-center">
+          <Card className="w-full max-w-md text-center">
+            <CardContent className="pt-8 pb-8">
+              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Thank You!
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Your message has been sent successfully. Our support team will respond within 24 hours.
+              </p>
+              <Button 
+                onClick={() => window.location.href = "/"}
+                className="w-full"
+                data-testid="button-back-home"
+              >
+                Back to Home
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-neutral-50 safe-area-padding">
@@ -153,87 +209,135 @@ export default function Contact() {
                 </p>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Full Name *</Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) => handleInputChange('name', e.target.value)}
-                        placeholder="Enter your full name"
-                        required
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Full Name *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter your full name" {...field} data-testid="input-name" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email Address *</FormLabel>
+                            <FormControl>
+                              <Input type="email" placeholder="Enter your email address" {...field} data-testid="input-email" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        placeholder="Enter your email address"
-                        required
-                      />
-                    </div>
-                  </div>
 
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="category">Category *</Label>
-                      <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="account">Account & Login</SelectItem>
-                          <SelectItem value="payment">Payment & Earnings</SelectItem>
-                          <SelectItem value="kyc">KYC Verification</SelectItem>
-                          <SelectItem value="technical">Technical Support</SelectItem>
-                          <SelectItem value="referral">Referral Program</SelectItem>
-                          <SelectItem value="general">General Inquiry</SelectItem>
-                          <SelectItem value="feedback">Feedback & Suggestions</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="subject">Subject *</Label>
-                      <Input
-                        id="subject"
-                        value={formData.subject}
-                        onChange={(e) => handleInputChange('subject', e.target.value)}
-                        placeholder="Brief description of your inquiry"
-                        required
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="inquiryType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Category *</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger data-testid="select-category">
+                                  <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="general">General Inquiry</SelectItem>
+                                <SelectItem value="support">Account & Login</SelectItem>
+                                <SelectItem value="business">Payment & Earnings</SelectItem>
+                                <SelectItem value="complaint">KYC Verification</SelectItem>
+                                <SelectItem value="suggestion">Technical Support</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Phone Number</FormLabel>
+                            <FormControl>
+                              <Input placeholder="+91 9876543210 (Optional)" {...field} data-testid="input-phone" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message *</Label>
-                    <Textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) => handleInputChange('message', e.target.value)}
-                      placeholder="Describe your issue or question in detail..."
-                      className="min-h-32"
-                      required
+                    <FormField
+                      control={form.control}
+                      name="subject"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subject *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Brief description of your inquiry" {...field} data-testid="input-subject" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
 
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 className="font-medium text-blue-800 mb-2">Before contacting support:</h4>
-                    <ul className="text-sm text-blue-700 space-y-1">
-                      <li>• Check your account dashboard for any pending actions</li>
-                      <li>• Ensure your email address is verified</li>
-                      <li>• Have your user ID or email ready for faster assistance</li>
-                      <li>• Include screenshots if reporting a technical issue</li>
-                    </ul>
-                  </div>
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Message *</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Describe your issue or question in detail..."
+                              className="min-h-32"
+                              {...field}
+                              data-testid="textarea-message"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <Button type="submit" className="w-full">
-                    Send Message
-                  </Button>
-                </form>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <h4 className="font-medium text-blue-800 mb-2">Before contacting support:</h4>
+                      <ul className="text-sm text-blue-700 space-y-1">
+                        <li>• Check your account dashboard for any pending actions</li>
+                        <li>• Ensure your email address is verified</li>
+                        <li>• Have your user ID or email ready for faster assistance</li>
+                        <li>• Include screenshots if reporting a technical issue</li>
+                      </ul>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <Button 
+                        type="submit" 
+                        size="lg"
+                        disabled={submitContactMutation.isPending}
+                        className="min-w-32"
+                        data-testid="button-submit-contact"
+                      >
+                        {submitContactMutation.isPending ? "Sending..." : "Send Message"}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
               </CardContent>
             </Card>
           </div>

@@ -2332,7 +2332,146 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  // Advertiser Inquiry operations
+  async createAdvertiserInquiry(inquiry: any): Promise<any> {
+    try {
+      const [newInquiry] = await db.insert(advertiserInquiries).values(inquiry).returning();
+      return newInquiry;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Advertiser inquiry simulated (database unavailable)");
+        return {
+          id: `dev-advertiser-inquiry-${Date.now()}`,
+          ...inquiry,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+      }
+      throw error;
+    }
+  }
 
+  async getAdvertiserInquiries(limit = 50): Promise<any[]> {
+    try {
+      return await db
+        .select()
+        .from(advertiserInquiries)
+        .orderBy(desc(advertiserInquiries.createdAt))
+        .limit(limit);
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Advertiser inquiries simulated (database unavailable)");
+        return [
+          {
+            id: 'dev-advertiser-inquiry-1',
+            companyName: 'TechCorp Solutions',
+            contactPerson: 'John Smith',
+            email: 'john@techcorp.com',
+            phone: '+91 9876543210',
+            website: 'https://techcorp.com',
+            industry: 'Technology & Software',
+            campaignBudget: '₹1,00,000 - ₹5,00,000',
+            taskTypes: ['app_downloads', 'product_reviews'],
+            campaignObjective: 'Increase app downloads and gather authentic user reviews for our new mobile application.',
+            targetAudience: 'Young professionals aged 22-35 interested in productivity apps.',
+            campaignDuration: '2-months',
+            additionalRequirements: 'Need users with Android devices primarily.',
+            status: 'pending',
+            assignedTo: null,
+            notes: null,
+            createdAt: new Date(Date.now() - 86400000 * 2),
+            updatedAt: new Date(Date.now() - 86400000 * 2)
+          }
+        ];
+      }
+      throw error;
+    }
+  }
+
+  // Contact Inquiry operations
+  async createContactInquiry(inquiry: any): Promise<any> {
+    try {
+      const [newInquiry] = await db.insert(contactInquiries).values(inquiry).returning();
+      return newInquiry;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Contact inquiry simulated (database unavailable)");
+        return {
+          id: `dev-contact-inquiry-${Date.now()}`,
+          ...inquiry,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+      }
+      throw error;
+    }
+  }
+
+  async getContactInquiries(limit = 50): Promise<any[]> {
+    try {
+      return await db
+        .select()
+        .from(contactInquiries)
+        .orderBy(desc(contactInquiries.createdAt))
+        .limit(limit);
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Contact inquiries simulated (database unavailable)");
+        return [
+          {
+            id: 'dev-contact-inquiry-1',
+            name: 'Rahul Kumar',
+            email: 'rahul@example.com',
+            phone: '+91 9876543210',
+            subject: 'Payment Issue',
+            message: 'I completed KYC payment but status is still pending. Please help resolve this issue.',
+            inquiryType: 'support',
+            status: 'pending',
+            assignedTo: null,
+            adminResponse: null,
+            responseDate: null,
+            createdAt: new Date(Date.now() - 86400000 * 1),
+            updatedAt: new Date(Date.now() - 86400000 * 1)
+          }
+        ];
+      }
+      throw error;
+    }
+  }
+
+  async updateContactInquiry(id: string, updates: any): Promise<any> {
+    try {
+      const [updated] = await db
+        .update(contactInquiries)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(contactInquiries.id, id))
+        .returning();
+      return updated;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log(`Development mode: Contact inquiry ${id} update simulated`);
+        return { id, ...updates, updatedAt: new Date() };
+      }
+      throw error;
+    }
+  }
+
+  async updateAdvertiserInquiry(id: string, updates: any): Promise<any> {
+    try {
+      const [updated] = await db
+        .update(advertiserInquiries)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(advertiserInquiries.id, id))
+        .returning();
+      return updated;
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log(`Development mode: Advertiser inquiry ${id} update simulated`);
+        return { id, ...updates, updatedAt: new Date() };
+      }
+      throw error;
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();

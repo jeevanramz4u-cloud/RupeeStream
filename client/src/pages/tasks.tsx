@@ -59,6 +59,7 @@ export default function Tasks() {
 
   // Get completion status for a task
   const getTaskCompletionStatus = (taskId: string) => {
+    if (!Array.isArray(completions)) return null;
     const completion = completions.find((c: any) => c.taskId === taskId && c.userId === user?.id);
     return completion?.status || null;
   };
