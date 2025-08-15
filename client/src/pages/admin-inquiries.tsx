@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { 
   Building2, 
-  MessageSquare2, 
+  MessageSquare, 
   Eye, 
   Mail,
   Phone,
@@ -185,7 +185,7 @@ export default function AdminInquiries() {
               Advertiser Inquiries ({advertiserInquiries.length})
             </TabsTrigger>
             <TabsTrigger value="contacts" className="flex items-center gap-2">
-              <MessageSquare2 className="w-4 h-4" />
+              <MessageSquare className="w-4 h-4" />
               Contact Inquiries ({contactInquiries.length})
             </TabsTrigger>
           </TabsList>
@@ -304,7 +304,7 @@ export default function AdminInquiries() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <MessageSquare2 className="w-5 h-5" />
+                  <MessageSquare className="w-5 h-5" />
                   Contact Inquiries
                 </CardTitle>
               </CardHeader>
@@ -410,7 +410,7 @@ export default function AdminInquiries() {
               {selectedInquiry?.type === 'advertiser' ? (
                 <Building2 className="w-5 h-5" />
               ) : (
-                <MessageSquare2 className="w-5 h-5" />
+                <MessageSquare className="w-5 h-5" />
               )}
               {selectedInquiry?.type === 'advertiser' ? 'Advertiser Inquiry Details' : 'Contact Inquiry Details'}
             </DialogTitle>
