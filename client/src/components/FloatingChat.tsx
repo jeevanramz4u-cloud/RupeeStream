@@ -431,21 +431,50 @@ export function FloatingChat() {
 
                     <div className="space-y-2 mb-3 max-h-32 overflow-y-auto">
                       {messages.map((message) => (
-                        <div
-                          key={message.id}
-                          className={`p-2 rounded text-sm ${
-                            message.senderType === "user"
-                              ? "bg-primary text-primary-foreground ml-4"
-                              : message.senderType === "system"
-                              ? "bg-muted text-center"
-                              : "bg-muted mr-4"
-                          }`}
-                          data-testid={`message-${message.id}`}
-                        >
-                          {message.message}
-                          <div className="text-xs opacity-70 mt-1">
-                            {new Date(message.timestamp).toLocaleTimeString()}
+                        <div key={message.id} className="space-y-2">
+                          <div
+                            className={`p-2 rounded text-sm ${
+                              message.senderType === "user"
+                                ? "bg-primary text-primary-foreground ml-4"
+                                : message.senderType === "faq"
+                                ? "bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 mr-2"
+                                : message.senderType === "system"
+                                ? "bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 mr-2"
+                                : "bg-muted mr-4"
+                            }`}
+                            data-testid={`message-${message.id}`}
+                          >
+                            {message.senderType === "faq" && (
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-blue-600 text-xs font-medium">🤖 FAQ Assistant</span>
+                              </div>
+                            )}
+                            {message.senderType === "system" && (
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-orange-600 text-xs font-medium">👥 Support System</span>
+                              </div>
+                            )}
+                            <div className="whitespace-pre-line">{message.message}</div>
+                            <div className="text-xs opacity-70 mt-1">
+                              {new Date(message.timestamp).toLocaleTimeString()}
+                            </div>
                           </div>
+                          
+                          {/* Show transfer button for system messages that suggest transfer */}
+                          {message.suggestTransfer && (
+                            <div className="flex justify-center">
+                              <Button
+                                onClick={handleTransferToAgent}
+                                variant="outline"
+                                size="sm"
+                                className="text-blue-600 border-blue-300 hover:bg-blue-50 text-xs"
+                                data-testid="button-transfer-to-agent"
+                              >
+                                <ArrowRight className="h-3 w-3 mr-1" />
+                                Transfer to Support Team
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>

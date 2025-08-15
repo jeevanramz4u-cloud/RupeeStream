@@ -10,6 +10,17 @@ const sampleFaqCategories = [
   { id: "faq-cat-4", name: "Account Issues", description: "Help with account problems and suspension" },
 ];
 
+// FAQ matching keywords for intelligent responses
+const faqKeywords = {
+  "faq-1": ["start", "started", "begin", "beginning", "new", "signup", "sign up", "register"],
+  "faq-2": ["free", "cost", "price", "payment", "charge", "money"],
+  "faq-3": ["earn", "earning", "money", "payment", "task", "reward", "amount"],
+  "faq-4": ["approval", "approve", "review", "time", "wait", "long", "minutes"],
+  "faq-5": ["kyc", "verification", "verify", "99", "fee", "pay", "why"],
+  "faq-6": ["payout", "withdrawal", "withdraw", "when", "tuesday", "process"],
+  "faq-7": ["suspend", "suspended", "reactivate", "blocked", "ban", "49"]
+};
+
 const sampleFaqs = [
   {
     id: "faq-1",
@@ -85,6 +96,55 @@ const sampleSupportTeam = [
 // In-memory storage for development mode
 const chatSessions = new Map<string, any>();
 const chatMessages = new Map<string, any[]>();
+
+// Function to find matching FAQ based on user message
+function findMatchingFaq(userMessage: string) {
+  const messageLower = userMessage.toLowerCase();
+  const words = messageLower.split(/\s+/);
+  
+  let bestMatch = null;
+  let highestScore = 0;
+  
+  // Check each FAQ for keyword matches
+  for (const [faqId, keywords] of Object.entries(faqKeywords)) {
+    let score = 0;
+    
+    // Count matching keywords
+    for (const keyword of keywords) {
+      if (messageLower.includes(keyword.toLowerCase())) {
+        score += keyword.length; // Longer keywords get higher scores
+      }
+    }
+    
+    // Also check if question words match
+    const faq = sampleFaqs.find(f => f.id === faqId);
+    if (faq) {
+      const questionWords = faq.question.toLowerCase().split(/\s+/);
+      for (const word of words) {
+        if (questionWords.includes(word) && word.length > 3) {
+          score += 2; // Bonus for question word matches
+        }
+      }
+    }
+    
+    if (score > highestScore && score > 2) { // Minimum threshold
+      highestScore = score;
+      bestMatch = faq;
+    }
+  }
+  
+  return bestMatch;
+}
+
+// Function to generate automatic FAQ response
+function generateFaqResponse(faq: any, userMessage: string) {
+  return {
+    message: `🤖 I found this answer in our FAQ:\n\n**${faq.question}**\n\n${faq.answer}\n\n---\n\nDid this answer your question? If you need more help, I can transfer you to our support team.`,
+    isAutoResponse: true,
+    matchedFaq: faq,
+    originalQuestion: userMessage
+  };
+}
 
 export function registerLiveChatRoutes(app: Express) {
   // User-facing FAQ and chat routes
@@ -255,17 +315,25 @@ export function registerLiveChatRoutes(app: Express) {
     }
   });
 
-  // Send chat message
+  // Send chat message with intelligent FAQ matching
   app.post("/api/chat-message", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Authentication required" });
+    const isAuthenticated = req.isAuthenticated() || (req.session?.userId);
+    
+    if (!isAuthenticated) {
+      // Development fallback
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Chat message accessed without authentication, allowing access");
+      } else {
+        return res.status(401).json({ message: "Authentication required" });
+      }
     }
 
     try {
       const { sessionId, message, faqId } = req.body;
-      const userId = (req.user as any).id;
+      const userId = isAuthenticated ? (req.user as any)?.id || "dev-demo-user" : "dev-demo-user";
       
-      const messageObj = {
+      // Create user message
+      const userMessageObj = {
         id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         sessionId,
         senderId: userId,
@@ -277,7 +345,51 @@ export function registerLiveChatRoutes(app: Express) {
       };
       
       const messages = chatMessages.get(sessionId) || [];
-      messages.push(messageObj);
+      messages.push(userMessageObj);
+      
+      // If this is a regular user message (not FAQ), check for intelligent FAQ match
+      if (!faqId && message.trim().length > 5) {
+        const matchedFaq = findMatchingFaq(message);
+        
+        if (matchedFaq) {
+          // Generate automatic FAQ response
+          const faqResponse = generateFaqResponse(matchedFaq, message);
+          
+          // Add FAQ bot response
+          const botMessageObj = {
+            id: `msg-${Date.now() + 1}-${Math.random().toString(36).substr(2, 9)}`,
+            sessionId,
+            senderId: "faq-bot",
+            senderType: "faq",
+            message: faqResponse.message,
+            faqId: matchedFaq.id,
+            isRead: false,
+            timestamp: new Date(Date.now() + 100), // Slightly after user message
+            isAutoResponse: true
+          };
+          
+          messages.push(botMessageObj);
+          
+          console.log(`FAQ auto-response triggered for question: "${message}" -> FAQ: ${matchedFaq.id}`);
+        } else {
+          // No FAQ match found, suggest transfer to agent
+          const noMatchResponse = {
+            id: `msg-${Date.now() + 1}-${Math.random().toString(36).substr(2, 9)}`,
+            sessionId,
+            senderId: "faq-bot",
+            senderType: "system",
+            message: "🤖 I couldn't find a specific answer in our FAQ for your question. Would you like me to transfer you to our support team for personalized assistance?\n\n👥 Our agents are available to help with any questions not covered in our FAQ.",
+            isRead: false,
+            timestamp: new Date(Date.now() + 100),
+            isAutoResponse: true,
+            suggestTransfer: true
+          };
+          
+          messages.push(noMatchResponse);
+          console.log(`No FAQ match found for: "${message}", suggesting transfer to support`);
+        }
+      }
+      
       chatMessages.set(sessionId, messages);
       
       // Update session last activity
@@ -287,7 +399,7 @@ export function registerLiveChatRoutes(app: Express) {
         chatSessions.set(sessionId, session);
       }
       
-      res.json(messageObj);
+      res.json(userMessageObj);
     } catch (error) {
       console.error("Error sending chat message:", error);
       res.status(500).json({ message: "Failed to send message" });
