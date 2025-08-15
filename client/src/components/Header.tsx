@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
-import { Play, Coins, LogOut, Menu, X } from "lucide-react";
+import { Play, Coins, LogOut, Menu, X, IndianRupee } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 
@@ -49,7 +49,7 @@ export default function Header() {
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-1.5 sm:space-x-2 touch-manipulation">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
-                <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
+                <IndianRupee className="text-white w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
             </Link>
@@ -152,7 +152,7 @@ export default function Header() {
             } : undefined}
           >
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
-              <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
+              <IndianRupee className="text-white w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
           </Link>

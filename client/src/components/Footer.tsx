@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Play, Mail, Phone, MapPin, ChevronDown, ChevronUp, Heart } from "lucide-react";
+import { Play, Mail, Phone, MapPin, ChevronDown, ChevronUp, Heart, IndianRupee } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -112,7 +112,7 @@ export default function Footer() {
           <div className="mb-6">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Play className="text-white w-4 h-4" />
+                <IndianRupee className="text-white w-4 h-4" />
               </div>
               <span className="text-xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
             </div>
@@ -215,7 +215,7 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center space-x-2 mb-4 sm:mb-6">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
-                <Play className="text-white w-4 h-4 sm:w-5 sm:h-5" />
+                <IndianRupee className="text-white w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <span className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
             </div>
@@ -380,7 +380,7 @@ export default function Footer() {
             <div className="flex flex-col items-center space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-3">
               <div className="flex items-center space-x-2">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Play className="text-white w-3 h-3 sm:w-4 sm:h-4" />
+                  <IndianRupee className="text-white w-3 h-3 sm:w-4 sm:h-4" />
                 </div>
                 <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">Innovative Task Earn</span>
               </div>
