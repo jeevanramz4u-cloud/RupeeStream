@@ -188,6 +188,7 @@ function Router() {
       <Route path="/suspended" component={() => <ProtectedRoute component={SuspendedPage} />} />
       <Route path="/kyc" component={() => <ProtectedRoute component={KYC} />} />
       <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
+      <Route path="/task/:id" component={() => <ProtectedRoute component={lazy(() => import("./pages/task-details"))} />} />
       
       <Route component={NotFound} />
     </Switch>

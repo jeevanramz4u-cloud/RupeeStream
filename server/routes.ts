@@ -1160,6 +1160,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get individual task details
+  app.get('/api/tasks/:id', isTraditionallyAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const task = await storage.getTask(id);
+      
+      if (!task) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+      
+      res.json(task);
+    } catch (error) {
+      console.error("Error fetching task details:", error);
+      res.status(500).json({ message: "Failed to fetch task details" });
+    }
+  });
+
   app.get('/api/task-completions', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;

@@ -71,7 +71,8 @@ const TaskManagementContent = () => {
     timeLimit: "",
     maxCompletions: "",
     requirements: "",
-    verificationMethod: "manual"
+    verificationMethod: "manual",
+    taskUrl: ""
   });
 
   const taskCategories = {
@@ -523,6 +524,17 @@ const TaskManagementContent = () => {
                   data-testid="input-task-max-completions"
                 />
               </div>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Task URL</Label>
+              <Input
+                value={newTask.taskUrl}
+                onChange={(e) => setNewTask({ ...newTask, taskUrl: e.target.value })}
+                placeholder="https://example.com/task-to-complete"
+                data-testid="input-task-url"
+              />
+              <p className="text-xs text-gray-500 mt-1">Direct link where users complete the task</p>
             </div>
 
             <div>
@@ -1177,8 +1189,8 @@ export default function Admin() {
               <span className="sm:hidden">Profiles</span>
             </TabsTrigger>
             <TabsTrigger value="tasks" className="text-xs sm:text-sm px-2 py-2">
-              <span className="hidden sm:inline">Task Management</span>
-              <span className="sm:hidden">Tasks</span>
+              <span className="hidden sm:inline">Added Tasks</span>
+              <span className="sm:hidden">Added Tasks</span>
             </TabsTrigger>
             <TabsTrigger value="payouts" className="text-xs sm:text-sm px-2 py-2">
               <span className="hidden sm:inline">Payouts</span>
