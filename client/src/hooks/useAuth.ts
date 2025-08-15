@@ -52,10 +52,12 @@ export function useAuth() {
   // Extract user from the response data OR provide demo user fallback
   let user = (data as any)?.user || null;
   
-  // Development fallback: If we have no user data and not explicitly logged out, provide demo user
-  // Check if we just logged out by checking if we explicitly got null from server
+  // Development fallback: Only provide demo user if we have never attempted logout
+  // Check localStorage to see if user has explicitly logged out
+  const hasLoggedOut = typeof window !== 'undefined' && localStorage.getItem('user_logged_out') === 'true';
   const isExplicitLogout = data && (data as any).user === null;
-  if (!user && !isLoading && !isExplicitLogout) {
+  
+  if (!user && !isLoading && !isExplicitLogout && !hasLoggedOut) {
     console.log("useAuth - No user data, providing demo user fallback");
     user = {
       id: "dev-demo-user",

@@ -39,6 +39,9 @@ export default function Login() {
         const data = await response.json();
         console.log('Login successful:', data);
         
+        // Clear logout flag to enable demo fallback
+        localStorage.removeItem('user_logged_out');
+        
         // Invalidate auth query to refetch user data
         await queryClient.invalidateQueries({ queryKey: ["/api/auth/check"] });
         
