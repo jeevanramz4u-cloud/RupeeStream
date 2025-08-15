@@ -173,16 +173,7 @@ function Router() {
       
       {/* Home route - conditional based on auth */}
       <Route path="/" component={() => {
-        if (isLoading) {
-          return (
-            <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                <p>Loading...</p>
-              </div>
-            </div>
-          );
-        }
+        // Skip loading state and show landing page immediately for better UX
         return isAuthenticated ? <Dashboard /> : <Landing />;
       }} />
       

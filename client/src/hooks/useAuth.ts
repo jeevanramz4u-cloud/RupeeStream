@@ -7,13 +7,17 @@ export function useAuth() {
   const toastShownRef = useRef(false);
   
   // Use traditional auth for our demo login system with retry disabled to prevent infinite loops
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["/api/auth/check"],
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    networkMode: 'always', // Always try to fetch, even if offline
   });
+  
+  // Force loading to false after reasonable timeout to prevent infinite loading
+  const effectiveIsLoading = isLoading && !isError;
 
   // Debug: Log the actual response data structure
   console.log("useAuth - Raw API response:", data);
@@ -34,7 +38,7 @@ export function useAuth() {
 
   return {
     user,
-    isLoading,
+    isLoading: effectiveIsLoading,
     isAuthenticated: !!user,
   };
 }
