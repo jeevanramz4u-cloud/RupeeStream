@@ -65,7 +65,7 @@ Domain preference: innovativetaskearn.online
 - **Security**: HTTP-only cookies, CSRF protection
 
 ## Key Business Logic
-- **Task Completion**: 6 categories - App Downloads (₹15-25), Business Reviews (₹30-35), Product Reviews (₹25-40), Channel Subscribe (₹15-20), Comments & Likes (₹10-15), YouTube Video View (₹20-30).
+- **Task Completion**: 6 categories - App Downloads (₹5-25), Business Reviews (₹5-35), Product Reviews (₹5-40), Channel Subscribe (₹5-20), Comments & Likes (₹5-15), YouTube Video View (₹5-30).
 - **Proof Submission**: Users submit screenshots/proof for admin approval.
 - **Earnings**: Per-task earnings credited upon admin approval (5-20 minutes per task).
 - **Referral Program**: ₹49 bonus per verified referral.

@@ -27,7 +27,6 @@ import {
   CheckCircle, 
   XCircle, 
   Clock,
-  Eye,
   EyeOff,
   FileText,
   DollarSign,
@@ -46,7 +45,8 @@ import {
   Star,
   Youtube,
   MessageCircle,
-  ThumbsUp
+  ThumbsUp,
+  Eye
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -79,31 +79,37 @@ const TaskManagementContent = () => {
       name: "App Downloads", 
       icon: Smartphone,
       description: "Download and install mobile apps",
-      rewardRange: "₹15-25"
+      rewardRange: "₹5-25"
     },
     business_review: { 
       name: "Business Reviews", 
       icon: Star,
       description: "Write reviews for businesses on Google, Zomato etc",
-      rewardRange: "₹30-35"
+      rewardRange: "₹5-35"
     },
     product_review: { 
       name: "Product Reviews", 
       icon: FileText,
       description: "Review products on e-commerce platforms",
-      rewardRange: "₹25-40"
+      rewardRange: "₹5-40"
     },
     channel_subscribe: { 
       name: "Channel Subscribe", 
       icon: Youtube,
       description: "Subscribe to YouTube channels and social media",
-      rewardRange: "₹15-20"
+      rewardRange: "₹5-20"
     },
     comment_like: { 
       name: "Comments & Likes", 
       icon: MessageCircle,
       description: "Like posts, comment on content, engage with social media",
-      rewardRange: "₹10-15"
+      rewardRange: "₹5-15"
+    },
+    youtube_video_see: { 
+      name: "YouTube Video View", 
+      icon: Eye,
+      description: "Watch YouTube videos for specified duration",
+      rewardRange: "₹5-30"
     }
   };
 

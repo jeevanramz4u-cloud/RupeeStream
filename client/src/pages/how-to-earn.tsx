@@ -51,12 +51,12 @@ export default function HowToEarn() {
       description: "Choose from 6 different task categories",
       icon: <Target className="w-6 h-6" />,
       details: [
-        "App Downloads: Download apps and rate them (₹15-25 each)",
-        "Business Reviews: Write Google Maps reviews (₹30-35 each)",
-        "Product Reviews: Review products on Amazon (₹25-40 each)",
-        "Channel Subscribe: Subscribe to YouTube channels (₹15-20 each)",
-        "Comments & Likes: Like and comment on social posts (₹10-15 each)",
-        "YouTube Video View: Watch YouTube videos for specified duration (₹20-30 each)"
+        "App Downloads: Download apps and rate them (₹5-25 each)",
+        "Business Reviews: Write Google Maps reviews (₹5-35 each)",
+        "Product Reviews: Review products on Amazon (₹5-40 each)",
+        "Channel Subscribe: Subscribe to YouTube channels (₹5-20 each)",
+        "Comments & Likes: Like and comment on social posts (₹5-15 each)",
+        "YouTube Video View: Watch YouTube videos for specified duration (₹5-30 each)"
       ]
     },
     {

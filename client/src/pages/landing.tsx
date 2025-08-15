@@ -63,7 +63,7 @@ export default function Landing() {
                   <Clock className="w-8 h-8 text-white" />
                 </div>
                 <div className="text-left">
-                  <span className="text-3xl font-black text-blue-700 block tracking-tight leading-none">₹10-40</span>
+                  <span className="text-3xl font-black text-blue-700 block tracking-tight leading-none">₹5-40</span>
                   <span className="text-blue-600 font-bold text-sm mt-1 block">Per Task</span>
                   <span className="text-xs text-blue-500 font-medium">Simple 5-20 min tasks</span>
                 </div>
@@ -161,7 +161,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">App Downloads</h3>
               <div className="text-center mb-4">
-                <span className="text-2xl lg:text-3xl font-black text-blue-600">₹15-25</span>
+                <span className="text-2xl lg:text-3xl font-black text-blue-600">₹5-25</span>
                 <span className="text-sm text-gray-500 block">per task</span>
               </div>
               <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Download apps, register, and provide screenshots as proof. Takes 5-10 minutes.</p>
@@ -182,7 +182,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Business Reviews</h3>
               <div className="text-center mb-4">
-                <span className="text-2xl lg:text-3xl font-black text-yellow-600">₹30-35</span>
+                <span className="text-2xl lg:text-3xl font-black text-yellow-600">₹5-35</span>
                 <span className="text-sm text-gray-500 block">per task</span>
               </div>
               <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Write genuine reviews for businesses on Google, Facebook, and other platforms.</p>
@@ -203,7 +203,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Product Reviews</h3>
               <div className="text-center mb-4">
-                <span className="text-2xl lg:text-3xl font-black text-green-600">₹25-40</span>
+                <span className="text-2xl lg:text-3xl font-black text-green-600">₹5-40</span>
                 <span className="text-sm text-gray-500 block">per task</span>
               </div>
               <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Review products on e-commerce sites like Amazon, Flipkart with detailed feedback.</p>
@@ -224,7 +224,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Channel Subscribe</h3>
               <div className="text-center mb-4">
-                <span className="text-2xl lg:text-3xl font-black text-red-600">₹15-20</span>
+                <span className="text-2xl lg:text-3xl font-black text-red-600">₹5-20</span>
                 <span className="text-sm text-gray-500 block">per task</span>
               </div>
               <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Subscribe to YouTube channels, Instagram pages, and social media accounts.</p>
@@ -245,7 +245,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Comments & Likes</h3>
               <div className="text-center mb-4">
-                <span className="text-2xl lg:text-3xl font-black text-purple-600">₹10-15</span>
+                <span className="text-2xl lg:text-3xl font-black text-purple-600">₹5-15</span>
                 <span className="text-sm text-gray-500 block">per task</span>
               </div>
               <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Like posts, leave comments, and engage with social media content.</p>
@@ -266,7 +266,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">YouTube Video View</h3>
               <div className="text-center mb-4">
-                <span className="text-2xl lg:text-3xl font-black text-pink-600">₹20-30</span>
+                <span className="text-2xl lg:text-3xl font-black text-pink-600">₹5-30</span>
                 <span className="text-sm text-gray-500 block">per task</span>
               </div>
               <p className="text-gray-700 text-center leading-relaxed font-medium text-sm lg:text-base mb-4">Watch YouTube videos for specified duration and provide proof of completion.</p>
@@ -597,7 +597,7 @@ export default function Landing() {
               </AccordionTrigger>
               <AccordionContent className="text-gray-700 pt-2 pb-4 leading-relaxed text-base">
                 <div className="pl-10 md:pl-13">
-                  Earnings per task vary based on task type and complexity. You can earn between <span className="font-semibold text-green-600">₹10-₹40 per task</span>. 
+                  Earnings per task vary based on task type and complexity. You can earn between <span className="font-semibold text-green-600">₹5-₹40 per task</span>. 
                   App downloads and reviews offer higher earnings. All earnings are credited after admin approval of your submission.
                 </div>
               </AccordionContent>
@@ -670,8 +670,8 @@ export default function Landing() {
               </AccordionTrigger>
               <AccordionContent className="text-gray-700 pt-2 pb-6 leading-relaxed text-base">
                 <div className="pl-13">
-                  We offer 6 main categories: <span className="font-semibold text-indigo-600">App Downloads</span> (₹15-25), <span className="font-semibold text-indigo-600">Business Reviews</span> (₹30-35), 
-                  <span className="font-semibold text-indigo-600">Product Reviews</span> (₹25-40), <span className="font-semibold text-indigo-600">Channel Subscribe</span> (₹15-20), <span className="font-semibold text-indigo-600">Comments & Likes</span> (₹10-15), and <span className="font-semibold text-indigo-600">YouTube Video View</span> (₹20-30). 
+                  We offer 6 main categories: <span className="font-semibold text-indigo-600">App Downloads</span> (₹5-25), <span className="font-semibold text-indigo-600">Business Reviews</span> (₹5-35), 
+                  <span className="font-semibold text-indigo-600">Product Reviews</span> (₹5-40), <span className="font-semibold text-indigo-600">Channel Subscribe</span> (₹5-20), <span className="font-semibold text-indigo-600">Comments & Likes</span> (₹5-15), and <span className="font-semibold text-indigo-600">YouTube Video View</span> (₹5-30). 
                   Each task takes 2-20 minutes and requires proof submission for approval.
                 </div>
               </AccordionContent>
