@@ -98,8 +98,8 @@ export default function Dashboard() {
               <User className="w-8 h-8 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight tracking-tight">Welcome back, {(user as any)?.firstName}!</h1>
-              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Your professional earnings overview</p>
+              <h1 className="text-xl sm:text-3xl font-black text-gray-900 leading-tight tracking-tight">Welcome back, {(user as any)?.firstName}!</h1>
+              <p className="text-sm sm:text-lg text-gray-600 leading-relaxed font-medium">Your professional earnings overview</p>
             </div>
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-green-100 text-sm font-semibold mb-1">Current Balance</p>
-                    <p className="text-4xl font-black mb-2">₹{(user as any)?.balance || '0.00'}</p>
+                    <p className="text-2xl sm:text-4xl font-black mb-2">₹{(user as any)?.balance || '0.00'}</p>
                     <p className="text-green-100 text-sm font-medium">Tap to view full earnings history</p>
                   </div>
                   <div className="w-18 h-18 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center">

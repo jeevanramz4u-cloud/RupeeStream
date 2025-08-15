@@ -28,13 +28,13 @@ export default function Landing() {
             </div>
           </div>
           
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-gray-900 mb-4 sm:mb-6 leading-tight tracking-tight">
+          <h1 className="text-2xl sm:text-4xl lg:text-6xl font-black text-gray-900 mb-4 sm:mb-6 leading-tight tracking-tight">
             Complete Simple Tasks<br />
             <span className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent font-black">
               Earn Real Money
             </span>
           </h1>
-          <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
+          <p className="text-sm sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
             Join India's most trusted task completion platform. Complete simple tasks like app downloads, 
             reviews, and social media activities to earn sustainable income with our professional ecosystem.
           </p>

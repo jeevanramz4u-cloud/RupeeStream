@@ -588,8 +588,8 @@ export default function Signup() {
               </div>
             </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Join Innovative Task Earn</h1>
-          <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">Start your professional earning journey today</p>
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-4 leading-tight tracking-tight">Join Innovative Task Earn</h1>
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed font-medium">Start your professional earning journey today</p>
         </div>
 
         {/* Progress Steps */}
@@ -630,7 +630,7 @@ export default function Signup() {
         {/* Registration Form */}
         <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-100">
           <div className="mb-8">
-            <h2 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center">
                 <UserPlus className="w-4 h-4 text-white" />
               </div>

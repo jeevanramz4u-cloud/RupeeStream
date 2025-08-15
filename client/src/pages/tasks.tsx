@@ -156,13 +156,13 @@ export default function Tasks() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <Header />
       
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
         {/* Hero Section */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-black text-gray-900 mb-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-4">
             Complete Tasks & Earn Money
           </h1>
-          <p className="text-xl text-gray-600 mb-6 max-w-3xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-xl text-gray-600 mb-6 max-w-3xl mx-auto">
             Multiple ways to earn with instant payments. Complete simple tasks and start earning today!
           </p>
           

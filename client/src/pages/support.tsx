@@ -36,32 +36,32 @@ export default function Support() {
     },
     {
       question: "How do I earn money on Innovative Task Earn?",
-      answer: "You earn money by watching videos completely without skipping or fast-forwarding. Each video has a specific earning amount that gets credited to your account once you finish watching it. Additionally, you earn ₹10 every hour as a login bonus just for being active on the platform.",
+      answer: "You earn money by completing simple tasks in 5 categories: App Downloads (₹15-25), Business Reviews (₹30-35), Product Reviews (₹25-40), Channel Subscribe (₹15-20), and Comments & Likes (₹10-15). Each task takes 5-20 minutes and gets approved by our admin team.",
       icon: <Play className="w-4 h-4 text-blue-600" />
     },
     {
-      question: "What is the hourly login bonus?",
-      answer: "You earn ₹10 every hour simply by logging into your account and staying active on the platform. This bonus is automatically credited to your account for each hour you remain logged in.",
-      icon: <Clock className="w-4 h-4 text-purple-600" />
+      question: "What types of tasks can I complete?",
+      answer: "We offer 5 categories: (1) App Downloads - Download and review apps, (2) Business Reviews - Write reviews for businesses, (3) Product Reviews - Review products on platforms, (4) Channel Subscribe - Subscribe to YouTube channels, (5) Comments & Likes - Engage with social media posts.",
+      icon: <Star className="w-4 h-4 text-purple-600" />
+    },
+    {
+      question: "How long does it take to get paid for tasks?",
+      answer: "Task payments are processed within 5-20 minutes after admin approval. Once approved, the earnings are immediately credited to your account balance and available for withdrawal.",
+      icon: <Clock className="w-4 h-4 text-blue-600" />
     },
     {
       question: "What fees are required on the platform?",
-      answer: "There are two required fees: (1) ₹99 KYC processing fee - mandatory for document verification and to access payout features, and (2) ₹49 account reactivation fee - required if your account gets suspended for not meeting daily watch time targets for 3 consecutive days.",
+      answer: "There are two required fees: (1) ₹99 KYC processing fee - mandatory for document verification and to access payout features, and (2) ₹49 account reactivation fee - required if your account gets suspended for inactivity or policy violations.",
       icon: <Wallet className="w-4 h-4 text-orange-600" />
     },
     {
-      question: "What is the daily target requirement?",
-      answer: "You must watch videos for a minimum of 8 hours daily to maintain your account in good standing. Failing to meet this requirement for 3 consecutive days may result in account suspension, which requires a ₹49 reactivation fee.",
-      icon: <Shield className="w-4 h-4 text-red-600" />
-    },
-    {
       question: "How does the referral program work?",
-      answer: "Share your unique referral code with friends. When they sign up and complete their KYC verification, you earn ₹49. There's no limit to how many people you can refer.",
+      answer: "Share your unique referral code with friends. When they sign up and complete their KYC verification, you earn ₹49. There's no limit to how many people you can refer, making it a great way to earn passive income.",
       icon: <Users className="w-4 h-4 text-indigo-600" />
     },
     {
       question: "When do I get paid?",
-      answer: "Payouts are processed weekly on Tuesdays. You can request a payout anytime after completing KYC verification, and it will be included in the next weekly batch.",
+      answer: "Payouts are processed weekly on Tuesdays. You can request a payout anytime after completing KYC verification, and it will be included in the next weekly batch. Minimum withdrawal is ₹100.",
       icon: <CheckCircle className="w-4 h-4 text-emerald-600" />
     },
     {
@@ -70,19 +70,24 @@ export default function Support() {
       icon: <Shield className="w-4 h-4 text-blue-600" />
     },
     {
-      question: "Can I skip or fast-forward videos?",
-      answer: "No, you cannot skip, fast-forward, or rewind videos. You must watch the complete video from start to finish to earn money.",
-      icon: <Play className="w-4 h-4 text-red-600" />
+      question: "How do I submit proof for completed tasks?",
+      answer: "After completing each task, you'll submit proof (usually screenshots) along with a brief description of what you completed. Our admin team reviews all submissions to ensure quality and compliance.",
+      icon: <Zap className="w-4 h-4 text-green-600" />
     },
     {
       question: "How long does verification take?",
-      answer: "Account verification typically takes 24-48 hours after payment of the ₹99 processing fee. Our admin team reviews all submitted documents manually to ensure security.",
-      icon: <Clock className="w-4 h-4 text-blue-600" />
+      answer: "Account verification typically takes 24-48 hours after payment of the ₹99 processing fee. Our admin team reviews all submitted documents manually to ensure security and compliance.",
+      icon: <Clock className="w-4 h-4 text-purple-600" />
     },
     {
-      question: "What happens if I don't meet the daily target?",
-      answer: "If you fail to meet the 8-hour daily target for 3 consecutive days, your account will be suspended. To reactivate it, you'll need to pay a ₹49 reactivation fee.",
+      question: "What happens if my task submission is rejected?",
+      answer: "If a task submission doesn't meet requirements, it will be rejected with feedback. You can resubmit with corrections, or move on to other available tasks. Repeated rejections may result in temporary restrictions.",
       icon: <Shield className="w-4 h-4 text-orange-600" />
+    },
+    {
+      question: "Can I complete multiple tasks per day?",
+      answer: "Yes! You can complete as many tasks as available in your dashboard. Different task categories have different availability limits, and new tasks are added regularly throughout the day.",
+      icon: <Star className="w-4 h-4 text-blue-600" />
     }
   ];
 
@@ -97,8 +102,8 @@ export default function Support() {
               <HeadphonesIcon className="w-8 h-8 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight tracking-tight">Professional Support</h1>
-              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed font-medium">
+              <h1 className="text-xl sm:text-3xl font-black text-gray-900 leading-tight tracking-tight">Professional Support</h1>
+              <p className="text-sm sm:text-lg text-gray-600 leading-relaxed font-medium">
                 Expert assistance for your Innovative Task Earn business operations and account management
               </p>
             </div>
