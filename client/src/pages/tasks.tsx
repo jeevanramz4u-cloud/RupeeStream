@@ -36,6 +36,7 @@ const taskCategoryIcons = {
 
 export default function Tasks() {
   const { user } = useAuth();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const { data: tasks = [], isLoading: tasksLoading } = useQuery({
     queryKey: ["/api/tasks"],
@@ -50,10 +51,20 @@ export default function Tasks() {
   // Ensure tasks is always an array
   const tasksList = Array.isArray(tasks) ? tasks : [];
 
+  // Filter tasks by selected category
+  const filteredTasks = selectedCategory 
+    ? tasksList.filter(task => task.category === selectedCategory)
+    : tasksList;
+
   // Get completion status for a task
   const getTaskCompletionStatus = (taskId: string) => {
     const completion = completions.find((c: any) => c.taskId === taskId && c.userId === user?.id);
     return completion?.status || null;
+  };
+
+  // Get count of tasks by category
+  const getTaskCountByCategory = (category: string) => {
+    return tasksList.filter(task => task.category === category && task.isActive).length;
   };
 
   if (!user) {
@@ -80,6 +91,24 @@ export default function Tasks() {
           <p className="text-gray-600 text-base sm:text-lg">
             Browse available tasks across 6 categories and start earning immediately!
           </p>
+          
+          {/* Category Filter */}
+          {selectedCategory && (
+            <div className="mt-4 flex items-center gap-2">
+              <span className="text-sm text-gray-600">Showing:</span>
+              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                {selectedCategory.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+              </Badge>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setSelectedCategory(null)}
+                className="text-xs h-6 px-2"
+              >
+                Clear Filter
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Tasks Table */}
@@ -114,9 +143,17 @@ export default function Tasks() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <span>Available Tasks ({tasksList.length})</span>
+                <span>
+                  {selectedCategory 
+                    ? `${selectedCategory.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())} Tasks (${filteredTasks.length})`
+                    : `Available Tasks (${tasksList.length})`
+                  }
+                </span>
                 <Badge variant="outline" className="text-sm">
-                  {tasksList.filter(t => t.isActive).length} Active Tasks
+                  {selectedCategory 
+                    ? `${filteredTasks.filter(t => t.isActive).length} Active`
+                    : `${tasksList.filter(t => t.isActive).length} Active Tasks`
+                  }
                 </Badge>
               </CardTitle>
             </CardHeader>
@@ -134,7 +171,7 @@ export default function Tasks() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {tasksList.map((task: any) => {
+                    {filteredTasks.map((task: any) => {
                       const IconComponent = taskCategoryIcons[task.category as keyof typeof taskCategoryIcons] || FileText;
                       const status = getTaskCompletionStatus(task.id);
                       
@@ -225,36 +262,54 @@ export default function Tasks() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div className="text-center p-3 bg-blue-50 rounded-lg">
+              <button 
+                onClick={() => setSelectedCategory('app_download')}
+                className="text-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer border border-transparent hover:border-blue-200"
+              >
                 <Smartphone className="w-6 h-6 text-blue-600 mx-auto mb-1" />
                 <div className="text-sm font-medium text-blue-800">App Downloads</div>
-                <div className="text-xs text-blue-600">₹5-25</div>
-              </div>
-              <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                <div className="text-xs text-blue-600">₹5-25 • {getTaskCountByCategory('app_download')} tasks</div>
+              </button>
+              <button 
+                onClick={() => setSelectedCategory('business_review')}
+                className="text-center p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors cursor-pointer border border-transparent hover:border-yellow-200"
+              >
                 <Star className="w-6 h-6 text-yellow-600 mx-auto mb-1" />
                 <div className="text-sm font-medium text-yellow-800">Business Reviews</div>
-                <div className="text-xs text-yellow-600">₹5-35</div>
-              </div>
-              <div className="text-center p-3 bg-green-50 rounded-lg">
+                <div className="text-xs text-yellow-600">₹5-35 • {getTaskCountByCategory('business_review')} tasks</div>
+              </button>
+              <button 
+                onClick={() => setSelectedCategory('product_review')}
+                className="text-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer border border-transparent hover:border-green-200"
+              >
                 <FileText className="w-6 h-6 text-green-600 mx-auto mb-1" />
                 <div className="text-sm font-medium text-green-800">Product Reviews</div>
-                <div className="text-xs text-green-600">₹5-40</div>
-              </div>
-              <div className="text-center p-3 bg-red-50 rounded-lg">
+                <div className="text-xs text-green-600">₹5-40 • {getTaskCountByCategory('product_review')} tasks</div>
+              </button>
+              <button 
+                onClick={() => setSelectedCategory('channel_subscribe')}
+                className="text-center p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors cursor-pointer border border-transparent hover:border-red-200"
+              >
                 <Youtube className="w-6 h-6 text-red-600 mx-auto mb-1" />
                 <div className="text-sm font-medium text-red-800">Channel Subscribe</div>
-                <div className="text-xs text-red-600">₹5-20</div>
-              </div>
-              <div className="text-center p-3 bg-purple-50 rounded-lg">
+                <div className="text-xs text-red-600">₹5-20 • {getTaskCountByCategory('channel_subscribe')} tasks</div>
+              </button>
+              <button 
+                onClick={() => setSelectedCategory('comment_like')}
+                className="text-center p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors cursor-pointer border border-transparent hover:border-purple-200"
+              >
                 <MessageCircle className="w-6 h-6 text-purple-600 mx-auto mb-1" />
                 <div className="text-sm font-medium text-purple-800">Comments & Likes</div>
-                <div className="text-xs text-purple-600">₹5-15</div>
-              </div>
-              <div className="text-center p-3 bg-pink-50 rounded-lg">
+                <div className="text-xs text-purple-600">₹5-15 • {getTaskCountByCategory('comment_like')} tasks</div>
+              </button>
+              <button 
+                onClick={() => setSelectedCategory('youtube_video_see')}
+                className="text-center p-3 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors cursor-pointer border border-transparent hover:border-pink-200"
+              >
                 <Eye className="w-6 h-6 text-pink-600 mx-auto mb-1" />
                 <div className="text-sm font-medium text-pink-800">YouTube View</div>
-                <div className="text-xs text-pink-600">₹5-30</div>
-              </div>
+                <div className="text-xs text-pink-600">₹5-30 • {getTaskCountByCategory('youtube_video_see')} tasks</div>
+              </button>
             </div>
           </CardContent>
         </Card>
