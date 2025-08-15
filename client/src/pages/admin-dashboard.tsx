@@ -62,14 +62,9 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
-      // Mark admin as logged out to prevent fallback
-      localStorage.setItem('admin_logged_out', 'true');
       await apiRequest("POST", "/api/admin/logout");
-      // Clear all caches and force redirect
       window.location.href = "/admin-login";
     } catch (error) {
-      // Even if logout fails, still mark as logged out and redirect
-      localStorage.setItem('admin_logged_out', 'true');
       window.location.href = "/admin-login";
     }
   };

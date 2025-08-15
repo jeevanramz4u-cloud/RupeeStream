@@ -45,19 +45,7 @@ export function useAdminAuth() {
   // Extract admin user from response
   let adminUser = (data as any)?.user || null;
   
-  // Development fallback: Only provide temp admin if user has never logged out
-  // Check localStorage to see if admin has explicitly logged out
-  const hasLoggedOut = typeof window !== 'undefined' && localStorage.getItem('admin_logged_out') === 'true';
-  const isExplicitLogout = data && (data as any).user === null;
-  
-  if (!adminUser && !isLoading && !isExplicitLogout && !hasLoggedOut) {
-    console.log("useAdminAuth - No admin data, providing temp admin fallback");
-    adminUser = {
-      id: "temp-admin-001",
-      username: "admin", 
-      name: "Admin User"
-    };
-  }
+  // No development fallback - admins must login properly
   
   console.log("useAdminAuth - Final admin user:", {
     adminId: adminUser?.id,

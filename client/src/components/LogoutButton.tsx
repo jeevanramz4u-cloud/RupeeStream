@@ -14,19 +14,12 @@ export function LogoutButton({ type = 'user', className }: LogoutButtonProps) {
   const handleLogout = async () => {
     try {
       const endpoint = type === 'admin' ? '/api/admin/logout' : '/api/auth/logout';
-      
-      // Mark in localStorage that user has logged out to prevent fallback
-      const storageKey = type === 'admin' ? 'admin_logged_out' : 'user_logged_out';
-      localStorage.setItem(storageKey, 'true');
-      
       await apiRequest("POST", endpoint);
       
       // Force a complete page reload to clear all caches and state
       window.location.href = type === 'admin' ? '/admin-login' : '/login';
     } catch (error) {
-      // Even if API fails, still mark as logged out and redirect
-      const storageKey = type === 'admin' ? 'admin_logged_out' : 'user_logged_out';
-      localStorage.setItem(storageKey, 'true');
+      // Even if API fails, still redirect for security
       window.location.href = type === 'admin' ? '/admin-login' : '/login';
     }
   };

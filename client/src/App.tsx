@@ -61,13 +61,13 @@ function AdminRoute() {
   }
   
   if (isAdminAuth) {
-    return <AdminTasks />;
+    return <AdminDashboard />;
   } else {
     return <AdminLogin />;
   }
 }
 
-function AdminTasksRoute() {
+function ProtectedAdminRoute({ Component }: { Component: React.ComponentType }) {
   const { isAdminAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
   
   if (adminLoading) {
@@ -82,28 +82,7 @@ function AdminTasksRoute() {
   }
   
   if (isAdminAuth) {
-    return <AdminTasks />;
-  } else {
-    return <AdminLogin />;
-  }
-}
-
-function AdminInquiriesRoute() {
-  const { isAdminAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
-  
-  if (adminLoading) {
-    return (
-      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Verifying admin access...</p>
-        </div>
-      </div>
-    );
-  }
-  
-  if (isAdminAuth) {
-    return <AdminInquiries />;
+    return <Component />;
   } else {
     return <AdminLogin />;
   }
@@ -181,11 +160,12 @@ function Router() {
   return (
     <Switch>
       {/* Admin routes - separate from regular user auth */}
-      <Route path="/admin" component={AdminRoute} />
-      <Route path="/admin/tasks" component={AdminTasksRoute} />
-      <Route path="/admin/inquiries" component={AdminInquiriesRoute} />
-      <Route path="/admin/live-chat" component={() => <AdminLiveChat />} />
       <Route path="/admin-login" component={AdminLogin} />
+      <Route path="/admin" component={AdminRoute} />
+      <Route path="/admin-dashboard" component={AdminRoute} />
+      <Route path="/admin-tasks" component={() => <ProtectedAdminRoute Component={AdminTasks} />} />
+      <Route path="/admin-inquiries" component={() => <ProtectedAdminRoute Component={AdminInquiries} />} />
+      <Route path="/admin-live-chat" component={() => <ProtectedAdminRoute Component={AdminLiveChat} />} />
       
       {/* Public routes - always accessible */}
       <Route path="/login" component={Login} />
@@ -241,12 +221,7 @@ function Router() {
         <ProtectedRoute component={Suspended} />
       </Route>
       
-      {/* Admin routes */}
-      <Route path="/admin-login" component={AdminLogin} />
-      <Route path="/admin" component={AdminRoute} />
-      <Route path="/admin-tasks" component={AdminTasksRoute} />
-      <Route path="/admin-inquiries" component={AdminInquiriesRoute} />
-      <Route path="/admin-live-chat" component={AdminLiveChatRoute} />
+      {/* Duplicate admin routes removed */}
       
       {/* 404 route */}
       <Route>

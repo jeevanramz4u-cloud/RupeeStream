@@ -30,8 +30,6 @@ export default function AdminLogin() {
       return result.json();
     },
     onSuccess: () => {
-      // Clear admin logout flag to enable temp admin fallback
-      localStorage.removeItem('admin_logged_out');
       toast({
         title: "Success",
         description: "Admin login successful",

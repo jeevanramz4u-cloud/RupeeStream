@@ -52,25 +52,7 @@ export function useAuth() {
   // Extract user from the response data OR provide demo user fallback
   let user = (data as any)?.user || null;
   
-  // Development fallback: Only provide demo user if we have never attempted logout
-  // Check localStorage to see if user has explicitly logged out
-  const hasLoggedOut = typeof window !== 'undefined' && localStorage.getItem('user_logged_out') === 'true';
-  const isExplicitLogout = data && (data as any).user === null;
-  
-  if (!user && !isLoading && !isExplicitLogout && !hasLoggedOut) {
-    console.log("useAuth - No user data, providing demo user fallback");
-    user = {
-      id: "dev-demo-user",
-      email: "demo@innovativetaskearn.online",
-      firstName: "Demo",
-      lastName: "User",
-      verificationStatus: "verified",
-      kycStatus: "approved",
-      balance: "1000.00",
-      status: "active",
-      suspensionReason: null
-    };
-  }
+  // No development fallback - users must login properly
   
   console.log("useAuth - Extracted user object:", {
     userId: user?.id,

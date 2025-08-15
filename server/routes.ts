@@ -76,24 +76,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Auth check - Session userId:", userId, "Session:", req.sessionID);
       
       if (!userId) {
-        console.log("Auth check - No session userId");
-        console.log("Development mode:", isDevelopment());
-        console.log("Fallback enabled:", config.database.fallbackEnabled);
-        
-        // Always return demo user in development when no session
-        const demoUser = {
-          id: "dev-demo-user",
-          email: "demo@innovativetaskearn.online",
-          firstName: "Demo",
-          lastName: "User",
-          verificationStatus: "verified",
-          kycStatus: "approved",
-          balance: "1000.00",
-          status: "active",
-          suspensionReason: null
-        };
-        console.log("Returning demo user for development");
-        return res.json({ user: demoUser });
+        console.log("Auth check - No session userId - returning null");
+        return res.json({ user: null });
       }
       
       const user = await storage.getUser(userId);
@@ -107,20 +91,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ user: userWithoutPassword });
     } catch (error) {
       console.error("Auth check error:", error);
-      // Always return demo user on error in development
-      const demoUser = {
-        id: "dev-demo-user",
-        email: "demo@innovativetaskearn.online",
-        firstName: "Demo",
-        lastName: "User",
-        verificationStatus: "verified",
-        kycStatus: "approved",
-        balance: "1000.00",
-        status: "active",
-        suspensionReason: null
-      };
-      console.log("Error fallback - returning demo user");
-      return res.json({ user: demoUser });
+      return res.json({ user: null });
     }
   });
 
@@ -1567,14 +1538,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
     
-    // Development fallback for admin
-    console.log("Admin auth check - Providing temp admin for development");
-    const tempAdmin = {
-      id: "temp-admin-001",
-      username: "admin",
-      name: "Admin User"
-    };
-    return res.json(tempAdmin);
+    // No fallback - require proper admin authentication
+    console.log("Admin auth check - No session, returning null");
+    return res.json({ user: null });
   });
 
   // Admin routes (updated to use admin authentication)
