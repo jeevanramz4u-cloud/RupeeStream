@@ -8,18 +8,28 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
-import { Play, Coins, LogOut } from "lucide-react";
+import { Play, Coins, LogOut, Menu, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useState } from "react";
 
 export default function Header() {
   const { user, isAuthenticated } = useAuth();
   const [location] = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Check if we're on login or signup pages to hide auth buttons
   const isAuthPage = location === '/login' || location === '/signup';
   
   // Check if user is suspended and block navigation
   const isSuspended = (user as any)?.status === 'suspended';
+
+  // Public navigation items
+  const publicNavItems = [
+    { href: "/how-to-earn", label: "How to Earn" },
+    { href: "/referral-program", label: "Referral Program" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
+  ];
 
   // Navigation items for authenticated users (no "How to Earn")
   const authenticatedNavItems = [
@@ -52,23 +62,71 @@ export default function Header() {
               <Link href="/contact" className="text-sm lg:text-base text-gray-600 hover:text-primary touch-manipulation">Contact</Link>
             </nav>
 
-            {/* Auth buttons - hidden on login/signup pages */}
-            {!isAuthPage && (
-              <div className="flex items-center space-x-2">
-                <Link href="/login">
-                  <Button variant="outline" size="sm" className="text-xs sm:text-sm font-bold border-2 hover:border-primary/50 touch-manipulation">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button size="sm" className="text-xs sm:text-sm font-bold bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 touch-manipulation">
-                    Sign Up
-                  </Button>
-                </Link>
-              </div>
-            )}
+            {/* Mobile Menu Button and Desktop Auth buttons */}
+            <div className="flex items-center space-x-2">
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:hidden p-2"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                data-testid="mobile-menu-button"
+              >
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </Button>
+
+              {/* Desktop Auth buttons - hidden on login/signup pages */}
+              {!isAuthPage && (
+                <div className="hidden md:flex items-center space-x-2">
+                  <Link href="/login">
+                    <Button variant="outline" size="sm" className="text-xs sm:text-sm font-bold border-2 hover:border-primary/50 touch-manipulation">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link href="/signup">
+                    <Button size="sm" className="text-xs sm:text-sm font-bold bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 touch-manipulation">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
+        
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
+            <div className="px-4 py-4 space-y-2">
+              {publicNavItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="block py-3 px-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors touch-manipulation"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  data-testid={`mobile-nav-${item.href.replace('/', '')}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              
+              {!isAuthPage && (
+                <div className="pt-4 mt-4 border-t border-gray-200 space-y-3">
+                  <Link href="/login">
+                    <Button variant="outline" size="lg" className="w-full font-bold border-2 hover:border-primary/50 touch-manipulation" onClick={() => setIsMobileMenuOpen(false)}>
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link href="/signup">
+                    <Button size="lg" className="w-full font-bold bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 touch-manipulation" onClick={() => setIsMobileMenuOpen(false)}>
+                      Sign Up
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </header>
     );
   }
@@ -117,17 +175,28 @@ export default function Header() {
 
           {/* User Section */}
           <div className="flex items-center space-x-2 sm:space-x-3">
-            {/* Earnings Display - Always Visible */}
-            <Link href="/earnings">
+            {/* Mobile Menu Button for authenticated users */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden p-2"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              data-testid="mobile-menu-button-auth"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
+            
+            {/* Earnings Display - Always Visible on Desktop */}
+            <Link href="/earnings" className="hidden sm:block">
               <div className="flex items-center space-x-1 sm:space-x-2 bg-green-50 hover:bg-green-100 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors cursor-pointer touch-manipulation">
                 <Coins className="text-green-600 w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span className="font-bold text-green-700 text-sm sm:text-base">₹{(user as any)?.balance || '0.00'}</span>
               </div>
             </Link>
             
-            {/* User Menu - Clean Round Button */}
+            {/* User Menu - Clean Round Button - Desktop Only */}
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger asChild className="hidden md:inline-flex">
                 <button className="rounded-full touch-manipulation focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                   <Avatar className="h-8 w-8 sm:h-9 sm:w-9 cursor-pointer hover:opacity-80 transition-opacity">
                     <AvatarImage 
@@ -177,24 +246,69 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      <div className="md:hidden border-t border-gray-200">
-        <div className="flex overflow-x-auto space-x-3 px-3 py-2 scrollbar-hide">
-          {authenticatedNavItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`whitespace-nowrap py-1.5 px-2.5 rounded-md text-xs font-medium flex-shrink-0 touch-manipulation ${
-                item.active
-                  ? "bg-primary text-white"
-                  : "text-gray-600 hover:text-primary hover:bg-primary/10"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      </div>
+        {/* Mobile Menu for Authenticated Users */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
+            <div className="px-4 py-4 space-y-2">
+              {/* User info section */}
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg mb-4">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage 
+                    src={(user as any)?.profileImageUrl || ''} 
+                    alt={(user as any)?.firstName || 'User'} 
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="bg-primary text-white text-sm font-medium">
+                    {(user as any)?.firstName?.charAt(0)?.toUpperCase() || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <p className="font-semibold text-sm">
+                    {(user as any)?.firstName} {(user as any)?.lastName}
+                  </p>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <Coins className="text-green-600 w-4 h-4" />
+                    <span className="font-bold text-green-700 text-sm">₹{(user as any)?.balance || '0.00'}</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Navigation Items */}
+              {authenticatedNavItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={isSuspended ? '/suspended' : item.href}
+                  className="block py-3 px-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors touch-manipulation"
+                  onClick={isSuspended ? (e) => {
+                    e.preventDefault();
+                    setIsMobileMenuOpen(false);
+                    window.location.href = '/suspended';
+                  } : () => setIsMobileMenuOpen(false)}
+                  data-testid={`mobile-nav-auth-${item.href.replace('/', '')}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              
+              {/* Logout Button */}
+              <div className="pt-4 mt-4 border-t border-gray-200">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full font-bold text-red-600 border-red-200 hover:bg-red-50 touch-manipulation"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    window.location.href = '/api/logout';
+                  }}
+                  data-testid="mobile-logout-button"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
     </header>
   );
 }
