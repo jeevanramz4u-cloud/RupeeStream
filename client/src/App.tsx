@@ -38,21 +38,11 @@ import { FloatingChat } from "./components/FloatingChat";
 function FloatingChatWidget() {
   const [location] = useLocation();
   
-  // NEVER show chat on these pages, regardless of authentication status
-  const hiddenPages = ['/login', '/signup', '/admin', '/admin-login', '/admin-tasks', '/admin-inquiries', '/admin-live-chat'];
-  const isOnHiddenPage = hiddenPages.some(page => location.startsWith(page));
+  // Only show the floating chat widget on the support page
+  // Users can access live chat through the support page specifically
+  const shouldShowChat = location === '/support';
   
-  // Don't show chat on hidden pages at all
-  if (isOnHiddenPage) {
-    return null;
-  }
-  
-  // Only show chat on authenticated pages (dashboard, support, etc.)
-  const authenticatedPages = ['/dashboard', '/support', '/tasks', '/earnings', '/kyc', '/profile', '/payout', '/referral'];
-  const isOnAuthenticatedPage = authenticatedPages.some(page => location.startsWith(page));
-  
-  // Only show chat on authenticated pages
-  return isOnAuthenticatedPage ? <FloatingChat /> : null;
+  return shouldShowChat ? <FloatingChat /> : null;
 }
 
 function AdminRoute() {
