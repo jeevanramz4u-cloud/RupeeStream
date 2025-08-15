@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -37,6 +37,7 @@ import PayoutSchedule from "./pages/payout-schedule";
 import ReferralProgram from "./pages/referral-program";
 import ShippingPolicy from "./pages/shipping-policy";
 import RefundPolicy from "./pages/refund-policy";
+import TaskDetails from "./pages/task-details";
 
 function AdminRoute() {
   const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
@@ -188,7 +189,7 @@ function Router() {
       <Route path="/suspended" component={() => <ProtectedRoute component={SuspendedPage} />} />
       <Route path="/kyc" component={() => <ProtectedRoute component={KYC} />} />
       <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
-      <Route path="/task/:id" component={() => <ProtectedRoute component={lazy(() => import("./pages/task-details"))} />} />
+      <Route path="/task/:id" component={() => <ProtectedRoute component={TaskDetails} />} />
       
       <Route component={NotFound} />
     </Switch>
