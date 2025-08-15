@@ -1,0 +1,1 @@
+{"message":"Login successful","user":{"id":"dev-demo-user","email":"demo@innovativetaskearn.online","firstName":"Demo","lastName":"User","verificationStatus":"verified","kycStatus":"approved","balance":"1000.00","status":"active","suspensionReason":null}}

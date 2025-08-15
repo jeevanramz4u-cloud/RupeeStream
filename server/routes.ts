@@ -68,6 +68,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
+  // Auth check route that doesn't require authentication - returns user if authenticated
+  app.get('/api/auth/check', async (req: any, res) => {
+    try {
+      const userId = req.session?.userId;
+      console.log("Auth check - Session userId:", userId);
+      
+      if (!userId) {
+        return res.json({ user: null });
+      }
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        console.log("Auth check - No user found for id:", userId);
+        return res.json({ user: null });
+      }
+      
+      const { password: _, ...userWithoutPassword } = user;
+      console.log("Auth check - User found:", userWithoutPassword.email);
+      res.json({ user: userWithoutPassword });
+    } catch (error) {
+      console.error("Auth check error:", error);
+      res.json({ user: null });
+    }
+  });
+
   // Auth routes
   app.get('/api/auth/user', isTraditionallyAuthenticated, async (req: any, res) => {
     try {
@@ -255,35 +280,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Check authentication status
-  app.get('/api/auth/check', async (req, res) => {
-    try {
-      const userId = req.session?.userId;
-      if (!userId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
 
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(401).json({ message: "User not found" });
-      }
-
-      res.json({
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          verificationStatus: user.verificationStatus,
-          kycStatus: user.kycStatus,
-          balance: user.balance,
-          status: user.status
-        }
-      });
-    } catch (error) {
-      console.error("Error checking auth:", error);
-      res.status(401).json({ message: "Not authenticated" });
-    }
-  });
 
   app.post('/api/auth/logout', (req, res) => {
     req.session.destroy((err) => {
