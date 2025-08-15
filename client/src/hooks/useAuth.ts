@@ -7,12 +7,12 @@ export function useAuth() {
   const toastShownRef = useRef(false);
   
   // Use traditional auth for our demo login system with retry disabled to prevent infinite loops
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["/api/auth/check"],
     retry: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: true, // Enable refetch on focus to pick up login changes
+    refetchOnReconnect: true,
+    staleTime: 60 * 1000, // 1 minute to ensure fresh auth state
     networkMode: 'always', // Always try to fetch, even if offline
   });
   

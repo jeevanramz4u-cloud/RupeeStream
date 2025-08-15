@@ -37,17 +37,22 @@ export default function Login() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log('Login successful:', data);
         
         // Invalidate auth query to refetch user data
-        queryClient.invalidateQueries({ queryKey: ["/api/auth/check"] });
+        await queryClient.invalidateQueries({ queryKey: ["/api/auth/check"] });
+        
+        // Small delay to ensure query refetch completes
+        await new Promise(resolve => setTimeout(resolve, 100));
         
         // Check if user is suspended and redirect accordingly
         if (data.user && data.user.status === 'suspended') {
           console.log('Suspended user logged in - redirecting to suspended page');
-          window.location.href = '/suspended';
+          setLocation('/suspended');
         } else {
           // Redirect to dashboard after successful login
-          window.location.href = '/dashboard';
+          console.log('Redirecting to dashboard');
+          setLocation('/dashboard');
         }
       } else {
         const data = await response.json();
