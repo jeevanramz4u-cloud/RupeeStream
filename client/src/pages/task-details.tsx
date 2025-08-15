@@ -34,6 +34,10 @@ import { useState, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { ImageUpload } from "@/components/image-upload";
 
+interface TaskDetailsProps {
+  taskId: string;
+}
+
 // Task-specific instructions and requirements
 const getTaskInstructions = (category: string) => {
   switch (category) {
@@ -135,14 +139,14 @@ const taskCategoryIcons = {
   social_media: ThumbsUp
 };
 
-export default function TaskDetails() {
+export default function TaskDetails({ taskId }: TaskDetailsProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
   
-  // Extract task ID from URL
-  const taskId = window.location.pathname.split('/task/')[1];
+  // Use taskId from props or fallback to URL extraction
+  const finalTaskId = taskId || window.location.pathname.split('/task/')[1];
   
   const [proofData, setProofData] = useState("");
   const [proofImages, setProofImages] = useState<string[]>([]);
@@ -151,8 +155,8 @@ export default function TaskDetails() {
   const [taskStarted, setTaskStarted] = useState(false);
 
   const { data: task, isLoading: taskLoading } = useQuery<any>({
-    queryKey: ["/api/tasks", taskId],
-    enabled: !!taskId && !!user,
+    queryKey: ["/api/tasks", finalTaskId],
+    enabled: !!finalTaskId && !!user,
   });
 
   const { data: completions = [] } = useQuery<any[]>({
@@ -177,7 +181,7 @@ export default function TaskDetails() {
 
   // Get completion status for this task
   const getTaskCompletionStatus = () => {
-    const completion = completions.find((c: any) => c.taskId === taskId && c.userId === user?.id);
+    const completion = completions.find((c: any) => c.taskId === finalTaskId && c.userId === user?.id);
     return completion?.status || null;
   };
 
