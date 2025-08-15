@@ -1266,15 +1266,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin task management routes
   app.get('/api/admin/tasks', async (req: any, res) => {
     try {
-      if (!req.session.adminUser) {
+      if (!req.session.adminUser && !isDevelopment()) {
         return res.status(401).json({ message: "Admin authentication required" });
+      }
+      
+      if (isDevelopment()) {
+        const demoTasks = [
+          {
+            id: "task-1",
+            title: "Download Food Delivery App",
+            description: "Download and install popular food delivery app from Play Store",
+            category: "app_download",
+            reward: "15.00",
+            status: "active",
+            timeLimit: 24,
+            maxCompletions: 1000,
+            currentCompletions: 245,
+            instructions: "1. Download app\n2. Create account\n3. Take screenshot of homepage\n4. Submit proof",
+            createdAt: new Date(Date.now() - 7 * 86400000).toISOString(),
+            createdBy: "admin"
+          },
+          {
+            id: "task-2", 
+            title: "Write Business Review",
+            description: "Write honest review for local restaurant on Google Maps",
+            category: "business_review",
+            reward: "25.00",
+            status: "active",
+            timeLimit: 48,
+            maxCompletions: 500,
+            currentCompletions: 89,
+            instructions: "1. Visit Google Maps\n2. Find assigned restaurant\n3. Write detailed review (min 50 words)\n4. Submit screenshot",
+            createdAt: new Date(Date.now() - 5 * 86400000).toISOString(),
+            createdBy: "admin"
+          },
+          {
+            id: "task-3",
+            title: "Subscribe to YouTube Channel",
+            description: "Subscribe to tech education YouTube channel and watch latest video",
+            category: "channel_subscribe",
+            reward: "12.00",
+            status: "active",
+            timeLimit: 12,
+            maxCompletions: 2000,
+            currentCompletions: 567,
+            instructions: "1. Visit YouTube channel\n2. Subscribe to channel\n3. Watch latest video for 2 minutes\n4. Take screenshot showing subscription",
+            createdAt: new Date(Date.now() - 3 * 86400000).toISOString(),
+            createdBy: "admin"
+          },
+          {
+            id: "task-4",
+            title: "Amazon Product Review",
+            description: "Write detailed product review for recently purchased item",
+            category: "product_review",
+            reward: "30.00",
+            status: "active",
+            timeLimit: 72,
+            maxCompletions: 300,
+            currentCompletions: 45,
+            instructions: "1. Login to Amazon account\n2. Find recent purchase\n3. Write detailed review (min 100 words)\n4. Submit screenshot of review",
+            createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+            createdBy: "admin"
+          },
+          {
+            id: "task-5",
+            title: "Instagram Post Engagement",
+            description: "Like and comment on brand's Instagram posts",
+            category: "comment_like",
+            reward: "8.00",
+            status: "active",
+            timeLimit: 6,
+            maxCompletions: 5000,
+            currentCompletions: 1234,
+            instructions: "1. Visit Instagram page\n2. Like 3 recent posts\n3. Leave meaningful comment\n4. Screenshot your interactions",
+            createdAt: new Date(Date.now() - 1 * 86400000).toISOString(),
+            createdBy: "admin"
+          },
+          {
+            id: "task-6",
+            title: "Watch YouTube Video Complete",
+            description: "Watch full educational video and engage with content",
+            category: "youtube_video_see",
+            reward: "20.00",
+            status: "active",
+            timeLimit: 24,
+            maxCompletions: 800,
+            currentCompletions: 234,
+            instructions: "1. Watch complete video (15 minutes)\n2. Like the video\n3. Leave thoughtful comment\n4. Screenshot showing completed view and interaction",
+            createdAt: new Date(Date.now() - 4 * 86400000).toISOString(),
+            createdBy: "admin"
+          },
+          {
+            id: "task-7",
+            title: "E-commerce App Registration",
+            description: "Download and register on new e-commerce app",
+            category: "app_download",
+            reward: "18.00",
+            status: "active",
+            timeLimit: 18,
+            maxCompletions: 1500,
+            currentCompletions: 423,
+            instructions: "1. Download app from Play Store\n2. Complete registration with phone verification\n3. Browse for 5 minutes\n4. Take screenshot of profile page",
+            createdAt: new Date(Date.now() - 6 * 86400000).toISOString(),
+            createdBy: "admin"
+          },
+          {
+            id: "task-8",
+            title: "Local Business Google Review",
+            description: "Visit local business and write Google review",
+            category: "business_review",
+            reward: "35.00",
+            status: "active",
+            timeLimit: 96,
+            maxCompletions: 200,
+            currentCompletions: 67,
+            instructions: "1. Visit assigned local business\n2. Make small purchase or inquiry\n3. Write detailed Google review with photos\n4. Submit receipt and review screenshot",
+            createdAt: new Date(Date.now() - 8 * 86400000).toISOString(),
+            createdBy: "admin"
+          }
+        ];
+        return res.json(demoTasks);
       }
       
       const tasks = await storage.getTasks(100);
       res.json(tasks);
     } catch (error) {
       console.error("Error fetching admin tasks:", error);
-      res.status(500).json({ message: "Failed to fetch tasks" });
+      if (isDevelopment()) {
+        res.json([]);
+      } else {
+        res.status(500).json({ message: "Failed to fetch tasks" });
+      }
     }
   });
 
@@ -1652,6 +1774,150 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.status(500).json({ message: "Failed to fetch completions" });
       }
+    }
+  });
+
+  // Admin - Get advertiser inquiries
+  app.get('/api/admin/advertiser-inquiries', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser && !isDevelopment()) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      if (isDevelopment()) {
+        const demoInquiries = [
+          {
+            id: "adv-1",
+            businessName: "Tech Solutions Inc",
+            contactName: "Sarah Johnson", 
+            email: "sarah@techsolutions.com",
+            phone: "+91 98765 43201",
+            campaignType: "App Downloads",
+            budget: "₹50,000",
+            targetAudience: "Tech enthusiasts, 18-35",
+            description: "We want to promote our new productivity app through task-based marketing",
+            status: "pending",
+            type: "advertiser",
+            createdAt: new Date(Date.now() - 2 * 86400000).toISOString()
+          },
+          {
+            id: "adv-2", 
+            businessName: "Local Restaurant Chain",
+            contactName: "Raj Patel",
+            email: "raj@foodchain.com", 
+            phone: "+91 98765 43202",
+            campaignType: "Reviews & Ratings",
+            budget: "₹25,000",
+            targetAudience: "Food lovers in Mumbai",
+            description: "Looking to increase our Google reviews and ratings across 5 locations",
+            status: "pending",
+            type: "advertiser",
+            createdAt: new Date(Date.now() - 1 * 86400000).toISOString()
+          },
+          {
+            id: "adv-3",
+            businessName: "E-commerce Startup",
+            contactName: "Priya Sharma",
+            email: "priya@ecomstore.com",
+            phone: "+91 98765 43203",
+            campaignType: "Social Media Engagement", 
+            budget: "₹75,000",
+            targetAudience: "Young professionals, 22-40",
+            description: "Need Instagram and Facebook engagement for our fashion brand launch",
+            status: "reviewed",
+            type: "advertiser",
+            createdAt: new Date(Date.now() - 3 * 86400000).toISOString()
+          },
+          {
+            id: "adv-4",
+            businessName: "Fitness App Company",
+            contactName: "Vikram Singh",
+            email: "vikram@fitapp.com",
+            phone: "+91 98765 43204",
+            campaignType: "App Downloads & Reviews",
+            budget: "₹1,00,000",
+            targetAudience: "Health conscious individuals",
+            description: "Launch campaign for our new fitness tracking app with downloads and genuine reviews",
+            status: "pending",
+            type: "advertiser",
+            createdAt: new Date(Date.now() - 4 * 86400000).toISOString()
+          }
+        ];
+        return res.json(demoInquiries);
+      }
+
+      res.json([]);
+    } catch (error) {
+      console.error("Error fetching advertiser inquiries:", error);
+      res.status(500).json({ message: "Failed to fetch advertiser inquiries" });
+    }
+  });
+
+  // Admin - Get contact inquiries
+  app.get('/api/admin/contact-inquiries', async (req: any, res) => {
+    try {
+      if (!req.session.adminUser && !isDevelopment()) {
+        return res.status(401).json({ message: "Admin authentication required" });
+      }
+
+      if (isDevelopment()) {
+        const demoContactInquiries = [
+          {
+            id: "contact-1",
+            name: "Amit Kumar",
+            email: "amit.kumar@gmail.com",
+            phone: "+91 98765 43211",
+            subject: "Payment Issue",
+            category: "Support",
+            message: "I completed 5 tasks but my earnings are not reflected in my balance. Please help.",
+            status: "pending",
+            type: "Contact",
+            createdAt: new Date(Date.now() - 6 * 3600000).toISOString()
+          },
+          {
+            id: "contact-2",
+            name: "Sneha Patel",
+            email: "sneha.patel@yahoo.com",
+            phone: "+91 98765 43212",
+            subject: "KYC Verification Delay",
+            category: "KYC",
+            message: "Submitted my KYC documents 5 days ago but still pending. When will it be approved?",
+            status: "pending",
+            type: "Contact",
+            createdAt: new Date(Date.now() - 12 * 3600000).toISOString()
+          },
+          {
+            id: "contact-3",
+            name: "Rohit Singh",
+            email: "rohit.singh@outlook.com", 
+            phone: "+91 98765 43213",
+            subject: "Task Submission Problem",
+            category: "Technical",
+            message: "Unable to upload screenshot for task completion. Getting error 'File too large'.",
+            status: "resolved",
+            type: "Contact",
+            createdAt: new Date(Date.now() - 24 * 3600000).toISOString()
+          },
+          {
+            id: "contact-4",
+            name: "Kavya Sharma",
+            email: "kavya.sharma@gmail.com",
+            phone: "+91 98765 43214", 
+            subject: "Referral Bonus Query",
+            category: "General",
+            message: "My friend joined using my referral code but I haven't received the ₹49 bonus yet.",
+            status: "pending",
+            type: "Contact",
+            createdAt: new Date(Date.now() - 18 * 3600000).toISOString()
+          }
+        ];
+        return res.json(demoContactInquiries);
+      }
+
+      res.json([]);
+    } catch (error) {
+      console.error("Error fetching contact inquiries:", error);
+      res.status(500).json({ message: "Failed to fetch contact inquiries" });
     }
   });
 

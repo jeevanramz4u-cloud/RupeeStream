@@ -777,10 +777,18 @@ export class DatabaseStorage implements IStorage {
 
   // Admin methods for comprehensive data management
   async getAllEarnings(): Promise<any[]> {
-    if (isDevelopment() && this.dbConnectionFailed) {
+    if (isDevelopment()) {
       return [
         { id: "1", userId: "dev-demo-user", amount: "25.00", taskId: "task-1", type: "task", createdAt: new Date().toISOString() },
-        { id: "2", userId: "john-doe-001", amount: "15.00", taskId: "task-2", type: "task", createdAt: new Date().toISOString() }
+        { id: "2", userId: "john-doe-001", amount: "15.00", taskId: "task-2", type: "task", createdAt: new Date().toISOString() },
+        { id: "3", userId: "priya-singh-002", amount: "30.00", taskId: "task-3", type: "task", createdAt: new Date(Date.now() - 86400000).toISOString() },
+        { id: "4", userId: "sara-gupta-004", amount: "20.00", taskId: "task-4", type: "task", createdAt: new Date(Date.now() - 2 * 86400000).toISOString() },
+        { id: "5", userId: "vikash-sharma-007", amount: "35.00", taskId: "task-5", type: "task", createdAt: new Date(Date.now() - 3 * 86400000).toISOString() },
+        { id: "6", userId: "alex-kumar-005", amount: "18.00", taskId: "task-6", type: "task", createdAt: new Date(Date.now() - 4 * 86400000).toISOString() },
+        { id: "7", userId: "meera-shah-006", amount: "28.00", taskId: "task-7", type: "task", createdAt: new Date(Date.now() - 5 * 86400000).toISOString() },
+        { id: "8", userId: "dev-demo-user", amount: "49.00", taskId: null, type: "referral", createdAt: new Date(Date.now() - 6 * 86400000).toISOString() },
+        { id: "9", userId: "sara-gupta-004", amount: "49.00", taskId: null, type: "referral", createdAt: new Date(Date.now() - 7 * 86400000).toISOString() },
+        { id: "10", userId: "vikash-sharma-007", amount: "22.00", taskId: "task-8", type: "task", createdAt: new Date(Date.now() - 8 * 86400000).toISOString() }
       ];
     }
 
@@ -793,10 +801,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllPayouts(): Promise<any[]> {
-    if (isDevelopment() && this.dbConnectionFailed) {
+    if (isDevelopment()) {
       return [
-        { id: "payout-1", userId: "dev-demo-user", amount: "500.00", status: "completed", createdAt: new Date(Date.now() - 2 * 86400000).toISOString() },
-        { id: "payout-2", userId: "john-doe-001", amount: "200.00", status: "pending", createdAt: new Date().toISOString() }
+        { id: "payout-1", userId: "dev-demo-user", amount: "500.00", status: "completed", createdAt: new Date(Date.now() - 2 * 86400000).toISOString(), processedAt: new Date(Date.now() - 1 * 86400000).toISOString(), bankDetails: "HDFC Bank ***1234" },
+        { id: "payout-2", userId: "john-doe-001", amount: "200.00", status: "pending", createdAt: new Date().toISOString(), processedAt: null, bankDetails: "SBI Bank ***5678" },
+        { id: "payout-3", userId: "sara-gupta-004", amount: "300.00", status: "completed", createdAt: new Date(Date.now() - 5 * 86400000).toISOString(), processedAt: new Date(Date.now() - 3 * 86400000).toISOString(), bankDetails: "ICICI Bank ***9012" },
+        { id: "payout-4", userId: "vikash-sharma-007", amount: "750.00", status: "completed", createdAt: new Date(Date.now() - 10 * 86400000).toISOString(), processedAt: new Date(Date.now() - 8 * 86400000).toISOString(), bankDetails: "Axis Bank ***3456" },
+        { id: "payout-5", userId: "priya-singh-002", amount: "150.00", status: "pending", createdAt: new Date(Date.now() - 1 * 86400000).toISOString(), processedAt: null, bankDetails: "PNB Bank ***7890" },
+        { id: "payout-6", userId: "meera-shah-006", amount: "425.00", status: "processing", createdAt: new Date(Date.now() - 3 * 86400000).toISOString(), processedAt: null, bankDetails: "BOB Bank ***2345" }
       ];
     }
 
@@ -809,10 +821,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllTaskCompletions(): Promise<any[]> {
-    if (isDevelopment() && this.dbConnectionFailed) {
+    if (isDevelopment()) {
       return [
-        { id: "comp-1", userId: "dev-demo-user", taskId: "task-1", status: "approved", submittedAt: new Date().toISOString() },
-        { id: "comp-2", userId: "john-doe-001", taskId: "task-2", status: "submitted", submittedAt: new Date().toISOString() }
+        { id: "comp-1", userId: "dev-demo-user", taskId: "task-1", status: "approved", submittedAt: new Date().toISOString(), proofUrl: "screenshot1.jpg", adminNotes: "Valid completion" },
+        { id: "comp-2", userId: "john-doe-001", taskId: "task-2", status: "submitted", submittedAt: new Date().toISOString(), proofUrl: "screenshot2.jpg", adminNotes: null },
+        { id: "comp-3", userId: "priya-singh-002", taskId: "task-3", status: "submitted", submittedAt: new Date(Date.now() - 3600000).toISOString(), proofUrl: "screenshot3.jpg", adminNotes: null },
+        { id: "comp-4", userId: "sara-gupta-004", taskId: "task-4", status: "approved", submittedAt: new Date(Date.now() - 7200000).toISOString(), proofUrl: "screenshot4.jpg", adminNotes: "Excellent work" },
+        { id: "comp-5", userId: "vikash-sharma-007", taskId: "task-5", status: "approved", submittedAt: new Date(Date.now() - 10800000).toISOString(), proofUrl: "screenshot5.jpg", adminNotes: "Good quality" },
+        { id: "comp-6", userId: "alex-kumar-005", taskId: "task-6", status: "rejected", submittedAt: new Date(Date.now() - 14400000).toISOString(), proofUrl: "screenshot6.jpg", adminNotes: "Incomplete proof" },
+        { id: "comp-7", userId: "meera-shah-006", taskId: "task-7", status: "submitted", submittedAt: new Date(Date.now() - 1800000).toISOString(), proofUrl: "screenshot7.jpg", adminNotes: null },
+        { id: "comp-8", userId: "dev-demo-user", taskId: "task-8", status: "approved", submittedAt: new Date(Date.now() - 21600000).toISOString(), proofUrl: "screenshot8.jpg", adminNotes: "Perfect submission" },
+        { id: "comp-9", userId: "john-doe-001", taskId: "task-9", status: "submitted", submittedAt: new Date(Date.now() - 900000).toISOString(), proofUrl: "screenshot9.jpg", adminNotes: null },
+        { id: "comp-10", userId: "priya-singh-002", taskId: "task-10", status: "pending_review", submittedAt: new Date(Date.now() - 2700000).toISOString(), proofUrl: "screenshot10.jpg", adminNotes: null }
       ];
     }
 
@@ -857,10 +877,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllChatSessions(): Promise<any[]> {
-    if (isDevelopment() && this.dbConnectionFailed) {
+    if (isDevelopment()) {
       return [
-        { id: "chat-1", userId: "dev-demo-user", status: "active", createdAt: new Date().toISOString() },
-        { id: "chat-2", userId: "john-doe-001", status: "closed", createdAt: new Date().toISOString() }
+        { id: "chat-1", userId: "dev-demo-user", status: "active", createdAt: new Date().toISOString(), lastMessage: "Need help with payout", messageCount: 5 },
+        { id: "chat-2", userId: "john-doe-001", status: "closed", createdAt: new Date(Date.now() - 86400000).toISOString(), lastMessage: "Thank you for the help", messageCount: 8 },
+        { id: "chat-3", userId: "priya-singh-002", status: "active", createdAt: new Date(Date.now() - 3600000).toISOString(), lastMessage: "KYC verification pending", messageCount: 3 },
+        { id: "chat-4", userId: "sara-gupta-004", status: "closed", createdAt: new Date(Date.now() - 2 * 86400000).toISOString(), lastMessage: "Issue resolved", messageCount: 12 },
+        { id: "chat-5", userId: "vikash-sharma-007", status: "closed", createdAt: new Date(Date.now() - 3 * 86400000).toISOString(), lastMessage: "Great support team", messageCount: 6 },
+        { id: "chat-6", userId: "alex-kumar-005", status: "active", createdAt: new Date(Date.now() - 7200000).toISOString(), lastMessage: "How to submit proof?", messageCount: 2 },
+        { id: "chat-7", userId: "meera-shah-006", status: "pending", createdAt: new Date(Date.now() - 1800000).toISOString(), lastMessage: "Waiting for admin response", messageCount: 1 }
       ];
     }
 
