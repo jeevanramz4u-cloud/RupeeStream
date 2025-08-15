@@ -4,6 +4,7 @@ import { Link, useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, 
   FileText, 
@@ -16,7 +17,11 @@ import {
   AlertCircle,
   Settings,
   LogOut,
-  Eye
+  Eye,
+  UserCheck,
+  ShieldCheck,
+  ArrowRight,
+  Activity
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -133,6 +138,293 @@ export default function AdminDashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Primary Admin Tabs */}
+        <Tabs defaultValue="active-users" className="mb-8">
+          <TabsList className="grid w-full grid-cols-4 lg:w-1/2 mx-auto">
+            <TabsTrigger value="active-users" className="flex items-center space-x-2">
+              <UserCheck className="w-4 h-4" />
+              <span>Active Users</span>
+            </TabsTrigger>
+            <TabsTrigger value="active-tasks" className="flex items-center space-x-2">
+              <Activity className="w-4 h-4" />
+              <span>Active Tasks</span>
+            </TabsTrigger>
+            <TabsTrigger value="pending-inquiries" className="flex items-center space-x-2">
+              <MessageCircle className="w-4 h-4" />
+              <span>Inquiries</span>
+            </TabsTrigger>
+            <TabsTrigger value="kyc-approved" className="flex items-center space-x-2">
+              <ShieldCheck className="w-4 h-4" />
+              <span>KYC Approved</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="active-users" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <UserCheck className="w-6 h-6 text-blue-600" />
+                    <span>Active Total Users</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="default" className="bg-blue-100 text-blue-800 text-lg px-3 py-1">
+                      {activeUsers}
+                    </Badge>
+                    <Link href="/admin-users">
+                      <Button size="sm" className="ml-2" data-testid="button-manage-users">
+                        <ArrowRight className="w-4 h-4 mr-1" />
+                        Manage Users
+                      </Button>
+                    </Link>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <p className="text-sm font-medium text-green-700">Active Users</p>
+                    <p className="text-2xl font-bold text-green-800">{activeUsers}</p>
+                    <p className="text-xs text-green-600">Can complete tasks</p>
+                  </div>
+                  <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                    <p className="text-sm font-medium text-red-700">Suspended Users</p>
+                    <p className="text-2xl font-bold text-red-800">{suspendedUsers}</p>
+                    <p className="text-xs text-red-600">Account restricted</p>
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <p className="text-sm font-medium text-blue-700">Total Registered</p>
+                    <p className="text-2xl font-bold text-blue-800">{totalUsers}</p>
+                    <p className="text-xs text-blue-600">All time signups</p>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-900">Recent Active Users</h4>
+                  {users.filter(u => u.status === 'active').slice(0, 5).map((user, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-testid={`user-row-${index}`}>
+                      <div>
+                        <p className="font-medium text-sm" data-testid={`text-username-${index}`}>{user.firstName} {user.lastName}</p>
+                        <p className="text-xs text-gray-500" data-testid={`text-email-${index}`}>{user.email}</p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="default" className="bg-green-100 text-green-700 text-xs">
+                          Active
+                        </Badge>
+                        <Link href={`/admin-users?user=${user.id}`}>
+                          <Button size="sm" variant="outline" data-testid={`button-view-user-${index}`}>
+                            <Eye className="w-3 h-3" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                  {activeUsers === 0 && (
+                    <p className="text-sm text-gray-500 text-center py-4">No active users found</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="active-tasks" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Activity className="w-6 h-6 text-green-600" />
+                    <span>Active Tasks Management</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="default" className="bg-green-100 text-green-800 text-lg px-3 py-1">
+                      {activeTasks}
+                    </Badge>
+                    <Link href="/admin-tasks">
+                      <Button size="sm" className="ml-2" data-testid="button-manage-tasks">
+                        <ArrowRight className="w-4 h-4 mr-1" />
+                        Manage Tasks
+                      </Button>
+                    </Link>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <p className="text-sm font-medium text-green-700">Active Tasks</p>
+                    <p className="text-2xl font-bold text-green-800">{activeTasks}</p>
+                    <p className="text-xs text-green-600">Available for completion</p>
+                  </div>
+                  <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                    <p className="text-sm font-medium text-orange-700">Pending Approvals</p>
+                    <p className="text-2xl font-bold text-orange-800">{pendingApprovals}</p>
+                    <p className="text-xs text-orange-600">Awaiting admin review</p>
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <p className="text-sm font-medium text-blue-700">Completed Tasks</p>
+                    <p className="text-2xl font-bold text-blue-800">{completedTasks}</p>
+                    <p className="text-xs text-blue-600">Successfully finished</p>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-900">Task Categories Overview</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="font-medium text-sm text-blue-800">App Downloads</p>
+                      <p className="text-xs text-blue-600">₹5-25 per task • High engagement</p>
+                    </div>
+                    <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                      <p className="font-medium text-sm text-green-800">Business Reviews</p>
+                      <p className="text-xs text-green-600">₹5-35 per task • Quality content</p>
+                    </div>
+                    <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                      <p className="font-medium text-sm text-purple-800">Channel Subscribe</p>
+                      <p className="text-xs text-purple-600">₹5-20 per task • Social growth</p>
+                    </div>
+                    <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
+                      <p className="font-medium text-sm text-orange-800">YouTube Views</p>
+                      <p className="text-xs text-orange-600">₹5-30 per task • Video promotion</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="pending-inquiries" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <MessageCircle className="w-6 h-6 text-purple-600" />
+                    <span>Pending Inquiries</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="default" className="bg-purple-100 text-purple-800 text-lg px-3 py-1">
+                      {pendingInquiries}
+                    </Badge>
+                    <Link href="/admin-inquiries">
+                      <Button size="sm" className="ml-2" data-testid="button-manage-inquiries">
+                        <ArrowRight className="w-4 h-4 mr-1" />
+                        Manage Inquiries
+                      </Button>
+                    </Link>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <p className="text-sm font-medium text-blue-700">Advertiser Inquiries</p>
+                    <p className="text-2xl font-bold text-blue-800">{advertiserInquiries.length}</p>
+                    <p className="text-xs text-blue-600">Business partnerships</p>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <p className="text-sm font-medium text-green-700">Contact Forms</p>
+                    <p className="text-2xl font-bold text-green-800">{contactInquiries.length}</p>
+                    <p className="text-xs text-green-600">General support</p>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-900">Recent Inquiries</h4>
+                  {[...advertiserInquiries, ...contactInquiries].slice(0, 5).map((inquiry, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-testid={`inquiry-row-${index}`}>
+                      <div>
+                        <p className="font-medium text-sm" data-testid={`text-inquiry-subject-${index}`}>
+                          {inquiry.businessName || inquiry.subject || 'General Inquiry'}
+                        </p>
+                        <p className="text-xs text-gray-500" data-testid={`text-inquiry-email-${index}`}>{inquiry.email}</p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {inquiry.type || 'Contact'}
+                        </Badge>
+                        <Link href={`/admin-inquiries?id=${inquiry.id}`}>
+                          <Button size="sm" variant="outline" data-testid={`button-view-inquiry-${index}`}>
+                            <Eye className="w-3 h-3" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                  {pendingInquiries === 0 && (
+                    <p className="text-sm text-gray-500 text-center py-4">No pending inquiries</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="kyc-approved" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <ShieldCheck className="w-6 h-6 text-orange-600" />
+                    <span>KYC Approved Users</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="default" className="bg-orange-100 text-orange-800 text-lg px-3 py-1">
+                      {approvedKycUsers}
+                    </Badge>
+                    <Link href="/admin-users?filter=kyc-approved">
+                      <Button size="sm" className="ml-2" data-testid="button-view-kyc-users">
+                        <ArrowRight className="w-4 h-4 mr-1" />
+                        View All KYC
+                      </Button>
+                    </Link>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <p className="text-sm font-medium text-green-700">KYC Approved</p>
+                    <p className="text-2xl font-bold text-green-800">{approvedKycUsers}</p>
+                    <p className="text-xs text-green-600">Payout eligible</p>
+                  </div>
+                  <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                    <p className="text-sm font-medium text-orange-700">KYC Pending</p>
+                    <p className="text-2xl font-bold text-orange-800">{pendingKycUsers}</p>
+                    <p className="text-xs text-orange-600">Awaiting review</p>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <p className="text-sm font-medium text-gray-700">Not Submitted</p>
+                    <p className="text-2xl font-bold text-gray-800">{totalUsers - approvedKycUsers - pendingKycUsers}</p>
+                    <p className="text-xs text-gray-600">No KYC submitted</p>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-900">Recently Approved KYC</h4>
+                  {users.filter(u => u.kycStatus === 'approved').slice(0, 5).map((user, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-testid={`kyc-user-row-${index}`}>
+                      <div>
+                        <p className="font-medium text-sm" data-testid={`text-kyc-username-${index}`}>{user.firstName} {user.lastName}</p>
+                        <p className="text-xs text-gray-500" data-testid={`text-kyc-email-${index}`}>{user.email}</p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="default" className="bg-green-100 text-green-700 text-xs">
+                          KYC Approved
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          Payout Ready
+                        </Badge>
+                        <Link href={`/admin-users?user=${user.id}`}>
+                          <Button size="sm" variant="outline" data-testid={`button-view-kyc-user-${index}`}>
+                            <Eye className="w-3 h-3" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                  {approvedKycUsers === 0 && (
+                    <p className="text-sm text-gray-500 text-center py-4">No KYC approved users yet</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
