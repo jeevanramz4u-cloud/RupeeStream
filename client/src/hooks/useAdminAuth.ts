@@ -28,14 +28,8 @@ export function useAdminAuth() {
         return { user: data }; // Admin endpoint returns admin object directly
       } catch (error) {
         console.log("Admin auth - Error:", error);
-        // Development fallback for admin
-        return {
-          user: {
-            id: "temp-admin-001",
-            username: "admin",
-            name: "Admin User"
-          }
-        };
+        // Don't provide fallback during errors - let the hook handle it
+        return { user: null };
       }
     },
   });
@@ -51,8 +45,10 @@ export function useAdminAuth() {
   // Extract admin user from response
   let adminUser = (data as any)?.user || null;
   
-  // Development fallback: If no admin user data, provide temp admin
-  if (!adminUser && !isLoading) {
+  // Development fallback: If no admin user data and not explicitly logged out, provide temp admin
+  // Check if we just logged out by checking if we explicitly got null from server
+  const isExplicitLogout = data && (data as any).user === null;
+  if (!adminUser && !isLoading && !isExplicitLogout) {
     console.log("useAdminAuth - No admin data, providing temp admin fallback");
     adminUser = {
       id: "temp-admin-001",

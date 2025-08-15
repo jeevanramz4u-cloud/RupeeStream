@@ -40,7 +40,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 
 export default function AdminLiveChat() {
-  const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
+  const { isAdminAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();

@@ -332,7 +332,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (err) {
         return res.status(500).json({ message: "Could not log out" });
       }
-      res.json({ message: "Logged out successfully" });
+      res.clearCookie('connect.sid');
+      res.json({ message: "Logged out successfully", user: null });
     });
   });
 
@@ -1541,10 +1542,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { logoutAdmin } = await import('./adminAuth');
       logoutAdmin(req);
-      res.json({ message: "Logged out successfully" });
+      // Clear session completely to ensure proper logout
+      req.session.destroy((err: any) => {
+        if (err) {
+          console.error("Session destruction error:", err);
+        }
+        res.clearCookie('connect.sid');
+        res.json({ message: "Admin logged out successfully", user: null });
+      });
     } catch (error) {
       console.error("Admin logout error:", error);
-      res.status(500).json({ message: "Logout failed" });
+      res.status(500).json({ message: "Admin logout failed" });
     }
   });
 

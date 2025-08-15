@@ -33,20 +33,8 @@ export function useAuth() {
         return data;
       } catch (error) {
         console.log("Direct queryFn - Error:", error);
-        // In development, return demo user when auth fails
-        return {
-          user: {
-            id: "dev-demo-user",
-            email: "demo@innovativetaskearn.online",
-            firstName: "Demo",
-            lastName: "User",
-            verificationStatus: "verified",
-            kycStatus: "approved",
-            balance: "1000.00",
-            status: "active",
-            suspensionReason: null
-          }
-        };
+        // Don't provide fallback during errors - let the hook handle it
+        return { user: null };
       }
     },
   });
@@ -64,8 +52,10 @@ export function useAuth() {
   // Extract user from the response data OR provide demo user fallback
   let user = (data as any)?.user || null;
   
-  // Development fallback: If we have no user data, provide demo user
-  if (!user && !isLoading) {
+  // Development fallback: If we have no user data and not explicitly logged out, provide demo user
+  // Check if we just logged out by checking if we explicitly got null from server
+  const isExplicitLogout = data && (data as any).user === null;
+  if (!user && !isLoading && !isExplicitLogout) {
     console.log("useAuth - No user data, providing demo user fallback");
     user = {
       id: "dev-demo-user",

@@ -63,17 +63,11 @@ export default function AdminDashboard() {
   const handleLogout = async () => {
     try {
       await apiRequest("POST", "/api/admin/logout");
-      toast({
-        title: "Logged Out",
-        description: "Successfully logged out of admin panel",
-      });
-      setLocation("/admin-login");
+      // Clear all caches and force redirect
+      window.location.href = "/admin-login";
     } catch (error) {
-      toast({
-        title: "Logout Failed",
-        description: "Failed to logout. Please try again.",
-        variant: "destructive",
-      });
+      // Even if logout fails, redirect anyway for security
+      window.location.href = "/admin-login";
     }
   };
 

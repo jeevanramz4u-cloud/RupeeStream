@@ -1,4 +1,4 @@
-import { useAuth } from "@/hooks/useAuth";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Header from "@/components/Header";
@@ -31,7 +31,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminInquiries() {
-  const { user } = useAuth();
+  const { adminUser, isAdminAuthenticated, isLoading } = useAdminAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedInquiry, setSelectedInquiry] = useState<any>(null);
@@ -40,12 +40,12 @@ export default function AdminInquiries() {
 
   const { data: advertiserInquiries = [], isLoading: loadingAdvertisers } = useQuery({
     queryKey: ["/api/advertiser-inquiries"],
-    enabled: !!user,
+    enabled: !!adminUser,
   });
 
   const { data: contactInquiries = [], isLoading: loadingContacts } = useQuery({
     queryKey: ["/api/contact-inquiries"],
-    enabled: !!user,
+    enabled: !!adminUser,
   });
 
   const updateInquiryMutation = useMutation({
@@ -92,12 +92,12 @@ export default function AdminInquiries() {
           status: 'responded',
           adminResponse: responseText,
           responseDate: new Date().toISOString(),
-          assignedTo: user?.id
+          assignedTo: adminUser?.id
         }
       : {
           status: 'contacted',
           notes: responseText,
-          assignedTo: user?.id
+          assignedTo: adminUser?.id
         };
 
     updateInquiryMutation.mutate({
