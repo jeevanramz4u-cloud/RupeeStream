@@ -14,6 +14,8 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, Target, Users, TrendingUp, Star, ArrowRight } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const advertiserFormSchema = z.object({
   companyName: z.string().min(2, "Company name must be at least 2 characters").max(150, "Company name is too long"),
@@ -78,12 +80,12 @@ export default function Advertisers() {
   };
 
   const taskTypes = [
-    { id: "app_downloads", label: "App Downloads & Installations", price: "₹12-25 per completion" },
-    { id: "business_reviews", label: "Business Reviews & Ratings", price: "₹22-35 per completion" },
-    { id: "product_reviews", label: "Product Reviews & Feedback", price: "₹20-40 per completion" },
-    { id: "channel_subscribe", label: "Channel Subscriptions", price: "₹12-20 per completion" },
-    { id: "comments_likes", label: "Comments & Social Engagement", price: "₹8-15 per completion" },
-    { id: "video_views", label: "YouTube Video Views", price: "₹18-30 per completion" },
+    { id: "app_downloads", label: "App Downloads & Installations" },
+    { id: "business_reviews", label: "Business Reviews & Ratings" },
+    { id: "product_reviews", label: "Product Reviews & Feedback" },
+    { id: "channel_subscribe", label: "Channel Subscriptions" },
+    { id: "comments_likes", label: "Comments & Social Engagement" },
+    { id: "video_views", label: "YouTube Video Views" },
   ];
 
   const industries = [
@@ -111,52 +113,55 @@ export default function Advertisers() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md text-center">
-          <CardContent className="pt-8 pb-8">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Thank You!
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Your advertising inquiry has been submitted successfully. Our team will contact you within 24 hours to discuss your campaign requirements.
-            </p>
-            <Button 
-              onClick={() => window.location.href = "/"}
-              className="w-full"
-              data-testid="button-back-home"
-            >
-              Back to Home
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-neutral-50 safe-area-padding">
+        <Header />
+        <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-8 flex items-center justify-center">
+          <Card className="w-full max-w-md text-center">
+            <CardContent className="pt-8 pb-8">
+              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Thank You!
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Your advertising inquiry has been submitted successfully. Our team will contact you within 24 hours to discuss your campaign requirements.
+              </p>
+              <div className="space-y-3">
+                <Button 
+                  onClick={() => window.location.href = "/"}
+                  className="w-full"
+                  data-testid="button-back-home"
+                >
+                  Continue Browsing
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="h-10 w-10 bg-primary rounded-lg flex items-center justify-center">
-                <Target className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Start Advertising With Us</h1>
-                <p className="text-gray-600">Reach thousands of active users</p>
-              </div>
+    <div className="min-h-screen bg-neutral-50 safe-area-padding">
+      <Header />
+      
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+        {/* Hero Section */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center">
+              <Target className="h-6 w-6 text-white" />
             </div>
-            <Button variant="outline" onClick={() => window.location.href = "/"}>
-              ← Back to Home
-            </Button>
           </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Start Advertising With Us
+          </h1>
+          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+            Reach thousands of active users and grow your business with our targeted task completion platform.
+          </p>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
           
           {/* Benefits Section */}
@@ -197,9 +202,8 @@ export default function Advertisers() {
                   <h4 className="font-medium text-blue-900 mb-2">Our Task Types</h4>
                   <ul className="text-sm text-blue-800 space-y-1">
                     {taskTypes.map((task) => (
-                      <li key={task.id} className="flex justify-between">
+                      <li key={task.id}>
                         <span>{task.label}</span>
-                        <span className="font-medium">{task.price}</span>
                       </li>
                     ))}
                   </ul>
@@ -412,9 +416,6 @@ export default function Advertisers() {
                                         <FormLabel className="font-normal">
                                           {task.label}
                                         </FormLabel>
-                                        <p className="text-xs text-muted-foreground">
-                                          {task.price}
-                                        </p>
                                       </div>
                                     </FormItem>
                                   )}
@@ -508,7 +509,8 @@ export default function Advertisers() {
             </Card>
           </div>
         </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }

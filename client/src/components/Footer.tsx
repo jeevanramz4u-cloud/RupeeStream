@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Play, Mail, Phone, MapPin, ChevronDown, ChevronUp, Heart, IndianRupee } from "lucide-react";
+import { Play, Mail, Phone, MapPin, ChevronDown, ChevronUp, Heart, IndianRupee, Target } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -276,8 +276,23 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Donation Section */}
+        {/* Business Section - Advertiser Highlight */}
         <div className="border-t border-gray-200 mt-6 sm:mt-8 lg:mt-12 pt-4 sm:pt-6 lg:pt-8">
+          <div className="flex flex-col items-center text-center mb-6">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">Partner With Us</h3>
+            <p className="text-sm text-gray-600 mb-4 max-w-md">Reach thousands of verified users and grow your business through our task completion platform.</p>
+            
+            <Link href="/advertisers">
+              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300 mb-6">
+                <Play className="w-5 h-5 mr-2" />
+                Start Advertising
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Donation Section */}
+        <div className="border-t border-gray-200 mt-6 sm:mt-8 pt-4 sm:pt-6">
           <div className="flex flex-col items-center text-center mb-6">
             <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">Support Our Mission</h3>
             <p className="text-sm text-gray-600 mb-4 max-w-md">Help us grow and serve more users by making a donation to support our platform.</p>
