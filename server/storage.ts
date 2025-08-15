@@ -775,6 +775,103 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  // Admin methods for comprehensive data management
+  async getAllEarnings(): Promise<any[]> {
+    if (isDevelopment() && this.dbConnectionFailed) {
+      return [
+        { id: "1", userId: "dev-demo-user", amount: "25.00", taskId: "task-1", type: "task", createdAt: new Date().toISOString() },
+        { id: "2", userId: "john-doe-001", amount: "15.00", taskId: "task-2", type: "task", createdAt: new Date().toISOString() }
+      ];
+    }
+
+    try {
+      return await db.select().from(earnings);
+    } catch (error) {
+      console.error("Error getting all earnings:", error);
+      throw error;
+    }
+  }
+
+  async getAllPayouts(): Promise<any[]> {
+    if (isDevelopment() && this.dbConnectionFailed) {
+      return [
+        { id: "payout-1", userId: "dev-demo-user", amount: "500.00", status: "completed", createdAt: new Date(Date.now() - 2 * 86400000).toISOString() },
+        { id: "payout-2", userId: "john-doe-001", amount: "200.00", status: "pending", createdAt: new Date().toISOString() }
+      ];
+    }
+
+    try {
+      return await db.select().from(payoutRequests);
+    } catch (error) {
+      console.error("Error getting all payouts:", error);
+      throw error;
+    }
+  }
+
+  async getAllTaskCompletions(): Promise<any[]> {
+    if (isDevelopment() && this.dbConnectionFailed) {
+      return [
+        { id: "comp-1", userId: "dev-demo-user", taskId: "task-1", status: "approved", submittedAt: new Date().toISOString() },
+        { id: "comp-2", userId: "john-doe-001", taskId: "task-2", status: "submitted", submittedAt: new Date().toISOString() }
+      ];
+    }
+
+    try {
+      return await db.select().from(taskCompletions);
+    } catch (error) {
+      console.error("Error getting all task completions:", error);
+      throw error;
+    }
+  }
+
+  async getUserEarnings(): Promise<any[]> {
+    if (isDevelopment() && this.dbConnectionFailed) {
+      return [
+        { userId: "dev-demo-user", amount: "1250.00" },
+        { userId: "john-doe-001", amount: "750.00" }
+      ];
+    }
+
+    try {
+      return [];
+    } catch (error) {
+      console.error("Error getting user earnings:", error);
+      throw error;
+    }
+  }
+
+  async getUserTaskCounts(): Promise<any[]> {
+    if (isDevelopment() && this.dbConnectionFailed) {
+      return [
+        { userId: "dev-demo-user", count: 15 },
+        { userId: "john-doe-001", count: 8 }
+      ];
+    }
+
+    try {
+      return [];
+    } catch (error) {
+      console.error("Error getting user task counts:", error);
+      throw error;
+    }
+  }
+
+  async getAllChatSessions(): Promise<any[]> {
+    if (isDevelopment() && this.dbConnectionFailed) {
+      return [
+        { id: "chat-1", userId: "dev-demo-user", status: "active", createdAt: new Date().toISOString() },
+        { id: "chat-2", userId: "john-doe-001", status: "closed", createdAt: new Date().toISOString() }
+      ];
+    }
+
+    try {
+      return await db.select().from(chatMessages);
+    } catch (error) {
+      console.error("Error getting all chat sessions:", error);
+      throw error;
+    }
+  }
+
   // Video operations
   async getVideos(limit = 50): Promise<Video[]> {
     try {

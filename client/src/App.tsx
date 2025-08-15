@@ -33,6 +33,8 @@ import RefundPolicy from "./pages/refund-policy";
 import TaskDetails from "./pages/task-details";
 import AdminLiveChat from "./pages/admin-live-chat";
 import AdminDashboard from "./pages/admin-dashboard";
+import AdminUsers from "./pages/admin-users";
+import AdminPayouts from "./pages/admin-payouts";
 import { FloatingChat } from "./components/FloatingChat";
 
 // Component to conditionally show floating chat
@@ -164,6 +166,8 @@ function Router() {
       <Route path="/admin" component={AdminRoute} />
       <Route path="/admin-dashboard" component={AdminRoute} />
       <Route path="/admin-tasks" component={() => <ProtectedAdminRoute Component={AdminTasks} />} />
+      <Route path="/admin-users" component={() => <ProtectedAdminRoute Component={AdminUsers} />} />
+      <Route path="/admin-payouts" component={() => <ProtectedAdminRoute Component={AdminPayouts} />} />
       <Route path="/admin-inquiries" component={() => <ProtectedAdminRoute Component={AdminInquiries} />} />
       <Route path="/admin-live-chat" component={() => <ProtectedAdminRoute Component={AdminLiveChat} />} />
       

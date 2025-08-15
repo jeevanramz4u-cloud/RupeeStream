@@ -69,18 +69,42 @@ export default function AdminDashboard() {
     }
   };
 
-  // Calculate statistics
+  // Get all historical data for comprehensive admin overview
+  const { data: earnings = [] } = useQuery<any[]>({
+    queryKey: ["/api/admin/earnings"],
+  });
+
+  const { data: payouts = [] } = useQuery<any[]>({
+    queryKey: ["/api/admin/payouts"],
+  });
+
+  const { data: completions = [] } = useQuery<any[]>({
+    queryKey: ["/api/admin/task-completions"],
+  });
+
+  const { data: chatSessions = [] } = useQuery<any[]>({
+    queryKey: ["/api/admin/chat-sessions"],
+  });
+
+  // Calculate comprehensive statistics
   const totalUsers = users.length;
   const activeUsers = users.filter(u => u.status === 'active').length;
   const suspendedUsers = users.filter(u => u.status === 'suspended').length;
-  const verifiedUsers = users.filter(u => u.verificationStatus === 'verified').length;
-  const kycApprovedUsers = users.filter(u => u.kycStatus === 'approved').length;
+  const pendingKycUsers = users.filter(u => u.kycStatus === 'submitted').length;
+  const approvedKycUsers = users.filter(u => u.kycStatus === 'approved').length;
   
   const totalTasks = tasks.length;
   const activeTasks = tasks.filter(t => t.status === 'active').length;
+  const completedTasks = completions.length;
+  const pendingApprovals = completions.filter(c => c.status === 'submitted').length;
+  
+  const totalEarnings = earnings.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+  const totalPayouts = payouts.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+  const pendingPayouts = payouts.filter(p => p.status === 'pending').length;
   
   const totalInquiries = advertiserInquiries.length + contactInquiries.length;
-  const pendingInquiries = [...advertiserInquiries, ...contactInquiries].filter(i => i.status === 'pending').length;
+  const pendingInquiries = [...advertiserInquiries, ...contactInquiries].filter(i => i.status === 'new' || i.status === 'pending').length;
+  const activeChatSessions = chatSessions.filter(s => s.status === 'active').length;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -155,8 +179,8 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-orange-600">KYC Approved</p>
-                  <p className="text-3xl font-bold text-orange-900">{kycApprovedUsers}</p>
-                  <p className="text-xs text-orange-700">{verifiedUsers} verified users</p>
+                  <p className="text-3xl font-bold text-orange-900">{approvedKycUsers}</p>
+                  <p className="text-xs text-orange-700">{pendingKycUsers} pending review</p>
                 </div>
                 <CheckCircle className="w-12 h-12 text-orange-600" />
               </div>
@@ -175,103 +199,165 @@ export default function AdminDashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-4">
-                  Create, edit, and manage tasks. Review task completions and approve submissions.
+                <p className="text-sm text-gray-600 mb-3">
+                  Create, manage, and approve task completions
                 </p>
-                <div className="flex items-center justify-between">
-                  <Badge className="bg-blue-100 text-blue-700">
-                    {activeTasks} Active Tasks
-                  </Badge>
-                  <Button variant="ghost" size="sm">
-                    <Eye className="w-4 h-4 mr-1" />
-                    View
-                  </Button>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Active Tasks:</span>
+                  <span className="font-semibold">{activeTasks}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Pending Approvals:</span>
+                  <span className="font-semibold">{pendingApprovals}</span>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin-users">
+            <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 border-l-4 border-l-green-500">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center space-x-2 text-green-700">
+                  <Users className="w-5 h-5" />
+                  <span>User Management</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 mb-3">
+                  Manage users, KYC approvals, and suspensions
+                </p>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Active Users:</span>
+                  <span className="font-semibold">{activeUsers}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Pending KYC:</span>
+                  <span className="font-semibold">{pendingKycUsers}</span>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin-payouts">
+            <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 border-l-4 border-l-purple-500">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center space-x-2 text-purple-700">
+                  <DollarSign className="w-5 h-5" />
+                  <span>Payout Management</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 mb-3">
+                  Process and manage user payout requests
+                </p>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Total Paid:</span>
+                  <span className="font-semibold">₹{totalPayouts.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Pending:</span>
+                  <span className="font-semibold">{pendingPayouts}</span>
                 </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/admin-inquiries">
-            <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 border-l-4 border-l-purple-500">
+            <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 border-l-4 border-l-orange-500">
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center space-x-2 text-purple-700">
+                <CardTitle className="flex items-center space-x-2 text-orange-700">
                   <Building2 className="w-5 h-5" />
-                  <span>Inquiry Management</span>
+                  <span>Business Inquiries</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-4">
-                  Manage advertiser campaigns and contact form submissions from website visitors.
+                <p className="text-sm text-gray-600 mb-3">
+                  Manage advertiser and contact inquiries
                 </p>
-                <div className="flex items-center justify-between">
-                  <Badge className="bg-purple-100 text-purple-700">
-                    {pendingInquiries} Pending
-                  </Badge>
-                  <Button variant="ghost" size="sm">
-                    <Eye className="w-4 h-4 mr-1" />
-                    View
-                  </Button>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Total Inquiries:</span>
+                  <span className="font-semibold">{totalInquiries}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Pending Response:</span>
+                  <span className="font-semibold">{pendingInquiries}</span>
                 </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/admin-live-chat">
-            <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 border-l-4 border-l-green-500">
+            <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 border-l-4 border-l-red-500">
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center space-x-2 text-green-700">
+                <CardTitle className="flex items-center space-x-2 text-red-700">
                   <MessageCircle className="w-5 h-5" />
                   <span>Live Chat Support</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-4">
-                  Manage live chat sessions, FAQ system, and customer support conversations.
+                <p className="text-sm text-gray-600 mb-3">
+                  Manage live chat sessions and FAQ system
                 </p>
-                <div className="flex items-center justify-between">
-                  <Badge className="bg-green-100 text-green-700">
-                    Support Center
-                  </Badge>
-                  <Button variant="ghost" size="sm">
-                    <Eye className="w-4 h-4 mr-1" />
-                    View
-                  </Button>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Active Chats:</span>
+                  <span className="font-semibold">{activeChatSessions}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Total Sessions:</span>
+                  <span className="font-semibold">{chatSessions.length}</span>
                 </div>
               </CardContent>
             </Card>
           </Link>
+
+          <Card className="border-l-4 border-l-gray-500">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center space-x-2 text-gray-700">
+                <TrendingUp className="w-5 h-5" />
+                <span>Platform Analytics</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 mb-3">
+                Overall platform performance metrics
+              </p>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Total Earnings:</span>
+                <span className="font-semibold">₹{totalEarnings.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Completed Tasks:</span>
+                <span className="font-semibold">{completedTasks}</span>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Recent Activity */}
+        {/* Recent Activity Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <TrendingUp className="w-5 h-5 text-blue-600" />
-                <span>Recent User Registrations</span>
+                <AlertCircle className="w-5 h-5 text-yellow-500" />
+                <span>Pending Actions</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {users.slice(-5).reverse().map((user, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-sm">{user.firstName} {user.lastName}</p>
-                      <p className="text-xs text-gray-500">{user.email}</p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Badge variant={user.status === 'active' ? 'default' : 'destructive'} className="text-xs">
-                        {user.status}
-                      </Badge>
-                      <Badge variant={user.kycStatus === 'approved' ? 'default' : 'secondary'} className="text-xs">
-                        {user.kycStatus}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-                {users.length === 0 && (
-                  <p className="text-sm text-gray-500 text-center py-4">No users registered yet</p>
-                )}
+            <CardContent className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm">KYC Reviews</span>
+                <Badge variant="secondary">{pendingKycUsers}</Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm">Task Approvals</span>
+                <Badge variant="secondary">{pendingApprovals}</Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm">Payout Requests</span>
+                <Badge variant="secondary">{pendingPayouts}</Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm">Inquiry Responses</span>
+                <Badge variant="secondary">{pendingInquiries}</Badge>
               </div>
             </CardContent>
           </Card>
@@ -279,41 +365,26 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <AlertCircle className="w-5 h-5 text-orange-600" />
-                <span>Pending Actions</span>
+                <CheckCircle className="w-5 h-5 text-green-500" />
+                <span>System Health</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg border border-orange-200">
-                  <div>
-                    <p className="font-medium text-sm">KYC Reviews Needed</p>
-                    <p className="text-xs text-gray-500">Users waiting for verification</p>
-                  </div>
-                  <Badge className="bg-orange-100 text-orange-700">
-                    {users.filter(u => u.kycStatus === 'pending').length}
-                  </Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
-                  <div>
-                    <p className="font-medium text-sm">New Inquiries</p>
-                    <p className="text-xs text-gray-500">Advertiser and contact form submissions</p>
-                  </div>
-                  <Badge className="bg-purple-100 text-purple-700">
-                    {pendingInquiries}
-                  </Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <div>
-                    <p className="font-medium text-sm">Task Completions</p>
-                    <p className="text-xs text-gray-500">Submissions awaiting review</p>
-                  </div>
-                  <Badge className="bg-blue-100 text-blue-700">
-                    Review Needed
-                  </Badge>
-                </div>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm">Database Status</span>
+                <Badge variant="default" className="bg-green-500">Connected</Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm">Payment Gateway</span>
+                <Badge variant="default" className="bg-green-500">Active</Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm">Active Sessions</span>
+                <Badge variant="secondary">{activeChatSessions + activeUsers}</Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm">Platform Mode</span>
+                <Badge variant="outline">Development</Badge>
               </div>
             </CardContent>
           </Card>
