@@ -11,6 +11,7 @@ import {
 import { Play, Coins, LogOut, Menu, X, IndianRupee } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
+import { LiveChat } from "./LiveChat";
 
 export default function Header() {
   const { user, isAuthenticated } = useAuth();

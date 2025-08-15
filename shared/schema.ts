@@ -53,6 +53,29 @@ export const userRoleEnum = pgEnum("user_role", [
   "admin"
 ]);
 
+// Support team role enum
+export const supportRoleEnum = pgEnum("support_role", [
+  "agent",
+  "supervisor",
+  "admin"
+]);
+
+// Chat session status enum
+export const chatStatusEnum = pgEnum("chat_status", [
+  "waiting",
+  "active",
+  "resolved",
+  "closed"
+]);
+
+// Message type enum
+export const messageTypeEnum = pgEnum("message_type", [
+  "user",
+  "agent",
+  "system",
+  "faq"
+]);
+
 // Task category enum
 export const taskCategoryEnum = pgEnum("task_category", [
   "app_download",
@@ -529,3 +552,111 @@ export type Task = typeof tasks.$inferSelect;
 export type InsertTask = z.infer<typeof insertTaskSchema>;
 export type TaskCompletion = typeof taskCompletions.$inferSelect;
 export type InsertTaskCompletion = z.infer<typeof insertTaskCompletionSchema>;
+
+// Support team members table
+export const supportTeam = pgTable("support_team", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  email: varchar("email").notNull().unique(),
+  role: supportRoleEnum("role").default("agent").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  lastActive: timestamp("last_active"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_support_team_email").on(table.email),
+  index("idx_support_team_role").on(table.role),
+  index("idx_support_team_active").on(table.isActive),
+]);
+
+// FAQ categories
+export const faqCategories = pgTable("faq_categories", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  order: integer("order").default(0),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// FAQ items
+export const faqs = pgTable("faqs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  categoryId: varchar("category_id").references(() => faqCategories.id),
+  question: text("question").notNull(),
+  answer: text("answer").notNull(),
+  order: integer("order").default(0),
+  isActive: boolean("is_active").default(true).notNull(),
+  views: integer("views").default(0),
+  helpful: integer("helpful").default(0),
+  notHelpful: integer("not_helpful").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_faqs_category").on(table.categoryId),
+  index("idx_faqs_active").on(table.isActive),
+]);
+
+// Chat sessions
+export const chatSessions = pgTable("chat_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  assignedAgentId: varchar("assigned_agent_id").references(() => supportTeam.id),
+  status: chatStatusEnum("status").default("waiting").notNull(),
+  priority: varchar("priority").default("normal").notNull(),
+  subject: varchar("subject"),
+  startedAt: timestamp("started_at").defaultNow(),
+  assignedAt: timestamp("assigned_at"),
+  resolvedAt: timestamp("resolved_at"),
+  closedAt: timestamp("closed_at"),
+  rating: integer("rating"),
+  feedback: text("feedback"),
+  lastActivity: timestamp("last_activity").defaultNow(),
+}, (table) => [
+  index("idx_chat_sessions_user").on(table.userId),
+  index("idx_chat_sessions_agent").on(table.assignedAgentId),
+  index("idx_chat_sessions_status").on(table.status),
+  index("idx_chat_sessions_priority").on(table.priority),
+  index("idx_chat_sessions_last_activity").on(table.lastActivity),
+]);
+
+// Enhanced Chat messages table
+export const liveChatMessages = pgTable("live_chat_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sessionId: varchar("session_id").references(() => chatSessions.id).notNull(),
+  senderId: varchar("sender_id"),
+  senderType: messageTypeEnum("sender_type").notNull(),
+  message: text("message").notNull(),
+  attachments: text("attachments").array(),
+  faqId: varchar("faq_id").references(() => faqs.id),
+  isRead: boolean("is_read").default(false),
+  timestamp: timestamp("timestamp").defaultNow(),
+}, (table) => [
+  index("idx_live_chat_messages_session").on(table.sessionId),
+  index("idx_live_chat_messages_sender").on(table.senderId),
+  index("idx_live_chat_messages_timestamp").on(table.timestamp),
+  index("idx_live_chat_messages_read").on(table.isRead),
+]);
+
+// Chat invitations for team members
+export const chatInvitations = pgTable("chat_invitations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email").notNull(),
+  role: supportRoleEnum("role").default("agent").notNull(),
+  token: varchar("token").notNull().unique(),
+  invitedBy: varchar("invited_by").references(() => supportTeam.id),
+  isUsed: boolean("is_used").default(false).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("idx_chat_invitations_token").on(table.token),
+  index("idx_chat_invitations_email").on(table.email),
+]);
+
+// Chat system types
+export type SupportTeam = typeof supportTeam.$inferSelect;
+export type FaqCategory = typeof faqCategories.$inferSelect;
+export type Faq = typeof faqs.$inferSelect;
+export type ChatSession = typeof chatSessions.$inferSelect;
+export type LiveChatMessage = typeof liveChatMessages.$inferSelect;
+export type ChatInvitation = typeof chatInvitations.$inferSelect;

@@ -2466,6 +2466,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Register Live Chat Routes
+  const { registerLiveChatRoutes } = await import("./liveChat");
+  registerLiveChatRoutes(app);
+
   const httpServer = createServer(app);
   
   // WebSocket server for live chat

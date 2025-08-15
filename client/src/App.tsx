@@ -1,43 +1,36 @@
-import React, { useState, useEffect, lazy } from "react";
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { useAuth } from "@/hooks/useAuth";
+import { Switch, Route } from "wouter";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
-
-import NotFound from "./pages/not-found";
-import Landing from "./pages/landing";
+import { useAuth } from "@/hooks/useAuth";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import ForgotPassword from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
 import Dashboard from "./pages/dashboard";
-import Videos from "./pages/videos";
-import VideoPlayer from "./pages/video-player";
 import Tasks from "./pages/tasks";
-import AdminTasks from "./pages/admin-tasks";
 import Earnings from "./pages/earnings";
+// import VideoWatch from "./pages/video-watch"; // Commented out - file may not exist
 import Referrals from "./pages/referrals";
 import Support from "./pages/support";
-import Admin from "./pages/admin";
+import KYC from "./pages/kyc";
+import Suspended from "./pages/suspended";
 import AdminLogin from "./pages/admin-login";
+import AdminTasks from "./pages/admin-tasks";
+import Landing from "./pages/landing";
 import PrivacyPolicy from "./pages/privacy-policy";
 import TermsConditions from "./pages/terms-conditions";
-import HowToEarn from "./pages/how-to-earn";
-import EarningsHistory from "./pages/earnings-history";
-import KYC from "./pages/kyc";
-import Profile from "./pages/profile";
-import SuspendedPage from "./pages/suspended";
 import About from "./pages/about";
 import Contact from "./pages/contact";
+import HowToEarn from "./pages/how-to-earn";
 import Careers from "./pages/careers";
 import PayoutSchedule from "./pages/payout-schedule";
 import ReferralProgram from "./pages/referral-program";
 import ShippingPolicy from "./pages/shipping-policy";
 import RefundPolicy from "./pages/refund-policy";
 import TaskDetails from "./pages/task-details";
+import AdminLiveChat from "./pages/admin-live-chat";
+import { FloatingChat } from "./components/FloatingChat";
 
 function AdminRoute() {
   const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
@@ -54,7 +47,7 @@ function AdminRoute() {
   }
   
   if (isAdminAuth) {
-    return <Admin />;
+    return <AdminTasks />;
   } else {
     return <AdminLogin />;
   }
@@ -134,6 +127,7 @@ function Router() {
       {/* Admin routes - separate from regular user auth */}
       <Route path="/admin" component={AdminRoute} />
       <Route path="/admin/tasks" component={AdminTasksRoute} />
+      <Route path="/admin/live-chat" component={() => <AdminLiveChat />} />
       <Route path="/admin-login" component={AdminLogin} />
       
       {/* Public routes - always accessible */}
@@ -164,45 +158,82 @@ function Router() {
             </div>
           );
         }
-        
-        if (isAuthenticated) {
-          // Check suspension status for home route too
-          if ((user as any)?.status === 'suspended') {
-            window.location.href = '/suspended';
-            return null;
-          }
-          return <Dashboard />;
-        }
-        
-        return <Landing />;
+        return isAuthenticated ? <Dashboard /> : <Landing />;
       }} />
       
-      {/* Protected routes - redirect to login if not authenticated */}
-      <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
-      <Route path="/tasks" component={() => <ProtectedRoute component={Tasks} />} />
-      <Route path="/videos" component={() => <ProtectedRoute component={Videos} />} />
-      <Route path="/video/:id" component={() => <ProtectedRoute component={VideoPlayer} />} />
-      <Route path="/earnings" component={() => <ProtectedRoute component={Earnings} />} />
-      <Route path="/earnings-history" component={() => <ProtectedRoute component={EarningsHistory} />} />
-      <Route path="/referrals" component={() => <ProtectedRoute component={Referrals} />} />
-      <Route path="/support" component={() => <ProtectedRoute component={Support} />} />
-      <Route path="/suspended" component={() => <ProtectedRoute component={SuspendedPage} />} />
-      <Route path="/kyc" component={() => <ProtectedRoute component={KYC} />} />
-      <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
-      <Route path="/task/:id" component={() => <ProtectedRoute component={TaskDetails} />} />
+      {/* Protected routes */}
+      <Route path="/dashboard">
+        <ProtectedRoute component={Dashboard} />
+      </Route>
+      <Route path="/tasks">
+        <ProtectedRoute component={Tasks} />
+      </Route>
+      <Route path="/task/:id">
+        {(params) => <ProtectedRoute component={() => <TaskDetails taskId={params.id} />} />}
+      </Route>
+      <Route path="/earnings">
+        <ProtectedRoute component={Earnings} />
+      </Route>
+{/* Video watch route commented out - file may not exist
+      <Route path="/video/:id">
+        {(params) => <ProtectedRoute component={() => <VideoWatch videoId={params.id} />} />}
+      </Route>
+      */}
+      <Route path="/referrals">
+        <ProtectedRoute component={Referrals} />
+      </Route>
+      <Route path="/support">
+        <ProtectedRoute component={Support} />
+      </Route>
+      <Route path="/kyc">
+        <ProtectedRoute component={KYC} />
+      </Route>
+      <Route path="/suspended">
+        <ProtectedRoute component={Suspended} />
+      </Route>
       
-      <Route component={NotFound} />
+      {/* 404 route */}
+      <Route>
+        <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
+            <p className="text-gray-600 mb-8">Page not found</p>
+            <a href="/" className="text-primary hover:underline">
+              Go back home
+            </a>
+          </div>
+        </div>
+      </Route>
     </Switch>
+  );
+}
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+function AppContent() {
+  const { isAuthenticated } = useAuth();
+  
+  return (
+    <>
+      <Router />
+      <Toaster />
+      {/* Show floating chat only for authenticated users */}
+      {isAuthenticated && <FloatingChat />}
+    </>
   );
 }
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <AppContent />
     </QueryClientProvider>
   );
 }
