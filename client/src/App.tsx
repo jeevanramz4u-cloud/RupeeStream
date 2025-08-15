@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useAuth } from "@/hooks/useAuth";
 import Login from "./pages/login";
@@ -34,6 +34,18 @@ import TaskDetails from "./pages/task-details";
 import AdminLiveChat from "./pages/admin-live-chat";
 import { FloatingChat } from "./components/FloatingChat";
 
+// Component to conditionally show floating chat
+function FloatingChatWidget() {
+  const [location] = useLocation();
+  const { hasUser } = useAuth();
+  
+  // Don't show chat on login, signup, or admin pages
+  const hiddenPages = ['/login', '/signup', '/admin', '/admin-login', '/admin-tasks', '/admin-inquiries', '/admin-live-chat'];
+  const shouldShowChat = hasUser && !hiddenPages.some(page => location.startsWith(page));
+  
+  return shouldShowChat ? <FloatingChat /> : null;
+}
+
 function AdminRoute() {
   const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
   
@@ -56,7 +68,7 @@ function AdminRoute() {
 }
 
 function AdminTasksRoute() {
-  const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
+  const { isAdminAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
   
   if (adminLoading) {
     return (
@@ -77,7 +89,7 @@ function AdminTasksRoute() {
 }
 
 function AdminInquiriesRoute() {
-  const { isAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
+  const { isAdminAuthenticated: isAdminAuth, isLoading: adminLoading } = useAdminAuth();
   
   if (adminLoading) {
     return (
@@ -98,7 +110,7 @@ function AdminInquiriesRoute() {
 }
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { fullUser: user, hasUser: isAuthenticated, isLoading } = useAuth();
   
   if (isLoading) {
     return (
@@ -234,14 +246,14 @@ const queryClient = new QueryClient({
 });
 
 function AppContent() {
-  const { isAuthenticated } = useAuth();
+  const { hasUser } = useAuth();
   
   return (
     <>
       <Router />
       <Toaster />
-      {/* Show floating chat only for authenticated users */}
-      {isAuthenticated && <FloatingChat />}
+      {/* Show floating chat only on support page for authenticated users */}
+      <FloatingChatWidget />
     </>
   );
 }

@@ -1,8 +1,10 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
+import { FloatingChat } from "@/components/FloatingChat";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { 
   Accordion,
   AccordionContent,
@@ -28,6 +30,8 @@ import {
 } from "lucide-react";
 
 export default function Support() {
+  const [showLiveChat, setShowLiveChat] = useState(false);
+
   const faqItems = [
     {
       question: "What bonuses do I get when signing up?",
@@ -110,6 +114,23 @@ export default function Support() {
           </div>
         </div>
 
+        {/* Live Chat Widget */}
+        {showLiveChat && (
+          <Card className="mb-8 border border-blue-200 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-blue-700">
+                <MessageCircle className="w-5 h-5" />
+                Live Chat Support - Intelligent FAQ Assistant
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-96 border rounded-lg overflow-hidden bg-white">
+                <FloatingChat />
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Contact Options */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="relative bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
@@ -125,8 +146,12 @@ export default function Support() {
               <div className="bg-blue-100 text-blue-800 text-xs px-3 py-2 rounded-full font-semibold mb-3">
                 ⚡ Available 24/7
               </div>
-              <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 font-semibold">
-                Start Live Chat
+              <Button 
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 font-semibold"
+                onClick={() => setShowLiveChat(!showLiveChat)}
+                data-testid="button-toggle-live-chat"
+              >
+                {showLiveChat ? 'Close Live Chat' : 'Start Live Chat'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
