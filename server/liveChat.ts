@@ -1,5 +1,6 @@
 // Live chat system implementation with development mode fallbacks
 import { type Express } from "express";
+import { isDevelopment, config } from "./config";
 
 // Sample data for development mode
 const sampleFaqCategories = [
@@ -133,8 +134,25 @@ export function registerLiveChatRoutes(app: Express) {
 
   // Get or create chat session for user
   app.get("/api/chat-session", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Authentication required" });
+    const isAuthenticated = req.isAuthenticated() || (req.session?.userId);
+    
+    if (!isAuthenticated) {
+      // Development fallback
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Chat session accessed without authentication, allowing access");
+        // Create a demo chat session
+        const demoSession = {
+          id: "demo-chat-session-001",
+          userId: "dev-demo-user",
+          status: "waiting" as const,
+          subject: "Demo Chat Session",
+          startedAt: new Date().toISOString(),
+          lastActivity: new Date().toISOString()
+        };
+        return res.json(demoSession);
+      } else {
+        return res.status(401).json({ message: "Authentication required" });
+      }
     }
 
     try {
@@ -163,8 +181,29 @@ export function registerLiveChatRoutes(app: Express) {
 
   // Create new chat session
   app.post("/api/chat-session", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Authentication required" });
+    const isAuthenticated = req.isAuthenticated() || (req.session?.userId);
+    
+    if (!isAuthenticated) {
+      // Development fallback
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log("Development mode: Chat session creation accessed without authentication, allowing access");
+        const { subject = "Demo Support Request" } = req.body;
+        
+        // Create a demo chat session
+        const demoSession = {
+          id: "demo-chat-session-" + Date.now(),
+          userId: "dev-demo-user",
+          status: "waiting" as const,
+          subject,
+          startedAt: new Date().toISOString(),
+          lastActivity: new Date().toISOString()
+        };
+        
+        chatSessions.set(demoSession.id, demoSession);
+        return res.json(demoSession);
+      } else {
+        return res.status(401).json({ message: "Authentication required" });
+      }
     }
 
     try {

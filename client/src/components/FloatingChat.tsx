@@ -193,34 +193,52 @@ export function FloatingChat() {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 right-6 z-50 group">
         <Button
           onClick={() => setIsOpen(true)}
-          className="rounded-full w-14 h-14 shadow-lg hover:shadow-xl relative"
+          className="rounded-full w-16 h-16 bg-gradient-to-br from-emerald-500 via-blue-500 to-purple-600 hover:from-emerald-600 hover:via-blue-600 hover:to-purple-700 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-110 animate-pulse relative"
           data-testid="button-open-chat"
         >
-          <MessageCircle className="h-6 w-6" />
+          <MessageCircle className="h-7 w-7 text-white drop-shadow-lg group-hover:scale-110 transition-transform duration-300" />
+          
           {hasUnreadMessages && (
-            <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-              !
+            <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-bounce shadow-lg">
+              <div className="w-full h-full bg-red-400 rounded-full animate-ping" />
             </div>
           )}
+          
+          {/* Online indicator */}
+          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white shadow-lg">
+            <div className="w-full h-full bg-green-300 rounded-full animate-pulse" />
+          </div>
         </Button>
+        
+        {/* Tooltip */}
+        <div className="absolute bottom-20 right-0 bg-black/90 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none backdrop-blur-sm">
+          💬 Live Support - We're Online!
+          <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black/90" />
+        </div>
       </div>
     );
   }
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      <Card className="w-80 h-96 shadow-xl">
-        <CardHeader className="pb-3">
+      <Card className="w-80 h-96 shadow-2xl border-0 bg-white/95 backdrop-blur-xl rounded-2xl overflow-hidden">
+        <CardHeader className="pb-3 bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-600 text-white">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">
-              {currentView === "faq" ? "Help & FAQ" : "Live Support"}
-            </CardTitle>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <MessageCircle className="w-4 h-4" />
+              </div>
+              <CardTitle className="text-lg font-semibold">
+                {currentView === "faq" ? "Help & FAQ" : "Live Support"}
+              </CardTitle>
+            </div>
             <Button
               variant="ghost"
               size="sm"
+              className="text-white/80 hover:text-white hover:bg-white/20 rounded-full"
               onClick={() => setIsOpen(false)}
               data-testid="button-close-chat"
             >
@@ -228,10 +246,11 @@ export function FloatingChat() {
             </Button>
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-2">
             <Button
-              variant={currentView === "faq" ? "default" : "outline"}
+              variant={currentView === "faq" ? "secondary" : "ghost"}
               size="sm"
+              className={`text-white border-white/30 ${currentView === "faq" ? "bg-white/20" : "hover:bg-white/10"}`}
               onClick={() => {
                 setCurrentView("faq");
                 setSelectedCategory(null);
@@ -242,8 +261,9 @@ export function FloatingChat() {
               FAQ
             </Button>
             <Button
-              variant={currentView === "chat" ? "default" : "outline"}
+              variant={currentView === "chat" ? "secondary" : "ghost"}
               size="sm"
+              className={`text-white border-white/30 ${currentView === "chat" ? "bg-white/20" : "hover:bg-white/10"}`}
               onClick={() => setCurrentView("chat")}
               data-testid="button-chat-tab"
             >
@@ -252,7 +272,7 @@ export function FloatingChat() {
           </div>
         </CardHeader>
 
-        <CardContent className="p-0">
+        <CardContent className="p-0 bg-gradient-to-b from-gray-50 to-white">
           <ScrollArea className="h-64 px-4">
             {currentView === "faq" && (
               <div className="space-y-3">
@@ -276,10 +296,10 @@ export function FloatingChat() {
                     ))}
                     <Button
                       onClick={() => handleStartChat()}
-                      className="w-full mt-4"
+                      className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white font-medium py-2.5 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                       data-testid="button-start-chat"
                     >
-                      Start Live Chat
+                      🚀 Start Live Chat
                     </Button>
                   </>
                 )}
