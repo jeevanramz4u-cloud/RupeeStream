@@ -282,7 +282,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check password
       const bcrypt = await import('bcryptjs');
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = user.password ? await bcrypt.compare(password, user.password) : false;
       if (!isPasswordValid) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
@@ -1020,7 +1020,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         '9999999999', // Default phone for donations
         donorEmail,
         donorName,
-        'platform_donation'
+        'kyc_fee'
       );
 
       console.log(`Donation payment session created: ${paymentSession.payment_session_id} for ₹${amount}`);
