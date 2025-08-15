@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import { ArrowLeft, Calendar, Coins, Video, Users, Clock, Wallet } from "lucide-react";
+import { ArrowLeft, Calendar, Coins, Video, Users, Clock, Wallet, CheckCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 
@@ -73,8 +73,10 @@ export default function EarningsHistory() {
   // Group earnings by type for summary
   const videoEarnings = (earnings as any[]).filter((e: any) => e.type === 'video');
   const referralEarnings = (earnings as any[]).filter((e: any) => e.type === 'referral');
+  const taskEarnings = (earnings as any[]).filter((e: any) => e.type === 'task');
   
   const totalVideoEarnings = videoEarnings.reduce((sum: number, e: any) => sum + parseFloat(e.amount), 0);
+  const totalTaskEarnings = taskEarnings.reduce((sum: number, e: any) => sum + parseFloat(e.amount), 0);
   const totalReferralEarnings = referralEarnings.reduce((sum: number, e: any) => sum + parseFloat(e.amount), 0);
 
   return (
@@ -100,7 +102,7 @@ export default function EarningsHistory() {
         </div>
 
         {/* Earnings Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-6 mb-8">
           <Card className="touch-manipulation">
             <CardContent className="pt-4">
               <div className="flex items-center">
@@ -120,6 +122,18 @@ export default function EarningsHistory() {
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-500">Video Earnings</p>
                   <p className="text-xl sm:text-2xl font-bold text-gray-900">₹{totalVideoEarnings.toFixed(2)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="touch-manipulation">
+            <CardContent className="pt-4">
+              <div className="flex items-center">
+                <CheckCircle className="h-8 w-8 text-green-600" />
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-500">Task Earnings</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">₹{totalTaskEarnings.toFixed(2)}</p>
                 </div>
               </div>
             </CardContent>
@@ -211,13 +225,22 @@ export default function EarningsHistory() {
               <div className="text-center py-8">
                 <Coins className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500">No earnings yet</p>
-                <p className="text-sm text-gray-400">Start watching videos to earn money!</p>
-                <Button 
-                  onClick={() => setLocation("/videos")} 
-                  className="mt-4"
-                >
-                  Browse Videos
-                </Button>
+                <p className="text-sm text-gray-400">Start completing tasks and watching videos to earn money!</p>
+                <div className="flex gap-2 mt-4">
+                  <Button 
+                    onClick={() => setLocation("/tasks")} 
+                    className="flex-1"
+                  >
+                    Browse Tasks
+                  </Button>
+                  <Button 
+                    onClick={() => setLocation("/videos")} 
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Watch Videos
+                  </Button>
+                </div>
               </div>
             ) : (
               <div className="space-y-3">
@@ -230,6 +253,8 @@ export default function EarningsHistory() {
                         <div className="flex-shrink-0 mt-0.5">
                           {earning.type === 'video' ? (
                             <Video className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+                          ) : earning.type === 'task' ? (
+                            <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
                           ) : (
                             <Users className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
                           )}
@@ -241,10 +266,10 @@ export default function EarningsHistory() {
                           {/* Mobile: Stack badge and date vertically */}
                           <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 mt-1">
                             <Badge 
-                              variant={earning.type === 'video' ? 'default' : 'secondary'}
-                              className="text-xs w-fit"
+                              variant={earning.type === 'video' ? 'default' : earning.type === 'task' ? 'outline' : 'secondary'}
+                              className={`text-xs w-fit ${earning.type === 'task' ? 'border-green-200 text-green-700 bg-green-50' : ''}`}
                             >
-                              {earning.type === 'video' ? 'Video' : 'Referral'}
+                              {earning.type === 'video' ? 'Video' : earning.type === 'task' ? 'Task' : 'Referral'}
                             </Badge>
                             <span className="text-xs text-gray-500 sm:ml-2">
                               {format(new Date(earning.createdAt), 'MMM d, yyyy h:mm a')}

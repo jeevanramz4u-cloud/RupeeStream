@@ -350,6 +350,7 @@ export interface IStorage {
   createTask(task: InsertTask): Promise<Task>;
   updateTask(id: string, updates: Partial<Task>): Promise<Task | undefined>;
   deleteTask(id: string): Promise<boolean>;
+  incrementTaskCompletion(taskId: string): Promise<void>;
   
   // Task completion operations
   getUserTaskCompletions(userId: string): Promise<TaskCompletion[]>;
@@ -2007,6 +2008,21 @@ export class DatabaseStorage implements IStorage {
       if (isDevelopment() && config.database.fallbackEnabled) {
         console.log("Development mode: Task deletion simulated (database unavailable)");
         return true; // Simulate successful deletion
+      }
+      throw error;
+    }
+  }
+
+  async incrementTaskCompletion(taskId: string): Promise<void> {
+    try {
+      await db
+        .update(tasks)
+        .set({ currentCompletions: sql`${tasks.currentCompletions} + 1` })
+        .where(eq(tasks.id, taskId));
+    } catch (error) {
+      if (isDevelopment() && config.database.fallbackEnabled) {
+        console.log(`Development mode: Task completion count incremented for ${taskId}`);
+        return;
       }
       throw error;
     }

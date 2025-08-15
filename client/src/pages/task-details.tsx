@@ -34,6 +34,96 @@ import { useState, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { ImageUpload } from "@/components/image-upload";
 
+// Task-specific instructions and requirements
+const getTaskInstructions = (category: string) => {
+  switch (category) {
+    case 'app_download':
+      return {
+        steps: [
+          "Click 'Start Task' to open the app store link",
+          "Download and install the app on your device",
+          "Create an account using valid details",
+          "Open the app and complete initial setup",
+          "Take screenshot of successful installation and account creation"
+        ],
+        proofRequired: "Screenshots showing: 1) App installed on device, 2) Account creation confirmation, 3) App home screen with your profile",
+        tips: "Ensure app is fully functional before submitting. Use real details for account creation."
+      };
+    case 'business_review':
+      return {
+        steps: [
+          "Click 'Start Task' to open the business page",
+          "Find the business on Google Maps/review platform",
+          "Write a detailed, honest review (minimum 50 words)",
+          "Rate the business appropriately (4-5 stars typically)",
+          "Submit your review and wait for approval"
+        ],
+        proofRequired: "Screenshot showing: 1) Your published review with your name visible, 2) Rating given, 3) Review text clearly visible",
+        tips: "Write genuine, helpful reviews. Mention specific services or experiences. Avoid generic comments."
+      };
+    case 'product_review':
+      return {
+        steps: [
+          "Click 'Start Task' to open the product page",
+          "Read product details and specifications carefully",
+          "Write a comprehensive review based on features/description",
+          "Rate the product fairly (include pros and cons)",
+          "Submit review on the platform"
+        ],
+        proofRequired: "Screenshot showing: 1) Your published review with rating, 2) Review content visible, 3) Your reviewer profile/name",
+        tips: "Focus on product features, value for money, and potential use cases. Be detailed and helpful."
+      };
+    case 'channel_subscribe':
+      return {
+        steps: [
+          "Click 'Start Task' to open the YouTube channel",
+          "Subscribe to the channel by clicking Subscribe button",
+          "Like the most recent video on the channel",
+          "Optional: Leave a positive comment on the video",
+          "Take screenshots showing your subscription and like"
+        ],
+        proofRequired: "Screenshots showing: 1) Subscribed status with notification bell, 2) Liked video with thumbs up highlighted, 3) Channel subscriber count increased",
+        tips: "Make sure you're logged into your YouTube account. Engagement helps creators grow their channel."
+      };
+    case 'comment_like':
+      return {
+        steps: [
+          "Click 'Start Task' to open the social media post",
+          "Like the post by clicking the like/heart button",
+          "Write a meaningful comment (minimum 10 words)",
+          "Engage naturally - avoid spam-like behavior",
+          "Take screenshots showing your interaction"
+        ],
+        proofRequired: "Screenshots showing: 1) Your like on the post, 2) Your comment posted with your username, 3) Post engagement metrics",
+        tips: "Write genuine comments that add value. Avoid generic phrases like 'nice post' or 'good job'."
+      };
+    case 'youtube_video_see':
+      return {
+        steps: [
+          "Click 'Start Task' to open the YouTube video",
+          "Watch at least 80% of the video duration",
+          "Like the video and subscribe to the channel",
+          "Leave a thoughtful comment about the video content",
+          "Take screenshots of your engagement"
+        ],
+        proofRequired: "Screenshots showing: 1) Video watch time/progress, 2) Your like and subscription, 3) Your comment on the video",
+        tips: "Actually watch the video to leave meaningful comments. Creators value genuine engagement over fake views."
+      };
+    default:
+      return {
+        steps: [
+          "Click 'Start Task' to open the task link",
+          "Follow the specific instructions provided",
+          "Complete the required actions thoroughly",
+          "Gather proof of completion as specified",
+          "Submit your proof for review"
+        ],
+        proofRequired: "Screenshots or evidence as specified in the task requirements",
+        tips: "Read all instructions carefully before starting. Quality submissions get approved faster."
+      };
+  }
+};
+
 const taskCategoryIcons = {
   app_download: Smartphone,
   business_review: Star,
@@ -60,12 +150,12 @@ export default function TaskDetails() {
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [taskStarted, setTaskStarted] = useState(false);
 
-  const { data: task, isLoading: taskLoading } = useQuery({
+  const { data: task, isLoading: taskLoading } = useQuery<any>({
     queryKey: ["/api/tasks", taskId],
     enabled: !!taskId && !!user,
   });
 
-  const { data: completions = [] } = useQuery({
+  const { data: completions = [] } = useQuery<any[]>({
     queryKey: ["/api/task-completions"],
     enabled: !!user,
   });
@@ -233,6 +323,7 @@ export default function TaskDetails() {
 
   const IconComponent = taskCategoryIcons[task.category as keyof typeof taskCategoryIcons] || FileText;
   const status = getTaskCompletionStatus();
+  const taskInstructions = getTaskInstructions(task.category);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -283,13 +374,92 @@ export default function TaskDetails() {
               
               <CardContent className="space-y-6">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
+                  <h3 className="font-semibold text-gray-900 mb-2">Task Description</h3>
                   <p className="text-gray-700 leading-relaxed">{task.description}</p>
                 </div>
 
+                {/* Category-specific instructions */}
+                {task.category === 'app_download' && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-blue-900 mb-2">Step-by-Step Instructions:</h4>
+                    <ol className="list-decimal list-inside text-sm text-blue-800 space-y-1">
+                      <li>Click the task link to visit the app store page</li>
+                      <li>Download and install the application</li>
+                      <li>Open the app and complete registration with valid details</li>
+                      <li>Take a screenshot of the successful installation/registration</li>
+                      <li>Submit the screenshot as proof of completion</li>
+                    </ol>
+                  </div>
+                )}
+
+                {task.category === 'business_review' && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-yellow-900 mb-2">Review Guidelines:</h4>
+                    <ul className="list-disc list-inside text-sm text-yellow-800 space-y-1">
+                      <li>Write an honest, detailed review (minimum 50 words)</li>
+                      <li>Rate the business with 4-5 stars</li>
+                      <li>Mention specific aspects like service quality, location, etc.</li>
+                      <li>Use authentic language - avoid generic templates</li>
+                      <li>Take a screenshot of your published review</li>
+                    </ul>
+                  </div>
+                )}
+
+                {task.category === 'product_review' && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-green-900 mb-2">Product Review Process:</h4>
+                    <ol className="list-decimal list-inside text-sm text-green-800 space-y-1">
+                      <li>Visit the product page using the provided link</li>
+                      <li>Read existing reviews to understand the product</li>
+                      <li>Write a balanced review covering pros and cons</li>
+                      <li>Include details about quality, value for money, etc.</li>
+                      <li>Submit screenshot showing your published review</li>
+                    </ol>
+                  </div>
+                )}
+
+                {task.category === 'channel_subscribe' && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-red-900 mb-2">Subscription Steps:</h4>
+                    <ol className="list-decimal list-inside text-sm text-red-800 space-y-1">
+                      <li>Click the link to visit the YouTube channel</li>
+                      <li>Click the "Subscribe" button (bell icon optional)</li>
+                      <li>Like the most recent video on the channel</li>
+                      <li>Take screenshot showing subscription confirmation</li>
+                      <li>Include screenshot of the liked video</li>
+                    </ol>
+                  </div>
+                )}
+
+                {task.category === 'comment_like' && (
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-purple-900 mb-2">Engagement Instructions:</h4>
+                    <ul className="list-disc list-inside text-sm text-purple-800 space-y-1">
+                      <li>Like the specified post/content</li>
+                      <li>Write a meaningful comment (avoid spam)</li>
+                      <li>Keep comments positive and relevant</li>
+                      <li>No offensive or inappropriate language</li>
+                      <li>Screenshot both the like and your comment</li>
+                    </ul>
+                  </div>
+                )}
+
+                {task.category === 'youtube_video_see' && (
+                  <div className="bg-pink-50 border border-pink-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-pink-900 mb-2">Video Viewing Requirements:</h4>
+                    <ol className="list-decimal list-inside text-sm text-pink-800 space-y-1">
+                      <li>Watch at least 80% of the video duration</li>
+                      <li>Like the video if you find it helpful</li>
+                      <li>Leave a thoughtful comment about the content</li>
+                      <li>Screenshot the video showing your view time</li>
+                      <li>Include screenshot of your comment</li>
+                    </ol>
+                  </div>
+                )}
+
                 {task.requirements && (
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Requirements</h3>
+                    <h3 className="font-semibold text-gray-900 mb-2">Specific Requirements</h3>
                     <p className="text-gray-700 leading-relaxed">{task.requirements}</p>
                   </div>
                 )}
@@ -297,19 +467,62 @@ export default function TaskDetails() {
                 {task.taskLink && (
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Task Link</h3>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
                       <ExternalLink className="w-4 h-4 text-blue-600" />
                       <a 
                         href={task.taskLink} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline break-all"
+                        className="text-blue-600 hover:text-blue-800 underline break-all font-medium"
                       >
                         {task.taskLink}
                       </a>
                     </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      This link will open automatically when you start the task
+                    </p>
                   </div>
                 )}
+
+                {/* Step-by-step Instructions */}
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+                    How to Complete This Task
+                  </h3>
+                  <div className="bg-blue-50 rounded-lg p-4 space-y-3">
+                    {taskInstructions.steps.map((step, index) => (
+                      <div key={index} className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                          {index + 1}
+                        </div>
+                        <span className="text-sm text-blue-900">{step}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Proof Requirements */}
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
+                    <ShieldCheck className="w-5 h-5 text-yellow-600 mr-2" />
+                    Proof Required for Approval
+                  </h3>
+                  <div className="bg-yellow-50 rounded-lg p-4">
+                    <p className="text-sm text-yellow-900">{taskInstructions.proofRequired}</p>
+                  </div>
+                </div>
+
+                {/* Tips for Success */}
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
+                    <AlertTriangle className="w-5 h-5 text-green-600 mr-2" />
+                    Tips for Success
+                  </h3>
+                  <div className="bg-green-50 rounded-lg p-4">
+                    <p className="text-sm text-green-900">{taskInstructions.tips}</p>
+                  </div>
+                </div>
 
                 {/* Task Progress Info */}
                 <div className="bg-gray-50 rounded-lg p-4">
@@ -391,14 +604,29 @@ export default function TaskDetails() {
                 )}
 
                 {!taskStarted && (
-                  <div className="text-center">
-                    <div className="text-sm text-gray-600 mb-2">How it works:</div>
-                    <div className="text-xs text-gray-500 space-y-1">
-                      <div>1. Click "Start Task" to begin</div>
-                      <div>2. Complete the task on the opened link</div>
-                      <div>3. Take screenshots as proof</div>
-                      <div>4. Submit for review</div>
-                      <div>5. Get paid upon approval!</div>
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <div className="text-sm font-semibold text-gray-700 mb-3">Quick Start Guide:</div>
+                    <div className="text-xs text-gray-600 space-y-2">
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="w-5 h-5 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-xs">1</div>
+                        <span>Click "Start Task" to begin timer</span>
+                      </div>
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="w-5 h-5 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-xs">2</div>
+                        <span>Complete task on the opened link</span>
+                      </div>
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="w-5 h-5 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-xs">3</div>
+                        <span>Take clear screenshots as proof</span>
+                      </div>
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="w-5 h-5 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-xs">4</div>
+                        <span>Submit for admin review</span>
+                      </div>
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="w-5 h-5 bg-green-100 text-green-700 rounded-full flex items-center justify-center font-bold text-xs">5</div>
+                        <span>Get paid within 5-20 minutes!</span>
+                      </div>
                     </div>
                   </div>
                 )}

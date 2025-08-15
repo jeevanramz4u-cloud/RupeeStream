@@ -339,9 +339,17 @@ export default function AdminTasks() {
                     {task.description}
                   </p>
                   
-                  <div className="text-xs text-gray-500 mb-4">
-                    {task.currentCompletions || 0} completions
-                    {task.maxCompletions && ` / ${task.maxCompletions} max`}
+                  <div className="bg-gray-50 rounded-lg p-3 mb-4">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Completions:</span>
+                      <span className="font-semibold text-blue-600">
+                        {task.currentCompletions || 0}{task.maxCompletions ? ` / ${task.maxCompletions}` : ''}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm mt-1">
+                      <span className="text-gray-600">Time Limit:</span>
+                      <span className="font-medium">{task.timeLimit || 'No limit'}</span>
+                    </div>
                   </div>
                   
                   <div className="flex gap-2">
