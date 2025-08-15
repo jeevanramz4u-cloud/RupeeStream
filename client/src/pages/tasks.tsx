@@ -41,7 +41,7 @@ export default function Tasks() {
 
   const { data: tasks = [], isLoading: tasksLoading } = useQuery({
     queryKey: ["/api/tasks"],
-    enabled: !!user,
+    // Allow viewing tasks without authentication for browsing
   });
 
   const { data: completions = [] } = useQuery({
@@ -69,14 +69,135 @@ export default function Tasks() {
     return tasksList.filter(task => task.category === category && task.isActive).length;
   };
 
+  // Allow users to browse tasks without login, but require login to complete them
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 safe-area-padding">
         <Header />
-        <main className="max-w-7xl mx-auto px-4 py-8">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Please log in to access tasks</h1>
+        <main className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+          <div className="mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Available Tasks & Earning Opportunities</h1>
+            <p className="text-gray-600 text-base sm:text-lg mb-4">
+              Browse our task categories and see what you can earn. <Link href="/login" className="text-primary hover:underline font-medium">Login</Link> or <Link href="/signup" className="text-primary hover:underline font-medium">sign up</Link> to start completing tasks!
+            </p>
+            
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Coins className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-blue-900">Start Earning Today!</h3>
+                  <p className="text-sm text-blue-700">Join thousands of users completing simple tasks and earning real money.</p>
+                </div>
+                <Button 
+                  className="ml-auto bg-blue-600 hover:bg-blue-700"
+                  onClick={() => window.location.href = '/signup'}
+                >
+                  Get Started
+                </Button>
+              </div>
+            </div>
           </div>
+
+          {/* Show tasks for browsing */}
+          {tasksLoading ? (
+            <Card>
+              <CardContent className="p-6">
+                <div className="animate-pulse space-y-4">
+                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  {[...Array(5)].map((_, index) => (
+                    <div key={index} className="flex space-x-4">
+                      <div className="h-12 bg-gray-200 rounded w-12"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                      </div>
+                      <div className="h-8 bg-gray-200 rounded w-24"></div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ) : tasksList.length === 0 ? (
+            <Card>
+              <CardContent className="text-center py-16">
+                <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-xl font-medium text-gray-900 mb-2">No Tasks Available</h3>
+                <p className="text-gray-600 mb-6">Check back soon for new earning opportunities!</p>
+                <Button onClick={() => window.location.reload()}>Refresh Page</Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Coins className="w-5 h-5" />
+                  Available Tasks ({tasksList.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-12"></TableHead>
+                        <TableHead>Task Details</TableHead>
+                        <TableHead className="w-24 text-center">Reward</TableHead>
+                        <TableHead className="w-20 text-center">Time</TableHead>
+                        <TableHead className="w-32 text-center">Action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredTasks.map((task: any) => {
+                        const IconComponent = taskCategoryIcons[task.category as keyof typeof taskCategoryIcons] || FileText;
+                        
+                        return (
+                          <TableRow key={task.id} className="hover:bg-gray-50">
+                            <TableCell className="p-3">
+                              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <IconComponent className="w-5 h-5 text-primary" />
+                              </div>
+                            </TableCell>
+                            <TableCell className="p-3">
+                              <div className="space-y-1">
+                                <h3 className="font-medium text-gray-900 text-sm leading-tight">{task.title}</h3>
+                                <p className="text-xs text-gray-600 line-clamp-2">{task.description}</p>
+                                <Badge 
+                                  variant="secondary" 
+                                  className="text-xs px-2 py-0.5 h-auto"
+                                >
+                                  {task.category.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                                </Badge>
+                              </div>
+                            </TableCell>
+                            <TableCell className="p-3 text-center">
+                              <div className="font-bold text-green-600 text-lg">₹{task.reward}</div>
+                            </TableCell>
+                            <TableCell className="p-3 text-center">
+                              <div className="flex items-center justify-center gap-1 text-sm text-gray-600">
+                                <Clock className="w-3 h-3" />
+                                {task.timeLimit}m
+                              </div>
+                            </TableCell>
+                            <TableCell className="p-3 text-center">
+                              <Button 
+                                size="sm" 
+                                onClick={() => window.location.href = '/login'}
+                                className="text-xs h-8 px-3"
+                              >
+                                Login to Start
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </main>
         <Footer />
       </div>

@@ -16,18 +16,18 @@ import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, Target, Users, TrendingUp, Star, ArrowRight } from "lucide-react";
 
 const advertiserFormSchema = z.object({
-  companyName: z.string().min(2, "Company name must be at least 2 characters"),
-  contactPerson: z.string().min(2, "Contact person name is required"),
-  email: z.string().email("Valid email is required"),
-  phone: z.string().min(10, "Valid phone number is required"),
-  website: z.string().url("Valid website URL is required").optional().or(z.literal("")),
+  companyName: z.string().min(2, "Company name must be at least 2 characters").max(150, "Company name is too long"),
+  contactPerson: z.string().min(2, "Contact person name is required").max(100, "Name is too long"),
+  email: z.string().email("Valid email is required").max(200, "Email is too long"),
+  phone: z.string().min(10, "Valid phone number is required").max(15, "Phone number is too long").regex(/^[\d\s\-\+\(\)]{10,15}$/, "Please enter a valid phone number"),
+  website: z.string().url("Please enter a valid website URL").optional().or(z.literal("")),
   industry: z.string().min(1, "Please select an industry"),
   campaignBudget: z.string().min(1, "Please select a budget range"),
-  taskTypes: z.array(z.string()).min(1, "Please select at least one task type"),
-  campaignObjective: z.string().min(10, "Please describe your campaign objective"),
-  targetAudience: z.string().min(10, "Please describe your target audience"),
+  taskTypes: z.array(z.string()).min(1, "Please select at least one task type").max(6, "Too many task types selected"),
+  campaignObjective: z.string().min(20, "Please provide more details about your campaign objective (minimum 20 characters)").max(1000, "Campaign objective is too long"),
+  targetAudience: z.string().min(20, "Please provide more details about your target audience (minimum 20 characters)").max(1000, "Target audience description is too long"),
   campaignDuration: z.string().min(1, "Please select campaign duration"),
-  additionalRequirements: z.string().optional(),
+  additionalRequirements: z.string().max(1500, "Additional requirements are too long").optional(),
 });
 
 type AdvertiserFormData = z.infer<typeof advertiserFormSchema>;

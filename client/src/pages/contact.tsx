@@ -17,11 +17,11 @@ import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 const contactFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Valid email is required"),
-  phone: z.string().optional(),
-  subject: z.string().min(5, "Subject must be at least 5 characters"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
+  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name is too long"),
+  email: z.string().email("Valid email is required").max(200, "Email is too long"),
+  phone: z.string().optional().refine((val) => !val || /^[\d\s\-\+\(\)]{10,15}$/.test(val), "Please enter a valid phone number"),
+  subject: z.string().min(5, "Subject must be at least 5 characters").max(200, "Subject is too long"),
+  message: z.string().min(10, "Message must be at least 10 characters").max(2000, "Message is too long"),
   inquiryType: z.string().min(1, "Please select an inquiry type"),
 });
 

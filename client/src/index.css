@@ -74,6 +74,70 @@
     color: hsl(153, 60%, 53%);
   }
   
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+  
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+  
+  .safe-area-padding {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(271, 91%, 65%) 100%);
+  }
+  
+  .gradient-secondary {
+    background: linear-gradient(135deg, hsl(153, 60%, 53%) 0%, hsl(217, 91%, 60%) 100%);
+  }
+  
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Additional responsive utilities */
+@layer utilities {
+  .mobile-padding {
+    padding: 0.75rem;
+  }
+  
+  .mobile-margin {
+    margin: 0.75rem;
+  }
+}
+
+@layer utilities {
+  /* Color utilities */
   .text-accent {
     color: hsl(217, 91%, 60%);
   }

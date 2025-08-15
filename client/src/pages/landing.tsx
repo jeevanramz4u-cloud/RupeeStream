@@ -48,9 +48,9 @@ export default function Landing() {
                   <Coins className="w-8 h-8 text-white" />
                 </div>
                 <div className="text-left">
-                  <span className="text-3xl font-black text-green-700 block tracking-tight leading-none">₹1,000</span>
-                  <span className="text-green-600 font-bold text-sm mt-1 block">Welcome Bonus</span>
-                  <span className="text-xs text-green-500 font-medium">After KYC Verification</span>
+                  <span className="text-3xl font-black text-green-700 block tracking-tight leading-none">₹49</span>
+                  <span className="text-green-600 font-bold text-sm mt-1 block">Referral Bonus</span>
+                  <span className="text-xs text-green-500 font-medium">Per Verified Referral</span>
                 </div>
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 rounded-b-3xl"></div>

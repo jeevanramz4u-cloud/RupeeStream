@@ -1152,11 +1152,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Task routes - Allow public access for browsing
   app.get('/api/tasks', async (req, res) => {
     try {
+      const startTime = Date.now();
       const tasks = await storage.getTasks();
-      res.json(tasks);
+      
+      // Filter only active tasks for public API
+      const activeTasks = tasks.filter(task => task.isActive);
+      
+      // Add cache headers for better performance
+      res.set('Cache-Control', 'public, max-age=300'); // 5 minutes cache
+      res.set('X-Response-Time', `${Date.now() - startTime}ms`);
+      
+      // Sanitize sensitive data for public consumption
+      const publicTasks = activeTasks.map(task => ({
+        ...task,
+        createdBy: undefined, // Remove sensitive admin info
+        updatedAt: undefined  // Remove internal timestamps
+      }));
+      
+      res.json(publicTasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
-      res.status(500).json({ message: "Failed to fetch tasks" });
+      res.status(500).json({ 
+        message: "Failed to fetch tasks",
+        error: isDevelopment ? error.message : "Internal server error"
+      });
     }
   });
 
