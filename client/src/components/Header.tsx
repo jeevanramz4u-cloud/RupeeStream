@@ -64,16 +64,23 @@ export default function Header() {
 
             {/* Mobile Menu Button and Desktop Auth buttons */}
             <div className="flex items-center space-x-2">
-              {/* Mobile Menu Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="md:hidden p-2"
+              {/* Mobile Menu Button - Custom Design */}
+              <button
+                className="md:hidden relative w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex flex-col justify-center items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 data-testid="mobile-menu-button"
+                aria-label="Toggle menu"
               >
-                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </Button>
+                <div className={`w-5 h-0.5 bg-gray-700 transition-all duration-300 ${
+                  isMobileMenuOpen ? 'rotate-45 translate-y-1' : ''
+                }`} />
+                <div className={`w-5 h-0.5 bg-gray-700 my-1 transition-all duration-300 ${
+                  isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
+                }`} />
+                <div className={`w-5 h-0.5 bg-gray-700 transition-all duration-300 ${
+                  isMobileMenuOpen ? '-rotate-45 -translate-y-1' : ''
+                }`} />
+              </button>
 
               {/* Desktop Auth buttons - hidden on login/signup pages */}
               {!isAuthPage && (
@@ -175,16 +182,23 @@ export default function Header() {
 
           {/* User Section */}
           <div className="flex items-center space-x-2 sm:space-x-3">
-            {/* Mobile Menu Button for authenticated users */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden p-2"
+            {/* Mobile Menu Button for authenticated users - Custom Design */}
+            <button
+              className="md:hidden relative w-10 h-10 bg-primary/10 hover:bg-primary/20 rounded-xl flex flex-col justify-center items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               data-testid="mobile-menu-button-auth"
+              aria-label="Toggle menu"
             >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
+              <div className={`w-5 h-0.5 bg-primary transition-all duration-300 ${
+                isMobileMenuOpen ? 'rotate-45 translate-y-1' : ''
+              }`} />
+              <div className={`w-5 h-0.5 bg-primary my-1 transition-all duration-300 ${
+                isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
+              }`} />
+              <div className={`w-5 h-0.5 bg-primary transition-all duration-300 ${
+                isMobileMenuOpen ? '-rotate-45 -translate-y-1' : ''
+              }`} />
+            </button>
             
             {/* Earnings Display - Always Visible on Desktop */}
             <Link href="/earnings" className="hidden sm:block">
