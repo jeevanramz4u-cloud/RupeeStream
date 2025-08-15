@@ -1516,11 +1516,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
+      // Force session save to ensure persistence
       req.session.adminUser = admin;
-      res.json({ 
-        id: admin.id, 
-        username: admin.username, 
-        name: admin.name 
+      req.session.save((err) => {
+        if (err) {
+          console.error("Admin session save error:", err);
+          return res.status(500).json({ message: "Session save failed" });
+        }
+        
+        console.log("Admin session saved successfully for:", admin.username);
+        res.json({ 
+          id: admin.id, 
+          username: admin.username, 
+          name: admin.name 
+        });
       });
     } catch (error) {
       console.error("Admin login error:", error);

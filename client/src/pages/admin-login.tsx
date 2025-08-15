@@ -34,8 +34,10 @@ export default function AdminLogin() {
         title: "Success",
         description: "Admin login successful",
       });
-      // Force a page reload to trigger auth state refresh
-      window.location.href = "/admin";
+      // Small delay to ensure session is saved, then redirect
+      setTimeout(() => {
+        window.location.href = "/admin";
+      }, 500);
     },
     onError: (error: any) => {
       toast({

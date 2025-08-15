@@ -719,7 +719,7 @@ const TaskManagementContent = () => {
 };
 
 export default function Admin() {
-  const { adminUser, isLoading: isAdminLoading, isAuthenticated } = useAdminAuth();
+  const { adminUser, isLoading: isAdminLoading, isAdminAuthenticated } = useAdminAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -806,7 +806,7 @@ export default function Admin() {
 
   // Check admin authentication
   useEffect(() => {
-    if (!isAdminLoading && !isAuthenticated) {
+    if (!isAdminLoading && !isAdminAuthenticated) {
       toast({
         title: "Access Denied",
         description: "You need admin privileges to access this page.",
@@ -816,7 +816,7 @@ export default function Admin() {
         setLocation('/admin-login');
       }, 1000);
     }
-  }, [isAuthenticated, isAdminLoading, toast, setLocation]);
+  }, [isAdminAuthenticated, isAdminLoading, toast, setLocation]);
 
   // Show loading spinner while checking authentication
   if (isAdminLoading) {
@@ -839,7 +839,7 @@ export default function Admin() {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAdminAuthenticated) {
     return (
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
         <div className="text-center">
@@ -854,24 +854,24 @@ export default function Admin() {
 
   const { data: users = [] } = useQuery({
     queryKey: ["/api/admin/users"],
-    enabled: isAuthenticated,
+    enabled: isAdminAuthenticated,
   });
 
 
 
   const { data: payouts = [] } = useQuery({
     queryKey: ["/api/admin/payouts"],
-    enabled: isAuthenticated,
+    enabled: isAdminAuthenticated,
   });
 
   const { data: analytics = {} } = useQuery({
     queryKey: ["/api/admin/analytics"],
-    enabled: isAuthenticated,
+    enabled: isAdminAuthenticated,
   });
 
   const { data: paymentHistory = [] } = useQuery({
     queryKey: ["/api/admin/payment-history"],
-    enabled: isAuthenticated,
+    enabled: isAdminAuthenticated,
   });
 
   // Type cast for payment history data
