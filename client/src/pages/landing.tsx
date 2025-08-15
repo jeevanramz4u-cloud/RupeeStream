@@ -488,7 +488,7 @@ export default function Landing() {
                   </div>
                 </div>
                 <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">Complete Simple Tasks</h3>
-                <p className="text-gray-600 text-center leading-relaxed font-medium">Choose from 5 task categories including app downloads, reviews, and social media activities. Each task takes 5-20 minutes to complete.</p>
+                <p className="text-gray-600 text-center leading-relaxed font-medium">Choose from 6 task categories including app downloads, reviews, social media activities, and YouTube video viewing. Each task takes 5-20 minutes to complete.</p>
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-2xl"></div>
               </div>
             </div>
