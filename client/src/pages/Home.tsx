@@ -74,13 +74,13 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/signup">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
+                <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700 border-0">
                   Start Earning Now
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
               <Link href="/tasks">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 bg-white hover:bg-blue-50">
                   Browse Tasks
                 </Button>
               </Link>
@@ -209,13 +209,13 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/signup">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
+              <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700 border-0">
                 Create Free Account
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
             <Link href="/login">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 bg-white hover:bg-blue-50">
                 Login to Dashboard
               </Button>
             </Link>
