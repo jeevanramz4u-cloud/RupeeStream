@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/button.tsx';
 import { Alert, AlertDescription } from '../../components/ui/alert.tsx';
 import { useAuth } from '../../hooks/useAuth';
 import { useLocation, Link } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import { 
   Users,
   DollarSign,
@@ -26,6 +27,12 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const [timeRange, setTimeRange] = useState('today');
+
+  // Fetch admin stats from API - must be called before any returns
+  const { data: stats, isLoading: statsLoading } = useQuery({
+    queryKey: ['/api/admin/stats'],
+    enabled: !!user && user.role === 'admin'
+  });
 
   // Check admin access with useEffect to avoid render-time updates
   React.useEffect(() => {
@@ -50,16 +57,16 @@ export default function AdminDashboard() {
     return null;
   }
 
-  // Mock data - replace with API calls
-  const stats = {
-    totalUsers: 10423,
-    activeUsers: 3567,
-    totalEarnings: 524300,
-    pendingPayouts: 45600,
-    completedTasks: 156789,
-    pendingTasks: 234,
-    approvalRate: 92.5,
-    newUsersToday: 127
+  // Default stats if data is loading
+  const displayStats = stats || {
+    totalUsers: 0,
+    activeUsers: 0,
+    totalEarnings: 0,
+    pendingPayouts: 0,
+    completedTasks: 0,
+    pendingTasks: 0,
+    todayEarnings: 0,
+    weeklyEarnings: 0
   };
 
   const recentActivities = [
@@ -109,10 +116,10 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total Users</p>
-                  <p className="text-2xl font-bold">{stats.totalUsers.toLocaleString()}</p>
+                  <p className="text-2xl font-bold">{displayStats.totalUsers.toLocaleString()}</p>
                   <div className="flex items-center mt-1">
                     <ArrowUp className="w-4 h-4 text-green-600 mr-1" />
-                    <span className="text-sm text-green-600">+{stats.newUsersToday} today</span>
+                    <span className="text-sm text-green-600">+12% this week</span>
                   </div>
                 </div>
                 <Users className="w-8 h-8 text-blue-600" />
@@ -125,10 +132,10 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total Earnings</p>
-                  <p className="text-2xl font-bold">₹{stats.totalEarnings.toLocaleString()}</p>
+                  <p className="text-2xl font-bold">₹{displayStats.weeklyEarnings.toLocaleString()}</p>
                   <div className="flex items-center mt-1">
                     <TrendingUp className="w-4 h-4 text-green-600 mr-1" />
-                    <span className="text-sm text-green-600">+12% vs last {timeRange}</span>
+                    <span className="text-sm text-green-600">₹{displayStats.todayEarnings} today</span>
                   </div>
                 </div>
                 <DollarSign className="w-8 h-8 text-green-600" />
@@ -141,10 +148,10 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Completed Tasks</p>
-                  <p className="text-2xl font-bold">{stats.completedTasks.toLocaleString()}</p>
+                  <p className="text-2xl font-bold">{displayStats.completedTasks.toLocaleString()}</p>
                   <div className="flex items-center mt-1">
                     <Activity className="w-4 h-4 text-blue-600 mr-1" />
-                    <span className="text-sm text-blue-600">{stats.approvalRate}% approval</span>
+                    <span className="text-sm text-blue-600">{displayStats.totalTasks} total</span>
                   </div>
                 </div>
                 <ListTodo className="w-8 h-8 text-purple-600" />
@@ -157,10 +164,10 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Pending Payouts</p>
-                  <p className="text-2xl font-bold">₹{stats.pendingPayouts.toLocaleString()}</p>
+                  <p className="text-2xl font-bold">₹{displayStats.totalPayoutAmount.toLocaleString()}</p>
                   <div className="flex items-center mt-1">
                     <Clock className="w-4 h-4 text-yellow-600 mr-1" />
-                    <span className="text-sm text-yellow-600">{stats.pendingTasks} pending</span>
+                    <span className="text-sm text-yellow-600">{displayStats.pendingPayouts} requests</span>
                   </div>
                 </div>
                 <CreditCard className="w-8 h-8 text-yellow-600" />
@@ -218,16 +225,14 @@ export default function AdminDashboard() {
             <CardContent>
               <div className="space-y-4">
                 {pendingActions.map((action, index) => (
-                  <Link key={index} href={action.action}>
-                    <a className="block p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p className="font-medium">{action.title}</p>
-                          <p className="text-sm text-gray-500">{action.description}</p>
-                        </div>
-                        <AlertCircle className="w-5 h-5 text-yellow-500" />
+                  <Link key={index} href={action.action} className="block p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-medium">{action.title}</p>
+                        <p className="text-sm text-gray-500">{action.description}</p>
                       </div>
-                    </a>
+                      <AlertCircle className="w-5 h-5 text-yellow-500" />
+                    </div>
                   </Link>
                 ))}
               </div>
