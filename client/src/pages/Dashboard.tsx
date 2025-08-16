@@ -123,70 +123,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50">
-        {/* User Navigation Menu Bar */}
-        <div className="bg-white shadow-sm border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <nav className="flex space-x-8 py-4 overflow-x-auto">
-              <Link href="/users/dashboard">
-                <a className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium ${location === '/users/dashboard' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:text-gray-900'}`}>
-                  <ListTodo className="w-4 h-4" />
-                  <span>Dashboard</span>
-                </a>
-              </Link>
-              <Link href="/tasks">
-                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
-                  <ListTodo className="w-4 h-4" />
-                  <span>Tasks</span>
-                </a>
-              </Link>
-              <Link href="/earnings">
-                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
-                  <IndianRupee className="w-4 h-4" />
-                  <span>Earnings</span>
-                </a>
-              </Link>
-              <Link href="/kyc">
-                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
-                  <CheckCircle className="w-4 h-4" />
-                  <span>KYC</span>
-                </a>
-              </Link>
-              <Link href="/referrals">
-                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
-                  <Users className="w-4 h-4" />
-                  <span>Referrals</span>
-                </a>
-              </Link>
-              <Link href="/withdrawal">
-                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
-                  <Wallet className="w-4 h-4" />
-                  <span>Withdrawal</span>
-                </a>
-              </Link>
-              <Link href="/profile">
-                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
-                  <Users className="w-4 h-4" />
-                  <span>Profile</span>
-                </a>
-              </Link>
-              <Link href="/notifications">
-                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>Notifications</span>
-                </a>
-              </Link>
-              <Link href="/support">
-                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>Support</span>
-                </a>
-              </Link>
-            </nav>
-          </div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
@@ -401,7 +338,6 @@ export default function Dashboard() {
             </Card>
           </div>
         </div>
-      </div>
       </div>
     </Layout>
   );

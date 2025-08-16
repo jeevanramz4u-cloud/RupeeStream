@@ -33,22 +33,25 @@ export function Layout({ children }: LayoutProps) {
   const { user, logout, isLoading } = useAuth();
   const [location] = useLocation();
 
-  const navigation = [
+  // User navigation items based on role
+  const userNavigation = user?.role === 'admin' ? [
+    { name: 'Dashboard', href: '/admin/dashboard', icon: Home, requireAuth: true },
+    { name: 'Users', href: '/admin/users', icon: Users, requireAuth: true },
+    { name: 'Tasks', href: '/admin/tasks', icon: ListTodo, requireAuth: true },
+    { name: 'Payouts', href: '/admin/payouts', icon: Wallet, requireAuth: true },
+    { name: 'Inquiries', href: '/admin/inquiries', icon: Shield, requireAuth: true },
+  ] : [
     { name: 'Dashboard', href: '/users/dashboard', icon: Home, requireAuth: true },
     { name: 'Tasks', href: '/tasks', icon: ListTodo, requireAuth: false },
     { name: 'Earnings', href: '/earnings', icon: Wallet, requireAuth: true },
+    { name: 'KYC', href: '/kyc', icon: Shield, requireAuth: true },
+    { name: 'Referrals', href: '/referrals', icon: Users, requireAuth: true },
     { name: 'Withdrawal', href: '/withdrawal', icon: Wallet, requireAuth: true },
-    { name: 'Support', href: '/support', icon: Shield, requireAuth: false },
     { name: 'Profile', href: '/profile', icon: User, requireAuth: true },
+    { name: 'Support', href: '/support', icon: Shield, requireAuth: false },
   ];
 
-  const adminNavigation = [
-    { name: 'Admin Dashboard', href: '/admin/dashboard', icon: Shield },
-    { name: 'Manage Users', href: '/admin/users', icon: Users },
-    { name: 'Manage Tasks', href: '/admin/tasks', icon: ListTodo },
-    { name: 'Manage Payouts', href: '/admin/payouts', icon: Wallet },
-    { name: 'Manage Inquiries', href: '/admin/inquiries', icon: Shield },
-  ];
+
 
   const handleLogout = async () => {
     await logout();
@@ -75,7 +78,7 @@ export function Layout({ children }: LayoutProps) {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-4">
-              {navigation.map((item) => {
+              {userNavigation.map((item) => {
                 if (item.requireAuth && !user) return null;
                 const Icon = item.icon;
                 return (
@@ -93,34 +96,6 @@ export function Layout({ children }: LayoutProps) {
                   </Link>
                 );
               })}
-
-              {/* Admin Dropdown */}
-              {user?.role === 'admin' && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="flex items-center space-x-1">
-                      <Shield className="w-4 h-4" />
-                      <span>Admin</span>
-                      <ChevronDown className="w-3 h-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuLabel>Administration</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {adminNavigation.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <DropdownMenuItem key={item.name} asChild>
-                          <Link href={item.href} className="flex items-center space-x-2 w-full">
-                            <Icon className="w-4 h-4" />
-                            <span>{item.name}</span>
-                          </Link>
-                        </DropdownMenuItem>
-                      );
-                    })}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
 
               {/* Notifications */}
               {user && (
@@ -199,7 +174,7 @@ export function Layout({ children }: LayoutProps) {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200">
             <nav className="px-4 py-4 space-y-2">
-              {navigation.map((item) => {
+              {userNavigation.map((item) => {
                 if (item.requireAuth && !user) return null;
                 const Icon = item.icon;
                 return (
@@ -218,28 +193,6 @@ export function Layout({ children }: LayoutProps) {
                   </Link>
                 );
               })}
-
-              {user?.role === 'admin' && (
-                <>
-                  <div className="pt-2 pb-1 px-3">
-                    <p className="text-xs font-semibold text-gray-500 uppercase">Admin</p>
-                  </div>
-                  {adminNavigation.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <Link 
-                        key={item.name} 
-                        href={item.href}
-                        className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <Icon className="w-5 h-5" />
-                        <span>{item.name}</span>
-                      </Link>
-                    );
-                  })}
-                </>
-              )}
 
               <div className="pt-4 border-t border-gray-200">
                 {user ? (
