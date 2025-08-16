@@ -25,7 +25,7 @@ import {
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [timeRange, setTimeRange] = useState('today');
 
   // Fetch admin stats from API - must be called before any returns
@@ -90,6 +90,45 @@ export default function AdminDashboard() {
 
   return (
     <Layout>
+      <div className="min-h-screen bg-gray-50">
+        {/* Admin Navigation Menu Bar */}
+        <div className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav className="flex space-x-8 py-4">
+              <Link href="/admin/dashboard">
+                <a className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium ${location === '/admin/dashboard' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:text-gray-900'}`}>
+                  <Activity className="w-4 h-4" />
+                  <span>Dashboard</span>
+                </a>
+              </Link>
+              <Link href="/admin/users">
+                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
+                  <Users className="w-4 h-4" />
+                  <span>Users</span>
+                </a>
+              </Link>
+              <Link href="/admin/tasks">
+                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
+                  <ListTodo className="w-4 h-4" />
+                  <span>Tasks</span>
+                </a>
+              </Link>
+              <Link href="/admin/payouts">
+                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
+                  <CreditCard className="w-4 h-4" />
+                  <span>Payouts</span>
+                </a>
+              </Link>
+              <Link href="/admin/inquiries">
+                <a className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900">
+                  <FileText className="w-4 h-4" />
+                  <span>Inquiries</span>
+                </a>
+              </Link>
+            </nav>
+          </div>
+        </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -287,6 +326,7 @@ export default function AdminDashboard() {
             <strong>System Status:</strong> All systems operational. Platform is running smoothly.
           </AlertDescription>
         </Alert>
+      </div>
       </div>
     </Layout>
   );
