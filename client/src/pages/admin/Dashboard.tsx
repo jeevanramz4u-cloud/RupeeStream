@@ -36,7 +36,9 @@ export default function AdminDashboard() {
 
   // Check admin access with useEffect to avoid render-time updates
   React.useEffect(() => {
-    if (user && user.role !== 'admin') {
+    if (!user) {
+      setLocation('/login');
+    } else if (user.role !== 'admin') {
       setLocation('/dashboard');
     }
   }, [user, setLocation]);

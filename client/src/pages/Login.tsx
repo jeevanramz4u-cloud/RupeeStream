@@ -41,23 +41,30 @@ export default function Login() {
 
     try {
       const result = await login(data.email, data.password);
+      console.log('Login result:', result); // Debug log
       
-      if (result.success) {
+      if (result.success && result.user) {
         toast({
           title: 'Login Successful',
           description: 'Welcome back!'
         });
         
-        // Redirect based on user role
-        if (result.user?.role === 'admin') {
-          setLocation('/admin/dashboard');
-        } else {
-          setLocation('/dashboard');
-        }
+        // Small delay to ensure state updates
+        setTimeout(() => {
+          // Redirect based on user role
+          if (result.user.role === 'admin') {
+            console.log('Redirecting to admin dashboard'); // Debug log
+            setLocation('/admin/dashboard');
+          } else {
+            console.log('Redirecting to user dashboard'); // Debug log
+            setLocation('/dashboard');
+          }
+        }, 100);
       } else {
         setError(result.error || 'Login failed');
       }
     } catch (err: any) {
+      console.error('Login error:', err); // Debug log
       setError(err.message || 'Invalid email or password');
     } finally {
       setIsLoading(false);

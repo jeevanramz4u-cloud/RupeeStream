@@ -73,34 +73,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Simple login endpoint for testing
   app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
+    console.log('Login attempt for:', email); // Debug log
     
     // Development mode test users
     if (process.env.NODE_ENV === 'development') {
       if (email === 'admin@innovativetaskearn.online' && password === 'admin123') {
         (req.session as any).userId = 'admin-001';
         (req.session as any).role = 'admin';
+        console.log('Admin login successful'); // Debug log
         res.json({ 
           success: true, 
           user: { 
             id: 'admin-001', 
             email: 'admin@innovativetaskearn.online',
             role: 'admin',
-            firstName: 'Admin'
+            firstName: 'Admin',
+            lastName: 'User'
           } 
         });
       } else if (email === 'demo@innovativetaskearn.online' && password === 'demo123') {
         (req.session as any).userId = 'user-001';
         (req.session as any).role = 'user';
+        console.log('User login successful'); // Debug log
         res.json({ 
           success: true, 
           user: { 
             id: 'user-001', 
             email: 'demo@innovativetaskearn.online',
             role: 'user',
-            firstName: 'Demo'
+            firstName: 'Demo',
+            lastName: 'User'
           } 
         });
       } else {
+        console.log('Invalid credentials for:', email); // Debug log
         res.status(401).json({ error: 'Invalid credentials' });
       }
     } else {
