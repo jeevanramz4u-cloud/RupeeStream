@@ -210,20 +210,27 @@ export default function Home() {
             <h2 className="text-3xl font-bold text-blue-900 mb-4">Platform Success Metrics</h2>
             <p className="text-xl text-blue-600">Real numbers from our growing community</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {stats.map((stat, index) => (
               <div key={stat.label} className="text-center group">
-                <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-${500 + index * 100} to-blue-${600 + index * 100} flex items-center justify-center`}>
-                    {index === 0 && <Users className="w-8 h-8 text-white" />}
-                    {index === 1 && <CheckCircle className="w-8 h-8 text-white" />}
-                    {index === 2 && <Coins className="w-8 h-8 text-white" />}
-                    {index === 3 && <Star className="w-8 h-8 text-white" />}
+                <div className="bg-white rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col items-center justify-center min-h-[160px] md:min-h-[180px]">
+                  <div className={`w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-full bg-gradient-to-br ${
+                    index === 0 ? 'from-blue-500 to-blue-600' :
+                    index === 1 ? 'from-blue-600 to-blue-700' :
+                    index === 2 ? 'from-blue-700 to-blue-800' :
+                    'from-blue-800 to-blue-900'
+                  } flex items-center justify-center`}>
+                    {index === 0 && <Users className="w-6 h-6 md:w-8 md:h-8 text-white" />}
+                    {index === 1 && <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-white" />}
+                    {index === 2 && <Coins className="w-6 h-6 md:w-8 md:h-8 text-white" />}
+                    {index === 3 && <Star className="w-6 h-6 md:w-8 md:h-8 text-white" />}
                   </div>
-                  <div className="text-4xl md:text-5xl font-bold text-blue-900 mb-2 group-hover:scale-110 transition-transform">
+                  <div className="text-2xl md:text-4xl lg:text-5xl font-bold text-blue-900 mb-2 group-hover:scale-110 transition-transform leading-tight">
                     {stat.value}
                   </div>
-                  <div className="text-sm font-medium text-blue-600">{stat.label}</div>
+                  <div className="text-xs md:text-sm font-medium text-blue-600 text-center leading-tight px-1">
+                    {stat.label}
+                  </div>
                 </div>
               </div>
             ))}
