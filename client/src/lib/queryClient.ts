@@ -31,28 +31,21 @@ export const getQueryFn: <T>(options: {
   async ({ queryKey }) => {
     try {
       const url = queryKey.join("/") as string;
-      console.log("QueryFn - Fetching:", url);
       
       const res = await fetch(url, {
         credentials: "include",
       });
 
-      console.log("QueryFn - Response status:", res.status);
-
       if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-        console.log("QueryFn - Returning null for 401");
         return null;
       }
 
       await throwIfResNotOk(res);
       const data = await res.json();
-      console.log("QueryFn - Response data:", data);
       return data;
     } catch (error) {
-      console.log("QueryFn - Error:", error);
       // Handle network errors gracefully
       if (unauthorizedBehavior === "returnNull") {
-        console.log("QueryFn - Returning null due to error");
         return null;
       }
       throw error;

@@ -97,14 +97,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     login: async (email, password) => {
       try {
         const result = await loginMutation.mutateAsync({ email, password });
-        console.log('Auth login result:', result); // Debug log
         if (result?.success && result?.user) {
           return { success: true, user: result.user };
         } else {
           return { success: false, error: result?.error || 'Login failed' };
         }
       } catch (error: any) {
-        console.error('Auth login error:', error); // Debug log
         return { success: false, error: error?.message || 'Login failed' };
       }
     },

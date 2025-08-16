@@ -53,7 +53,6 @@ export default function Login() {
 
     try {
       const result = await login(data.email, data.password);
-      console.log('Login result:', result); // Debug log
       
       if (result.success && result.user) {
         toast({
@@ -74,7 +73,6 @@ export default function Login() {
         setError(result.error || 'Login failed');
       }
     } catch (err: any) {
-      console.error('Login error:', err); // Debug log
       setError(err.message || 'Invalid email or password');
     } finally {
       setIsLoading(false);
