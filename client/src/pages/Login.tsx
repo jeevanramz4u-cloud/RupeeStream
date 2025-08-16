@@ -50,7 +50,7 @@ export default function Login() {
         
         // Redirect based on user role
         if (result.user?.role === 'admin') {
-          setLocation('/admin');
+          setLocation('/admin/dashboard');
         } else {
           setLocation('/dashboard');
         }

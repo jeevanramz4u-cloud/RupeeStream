@@ -62,6 +62,7 @@ export default function App() {
           
           {/* Admin Routes */}
           <Route path="/admin" component={AdminDashboard} />
+          <Route path="/admin/dashboard" component={AdminDashboard} />
           <Route path="/admin/users" component={AdminUsers} />
           <Route path="/admin/tasks" component={AdminTasks} />
           

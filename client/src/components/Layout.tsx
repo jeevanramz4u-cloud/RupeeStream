@@ -40,7 +40,7 @@ export function Layout({ children }: LayoutProps) {
   ];
 
   const adminNavigation = [
-    { name: 'Admin Dashboard', href: '/admin', icon: Shield },
+    { name: 'Admin Dashboard', href: '/admin/dashboard', icon: Shield },
     { name: 'Manage Users', href: '/admin/users', icon: Users },
     { name: 'Manage Tasks', href: '/admin/tasks', icon: ListTodo },
   ];

@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         queryClient.invalidateQueries({ queryKey: ['/api/auth/check'] });
         // Redirect to appropriate dashboard based on role
         if (data.user.role === 'admin') {
-          window.location.href = '/admin';
+          window.location.href = '/admin/dashboard';
         } else {
           window.location.href = '/dashboard';
         }
