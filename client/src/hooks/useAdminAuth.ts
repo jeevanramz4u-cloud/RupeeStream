@@ -25,7 +25,7 @@ export function useAdminAuth() {
         
         const data = await res.json();
         console.log("Admin auth - Success data:", data);
-        return { user: data }; // Admin endpoint returns admin object directly
+        return data; // Admin endpoint already returns { user: {...} } format
       } catch (error) {
         console.log("Admin auth - Error:", error);
         // Don't provide fallback during errors - let the hook handle it

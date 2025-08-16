@@ -49,8 +49,18 @@ export default function AdminDashboard() {
   }
 
   // Get dashboard statistics
-  const { data: users = [] } = useQuery<any[]>({
+  const { data: users = [], isLoading: usersLoading, error: usersError } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
+    enabled: isAdminAuth,
+  });
+
+  // Debug logging
+  console.log("Admin Dashboard Debug:", {
+    isAdminAuth,
+    usersLoading,
+    usersError,
+    usersCount: users.length,
+    users: users.slice(0, 2) // Show first 2 users for debugging
   });
 
   const { data: tasks = [] } = useQuery<any[]>({

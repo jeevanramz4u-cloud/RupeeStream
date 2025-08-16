@@ -1680,10 +1680,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin routes - comprehensive user management
   app.get('/api/admin/users', async (req: any, res) => {
     try {
-      // Check admin authentication
+      // Check admin authentication - only require session in production
       if (!req.session.adminUser && !isDevelopment()) {
         return res.status(401).json({ message: "Admin authentication required" });
       }
+      
+      console.log("Admin users API - Session admin:", !!req.session.adminUser, "Development:", isDevelopment());
 
       const users = await storage.getAllUsers();
       console.log(`Admin API: Retrieved ${users.length} users for admin panel`);
