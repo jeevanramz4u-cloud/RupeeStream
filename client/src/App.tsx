@@ -20,6 +20,13 @@ import Privacy from './pages/Privacy';
 import Contact from './pages/Contact';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
+import ForgotPassword from './pages/ForgotPassword';
+import Settings from './pages/Settings';
+
+// Admin Pages
+import AdminDashboard from './pages/admin/Dashboard';
+import AdminUsers from './pages/admin/Users';
+import AdminTasks from './pages/admin/Tasks';
 
 export default function App() {
   return (
@@ -39,6 +46,10 @@ export default function App() {
           
           {/* Auth & Verification Pages */}
           <Route path="/verify-email" component={VerifyEmail} />
+          <Route path="/forgot-password" component={ForgotPassword} />
+          
+          {/* Account Pages */}
+          <Route path="/settings" component={Settings} />
           
           {/* Legal Pages */}
           <Route path="/terms" component={Terms} />
@@ -50,11 +61,9 @@ export default function App() {
           <Route path="/faq" component={FAQ} />
           
           {/* Admin Routes */}
-          <Route path="/admin">
-            <div className="flex items-center justify-center min-h-screen">
-              <h1 className="text-2xl">Admin Dashboard - Coming Soon</h1>
-            </div>
-          </Route>
+          <Route path="/admin" component={AdminDashboard} />
+          <Route path="/admin/users" component={AdminUsers} />
+          <Route path="/admin/tasks" component={AdminTasks} />
           
           {/* 404 Page */}
           <Route>
