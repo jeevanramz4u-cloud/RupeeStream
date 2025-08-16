@@ -14,6 +14,12 @@ export interface User {
   kycStatus: 'pending' | 'submitted' | 'verified' | 'rejected';
   kycFeePaid: boolean;
   verificationStatus: 'pending' | 'verified';
+  dailyWorkHours?: number; // Hours worked today
+  lastActiveTime?: Date; // Last activity timestamp
+  workStartTime?: Date; // When user started working today
+  lastResetDate?: Date; // Last date when hours were reset
+  totalWorkDays?: number; // Total days worked
+  suspensionReason?: string; // Reason for suspension
   createdAt: Date;
   updatedAt: Date;
 }

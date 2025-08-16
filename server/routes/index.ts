@@ -276,6 +276,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Work time tracking endpoints
+  app.get('/api/user/work-time', async (req, res) => {
+    const userId = (req.session as any)?.userId;
+    
+    if (!userId) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+    
+    try {
+      const { workTimeTracker } = await import('../workTimeTracker');
+      const workData = await workTimeTracker.getUserWorkHours(userId);
+      res.json(workData);
+    } catch (error) {
+      console.error('Failed to get work time:', error);
+      res.json({
+        hoursWorked: 0,
+        hoursRemaining: 8,
+        isRequirementMet: false
+      });
+    }
+  });
+
+  app.post('/api/user/update-activity', async (req, res) => {
+    const userId = (req.session as any)?.userId;
+    
+    if (!userId) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+    
+    try {
+      const { workTimeTracker } = await import('../workTimeTracker');
+      workTimeTracker.updateActivity(userId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Failed to update activity:', error);
+      res.status(500).json({ error: 'Failed to update activity' });
+    }
+  });
+
+  app.get('/api/admin/work-statistics', async (req, res) => {
+    const userRole = (req.session as any)?.role;
+    
+    if (userRole !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+    
+    try {
+      const { workTimeTracker } = await import('../workTimeTracker');
+      const stats = await workTimeTracker.getWorkStatistics();
+      res.json(stats);
+    } catch (error) {
+      console.error('Failed to get work statistics:', error);
+      res.status(500).json({ error: 'Failed to get statistics' });
+    }
+  });
+
   // Logout endpoint
   app.post('/api/auth/logout', (req, res) => {
     req.session.destroy((err) => {

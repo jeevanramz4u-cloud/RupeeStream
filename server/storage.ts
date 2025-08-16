@@ -35,9 +35,14 @@ class MemoryStorage {
       kycStatus: 'verified',
       kycFeePaid: true,
       verificationStatus: 'verified',
+      dailyWorkHours: 0,
+      lastActiveTime: new Date(),
+      workStartTime: new Date(),
       createdAt: new Date(),
       updatedAt: new Date()
     } as User);
+    
+    this.passwords.set(adminId, adminPassword);
 
     // Create test user
     const userId = 'user-001';
@@ -56,9 +61,14 @@ class MemoryStorage {
       kycStatus: 'pending',
       kycFeePaid: false,
       verificationStatus: 'pending',
+      dailyWorkHours: 0,
+      lastActiveTime: new Date(),
+      workStartTime: new Date(),
       createdAt: new Date(),
       updatedAt: new Date()
     } as User);
+    
+    this.passwords.set(userId, userPassword);
 
     // Add signup bonus earning record for demo user
     this.earnings.set(userId, [
@@ -98,6 +108,58 @@ class MemoryStorage {
         updatedAt: new Date()
       });
     });
+
+    // Create verified user (shows work time tracking)
+    const verifiedUserId = 'user-003';
+    const verifiedPassword = await hashPassword('verified123');
+    
+    this.users.set(verifiedUserId, {
+      id: verifiedUserId,
+      email: 'verified@innovativetaskearn.online',
+      firstName: 'Verified',
+      lastName: 'User',
+      phone: '6666666666',
+      role: 'user',
+      status: 'active',
+      balance: 2500,
+      referralCode: 'VER001',
+      kycStatus: 'verified',
+      kycFeePaid: true,
+      verificationStatus: 'verified',
+      dailyWorkHours: 5.2, // Already worked 5.2 hours today
+      lastActiveTime: new Date(),
+      workStartTime: new Date(Date.now() - 5.2 * 60 * 60 * 1000), // Started 5.2 hours ago
+      createdAt: new Date(),
+      updatedAt: new Date()
+    } as User);
+    
+    this.passwords.set(verifiedUserId, verifiedPassword);
+    
+    // Create suspended user for testing
+    const suspendedUserId = 'user-004';
+    const suspendedPassword = await hashPassword('suspended123');
+    
+    this.users.set(suspendedUserId, {
+      id: suspendedUserId,
+      email: 'suspended@innovativetaskearn.online',
+      firstName: 'Suspended',
+      lastName: 'User',
+      phone: '5555555555',
+      role: 'user',
+      status: 'suspended',
+      balance: 500,
+      referralCode: 'SUSP001',
+      kycStatus: 'verified',
+      kycFeePaid: true,
+      verificationStatus: 'verified',
+      dailyWorkHours: 3.5, // Only worked 3.5 hours
+      lastActiveTime: new Date(),
+      suspensionReason: 'Failed to complete 8-hour work requirement. Only worked 3.5 hours.',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    } as User);
+    
+    this.passwords.set(suspendedUserId, suspendedPassword);
   }
 
   // User methods
@@ -238,6 +300,20 @@ class MemoryStorage {
   async getUserEarnings(userId: string): Promise<Earning[]> {
     return this.earnings.get(userId) || [];
   }
+
+  // Get all verified users
+  async getAllVerifiedUsers(): Promise<User[]> {
+    return Array.from(this.users.values()).filter(u => u.kycStatus === 'verified');
+  }
+
+  // Reset all users' daily work hours
+  async resetAllUsersDailyHours(): Promise<void> {
+    for (const [id, user] of this.users) {
+      user.dailyWorkHours = 0;
+      user.lastResetDate = new Date();
+      this.users.set(id, user);
+    }
+  }
 }
 
 // Create storage instance based on environment
@@ -332,5 +408,23 @@ export const storage = {
       return memoryStorage.getUserEarnings(userId);
     }
     return db.select().from(earnings).where(eq(earnings.userId, userId));
+  },
+
+  // Work time tracking operations
+  async getAllVerifiedUsers(): Promise<any[]> {
+    if (!db || isDevelopment) {
+      return memoryStorage.getAllVerifiedUsers();
+    }
+    return db.select().from(users).where(eq(users.kycStatus, 'verified'));
+  },
+
+  async resetAllUsersDailyHours(): Promise<void> {
+    if (!db || isDevelopment) {
+      return memoryStorage.resetAllUsersDailyHours();
+    }
+    await db.update(users).set({ 
+      dailyWorkHours: 0,
+      lastResetDate: new Date()
+    });
   }
 };

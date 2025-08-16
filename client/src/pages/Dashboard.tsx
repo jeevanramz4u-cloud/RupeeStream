@@ -6,6 +6,7 @@ import { Badge } from '../components/ui/badge.tsx';
 import { useAuth } from '../hooks/useAuth';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
+import { WorkTimeDisplay } from '../components/WorkTimeDisplay';
 import { 
   DollarSign, 
   ListTodo, 
@@ -77,6 +78,13 @@ export default function UserDashboard() {
             Here's your earning progress and latest updates
           </p>
         </div>
+
+        {/* Work Time Display for Verified Users */}
+        {user?.kycStatus === 'verified' && (
+          <div className="mb-6">
+            <WorkTimeDisplay userId={user.id} />
+          </div>
+        )}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
