@@ -10,6 +10,10 @@ import Signup from './pages/Signup';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Tasks from './pages/Tasks';
+import Profile from './pages/Profile';
+import Earnings from './pages/Earnings';
+import KYC from './pages/KYC';
+import Referrals from './pages/Referrals';
 
 export default function App() {
   return (
@@ -22,6 +26,10 @@ export default function App() {
           <Route path="/signup" component={Signup} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/tasks" component={Tasks} />
+          <Route path="/profile" component={Profile} />
+          <Route path="/earnings" component={Earnings} />
+          <Route path="/kyc" component={KYC} />
+          <Route path="/referrals" component={Referrals} />
           
           {/* Admin Routes */}
           <Route path="/admin">
