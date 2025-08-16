@@ -44,11 +44,11 @@ export default function Home() {
 
   const taskCategories = [
     { icon: Smartphone, name: 'App Downloads', reward: '₹5-25', color: 'bg-blue-500' },
-    { icon: Star, name: 'Business Reviews', reward: '₹5-35', color: 'bg-yellow-500' },
-    { icon: FileText, name: 'Product Reviews', reward: '₹5-40', color: 'bg-green-500' },
-    { icon: Youtube, name: 'Channel Subscribe', reward: '₹5-20', color: 'bg-red-500' },
-    { icon: MessageCircle, name: 'Comments & Likes', reward: '₹5-15', color: 'bg-purple-500' },
-    { icon: Eye, name: 'Video Views', reward: '₹5-30', color: 'bg-indigo-500' }
+    { icon: Star, name: 'Business Reviews', reward: '₹5-35', color: 'bg-blue-600' },
+    { icon: FileText, name: 'Product Reviews', reward: '₹5-40', color: 'bg-blue-500' },
+    { icon: Youtube, name: 'Channel Subscribe', reward: '₹5-20', color: 'bg-blue-600' },
+    { icon: MessageCircle, name: 'Comments & Likes', reward: '₹5-15', color: 'bg-blue-500' },
+    { icon: Eye, name: 'Video Views', reward: '₹5-30', color: 'bg-blue-600' }
   ];
 
   const stats = [
@@ -61,20 +61,20 @@ export default function Home() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white">
-        <div className="absolute inset-0 bg-black/20"></div>
+      <section className="relative bg-gradient-to-br from-blue-600 to-blue-800 text-white">
+        <div className="absolute inset-0 bg-blue-900/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Earn Money by Completing
-              <span className="block text-yellow-300">Simple Online Tasks</span>
+              <span className="block text-white">Simple Online Tasks</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-gray-100 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
               Join thousands of users earning real money daily. Complete tasks, get instant payments, and build your income stream.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/signup">
-                <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100">
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
                   Start Earning Now
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
@@ -90,13 +90,13 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-gray-50 border-b">
+      <section className="py-12 bg-blue-50 border-b border-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-gray-900">{stat.value}</div>
-                <div className="text-sm text-gray-600 mt-2">{stat.label}</div>
+                <div className="text-3xl md:text-4xl font-bold text-blue-900">{stat.value}</div>
+                <div className="text-sm text-blue-600 mt-2">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -107,10 +107,10 @@ export default function Home() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
               6 Ways to Earn Money
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-blue-600 max-w-3xl mx-auto">
               Choose from multiple task categories and start earning immediately
             </p>
           </div>
@@ -124,12 +124,12 @@ export default function Home() {
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <CardTitle>{category.name}</CardTitle>
-                    <CardDescription className="text-lg font-semibold text-green-600">
+                    <CardDescription className="text-lg font-semibold text-blue-700">
                       Earn {category.reward}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600">
+                    <p className="text-blue-600">
                       Complete {category.name.toLowerCase()} tasks and earn rewards instantly
                     </p>
                   </CardContent>
@@ -141,13 +141,13 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-blue-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
               Why Choose Innovative Task Earn?
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-blue-600 max-w-3xl mx-auto">
               We make earning money online simple, secure, and rewarding
             </p>
           </div>
@@ -156,11 +156,11 @@ export default function Home() {
               const Icon = feature.icon;
               return (
                 <div key={feature.title} className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2">{feature.title}</h3>
+                  <p className="text-blue-600">{feature.description}</p>
                 </div>
               );
             })}
@@ -169,13 +169,13 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="py-16">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
               How It Works
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-blue-600 max-w-3xl mx-auto">
               Start earning in 4 simple steps
             </p>
           </div>
@@ -187,11 +187,11 @@ export default function Home() {
               { step: '4', title: 'Get Paid', description: 'Receive instant payments to your account' }
             ].map((item) => (
               <div key={item.step} className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
                   {item.step}
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.description}</p>
+                <h3 className="text-lg font-semibold text-blue-900 mb-2">{item.title}</h3>
+                <p className="text-blue-600">{item.description}</p>
               </div>
             ))}
           </div>
@@ -199,17 +199,17 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
+      <section className="py-16 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Ready to Start Earning?
           </h2>
-          <p className="text-xl mb-8 text-gray-100">
+          <p className="text-xl mb-8 text-blue-100">
             Join thousands of users who are already earning money daily
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/signup">
-              <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100">
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
                 Create Free Account
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
