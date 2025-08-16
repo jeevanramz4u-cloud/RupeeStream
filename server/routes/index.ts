@@ -637,8 +637,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(earnings);
   });
 
-  // User withdrawal requests that admins can see and approve
-  app.get('/api/user/withdrawals', (req, res) => {
+  // User withdrawal requests for Withdrawal page
+  app.get('/api/users/withdrawals', (req, res) => {
     const userId = (req.session as any)?.userId;
     if (!userId) {
       return res.status(401).json({ error: 'Authentication required' });
@@ -649,19 +649,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         id: 'withdrawal-001',
         amount: 500,
         method: 'UPI',
+        status: 'completed',
         requestDate: '2024-08-15',
-        status: 'approved',
         processedDate: '2024-08-15',
-        adminNote: 'Processed successfully'
+        transactionId: 'TXN001234567'
       },
       {
         id: 'withdrawal-002',
         amount: 250,
         method: 'Bank Transfer',
-        requestDate: '2024-08-16',
         status: 'pending',
+        requestDate: '2024-08-16',
         processedDate: null,
-        adminNote: null
+        transactionId: null
       }
     ];
     
@@ -705,6 +705,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     };
     
     res.json(profileData);
+  });
+
+  // User earnings data endpoint
+  app.get('/api/users/earnings', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    const earningsData = {
+      currentBalance: 1250,
+      totalEarnings: 3450,
+      monthlyEarnings: 850,
+      weeklyEarnings: 280,
+      todayEarnings: 25,
+      pendingAmount: 125,
+      history: [
+        {
+          id: 'earn-001',
+          type: 'task',
+          description: 'Download Amazon App',
+          amount: 15,
+          status: 'approved',
+          date: '2024-08-15',
+          taskId: 'task-001',
+          taskTitle: 'Download Amazon App'
+        },
+        {
+          id: 'earn-002',
+          type: 'task',
+          description: 'Review Local Restaurant',
+          amount: 20,
+          status: 'approved',
+          date: '2024-08-14',
+          taskId: 'task-002',
+          taskTitle: 'Review Local Restaurant'
+        },
+        {
+          id: 'earn-003',
+          type: 'task',
+          description: 'Product Review',
+          amount: 25,
+          status: 'pending',
+          date: '2024-08-16',
+          taskId: 'task-003',
+          taskTitle: 'Product Review'
+        },
+        {
+          id: 'earn-004',
+          type: 'referral',
+          description: 'Referral bonus for John Smith',
+          amount: 49,
+          status: 'approved',
+          date: '2024-08-10'
+        },
+        {
+          id: 'earn-005',
+          type: 'bonus',
+          description: 'Weekly completion bonus',
+          amount: 100,
+          status: 'approved',
+          date: '2024-08-12'
+        }
+      ]
+    };
+    
+    res.json(earningsData);
+  });
+
+  // User payout/withdrawal history endpoint
+  app.get('/api/users/payouts', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    const payoutHistory = [
+      {
+        id: 'payout-001',
+        amount: 500,
+        method: 'UPI',
+        status: 'completed',
+        requestDate: '2024-08-10',
+        processedDate: '2024-08-10',
+        transactionId: 'TXN001234567',
+        adminNote: 'Processed successfully'
+      },
+      {
+        id: 'payout-002',
+        amount: 300,
+        method: 'Bank Transfer',
+        status: 'pending',
+        requestDate: '2024-08-15',
+        processedDate: null,
+        transactionId: null,
+        adminNote: null
+      }
+    ];
+    
+    res.json(payoutHistory);
   });
 
   // User KYC endpoints
