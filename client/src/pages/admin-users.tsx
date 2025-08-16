@@ -69,17 +69,35 @@ export default function AdminUsers() {
   }
 
   // Get all users with comprehensive data
-  const { data: users = [], isLoading: usersLoading, refetch: refetchUsers } = useQuery({
+  const { data: users = [], isLoading: usersLoading, refetch: refetchUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
+    enabled: isAdminAuth,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/users", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   // Get user earnings and activity data
-  const { data: userEarnings = [] } = useQuery({
+  const { data: userEarnings = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/user-earnings"],
+    enabled: isAdminAuth,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/earnings", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
-  const { data: userTasks = [] } = useQuery({
+  const { data: userTasks = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/user-tasks"],
+    enabled: isAdminAuth,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/task-completions", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   // Filter users based on search and filters
