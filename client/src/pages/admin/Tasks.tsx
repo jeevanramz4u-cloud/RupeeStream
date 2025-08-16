@@ -93,7 +93,7 @@ export default function AdminTasks() {
   }
 
   // Fetch tasks from API
-  const { data: tasks = [], isLoading: tasksLoading, refetch: refetchTasks } = useQuery({
+  const { data: tasks = [], isLoading: tasksLoading, refetch: refetchTasks } = useQuery<Task[]>({
     queryKey: ['/api/admin/tasks'],
     enabled: !!user && user.role === 'admin'
   });
@@ -107,7 +107,7 @@ export default function AdminTasks() {
     { value: 'youtube_video_see', label: 'YouTube Video View' }
   ];
 
-  const filteredTasks = tasks.filter(task => {
+  const filteredTasks = (tasks as Task[]).filter((task: Task) => {
     const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           task.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterCategory === 'all' || task.category === filterCategory;

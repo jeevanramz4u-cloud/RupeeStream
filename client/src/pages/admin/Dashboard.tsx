@@ -29,7 +29,18 @@ export default function AdminDashboard() {
   const [timeRange, setTimeRange] = useState('today');
 
   // Fetch admin stats from API - must be called before any returns
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats, isLoading: statsLoading } = useQuery<{
+    totalUsers: number;
+    activeUsers: number;
+    totalEarnings?: number;
+    pendingPayouts: number;
+    completedTasks: number;
+    pendingTasks?: number;
+    todayEarnings: number;
+    weeklyEarnings: number;
+    totalTasks: number;
+    totalPayoutAmount: number;
+  }>({
     queryKey: ['/api/admin/stats'],
     enabled: !!user && user.role === 'admin'
   });
