@@ -58,15 +58,13 @@ export function Layout({ children }: LayoutProps) {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center">
-              <Link href="/">
-                <a className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">IT</span>
-                  </div>
-                  <span className="text-xl font-bold text-gray-900">
-                    Innovative Task Earn
-                  </span>
-                </a>
+              <Link href="/" className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">IT</span>
+                </div>
+                <span className="text-xl font-bold text-gray-900">
+                  Innovative Task Earn
+                </span>
               </Link>
             </div>
 
@@ -76,17 +74,17 @@ export function Layout({ children }: LayoutProps) {
                 if (item.requireAuth && !user) return null;
                 const Icon = item.icon;
                 return (
-                  <Link key={item.name} href={item.href}>
-                    <a
-                      className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        location === item.href
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span>{item.name}</span>
-                    </a>
+                  <Link 
+                    key={item.name} 
+                    href={item.href}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      location === item.href
+                        ? 'bg-blue-50 text-blue-700'
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{item.name}</span>
                   </Link>
                 );
               })}
@@ -108,11 +106,9 @@ export function Layout({ children }: LayoutProps) {
                       const Icon = item.icon;
                       return (
                         <DropdownMenuItem key={item.name} asChild>
-                          <Link href={item.href}>
-                            <a className="flex items-center space-x-2 w-full">
-                              <Icon className="w-4 h-4" />
-                              <span>{item.name}</span>
-                            </a>
+                          <Link href={item.href} className="flex items-center space-x-2 w-full">
+                            <Icon className="w-4 h-4" />
+                            <span>{item.name}</span>
                           </Link>
                         </DropdownMenuItem>
                       );
@@ -144,19 +140,15 @@ export function Layout({ children }: LayoutProps) {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/profile">
-                        <a className="flex items-center space-x-2 w-full">
-                          <User className="w-4 h-4" />
-                          <span>Profile</span>
-                        </a>
+                      <Link href="/profile" className="flex items-center space-x-2 w-full">
+                        <User className="w-4 h-4" />
+                        <span>Profile</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/settings">
-                        <a className="flex items-center space-x-2 w-full">
-                          <Shield className="w-4 h-4" />
-                          <span>Settings</span>
-                        </a>
+                      <Link href="/settings" className="flex items-center space-x-2 w-full">
+                        <Shield className="w-4 h-4" />
+                        <span>Settings</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -196,18 +188,18 @@ export function Layout({ children }: LayoutProps) {
                 if (item.requireAuth && !user) return null;
                 const Icon = item.icon;
                 return (
-                  <Link key={item.name} href={item.href}>
-                    <a
-                      className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium ${
-                        location === item.href
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'text-gray-700 hover:bg-gray-50'
-                      }`}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Icon className="w-5 h-5" />
-                      <span>{item.name}</span>
-                    </a>
+                  <Link 
+                    key={item.name} 
+                    href={item.href}
+                    className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium ${
+                      location === item.href
+                        ? 'bg-blue-50 text-blue-700'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{item.name}</span>
                   </Link>
                 );
               })}
@@ -220,14 +212,14 @@ export function Layout({ children }: LayoutProps) {
                   {adminNavigation.map((item) => {
                     const Icon = item.icon;
                     return (
-                      <Link key={item.name} href={item.href}>
-                        <a
-                          className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          <Icon className="w-5 h-5" />
-                          <span>{item.name}</span>
-                        </a>
+                      <Link 
+                        key={item.name} 
+                        href={item.href}
+                        className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span>{item.name}</span>
                       </Link>
                     );
                   })}
@@ -283,22 +275,22 @@ export function Layout({ children }: LayoutProps) {
             <div>
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Company</h3>
               <ul className="mt-4 space-y-2">
-                <li><Link href="/about"><a className="text-sm text-gray-600 hover:text-gray-900">About Us</a></Link></li>
-                <li><Link href="/contact"><a className="text-sm text-gray-600 hover:text-gray-900">Contact</a></Link></li>
+                <li><Link href="/about" className="text-sm text-gray-600 hover:text-gray-900">About Us</Link></li>
+                <li><Link href="/contact" className="text-sm text-gray-600 hover:text-gray-900">Contact</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Legal</h3>
               <ul className="mt-4 space-y-2">
-                <li><Link href="/privacy"><a className="text-sm text-gray-600 hover:text-gray-900">Privacy Policy</a></Link></li>
-                <li><Link href="/terms"><a className="text-sm text-gray-600 hover:text-gray-900">Terms of Service</a></Link></li>
+                <li><Link href="/privacy" className="text-sm text-gray-600 hover:text-gray-900">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="text-sm text-gray-600 hover:text-gray-900">Terms of Service</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Support</h3>
               <ul className="mt-4 space-y-2">
-                <li><Link href="/faq"><a className="text-sm text-gray-600 hover:text-gray-900">FAQ</a></Link></li>
-                <li><Link href="/help"><a className="text-sm text-gray-600 hover:text-gray-900">Help Center</a></Link></li>
+                <li><Link href="/faq" className="text-sm text-gray-600 hover:text-gray-900">FAQ</Link></li>
+                <li><Link href="/help" className="text-sm text-gray-600 hover:text-gray-900">Help Center</Link></li>
               </ul>
             </div>
             <div>

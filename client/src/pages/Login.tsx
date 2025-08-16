@@ -69,15 +69,13 @@ export default function Login() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/">
-            <a className="inline-flex items-center space-x-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">IT</span>
-              </div>
-              <span className="text-2xl font-bold text-gray-900">
-                Innovative Task Earn
-              </span>
-            </a>
+          <Link href="/" className="inline-flex items-center space-x-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-2xl">IT</span>
+            </div>
+            <span className="text-2xl font-bold text-gray-900">
+              Innovative Task Earn
+            </span>
           </Link>
         </div>
 
@@ -117,10 +115,8 @@ export default function Login() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
-                  <Link href="/forgot-password">
-                    <a className="text-sm text-blue-600 hover:text-blue-700">
-                      Forgot password?
-                    </a>
+                  <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700">
+                    Forgot password?
                   </Link>
                 </div>
                 <div className="relative">
@@ -177,10 +173,8 @@ export default function Login() {
 
               <div className="text-center text-sm">
                 <span className="text-gray-600">Don't have an account? </span>
-                <Link href="/signup">
-                  <a className="font-medium text-blue-600 hover:text-blue-700">
-                    Sign up
-                  </a>
+                <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-700">
+                  Sign up
                 </Link>
               </div>
             </CardFooter>
@@ -189,12 +183,12 @@ export default function Login() {
 
         <p className="text-center text-sm text-gray-500 mt-8">
           By logging in, you agree to our{' '}
-          <Link href="/terms">
-            <a className="text-blue-600 hover:text-blue-700">Terms of Service</a>
+          <Link href="/terms" className="text-blue-600 hover:text-blue-700">
+            Terms of Service
           </Link>{' '}
           and{' '}
-          <Link href="/privacy">
-            <a className="text-blue-600 hover:text-blue-700">Privacy Policy</a>
+          <Link href="/privacy" className="text-blue-600 hover:text-blue-700">
+            Privacy Policy
           </Link>
         </p>
       </div>
