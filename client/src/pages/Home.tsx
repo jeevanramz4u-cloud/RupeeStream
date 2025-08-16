@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { Layout } from '../components/Layout';
 import { Button } from '../components/ui/button';
@@ -15,30 +15,82 @@ import {
   FileText,
   Youtube,
   MessageCircle,
-  Eye
+  Eye,
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Award,
+  Clock,
+  TrendingUp,
+  Globe,
+  Zap
 } from 'lucide-react';
 
 export default function Home() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const heroSlides = [
+    {
+      title: "Earn Money by Completing Simple Online Tasks",
+      subtitle: "Join thousands of users earning real money daily",
+      description: "Complete tasks, get instant payments, and build your income stream.",
+      buttonText: "Start Earning Now",
+      gradient: "from-blue-600 to-blue-800",
+      accent: "text-blue-100"
+    },
+    {
+      title: "6 Different Ways to Earn Money",
+      subtitle: "Multiple earning opportunities",
+      description: "From app downloads to product reviews - choose tasks that suit you best.",
+      buttonText: "Browse Tasks",
+      gradient: "from-blue-700 to-blue-900",
+      accent: "text-blue-200"
+    },
+    {
+      title: "Secure KYC Verified Platform",
+      subtitle: "Your earnings are safe with us",
+      description: "Complete KYC verification and enjoy secure, instant payments to your account.",
+      buttonText: "Get Verified",
+      gradient: "from-blue-800 to-blue-950",
+      accent: "text-blue-100"
+    }
+  ];
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [isPlaying, heroSlides.length]);
+
   const features = [
     {
       icon: ListTodo,
       title: 'Simple Tasks',
-      description: 'Complete easy tasks like app downloads, reviews, and social media activities'
+      description: 'Complete easy tasks like app downloads, reviews, and social media activities',
+      color: 'from-blue-500 to-blue-600'
     },
     {
       icon: Coins,
       title: 'Instant Earnings',
-      description: 'Get paid immediately after task approval - no waiting periods'
+      description: 'Get paid immediately after task approval - no waiting periods',
+      color: 'from-blue-600 to-blue-700'
     },
     {
       icon: Shield,
       title: 'Secure Payments',
-      description: 'KYC verified accounts with secure payment processing'
+      description: 'KYC verified accounts with secure payment processing',
+      color: 'from-blue-700 to-blue-800'
     },
     {
       icon: Users,
       title: 'Referral Bonus',
-      description: 'Earn ₹49 for every friend who joins and completes KYC'
+      description: 'Earn ₹49 for every friend who joins and completes KYC',
+      color: 'from-blue-500 to-blue-700'
     }
   ];
 
@@ -58,180 +110,342 @@ export default function Home() {
     { label: 'Average Rating', value: '4.8/5' }
   ];
 
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+  };
+
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 to-blue-800 text-white">
-        <div className="absolute inset-0 bg-blue-900/20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Earn Money by Completing
-              <span className="block text-white">Simple Online Tasks</span>
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-              Join thousands of users earning real money daily. Complete tasks, get instant payments, and build your income stream.
+      {/* Modern Hero Slider Section */}
+      <section className="relative h-screen overflow-hidden">
+        {heroSlides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-transform duration-1000 ease-in-out ${
+              index === currentSlide ? 'translate-x-0' : 
+              index < currentSlide ? '-translate-x-full' : 'translate-x-full'
+            }`}
+          >
+            <div className={`h-full bg-gradient-to-br ${slide.gradient} text-white relative`}>
+              <div className="absolute inset-0 bg-black/10"></div>
+              <div className="relative h-full flex items-center">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                  <div className="max-w-4xl">
+                    <div className="mb-6">
+                      <span className={`inline-block px-4 py-2 bg-white/20 rounded-full text-sm font-medium ${slide.accent} mb-4`}>
+                        #{(index + 1).toString().padStart(2, '0')}
+                      </span>
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                      {slide.title}
+                    </h1>
+                    <h2 className={`text-2xl md:text-3xl font-medium mb-6 ${slide.accent}`}>
+                      {slide.subtitle}
+                    </h2>
+                    <p className="text-xl md:text-2xl mb-8 max-w-2xl opacity-90">
+                      {slide.description}
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <Link href="/signup">
+                        <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 border-0 px-8 py-6 text-lg font-medium">
+                          {slide.buttonText}
+                          <ArrowRight className="ml-2 w-6 h-6" />
+                        </Button>
+                      </Link>
+                      <Button 
+                        size="lg" 
+                        variant="outline" 
+                        className="border-2 border-white text-white hover:bg-white/10 px-8 py-6 text-lg"
+                        onClick={() => setIsPlaying(!isPlaying)}
+                      >
+                        <Play className="mr-2 w-5 h-5" />
+                        {isPlaying ? 'Pause' : 'Play'} Slides
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+        
+        {/* Slide Controls */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {heroSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentSlide ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'
+              }`}
+            />
+          ))}
+        </div>
+        
+        {/* Navigation Arrows */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-3 transition-all"
+        >
+          <ChevronLeft className="w-6 h-6 text-white" />
+        </button>
+        <button
+          onClick={nextSlide}
+          className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-3 transition-all"
+        >
+          <ChevronRight className="w-6 h-6 text-white" />
+        </button>
+      </section>
+
+      {/* Enhanced Stats Section */}
+      <section className="py-16 bg-gradient-to-r from-blue-50 to-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-blue-900 mb-4">Platform Success Metrics</h2>
+            <p className="text-xl text-blue-600">Real numbers from our growing community</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <div key={stat.label} className="text-center group">
+                <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-${500 + index * 100} to-blue-${600 + index * 100} flex items-center justify-center`}>
+                    {index === 0 && <Users className="w-8 h-8 text-white" />}
+                    {index === 1 && <CheckCircle className="w-8 h-8 text-white" />}
+                    {index === 2 && <Coins className="w-8 h-8 text-white" />}
+                    {index === 3 && <Star className="w-8 h-8 text-white" />}
+                  </div>
+                  <div className="text-4xl md:text-5xl font-bold text-blue-900 mb-2 group-hover:scale-110 transition-transform">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm font-medium text-blue-600">{stat.label}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Modern Task Categories with Animations */}
+      <section className="py-20 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-block px-4 py-2 bg-blue-100 rounded-full text-blue-600 font-medium mb-4">
+              Earning Opportunities
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mb-6">
+              6 Ways to Earn Money
+            </h2>
+            <p className="text-xl text-blue-600 max-w-3xl mx-auto">
+              Choose from multiple task categories and start earning immediately with our innovative platform
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/signup">
-                <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700 border-0">
-                  Start Earning Now
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
-              <Link href="/tasks">
-                <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 bg-white hover:bg-blue-50">
-                  Browse Tasks
-                </Button>
-              </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {taskCategories.map((category, index) => {
+              const Icon = category.icon;
+              return (
+                <div key={category.name} className="group">
+                  <Card className="h-full border-0 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 bg-gradient-to-br from-white to-blue-50">
+                    <CardHeader className="pb-4">
+                      <div className={`w-16 h-16 ${category.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                        <Icon className="w-8 h-8 text-white" />
+                      </div>
+                      <CardTitle className="text-xl font-bold text-blue-900 group-hover:text-blue-700 transition-colors">
+                        {category.name}
+                      </CardTitle>
+                      <CardDescription className="text-2xl font-bold text-green-600 flex items-center">
+                        <Coins className="w-5 h-5 mr-2" />
+                        {category.reward}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-blue-600 leading-relaxed mb-4">
+                        Complete {category.name.toLowerCase()} tasks and earn rewards instantly
+                      </p>
+                      <div className="flex items-center text-sm text-blue-500">
+                        <Clock className="w-4 h-4 mr-2" />
+                        <span>5-30 minutes per task</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Enhanced Features Section with Modern Cards */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-blue-50 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-blue-200 rounded-full -translate-x-32 -translate-y-32 opacity-20"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-300 rounded-full translate-x-48 translate-y-48 opacity-20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium mb-6">
+              <Award className="w-4 h-4 mr-2" />
+              Why Choose Us
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mb-6">
+              Why Choose Innovative Task Earn?
+            </h2>
+            <p className="text-xl text-blue-600 max-w-4xl mx-auto leading-relaxed">
+              We make earning money online simple, secure, and rewarding with cutting-edge technology and user-first approach
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <div key={feature.title} className="group">
+                  <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 border border-blue-100 h-full">
+                    <div className={`w-20 h-20 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl`}>
+                      <Icon className="w-10 h-10 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-blue-900 mb-4 text-center group-hover:text-blue-700 transition-colors">
+                      {feature.title}
+                    </h3>
+                    <p className="text-blue-600 text-center leading-relaxed">
+                      {feature.description}
+                    </p>
+                    <div className="mt-6 flex justify-center">
+                      <div className="w-12 h-1 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full group-hover:w-16 transition-all duration-300"></div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Modern How It Works with Interactive Steps */}
+      <section className="py-20 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-6">
+              <TrendingUp className="w-4 h-4 mr-2" />
+              Getting Started
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mb-6">
+              How It Works
+            </h2>
+            <p className="text-xl text-blue-600 max-w-3xl mx-auto">
+              Start earning in 4 simple steps - it's easier than you think
+            </p>
+          </div>
+          <div className="relative">
+            {/* Connection Line */}
+            <div className="hidden md:block absolute top-16 left-1/2 w-full h-0.5 bg-gradient-to-r from-blue-200 via-blue-400 to-blue-200 transform -translate-x-1/2 -translate-y-1/2 z-0"></div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+              {[
+                { 
+                  step: '1', 
+                  title: 'Sign Up', 
+                  description: 'Create your free account in seconds with just your email',
+                  icon: Users,
+                  color: 'from-blue-500 to-blue-600'
+                },
+                { 
+                  step: '2', 
+                  title: 'Complete KYC', 
+                  description: 'Verify your identity with secure ₹99 verification fee',
+                  icon: Shield,
+                  color: 'from-blue-600 to-blue-700'
+                },
+                { 
+                  step: '3', 
+                  title: 'Complete Tasks', 
+                  description: 'Choose and complete tasks that match your interests',
+                  icon: ListTodo,
+                  color: 'from-blue-700 to-blue-800'
+                },
+                { 
+                  step: '4', 
+                  title: 'Get Paid', 
+                  description: 'Receive instant payments directly to your bank account',
+                  icon: Zap,
+                  color: 'from-blue-800 to-blue-900'
+                }
+              ].map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.step} className="text-center group">
+                    <div className="relative">
+                      <div className={`w-20 h-20 bg-gradient-to-br ${item.color} rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}>
+                        <Icon className="w-10 h-10 text-white" />
+                      </div>
+                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-white border-4 border-blue-600 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm shadow-lg">
+                        {item.step}
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-bold text-blue-900 mb-4 group-hover:text-blue-700 transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-blue-600 leading-relaxed group-hover:text-blue-700 transition-colors">
+                      {item.description}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-12 bg-blue-50 border-b border-blue-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-blue-900">{stat.value}</div>
-                <div className="text-sm text-blue-600 mt-2">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+      {/* Modern CTA Section with Gradient Animation */}
+      <section className="py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/50 to-purple-600/30 animate-pulse"></div>
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-bounce"></div>
+          <div className="absolute top-32 right-20 w-16 h-16 bg-white/10 rounded-full animate-bounce delay-1000"></div>
+          <div className="absolute bottom-20 left-32 w-12 h-12 bg-white/10 rounded-full animate-bounce delay-500"></div>
         </div>
-      </section>
-
-      {/* Task Categories */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
-              6 Ways to Earn Money
-            </h2>
-            <p className="text-xl text-blue-600 max-w-3xl mx-auto">
-              Choose from multiple task categories and start earning immediately
-            </p>
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="mb-8">
+            <div className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-white font-medium mb-6">
+              <Globe className="w-5 h-5 mr-2" />
+              Join Our Global Community
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {taskCategories.map((category) => {
-              const Icon = category.icon;
-              return (
-                <Card key={category.name} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className={`w-12 h-12 ${category.color} rounded-lg flex items-center justify-center mb-4`}>
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle>{category.name}</CardTitle>
-                    <CardDescription className="text-lg font-semibold text-blue-700">
-                      Earn {category.reward}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-blue-600">
-                      Complete {category.name.toLowerCase()} tasks and earn rewards instantly
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 bg-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
-              Why Choose Innovative Task Earn?
-            </h2>
-            <p className="text-xl text-blue-600 max-w-3xl mx-auto">
-              We make earning money online simple, secure, and rewarding
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div key={feature.title} className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-blue-900 mb-2">{feature.title}</h3>
-                  <p className="text-blue-600">{feature.description}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
-              How It Works
-            </h2>
-            <p className="text-xl text-blue-600 max-w-3xl mx-auto">
-              Start earning in 4 simple steps
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { step: '1', title: 'Sign Up', description: 'Create your free account in seconds' },
-              { step: '2', title: 'Complete KYC', description: 'Verify your identity with ₹99 fee' },
-              { step: '3', title: 'Complete Tasks', description: 'Choose and complete tasks you like' },
-              { step: '4', title: 'Get Paid', description: 'Receive instant payments to your account' }
-            ].map((item) => (
-              <div key={item.step} className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
-                  {item.step}
-                </div>
-                <h3 className="text-lg font-semibold text-blue-900 mb-2">{item.title}</h3>
-                <p className="text-blue-600">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
             Ready to Start Earning?
           </h2>
-          <p className="text-xl mb-8 text-blue-100">
-            Join thousands of users who are already earning money daily
+          <p className="text-xl md:text-2xl mb-12 text-blue-100 max-w-4xl mx-auto leading-relaxed">
+            Join thousands of users who are already earning money daily through our innovative platform
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
             <Link href="/signup">
-              <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700 border-0">
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 border-0 px-10 py-6 text-lg font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all">
                 Create Free Account
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="ml-3 w-6 h-6" />
               </Button>
             </Link>
             <Link href="/login">
-              <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 bg-white hover:bg-blue-50">
+              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 px-10 py-6 text-lg font-bold backdrop-blur-sm">
                 Login to Dashboard
               </Button>
             </Link>
           </div>
-          <div className="mt-8 flex items-center justify-center space-x-8 text-sm">
-            <div className="flex items-center">
-              <CheckCircle className="w-5 h-5 mr-2" />
-              <span>No Hidden Fees</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="flex flex-col items-center p-6 bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20 transition-all duration-300">
+              <CheckCircle className="w-8 h-8 mb-3 text-green-300" />
+              <span className="font-semibold text-lg">No Hidden Fees</span>
+              <span className="text-blue-200 text-sm mt-1">100% Transparent Pricing</span>
             </div>
-            <div className="flex items-center">
-              <CheckCircle className="w-5 h-5 mr-2" />
-              <span>Instant Payments</span>
+            <div className="flex flex-col items-center p-6 bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20 transition-all duration-300">
+              <Zap className="w-8 h-8 mb-3 text-yellow-300" />
+              <span className="font-semibold text-lg">Instant Payments</span>
+              <span className="text-blue-200 text-sm mt-1">Get Paid Immediately</span>
             </div>
-            <div className="flex items-center">
-              <CheckCircle className="w-5 h-5 mr-2" />
-              <span>24/7 Support</span>
+            <div className="flex flex-col items-center p-6 bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20 transition-all duration-300">
+              <Shield className="w-8 h-8 mb-3 text-blue-300" />
+              <span className="font-semibold text-lg">24/7 Support</span>
+              <span className="text-blue-200 text-sm mt-1">Always Here to Help</span>
             </div>
           </div>
         </div>
