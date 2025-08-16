@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '../hooks/useAuth.tsx';
+import { Layout } from '../components/Layout';
 import { Button } from '../components/ui/button.tsx';
 import { Input } from '../components/ui/input.tsx';
 import { Label } from '../components/ui/label.tsx';
@@ -75,23 +76,24 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link href="/">
-            <a className="inline-flex items-center space-x-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">IT</span>
-              </div>
-              <span className="text-2xl font-bold text-gray-900">
-                Innovative Task Earn
-              </span>
-            </a>
-          </Link>
-        </div>
+    <Layout>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <Link href="/">
+              <a className="inline-flex items-center space-x-2">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                  <span className="text-white font-bold text-2xl">IT</span>
+                </div>
+                <span className="text-2xl font-bold text-gray-900">
+                  Innovative Task Earn
+                </span>
+              </a>
+            </Link>
+          </div>
 
-        <Card className="shadow-xl border-0">
+          <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 pb-6">
             <CardTitle className="text-2xl font-bold text-center">Create Account</CardTitle>
             <CardDescription className="text-center">
@@ -278,7 +280,8 @@ export default function Signup() {
             <a className="text-blue-600 hover:text-blue-700">Privacy Policy</a>
           </Link>
         </p>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 }
