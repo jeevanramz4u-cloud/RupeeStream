@@ -52,27 +52,66 @@ export default function AdminDashboard() {
   const { data: users = [], isLoading: usersLoading, error: usersError } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
     enabled: isAdminAuth,
+    retry: 3,
+    retryDelay: 1000,
+    queryFn: async () => {
+      console.log("Fetching admin users...");
+      const res = await fetch("/api/admin/users", {
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      
+      console.log("Admin users response status:", res.status);
+      
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      
+      const data = await res.json();
+      console.log("Admin users data received:", data.length, "users");
+      return data;
+    },
   });
 
   // Debug logging
   console.log("Admin Dashboard Debug:", {
     isAdminAuth,
     usersLoading,
-    usersError,
+    usersError: usersError?.message || usersError,
     usersCount: users.length,
     users: users.slice(0, 2) // Show first 2 users for debugging
   });
 
   const { data: tasks = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/tasks"],
+    enabled: isAdminAuth,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/tasks", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   const { data: advertiserInquiries = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/advertiser-inquiries"],
+    enabled: isAdminAuth,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/advertiser-inquiries", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   const { data: contactInquiries = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/contact-inquiries"],
+    enabled: isAdminAuth,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/contact-inquiries", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   const handleLogout = async () => {
@@ -87,18 +126,42 @@ export default function AdminDashboard() {
   // Get all historical data for comprehensive admin overview
   const { data: earnings = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/earnings"],
+    enabled: isAdminAuth,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/earnings", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   const { data: payouts = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/payouts"],
+    enabled: isAdminAuth,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/payouts", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   const { data: completions = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/task-completions"],
+    enabled: isAdminAuth,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/task-completions", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   const { data: chatSessions = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/chat-sessions"],
+    enabled: isAdminAuth,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/chat-sessions", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   // Calculate comprehensive statistics with demo data fallbacks
