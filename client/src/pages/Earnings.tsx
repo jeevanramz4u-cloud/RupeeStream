@@ -41,23 +41,24 @@ export default function Earnings() {
   // Fetch earnings data
   const { data: earningsData, isLoading } = useQuery({
     queryKey: ['/api/users/earnings'],
-    enabled: !!user,
-    initialData: {
-      currentBalance: user?.balance || 0,
-      totalEarnings: 0,
-      monthlyEarnings: 0,
-      weeklyEarnings: 0,
-      todayEarnings: 0,
-      pendingAmount: 0,
-      history: []
-    }
+    enabled: !!user
   });
 
+  // Safe data access with defaults
+  const safeEarningsData = {
+    currentBalance: earningsData?.currentBalance || 0,
+    totalEarnings: earningsData?.totalEarnings || 0,
+    monthlyEarnings: earningsData?.monthlyEarnings || 0,
+    weeklyEarnings: earningsData?.weeklyEarnings || 0,
+    todayEarnings: earningsData?.todayEarnings || 0,
+    pendingAmount: earningsData?.pendingAmount || 0,
+    history: earningsData?.history || []
+  };
+
   // Fetch payout history
-  const { data: payoutHistory } = useQuery({
+  const { data: payoutHistory = [] } = useQuery({
     queryKey: ['/api/users/payouts'],
-    enabled: !!user,
-    initialData: []
+    enabled: !!user
   });
 
   const getStatusBadge = (status: string) => {
@@ -93,7 +94,7 @@ export default function Earnings() {
   };
 
   // Filter earnings history
-  const filteredHistory = (earningsData?.history || []).filter((earning: EarningRecord) => {
+  const filteredHistory = safeEarningsData.history.filter((earning: EarningRecord) => {
     if (filterType !== 'all' && earning.type !== filterType) return false;
     if (filterStatus !== 'all' && earning.status !== filterStatus) return false;
     return true;
@@ -146,7 +147,7 @@ export default function Earnings() {
                 <div>
                   <p className="text-sm text-gray-600">Current Balance</p>
                   <p className="text-2xl font-bold text-green-600">
-                    ₹{earningsData?.currentBalance || 0}
+                    ₹{safeEarningsData.currentBalance}
                   </p>
                 </div>
                 <Wallet className="w-8 h-8 text-green-600 opacity-20" />
@@ -159,7 +160,7 @@ export default function Earnings() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Today's Earnings</p>
-                  <p className="text-2xl font-bold">₹{earningsData?.todayEarnings || 0}</p>
+                  <p className="text-2xl font-bold">₹{safeEarningsData.todayEarnings}</p>
                   <p className="text-xs text-green-600 flex items-center mt-1">
                     <TrendingUp className="w-3 h-3 mr-1" />
                     +12% from yesterday

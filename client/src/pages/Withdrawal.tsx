@@ -47,24 +47,32 @@ export default function Withdrawal() {
   const [ifscCode, setIfscCode] = useState('');
   const [accountHolder, setAccountHolder] = useState('');
 
-  // Fetch user balance and stats
+  // Fetch user balance and stats from earnings data
   const { data: balanceData } = useQuery({
-    queryKey: ['/api/users/balance'],
+    queryKey: ['/api/users/earnings'],
     enabled: !!user,
-    initialData: {
-      availableBalance: user?.balance || 0,
-      pendingEarnings: 0,
+    select: (data: any) => ({
+      availableBalance: data?.currentBalance || 0,
+      pendingEarnings: data?.pendingAmount || 0,
       totalWithdrawn: 0,
       minWithdrawal: 100,
       processingFee: 0
-    }
+    })
   });
 
+  // Safe balance data with defaults
+  const safeBalanceData = {
+    availableBalance: balanceData?.availableBalance || 0,
+    pendingEarnings: balanceData?.pendingEarnings || 0,
+    totalWithdrawn: balanceData?.totalWithdrawn || 0,
+    minWithdrawal: balanceData?.minWithdrawal || 100,
+    processingFee: balanceData?.processingFee || 0
+  };
+
   // Fetch withdrawal history
-  const { data: history } = useQuery({
+  const { data: history = [] } = useQuery({
     queryKey: ['/api/users/withdrawals'],
-    enabled: !!user,
-    initialData: []
+    enabled: !!user
   });
 
   // Submit withdrawal request
@@ -113,16 +121,16 @@ export default function Withdrawal() {
     const withdrawAmount = parseFloat(amount);
     
     // Validation
-    if (withdrawAmount < balanceData.minWithdrawal) {
+    if (withdrawAmount < safeBalanceData.minWithdrawal) {
       toast({
         title: 'Invalid Amount',
-        description: `Minimum withdrawal amount is ₹${balanceData.minWithdrawal}`,
+        description: `Minimum withdrawal amount is ₹${safeBalanceData.minWithdrawal}`,
         variant: 'destructive'
       });
       return;
     }
     
-    if (withdrawAmount > balanceData.availableBalance) {
+    if (withdrawAmount > safeBalanceData.availableBalance) {
       toast({
         title: 'Insufficient Balance',
         description: 'You do not have enough balance for this withdrawal.',
@@ -223,7 +231,7 @@ export default function Withdrawal() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center text-2xl font-bold text-blue-700">
                     <IndianRupee className="w-6 h-6 mr-1" />
-                    {balanceData.availableBalance}
+                    {safeBalanceData.availableBalance}
                   </div>
                   <Wallet className="w-8 h-8 text-blue-500" />
                 </div>
@@ -237,11 +245,11 @@ export default function Withdrawal() {
               <CardContent className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-blue-600">Minimum Withdrawal:</span>
-                  <span className="font-medium">₹{balanceData.minWithdrawal}</span>
+                  <span className="font-medium">₹{safeBalanceData.minWithdrawal}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-blue-600">Processing Fee:</span>
-                  <span className="font-medium">₹{balanceData.processingFee}</span>
+                  <span className="font-medium">₹{safeBalanceData.processingFee}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-blue-600">Processing Time:</span>
@@ -249,7 +257,7 @@ export default function Withdrawal() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-blue-600">Total Withdrawn:</span>
-                  <span className="font-medium">₹{balanceData.totalWithdrawn}</span>
+                  <span className="font-medium">₹{safeBalanceData.totalWithdrawn}</span>
                 </div>
               </CardContent>
             </Card>
@@ -278,13 +286,13 @@ export default function Withdrawal() {
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         className="pl-9"
-                        min={balanceData.minWithdrawal}
-                        max={balanceData.availableBalance}
+                        min={safeBalanceData.minWithdrawal}
+                        max={safeBalanceData.availableBalance}
                         disabled={user.kycStatus !== 'verified'}
                       />
                     </div>
                     <p className="text-xs text-blue-600 mt-1">
-                      Min: ₹{balanceData.minWithdrawal} | Max: ₹{balanceData.availableBalance}
+                      Min: ₹{safeBalanceData.minWithdrawal} | Max: ₹{safeBalanceData.availableBalance}
                     </p>
                   </div>
 
