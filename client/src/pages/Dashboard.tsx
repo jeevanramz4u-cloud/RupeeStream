@@ -26,11 +26,11 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) {
       setLocation('/login');
-    } else if (user.role === 'admin' && location !== '/admin') {
-      // Redirect admins to admin dashboard only if not already there
-      setLocation('/admin');
+    } else if (user.role === 'admin') {
+      // Redirect admins to admin dashboard
+      setLocation('/admin/dashboard');
     }
-  }, [user, location, setLocation]);
+  }, [user, setLocation]);
 
   // Fetch dashboard stats
   const { data: stats, isLoading } = useQuery({

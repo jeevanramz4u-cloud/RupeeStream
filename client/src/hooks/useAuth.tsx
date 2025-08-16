@@ -67,12 +67,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data?.user) {
         setUser(data.user);
         queryClient.invalidateQueries({ queryKey: ['/api/auth/check'] });
-        // Redirect to appropriate dashboard based on role
-        if (data.user.role === 'admin') {
-          window.location.href = '/admin/dashboard';
-        } else {
-          window.location.href = '/dashboard';
-        }
       }
     }
   });
@@ -100,7 +94,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value: AuthContextType = {
     user,
     isLoading,
-    login: (email, password) => loginMutation.mutateAsync({ email, password }),
+    login: async (email, password) => {
+      try {
+        const result = await loginMutation.mutateAsync({ email, password });
+        if (result?.user) {
+          return { success: true, user: result.user };
+        } else {
+          return { success: false, error: result?.error || 'Login failed' };
+        }
+      } catch (error: any) {
+        return { success: false, error: error?.message || 'Login failed' };
+      }
+    },
     signup: (data) => signupMutation.mutateAsync(data),
     logout: () => logoutMutation.mutateAsync(),
     refetch
