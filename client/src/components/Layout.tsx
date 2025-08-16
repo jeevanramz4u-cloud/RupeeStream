@@ -36,6 +36,7 @@ export function Layout({ children }: LayoutProps) {
     { name: 'Dashboard', href: '/dashboard', icon: Home, requireAuth: true },
     { name: 'Tasks', href: '/tasks', icon: ListTodo, requireAuth: false },
     { name: 'Earnings', href: '/earnings', icon: Wallet, requireAuth: true },
+    { name: 'Withdrawal', href: '/withdrawal', icon: Wallet, requireAuth: true },
     { name: 'Profile', href: '/profile', icon: User, requireAuth: true },
   ];
 
@@ -43,6 +44,7 @@ export function Layout({ children }: LayoutProps) {
     { name: 'Admin Dashboard', href: '/admin/dashboard', icon: Shield },
     { name: 'Manage Users', href: '/admin/users', icon: Users },
     { name: 'Manage Tasks', href: '/admin/tasks', icon: ListTodo },
+    { name: 'Manage Payouts', href: '/admin/payouts', icon: Wallet },
   ];
 
   const handleLogout = async () => {

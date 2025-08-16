@@ -207,7 +207,7 @@ export default function Dashboard() {
                     Invite Friends
                   </Button>
                 </Link>
-                <Link href="/profile">
+                <Link href="/withdrawal">
                   <Button className="w-full" variant="outline">
                     <IndianRupee className="w-4 h-4 mr-2" />
                     Request Payout

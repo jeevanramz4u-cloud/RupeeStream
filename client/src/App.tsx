@@ -22,11 +22,13 @@ import About from './pages/About';
 import FAQ from './pages/FAQ';
 import ForgotPassword from './pages/ForgotPassword';
 import Settings from './pages/Settings';
+import Withdrawal from './pages/Withdrawal';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminUsers from './pages/admin/Users';
 import AdminTasks from './pages/admin/Tasks';
+import AdminPayouts from './pages/admin/Payouts';
 
 export default function App() {
   return (
@@ -43,6 +45,7 @@ export default function App() {
           <Route path="/earnings" component={Earnings} />
           <Route path="/kyc" component={KYC} />
           <Route path="/referrals" component={Referrals} />
+          <Route path="/withdrawal" component={Withdrawal} />
           
           {/* Auth & Verification Pages */}
           <Route path="/verify-email" component={VerifyEmail} />
@@ -65,6 +68,7 @@ export default function App() {
           <Route path="/admin/dashboard" component={AdminDashboard} />
           <Route path="/admin/users" component={AdminUsers} />
           <Route path="/admin/tasks" component={AdminTasks} />
+          <Route path="/admin/payouts" component={AdminPayouts} />
           
           {/* 404 Page */}
           <Route>
