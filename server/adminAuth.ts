@@ -23,13 +23,13 @@ export const isAdminAuthenticated: RequestHandler = (req, res, next) => {
 // Temporary admin user while database is unavailable
 const tempAdmin = {
   id: "temp-admin-001",
+  name: "Admin User",
   username: "admin",
   password: "admin123", // Plain text for demo
-  email: "admin@earnpay.com", 
-  role: "admin" as const,
   isActive: true,
   createdAt: new Date(),
-  lastLoginAt: new Date()
+  lastLoginAt: new Date(),
+  updatedAt: new Date()
 };
 
 export async function authenticateAdmin(username: string, password: string): Promise<AdminUser | null> {
@@ -37,7 +37,7 @@ export async function authenticateAdmin(username: string, password: string): Pro
     // Use temporary admin credentials when database is unavailable
     if (username === tempAdmin.username && password === tempAdmin.password) {
       console.log('Admin authenticated with temporary credentials');
-      return tempAdmin as AdminUser;
+      return tempAdmin;
     }
 
     return null;
