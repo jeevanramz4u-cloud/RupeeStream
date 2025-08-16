@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
 import { AuthProvider } from './hooks/useAuth.tsx';
 import { Toaster } from './components/ui/toaster.tsx';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
 import Login from './pages/Login';
@@ -46,50 +47,139 @@ export default function App() {
       <AuthProvider>
       <div className="min-h-screen">
         <Switch>
+          {/* Public Routes */}
           <Route path="/" component={Home} />
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/users/dashboard" component={Dashboard} />
-          <Route path="/tasks" component={Tasks} />
-          <Route path="/tasks/:id/submit" component={TaskSubmission} />
-          <Route path="/profile" component={Profile} />
-          <Route path="/earnings" component={Earnings} />
-          <Route path="/kyc" component={KYC} />
-          <Route path="/referrals" component={Referrals} />
-          <Route path="/withdrawal" component={Withdrawal} />
-          <Route path="/support" component={Support} />
-          <Route path="/notifications" component={Notifications} />
-          
-          {/* Auth & Verification Pages */}
           <Route path="/verify-email" component={VerifyEmail} />
           <Route path="/forgot-password" component={ForgotPassword} />
           <Route path="/reactivation" component={Reactivation} />
-          
-          {/* Account Pages */}
-          <Route path="/settings" component={Settings} />
-          
-          {/* Legal Pages */}
           <Route path="/terms" component={Terms} />
           <Route path="/privacy" component={Privacy} />
-          
-          {/* Info Pages */}
           <Route path="/contact" component={Contact} />
           <Route path="/about" component={About} />
           <Route path="/faq" component={FAQ} />
           
-          {/* Admin Routes */}
-          <Route path="/admin" component={AdminDashboard} />
-          <Route path="/admin/dashboard" component={AdminDashboard} />
-          <Route path="/admin/users" component={AdminUsers} />
-          <Route path="/admin/tasks" component={AdminTasks} />
-          <Route path="/admin/payouts" component={AdminPayouts} />
-          <Route path="/admin/inquiries" component={AdminInquiries} />
-          <Route path="/admin/kyc" component={AdminKYC} />
-          <Route path="/admin/reports" component={AdminReports} />
-          <Route path="/admin/settings" component={AdminSettings} />
-          <Route path="/admin/support" component={AdminSupport} />
-          <Route path="/admin/referrals" component={AdminReferrals} />
+          {/* Protected User Routes */}
+          <Route path="/dashboard">
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/users/dashboard">
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/tasks">
+            <ProtectedRoute>
+              <Tasks />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/tasks/:id/submit">
+            {(params) => (
+              <ProtectedRoute>
+                <TaskSubmission />
+              </ProtectedRoute>
+            )}
+          </Route>
+          <Route path="/profile">
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/earnings">
+            <ProtectedRoute>
+              <Earnings />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/kyc">
+            <ProtectedRoute>
+              <KYC />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/referrals">
+            <ProtectedRoute>
+              <Referrals />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/withdrawal">
+            <ProtectedRoute requireVerified>
+              <Withdrawal />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/support">
+            <ProtectedRoute>
+              <Support />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/notifications">
+            <ProtectedRoute>
+              <Notifications />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/settings">
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          </Route>
+          
+          {/* Protected Admin Routes */}
+          <Route path="/admin">
+            <ProtectedRoute requireAdmin>
+              <AdminDashboard />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/admin/dashboard">
+            <ProtectedRoute requireAdmin>
+              <AdminDashboard />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/admin/users">
+            <ProtectedRoute requireAdmin>
+              <AdminUsers />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/admin/tasks">
+            <ProtectedRoute requireAdmin>
+              <AdminTasks />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/admin/payouts">
+            <ProtectedRoute requireAdmin>
+              <AdminPayouts />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/admin/inquiries">
+            <ProtectedRoute requireAdmin>
+              <AdminInquiries />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/admin/kyc">
+            <ProtectedRoute requireAdmin>
+              <AdminKYC />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/admin/reports">
+            <ProtectedRoute requireAdmin>
+              <AdminReports />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/admin/settings">
+            <ProtectedRoute requireAdmin>
+              <AdminSettings />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/admin/support">
+            <ProtectedRoute requireAdmin>
+              <AdminSupport />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/admin/referrals">
+            <ProtectedRoute requireAdmin>
+              <AdminReferrals />
+            </ProtectedRoute>
+          </Route>
           
           {/* 404 Page */}
           <Route>
