@@ -33,6 +33,11 @@ import AdminUsers from './pages/admin/Users';
 import AdminTasks from './pages/admin/Tasks';
 import AdminPayouts from './pages/admin/Payouts';
 import AdminInquiries from './pages/admin/Inquiries';
+import AdminKYC from './pages/admin/KYC';
+import AdminReports from './pages/admin/Reports';
+import AdminSettings from './pages/admin/Settings';
+import AdminSupport from './pages/admin/Support';
+import AdminReferrals from './pages/admin/Referrals';
 
 export default function App() {
   return (
@@ -78,6 +83,11 @@ export default function App() {
           <Route path="/admin/tasks" component={AdminTasks} />
           <Route path="/admin/payouts" component={AdminPayouts} />
           <Route path="/admin/inquiries" component={AdminInquiries} />
+          <Route path="/admin/kyc" component={AdminKYC} />
+          <Route path="/admin/reports" component={AdminReports} />
+          <Route path="/admin/settings" component={AdminSettings} />
+          <Route path="/admin/support" component={AdminSupport} />
+          <Route path="/admin/referrals" component={AdminReferrals} />
           
           {/* 404 Page */}
           <Route>

@@ -38,8 +38,12 @@ export function Layout({ children }: LayoutProps) {
     { name: 'Dashboard', href: '/admin/dashboard', icon: Home, requireAuth: true },
     { name: 'Users', href: '/admin/users', icon: Users, requireAuth: true },
     { name: 'Tasks', href: '/admin/tasks', icon: ListTodo, requireAuth: true },
+    { name: 'KYC', href: '/admin/kyc', icon: Shield, requireAuth: true },
     { name: 'Payouts', href: '/admin/payouts', icon: Wallet, requireAuth: true },
-    { name: 'Inquiries', href: '/admin/inquiries', icon: Shield, requireAuth: true },
+    { name: 'Referrals', href: '/admin/referrals', icon: Users, requireAuth: true },
+    { name: 'Support', href: '/admin/support', icon: Shield, requireAuth: true },
+    { name: 'Reports', href: '/admin/reports', icon: Shield, requireAuth: true },
+    { name: 'Settings', href: '/admin/settings', icon: Shield, requireAuth: true },
   ] : [
     { name: 'Dashboard', href: '/users/dashboard', icon: Home, requireAuth: true },
     { name: 'Tasks', href: '/tasks', icon: ListTodo, requireAuth: false },
