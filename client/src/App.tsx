@@ -26,6 +26,7 @@ import Withdrawal from './pages/Withdrawal';
 import TaskSubmission from './pages/TaskSubmission';
 import Support from './pages/Support';
 import Notifications from './pages/Notifications';
+import Reactivation from './pages/Reactivation';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -63,6 +64,7 @@ export default function App() {
           {/* Auth & Verification Pages */}
           <Route path="/verify-email" component={VerifyEmail} />
           <Route path="/forgot-password" component={ForgotPassword} />
+          <Route path="/reactivation" component={Reactivation} />
           
           {/* Account Pages */}
           <Route path="/settings" component={Settings} />

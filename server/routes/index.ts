@@ -77,7 +77,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     // Development mode test users
     if (process.env.NODE_ENV === 'development') {
-      if (email === 'admin@innovativetaskearn.online' && password === 'admin123') {
+      // Check for suspended test user
+      if (email === 'suspended@innovativetaskearn.online' && password === 'test123') {
+        console.log('Suspended user login attempt'); // Debug log
+        res.status(403).json({ 
+          error: 'Account suspended',
+          requiresReactivation: true,
+          phone: '9876543210',
+          name: 'Test Suspended User'
+        });
+      } else if (email === 'admin@innovativetaskearn.online' && password === 'admin123') {
         (req.session as any).userId = 'admin-001';
         (req.session as any).role = 'admin';
         console.log('Admin login successful'); // Debug log
@@ -151,6 +160,119 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } else {
       res.status(501).json({ error: 'Signup not implemented in production' });
+    }
+  });
+
+  // Reactivation payment initiation endpoint
+  app.post('/api/reactivation/initiate', async (req, res) => {
+    const { email, phone, name } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+    
+    // Development mode simulation
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Development mode: Simulating reactivation payment for ${email}`);
+      
+      // Generate order ID
+      const orderId = `REACT_DEV_${Date.now()}`;
+      
+      // Store order details in session for verification
+      (req.session as any).reactivationOrderId = orderId;
+      (req.session as any).reactivationEmail = email;
+      
+      // Return simulated payment URL
+      const paymentUrl = `/reactivation?payment=success&orderId=${orderId}`;
+      
+      res.json({ 
+        success: true,
+        paymentUrl: paymentUrl,
+        orderId: orderId,
+        sessionId: 'dev-session-' + orderId,
+        devMode: true,
+        message: 'Development mode: Click the payment URL to simulate successful payment'
+      });
+    } else {
+      // Production mode with real Cashfree
+      try {
+        const { createPaymentSession } = await import('../cashfree');
+        
+        const orderId = `REACT_${Date.now()}`;
+        
+        const paymentSession = await createPaymentSession(
+          orderId,
+          49, // ₹49 reactivation fee
+          phone || '9999999999',
+          email,
+          name || email,
+          'reactivation_fee'
+        );
+        
+        (req.session as any).reactivationOrderId = orderId;
+        (req.session as any).reactivationEmail = email;
+        
+        const paymentUrl = `https://payments.cashfree.com/forms/reactivation?session_id=${paymentSession.payment_session_id}`;
+        
+        res.json({ 
+          success: true,
+          paymentUrl: paymentUrl,
+          orderId: orderId,
+          sessionId: paymentSession.payment_session_id
+        });
+      } catch (error) {
+        console.error('Reactivation payment initiation error:', error);
+        res.status(500).json({ error: 'Failed to initiate payment. Please check Cashfree credentials.' });
+      }
+    }
+  });
+
+  // Reactivation payment verification endpoint
+  app.post('/api/reactivation/verify', async (req, res) => {
+    const orderId = (req.session as any)?.reactivationOrderId;
+    const email = (req.session as any)?.reactivationEmail;
+    
+    if (!orderId || !email) {
+      return res.status(400).json({ error: 'Invalid session' });
+    }
+    
+    try {
+      // Import Cashfree module
+      const { verifyPayment } = await import('../cashfree');
+      
+      // Verify payment with Cashfree
+      const paymentStatus = await verifyPayment(orderId);
+      
+      if (paymentStatus.payment_status === 'SUCCESS') {
+        // In development mode, simulate account reactivation
+        console.log(`Account reactivated for: ${email}`);
+        
+        // Clear reactivation session data
+        delete (req.session as any).reactivationOrderId;
+        delete (req.session as any).reactivationEmail;
+        
+        res.json({ 
+          success: true,
+          message: 'Account reactivated successfully'
+        });
+      } else {
+        res.status(400).json({ 
+          error: 'Payment verification failed',
+          status: paymentStatus.payment_status
+        });
+      }
+    } catch (error) {
+      console.error('Payment verification error:', error);
+      // In development mode, allow simulation
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Development mode: Simulating successful reactivation for ${email}`);
+        res.json({ 
+          success: true,
+          message: 'Account reactivated successfully (dev mode)'
+        });
+      } else {
+        res.status(500).json({ error: 'Payment verification failed' });
+      }
     }
   });
 

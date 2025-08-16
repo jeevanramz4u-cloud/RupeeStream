@@ -62,6 +62,14 @@ export default function Login() {
         });
         
         // The redirect will be handled by the useEffect above when user state updates
+      } else if (result.requiresReactivation) {
+        // Store user info for reactivation page
+        localStorage.setItem('suspendedUserEmail', data.email);
+        localStorage.setItem('suspendedUserPhone', result.phone || '');
+        localStorage.setItem('suspendedUserName', result.name || data.email);
+        
+        // Redirect to reactivation page
+        setLocation('/reactivation');
       } else {
         setError(result.error || 'Login failed');
       }
@@ -157,6 +165,7 @@ export default function Login() {
                 <div className="space-y-1 text-sm text-blue-700">
                   <p>User: demo@innovativetaskearn.online / demo123</p>
                   <p>Admin: admin@innovativetaskearn.online / admin123</p>
+                  <p>Suspended: suspended@innovativetaskearn.online / test123</p>
                 </div>
               </div>
             </CardContent>
