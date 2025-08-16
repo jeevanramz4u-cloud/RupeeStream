@@ -152,7 +152,9 @@ export function Layout({ children }: LayoutProps) {
                       return (
                         <DropdownMenuItem 
                           key={item.name}
-                          onClick={() => setLocation(item.href)}
+                          onClick={() => {
+                            setTimeout(() => setLocation(item.href), 0);
+                          }}
                           className="cursor-pointer"
                         >
                           <Icon className="w-4 h-4 mr-2" />
@@ -178,7 +180,9 @@ export function Layout({ children }: LayoutProps) {
                       return (
                         <DropdownMenuItem 
                           key={item.name}
-                          onClick={() => setLocation(item.href)}
+                          onClick={() => {
+                            setTimeout(() => setLocation(item.href), 0);
+                          }}
                           className="cursor-pointer"
                         >
                           <Icon className="w-4 h-4 mr-2" />
@@ -206,7 +210,9 @@ export function Layout({ children }: LayoutProps) {
                       return (
                         <DropdownMenuItem 
                           key={item.name}
-                          onClick={() => setLocation(item.href)}
+                          onClick={() => {
+                            setTimeout(() => setLocation(item.href), 0);
+                          }}
                           className="cursor-pointer"
                         >
                           <Icon className="w-4 h-4 mr-2" />
@@ -249,14 +255,18 @@ export function Layout({ children }: LayoutProps) {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem 
-                      onClick={() => setLocation('/profile')}
+                      onClick={() => {
+                        setTimeout(() => setLocation('/profile'), 0);
+                      }}
                       className="cursor-pointer"
                     >
                       <User className="w-4 h-4 mr-2" />
                       <span>Profile</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem 
-                      onClick={() => setLocation('/settings')}
+                      onClick={() => {
+                        setTimeout(() => setLocation('/settings'), 0);
+                      }}
                       className="cursor-pointer"
                     >
                       <Shield className="w-4 h-4 mr-2" />
