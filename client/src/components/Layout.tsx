@@ -12,7 +12,8 @@ import {
   LogOut,
   Shield,
   Users,
-  ChevronDown
+  ChevronDown,
+  Bell
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -37,6 +38,7 @@ export function Layout({ children }: LayoutProps) {
     { name: 'Tasks', href: '/tasks', icon: ListTodo, requireAuth: false },
     { name: 'Earnings', href: '/earnings', icon: Wallet, requireAuth: true },
     { name: 'Withdrawal', href: '/withdrawal', icon: Wallet, requireAuth: true },
+    { name: 'Support', href: '/support', icon: Shield, requireAuth: false },
     { name: 'Profile', href: '/profile', icon: User, requireAuth: true },
   ];
 
@@ -45,6 +47,7 @@ export function Layout({ children }: LayoutProps) {
     { name: 'Manage Users', href: '/admin/users', icon: Users },
     { name: 'Manage Tasks', href: '/admin/tasks', icon: ListTodo },
     { name: 'Manage Payouts', href: '/admin/payouts', icon: Wallet },
+    { name: 'Manage Inquiries', href: '/admin/inquiries', icon: Shield },
   ];
 
   const handleLogout = async () => {
@@ -117,6 +120,16 @@ export function Layout({ children }: LayoutProps) {
                     })}
                   </DropdownMenuContent>
                 </DropdownMenu>
+              )}
+
+              {/* Notifications */}
+              {user && (
+                <Link href="/notifications" className="relative">
+                  <Button variant="ghost" size="sm">
+                    <Bell className="w-5 h-5" />
+                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                  </Button>
+                </Link>
               )}
 
               {/* User Menu */}

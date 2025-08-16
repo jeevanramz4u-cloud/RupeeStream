@@ -23,12 +23,16 @@ import FAQ from './pages/FAQ';
 import ForgotPassword from './pages/ForgotPassword';
 import Settings from './pages/Settings';
 import Withdrawal from './pages/Withdrawal';
+import TaskSubmission from './pages/TaskSubmission';
+import Support from './pages/Support';
+import Notifications from './pages/Notifications';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminUsers from './pages/admin/Users';
 import AdminTasks from './pages/admin/Tasks';
 import AdminPayouts from './pages/admin/Payouts';
+import AdminInquiries from './pages/admin/Inquiries';
 
 export default function App() {
   return (
@@ -41,11 +45,14 @@ export default function App() {
           <Route path="/signup" component={Signup} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/tasks" component={Tasks} />
+          <Route path="/tasks/:id/submit" component={TaskSubmission} />
           <Route path="/profile" component={Profile} />
           <Route path="/earnings" component={Earnings} />
           <Route path="/kyc" component={KYC} />
           <Route path="/referrals" component={Referrals} />
           <Route path="/withdrawal" component={Withdrawal} />
+          <Route path="/support" component={Support} />
+          <Route path="/notifications" component={Notifications} />
           
           {/* Auth & Verification Pages */}
           <Route path="/verify-email" component={VerifyEmail} />
@@ -69,6 +76,7 @@ export default function App() {
           <Route path="/admin/users" component={AdminUsers} />
           <Route path="/admin/tasks" component={AdminTasks} />
           <Route path="/admin/payouts" component={AdminPayouts} />
+          <Route path="/admin/inquiries" component={AdminInquiries} />
           
           {/* 404 Page */}
           <Route>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth.tsx';
 import { Layout } from '../components/Layout';
+import { Link } from 'wouter';
 import { Button } from '../components/ui/button.tsx';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card.tsx';
 import { Input } from '../components/ui/input.tsx';
@@ -210,10 +211,12 @@ export default function Tasks() {
                   </CardContent>
                   <CardFooter>
                     {user ? (
-                      <Button className="w-full">
-                        Start Task
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
+                      <Link href={`/tasks/${task.id}/submit`}>
+                        <Button className="w-full">
+                          Start Task
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </Link>
                     ) : (
                       <Button className="w-full" variant="outline" disabled>
                         Login to Start
