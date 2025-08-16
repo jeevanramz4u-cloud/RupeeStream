@@ -152,11 +152,13 @@ export function Layout({ children }: LayoutProps) {
                     {earningsMenuItems.map((item) => {
                       const Icon = item.icon;
                       return (
-                        <DropdownMenuItem key={item.name} asChild>
-                          <Link href={item.href} className="flex items-center space-x-2 w-full">
-                            <Icon className="w-4 h-4" />
-                            <span>{item.name}</span>
-                          </Link>
+                        <DropdownMenuItem 
+                          key={item.name}
+                          onClick={() => setLocation(item.href)}
+                          className="cursor-pointer"
+                        >
+                          <Icon className="w-4 h-4 mr-2" />
+                          <span>{item.name}</span>
                         </DropdownMenuItem>
                       );
                     })}
@@ -178,11 +180,13 @@ export function Layout({ children }: LayoutProps) {
                     {accountMenuItems.map((item) => {
                       const Icon = item.icon;
                       return (
-                        <DropdownMenuItem key={item.name} asChild>
-                          <Link href={item.href} className="flex items-center space-x-2 w-full">
-                            <Icon className="w-4 h-4" />
-                            <span>{item.name}</span>
-                          </Link>
+                        <DropdownMenuItem 
+                          key={item.name}
+                          onClick={() => setLocation(item.href)}
+                          className="cursor-pointer"
+                        >
+                          <Icon className="w-4 h-4 mr-2" />
+                          <span>{item.name}</span>
                         </DropdownMenuItem>
                       );
                     })}
@@ -206,11 +210,13 @@ export function Layout({ children }: LayoutProps) {
                     {adminMenuItems.map((item) => {
                       const Icon = item.icon;
                       return (
-                        <DropdownMenuItem key={item.name} asChild>
-                          <Link href={item.href} className="flex items-center space-x-2 w-full">
-                            <Icon className="w-4 h-4" />
-                            <span>{item.name}</span>
-                          </Link>
+                        <DropdownMenuItem 
+                          key={item.name}
+                          onClick={() => setLocation(item.href)}
+                          className="cursor-pointer"
+                        >
+                          <Icon className="w-4 h-4 mr-2" />
+                          <span>{item.name}</span>
                         </DropdownMenuItem>
                       );
                     })}
@@ -250,17 +256,19 @@ export function Layout({ children }: LayoutProps) {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/profile" className="flex items-center space-x-2 w-full">
-                        <User className="w-4 h-4" />
-                        <span>Profile</span>
-                      </Link>
+                    <DropdownMenuItem 
+                      onClick={() => setLocation('/profile')}
+                      className="cursor-pointer"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      <span>Profile</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/settings" className="flex items-center space-x-2 w-full">
-                        <Shield className="w-4 h-4" />
-                        <span>Settings</span>
-                      </Link>
+                    <DropdownMenuItem 
+                      onClick={() => setLocation('/settings')}
+                      className="cursor-pointer"
+                    >
+                      <Shield className="w-4 h-4 mr-2" />
+                      <span>Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-red-600">

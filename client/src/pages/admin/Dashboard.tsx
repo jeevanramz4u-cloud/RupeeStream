@@ -60,17 +60,17 @@ export default function AdminDashboard() {
   }
 
   // Default stats if data is loading
-  const displayStats = stats || {
-    totalUsers: 0,
-    activeUsers: 0,
-    totalEarnings: 0,
-    pendingPayouts: 0,
-    completedTasks: 0,
-    pendingTasks: 0,
-    todayEarnings: 0,
-    weeklyEarnings: 0,
-    totalTasks: 0,
-    totalPayoutAmount: 0
+  const displayStats = {
+    totalUsers: stats?.totalUsers || 0,
+    activeUsers: stats?.activeUsers || 0,
+    totalEarnings: stats?.totalEarnings || 0,
+    pendingPayouts: stats?.pendingPayouts || 0,
+    completedTasks: stats?.completedTasks || 0,
+    pendingTasks: stats?.pendingTasks || 0,
+    todayEarnings: stats?.todayEarnings || 0,
+    weeklyEarnings: stats?.weeklyEarnings || 0,
+    totalTasks: stats?.totalTasks || 0,
+    totalPayoutAmount: stats?.totalPayoutAmount || 0
   };
 
   const recentActivities = [
