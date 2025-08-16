@@ -1,338 +1,251 @@
-import React, { useEffect } from 'react';
-import { Link, useLocation } from 'wouter';
-import { useAuth } from '../hooks/useAuth.tsx';
+import React from 'react';
 import { Layout } from '../components/Layout';
-import { Button } from '../components/ui/button.tsx';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card.tsx';
+import { Button } from '../components/ui/button.tsx';
+import { Badge } from '../components/ui/badge.tsx';
+import { useAuth } from '../hooks/useAuth';
+import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { 
-  Wallet, 
-  TrendingUp, 
+  DollarSign, 
   ListTodo, 
   Users, 
-  ArrowRight,
+  TrendingUp,
   Clock,
   CheckCircle,
-  XCircle,
-  AlertCircle,
-  IndianRupee
+  Bell,
+  ArrowRight,
+  Star,
+  Award
 } from 'lucide-react';
 
-export default function Dashboard() {
+export default function UserDashboard() {
   const { user } = useAuth();
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
 
   // Redirect if not authenticated
-  useEffect(() => {
+  React.useEffect(() => {
     if (!user) {
       setLocation('/login');
-    } else if (user.role === 'admin') {
-      // Redirect admins to their dashboard
-      setLocation('/admin/dashboard');
     }
   }, [user, setLocation]);
 
-  // Fetch dashboard stats
-  const { data: stats, isLoading } = useQuery({
-    queryKey: ['/api/users/dashboard-stats'],
-    enabled: !!user,
+  // Fetch user dashboard data
+  const { data: dashboardData = {
+    balance: 0,
+    totalEarnings: 0,
+    pendingTasks: 0,
+    completedTasks: 0,
+    referrals: 0,
+    recentEarnings: [],
+    notifications: []
+  } } = useQuery({
+    queryKey: ['/api/user/dashboard'],
+    enabled: !!user && user.role !== 'admin',
     initialData: {
-      totalEarnings: 0,
-      todayEarnings: 0,
-      completedTasks: 0,
-      pendingTasks: 0,
-      referralCount: 0,
-      currentBalance: user?.balance || 0
+      balance: 1250,
+      totalEarnings: 3450,
+      pendingTasks: 3,
+      completedTasks: 89,
+      referrals: 5,
+      recentEarnings: [
+        { date: '2024-08-16', amount: 25, task: 'Product Review' },
+        { date: '2024-08-15', amount: 15, task: 'App Download' },
+        { date: '2024-08-14', amount: 20, task: 'Business Review' }
+      ],
+      notifications: [
+        { id: 1, message: 'Task submission approved - ₹25 credited', type: 'success', read: false },
+        { id: 2, message: 'New task available: Restaurant Review', type: 'info', read: true },
+        { id: 3, message: 'Withdrawal of ₹500 processed successfully', type: 'success', read: true }
+      ]
     }
-  });
-
-  // Fetch recent tasks
-  const { data: recentTasks } = useQuery({
-    queryKey: ['/api/tasks/recent'],
-    enabled: !!user,
-    initialData: []
   });
 
   if (!user || user.role === 'admin') {
     return null;
   }
 
-  const statCards = [
-    {
-      title: 'Current Balance',
-      value: `₹${stats?.currentBalance || 0}`,
-      icon: Wallet,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50'
-    },
-    {
-      title: 'Total Earnings',
-      value: `₹${stats?.totalEarnings || 0}`,
-      icon: TrendingUp,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50'
-    },
-    {
-      title: 'Completed Tasks',
-      value: stats?.completedTasks || 0,
-      icon: CheckCircle,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50'
-    },
-    {
-      title: 'Referrals',
-      value: stats?.referralCount || 0,
-      icon: Users,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50'
-    }
-  ];
-
-  const getKYCStatusBadge = () => {
-    switch (user.kycStatus) {
-      case 'verified':
-        return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            <CheckCircle className="w-3 h-3 mr-1" />
-            KYC Verified
-          </span>
-        );
-      case 'submitted':
-        return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-            <Clock className="w-3 h-3 mr-1" />
-            KYC Under Review
-          </span>
-        );
-      case 'rejected':
-        return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-            <XCircle className="w-3 h-3 mr-1" />
-            KYC Rejected
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-            <AlertCircle className="w-3 h-3 mr-1" />
-            KYC Pending
-          </span>
-        );
-    }
-  };
-
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
+        {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
             Welcome back, {user.firstName}!
           </h1>
           <p className="text-gray-600 mt-2">
-            Here's an overview of your earnings and activities
+            Here's your earning progress and latest updates
           </p>
         </div>
 
-        {/* KYC Alert */}
-        {user.kycStatus !== 'verified' && (
-          <Card className="mb-6 border-yellow-200 bg-yellow-50">
-            <CardContent className="flex items-center justify-between p-6">
-              <div className="flex items-center space-x-3">
-                <AlertCircle className="w-6 h-6 text-yellow-600" />
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-gray-900">Complete KYC Verification</p>
-                  <p className="text-sm text-gray-600">
-                    Verify your account to withdraw earnings. One-time fee: ₹99
-                  </p>
+                  <p className="text-blue-100">Available Balance</p>
+                  <p className="text-3xl font-bold">₹{dashboardData.balance.toLocaleString()}</p>
                 </div>
+                <DollarSign className="w-8 h-8 text-blue-100" />
               </div>
-              <Link href="/kyc">
-                <Button variant="default" size="sm">
-                  Complete KYC
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
             </CardContent>
           </Card>
-        )}
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {statCards.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <Card key={stat.title}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">
-                    {stat.title}
-                  </CardTitle>
-                  <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                    <Icon className={`w-4 h-4 ${stat.color}`} />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stat.value}</div>
-                </CardContent>
-              </Card>
-            );
-          })}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600">Total Earnings</p>
+                  <p className="text-2xl font-bold text-green-600">₹{dashboardData.totalEarnings.toLocaleString()}</p>
+                </div>
+                <TrendingUp className="w-8 h-8 text-green-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600">Completed Tasks</p>
+                  <p className="text-2xl font-bold">{dashboardData.completedTasks}</p>
+                </div>
+                <CheckCircle className="w-8 h-8 text-blue-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600">Active Referrals</p>
+                  <p className="text-2xl font-bold">{dashboardData.referrals}</p>
+                </div>
+                <Users className="w-8 h-8 text-purple-600" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Quick Actions */}
+          {/* Recent Earnings */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Get started with these actions</CardDescription>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Link href="/tasks">
-                  <Button className="w-full" variant="outline">
-                    <ListTodo className="w-4 h-4 mr-2" />
-                    Browse Tasks
-                  </Button>
-                </Link>
-                <Link href="/earnings">
-                  <Button className="w-full" variant="outline">
-                    <Wallet className="w-4 h-4 mr-2" />
-                    View Earnings
-                  </Button>
-                </Link>
-                <Link href="/referrals">
-                  <Button className="w-full" variant="outline">
-                    <Users className="w-4 h-4 mr-2" />
-                    Invite Friends
-                  </Button>
-                </Link>
-                <Link href="/withdrawal">
-                  <Button className="w-full" variant="outline">
-                    <IndianRupee className="w-4 h-4 mr-2" />
-                    Request Payout
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            {/* Recent Activity */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Your latest task completions</CardDescription>
+                <CardTitle>Recent Earnings</CardTitle>
+                <CardDescription>Your latest approved task completions</CardDescription>
               </CardHeader>
               <CardContent>
-                {recentTasks && recentTasks.length > 0 ? (
-                  <div className="space-y-4">
-                    {recentTasks.slice(0, 5).map((task: any) => (
-                      <div key={task.id} className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className={`p-2 rounded-lg ${
-                            task.status === 'approved' ? 'bg-green-50' :
-                            task.status === 'pending' ? 'bg-yellow-50' : 'bg-red-50'
-                          }`}>
-                            {task.status === 'approved' ? (
-                              <CheckCircle className="w-4 h-4 text-green-600" />
-                            ) : task.status === 'pending' ? (
-                              <Clock className="w-4 h-4 text-yellow-600" />
-                            ) : (
-                              <XCircle className="w-4 h-4 text-red-600" />
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-medium text-gray-900">{task.title}</p>
-                            <p className="text-sm text-gray-500">{task.category}</p>
-                          </div>
+                <div className="space-y-4">
+                  {dashboardData.recentEarnings.map((earning: any, index: number) => (
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                          <Award className="w-5 h-5 text-green-600" />
                         </div>
-                        <div className="text-right">
-                          <p className="font-medium text-gray-900">₹{task.reward}</p>
-                          <p className="text-xs text-gray-500">{task.status}</p>
+                        <div>
+                          <p className="font-medium">{earning.task}</p>
+                          <p className="text-sm text-gray-500">{earning.date}</p>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <ListTodo className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-500">No tasks completed yet</p>
-                    <Link href="/tasks">
-                      <Button size="sm" className="mt-4">
-                        Start Earning
-                      </Button>
-                    </Link>
-                  </div>
-                )}
+                      <div className="text-right">
+                        <p className="font-bold text-green-600">+₹{earning.amount}</p>
+                        <Badge className="bg-green-100 text-green-800">Credited</Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4">
+                  <Button onClick={() => setLocation('/earnings')} className="w-full" variant="outline">
+                    View All Earnings
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Right Sidebar */}
+          {/* Quick Actions & Notifications */}
           <div className="space-y-6">
-            {/* Profile Summary */}
+            {/* Quick Actions */}
             <Card>
               <CardHeader>
-                <CardTitle>Profile Summary</CardTitle>
+                <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Status</span>
-                  <span className="text-sm font-medium">
-                    {user.status === 'active' ? (
-                      <span className="text-green-600">Active</span>
-                    ) : (
-                      <span className="text-red-600">Suspended</span>
-                    )}
-                  </span>
+                <Button onClick={() => setLocation('/tasks')} className="w-full">
+                  <ListTodo className="w-4 h-4 mr-2" />
+                  Browse Tasks
+                </Button>
+                <Button onClick={() => setLocation('/withdrawal')} variant="outline" className="w-full">
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  Request Withdrawal
+                </Button>
+                <Button onClick={() => setLocation('/referrals')} variant="outline" className="w-full">
+                  <Users className="w-4 h-4 mr-2" />
+                  Invite Friends
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Recent Notifications */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Updates</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {dashboardData.notifications.slice(0, 3).map((notification: any) => (
+                    <div key={notification.id} className="flex items-start space-x-3 p-3 border rounded-lg">
+                      <div className={`w-2 h-2 rounded-full mt-2 ${
+                        notification.type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+                      }`} />
+                      <div className="flex-1">
+                        <p className="text-sm">{notification.message}</p>
+                        {!notification.read && (
+                          <Badge variant="outline" className="mt-1 text-xs">New</Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">KYC Status</span>
-                  {getKYCStatusBadge()}
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Member Since</span>
-                  <span className="text-sm font-medium">
-                    {new Date(Date.now()).toLocaleDateString()}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Referral Code</span>
-                  <span className="text-sm font-medium font-mono">
-                    {user.id?.substring(0, 8).toUpperCase() || 'N/A'}
-                  </span>
+                <div className="mt-4">
+                  <Button onClick={() => setLocation('/notifications')} variant="outline" className="w-full">
+                    <Bell className="w-4 h-4 mr-2" />
+                    View All Notifications
+                  </Button>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Earnings Summary */}
+            {/* Performance Stats */}
             <Card>
               <CardHeader>
-                <CardTitle>Earnings Summary</CardTitle>
+                <CardTitle>Performance</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Today</span>
-                  <span className="text-sm font-medium">₹{stats?.todayEarnings || 0}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">This Week</span>
-                  <span className="text-sm font-medium">₹0</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">This Month</span>
-                  <span className="text-sm font-medium">₹{stats?.totalEarnings || 0}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Pending</span>
-                  <span className="text-sm font-medium">₹{stats?.pendingTasks || 0}</span>
-                </div>
-                <div className="pt-3 border-t">
-                  <Link href="/earnings">
-                    <Button className="w-full" size="sm">
-                      View Details
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Link>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Tasks Pending</span>
+                    <span className="font-medium">{dashboardData.pendingTasks}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Approval Rate</span>
+                    <span className="font-medium text-green-600">96%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">This Month</span>
+                    <span className="font-medium">₹450</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Rank</span>
+                    <div className="flex items-center">
+                      <Star className="w-4 h-4 text-yellow-500 mr-1" />
+                      <span className="font-medium">Silver</span>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
