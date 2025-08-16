@@ -13,7 +13,12 @@ import {
   Shield,
   Users,
   ChevronDown,
-  Bell
+  Bell,
+  DollarSign,
+  FileText,
+  Settings,
+  BarChart,
+  HelpCircle
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -33,26 +38,57 @@ export function Layout({ children }: LayoutProps) {
   const { user, logout, isLoading } = useAuth();
   const [location] = useLocation();
 
-  // User navigation items based on role
-  const userNavigation = user?.role === 'admin' ? [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: Home, requireAuth: true },
-    { name: 'Users', href: '/admin/users', icon: Users, requireAuth: true },
-    { name: 'Tasks', href: '/admin/tasks', icon: ListTodo, requireAuth: true },
-    { name: 'KYC', href: '/admin/kyc', icon: Shield, requireAuth: true },
-    { name: 'Payouts', href: '/admin/payouts', icon: Wallet, requireAuth: true },
-    { name: 'Referrals', href: '/admin/referrals', icon: Users, requireAuth: true },
-    { name: 'Support', href: '/admin/support', icon: Shield, requireAuth: true },
-    { name: 'Reports', href: '/admin/reports', icon: Shield, requireAuth: true },
-    { name: 'Settings', href: '/admin/settings', icon: Shield, requireAuth: true },
+  // Primary navigation items (always visible)
+  const primaryNavigation = [
+    { name: 'Dashboard', href: user?.role === 'admin' ? '/admin/dashboard' : '/users/dashboard', icon: Home, requireAuth: true },
+    { name: 'Tasks', href: user?.role === 'admin' ? '/admin/tasks' : '/tasks', icon: ListTodo, requireAuth: false },
+  ];
+
+  // Grouped navigation for dropdown menus
+  const earningsMenuItems = [
+    { name: 'My Earnings', href: '/earnings', icon: DollarSign },
+    { name: 'Withdrawal', href: '/withdrawal', icon: Wallet },
+    { name: 'Referrals', href: '/referrals', icon: Users },
+  ];
+
+  const accountMenuItems = [
+    { name: 'Profile', href: '/profile', icon: User },
+    { name: 'KYC Verification', href: '/kyc', icon: Shield },
+    { name: 'Settings', href: '/settings', icon: Settings },
+    { name: 'Support', href: '/support', icon: HelpCircle },
+  ];
+
+  const adminMenuItems = [
+    { name: 'Manage Users', href: '/admin/users', icon: Users },
+    { name: 'KYC Management', href: '/admin/kyc', icon: Shield },
+    { name: 'Payouts', href: '/admin/payouts', icon: Wallet },
+    { name: 'Referrals', href: '/admin/referrals', icon: Users },
+    { name: 'Support Center', href: '/admin/support', icon: HelpCircle },
+    { name: 'Inquiries', href: '/admin/inquiries', icon: FileText },
+    { name: 'Reports', href: '/admin/reports', icon: BarChart },
+    { name: 'Settings', href: '/admin/settings', icon: Settings },
+  ];
+
+  // Mobile navigation - flat list
+  const mobileNavigation = user?.role === 'admin' ? [
+    { name: 'Dashboard', href: '/admin/dashboard', icon: Home },
+    { name: 'Users', href: '/admin/users', icon: Users },
+    { name: 'Tasks', href: '/admin/tasks', icon: ListTodo },
+    { name: 'KYC', href: '/admin/kyc', icon: Shield },
+    { name: 'Payouts', href: '/admin/payouts', icon: Wallet },
+    { name: 'Referrals', href: '/admin/referrals', icon: Users },
+    { name: 'Support', href: '/admin/support', icon: HelpCircle },
+    { name: 'Reports', href: '/admin/reports', icon: BarChart },
+    { name: 'Settings', href: '/admin/settings', icon: Settings },
   ] : [
-    { name: 'Dashboard', href: '/users/dashboard', icon: Home, requireAuth: true },
-    { name: 'Tasks', href: '/tasks', icon: ListTodo, requireAuth: false },
-    { name: 'Earnings', href: '/earnings', icon: Wallet, requireAuth: true },
-    { name: 'KYC', href: '/kyc', icon: Shield, requireAuth: true },
-    { name: 'Referrals', href: '/referrals', icon: Users, requireAuth: true },
-    { name: 'Withdrawal', href: '/withdrawal', icon: Wallet, requireAuth: true },
-    { name: 'Profile', href: '/profile', icon: User, requireAuth: true },
-    { name: 'Support', href: '/support', icon: Shield, requireAuth: false },
+    { name: 'Dashboard', href: '/users/dashboard', icon: Home },
+    { name: 'Tasks', href: '/tasks', icon: ListTodo },
+    { name: 'Earnings', href: '/earnings', icon: DollarSign },
+    { name: 'Withdrawal', href: '/withdrawal', icon: Wallet },
+    { name: 'Referrals', href: '/referrals', icon: Users },
+    { name: 'Profile', href: '/profile', icon: User },
+    { name: 'KYC', href: '/kyc', icon: Shield },
+    { name: 'Support', href: '/support', icon: HelpCircle },
   ];
 
 
@@ -81,8 +117,9 @@ export function Layout({ children }: LayoutProps) {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-4">
-              {userNavigation.map((item) => {
+            <nav className="hidden md:flex items-center space-x-2">
+              {/* Primary Navigation Items */}
+              {primaryNavigation.map((item) => {
                 if (item.requireAuth && !user) return null;
                 const Icon = item.icon;
                 return (
@@ -101,12 +138,92 @@ export function Layout({ children }: LayoutProps) {
                 );
               })}
 
+              {/* Earnings Dropdown (for regular users) */}
+              {user && user.role !== 'admin' && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center space-x-1">
+                      <DollarSign className="w-4 h-4" />
+                      <span>Earnings</span>
+                      <ChevronDown className="w-3 h-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    {earningsMenuItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <DropdownMenuItem key={item.name} asChild>
+                          <Link href={item.href} className="flex items-center space-x-2 w-full">
+                            <Icon className="w-4 h-4" />
+                            <span>{item.name}</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+
+              {/* Account Dropdown (for regular users) */}
+              {user && user.role !== 'admin' && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center space-x-1">
+                      <User className="w-4 h-4" />
+                      <span>Account</span>
+                      <ChevronDown className="w-3 h-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    {accountMenuItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <DropdownMenuItem key={item.name} asChild>
+                          <Link href={item.href} className="flex items-center space-x-2 w-full">
+                            <Icon className="w-4 h-4" />
+                            <span>{item.name}</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+
+              {/* Admin Menu Dropdown */}
+              {user?.role === 'admin' && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center space-x-1">
+                      <Shield className="w-4 h-4" />
+                      <span>Admin</span>
+                      <ChevronDown className="w-3 h-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuLabel>Administration</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {adminMenuItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <DropdownMenuItem key={item.name} asChild>
+                          <Link href={item.href} className="flex items-center space-x-2 w-full">
+                            <Icon className="w-4 h-4" />
+                            <span>{item.name}</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+
               {/* Notifications */}
               {user && (
                 <Link href="/notifications" className="relative">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="icon" className="relative">
                     <Bell className="w-5 h-5" />
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
                   </Button>
                 </Link>
               )}
@@ -178,8 +295,7 @@ export function Layout({ children }: LayoutProps) {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200">
             <nav className="px-4 py-4 space-y-2">
-              {userNavigation.map((item) => {
-                if (item.requireAuth && !user) return null;
+              {mobileNavigation.map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link 
