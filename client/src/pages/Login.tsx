@@ -57,7 +57,7 @@ export default function Login() {
             setLocation('/admin/dashboard');
           } else {
             console.log('Redirecting to user dashboard'); // Debug log
-            setLocation('/dashboard');
+            setLocation('/users/dashboard');
           }
         }, 100);
       } else {

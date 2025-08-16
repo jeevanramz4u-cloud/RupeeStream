@@ -39,7 +39,7 @@ export default function AdminDashboard() {
     if (!user) {
       setLocation('/login');
     } else if (user.role !== 'admin') {
-      setLocation('/dashboard');
+      setLocation('/users/dashboard');
     }
   }, [user, setLocation]);
 

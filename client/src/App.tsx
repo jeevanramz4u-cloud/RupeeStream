@@ -44,6 +44,7 @@ export default function App() {
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
           <Route path="/dashboard" component={Dashboard} />
+          <Route path="/users/dashboard" component={Dashboard} />
           <Route path="/tasks" component={Tasks} />
           <Route path="/tasks/:id/submit" component={TaskSubmission} />
           <Route path="/profile" component={Profile} />

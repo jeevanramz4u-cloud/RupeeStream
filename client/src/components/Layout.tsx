@@ -34,7 +34,7 @@ export function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home, requireAuth: true },
+    { name: 'Dashboard', href: '/users/dashboard', icon: Home, requireAuth: true },
     { name: 'Tasks', href: '/tasks', icon: ListTodo, requireAuth: false },
     { name: 'Earnings', href: '/earnings', icon: Wallet, requireAuth: true },
     { name: 'Withdrawal', href: '/withdrawal', icon: Wallet, requireAuth: true },

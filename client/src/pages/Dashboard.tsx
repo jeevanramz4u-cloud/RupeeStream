@@ -26,8 +26,10 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) {
       setLocation('/login');
+    } else if (user.role === 'admin') {
+      // Redirect admins to their dashboard
+      setLocation('/admin/dashboard');
     }
-    // Don't redirect admins here - they should use /admin/dashboard directly
   }, [user, setLocation]);
 
   // Fetch dashboard stats
