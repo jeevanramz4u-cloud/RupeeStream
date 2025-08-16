@@ -149,20 +149,22 @@ export default function Home() {
                     <p className="text-xl md:text-2xl mb-8 max-w-2xl opacity-90">
                       {slide.description}
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <Link href="/signup">
-                        <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 border-0 px-8 py-6 text-lg font-medium">
+                    <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                      <Link href="/signup" className="w-full sm:w-auto">
+                        <Button 
+                          size="lg" 
+                          className="w-full sm:w-auto bg-white text-blue-600 hover:bg-blue-50 border-0 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                        >
                           {slide.buttonText}
-                          <ArrowRight className="ml-2 w-6 h-6" />
+                          <ArrowRight className="ml-2 w-5 h-5 sm:w-6 sm:h-6" />
                         </Button>
                       </Link>
                       <Button 
                         size="lg" 
-                        variant="outline" 
-                        className="border-2 border-white text-white hover:bg-white/10 px-8 py-6 text-lg"
+                        className="w-full sm:w-auto bg-white/20 border-2 border-white text-white hover:bg-white hover:text-blue-600 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg backdrop-blur-sm transition-all duration-300"
                         onClick={() => setIsPlaying(!isPlaying)}
                       >
-                        <Play className="mr-2 w-5 h-5" />
+                        <Play className="mr-2 w-4 h-4 sm:w-5 sm:h-5" />
                         {isPlaying ? 'Pause' : 'Play'} Slides
                       </Button>
                     </div>
@@ -174,30 +176,34 @@ export default function Home() {
         ))}
         
         {/* Slide Controls */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3">
           {heroSlides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 min-h-[32px] min-w-[32px] flex items-center justify-center ${
                 index === currentSlide ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'
               }`}
-            />
+            >
+              <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${
+                index === currentSlide ? 'bg-white' : 'bg-transparent'
+              }`} />
+            </button>
           ))}
         </div>
         
         {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
-          className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-3 transition-all"
+          className="absolute left-2 sm:left-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
         >
-          <ChevronLeft className="w-6 h-6 text-white" />
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
         </button>
         <button
           onClick={nextSlide}
-          className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-3 transition-all"
+          className="absolute right-2 sm:right-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
         >
-          <ChevronRight className="w-6 h-6 text-white" />
+          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
         </button>
       </section>
 
@@ -418,15 +424,21 @@ export default function Home() {
           <p className="text-xl md:text-2xl mb-12 text-blue-100 max-w-4xl mx-auto leading-relaxed">
             Join thousands of users who are already earning money daily through our innovative platform
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
-            <Link href="/signup">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 border-0 px-10 py-6 text-lg font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 px-4">
+            <Link href="/signup" className="w-full sm:w-auto max-w-sm sm:max-w-none">
+              <Button 
+                size="lg" 
+                className="w-full bg-white text-blue-600 hover:bg-blue-50 border-0 px-6 sm:px-10 py-4 sm:py-6 text-base sm:text-lg font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300"
+              >
                 Create Free Account
-                <ArrowRight className="ml-3 w-6 h-6" />
+                <ArrowRight className="ml-2 sm:ml-3 w-5 h-5 sm:w-6 sm:h-6" />
               </Button>
             </Link>
-            <Link href="/login">
-              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 px-10 py-6 text-lg font-bold backdrop-blur-sm">
+            <Link href="/login" className="w-full sm:w-auto max-w-sm sm:max-w-none">
+              <Button 
+                size="lg" 
+                className="w-full bg-white/20 border-2 border-white text-white hover:bg-white hover:text-blue-600 px-6 sm:px-10 py-4 sm:py-6 text-base sm:text-lg font-bold backdrop-blur-sm transition-all duration-300"
+              >
                 Login to Dashboard
               </Button>
             </Link>

@@ -119,6 +119,52 @@
   transition-duration: 150ms;
 }
 
+/* Responsive button styles */
+.btn-responsive {
+  @apply w-full sm:w-auto px-4 py-3 sm:px-6 sm:py-4 text-sm sm:text-base;
+  min-height: 44px; /* Minimum touch target for mobile */
+}
+
+.btn-responsive-lg {
+  @apply w-full sm:w-auto px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg;
+  min-height: 48px; /* Larger touch target */
+}
+
+/* Enhanced mobile button styles */
+@media (max-width: 640px) {
+  .btn-mobile {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 12px 24px;
+    width: 100%;
+  }
+  
+  .btn-mobile-lg {
+    min-height: 52px;
+    font-size: 18px;
+    padding: 16px 32px;
+    width: 100%;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .btn-tablet {
+    min-height: 44px;
+    font-size: 16px;
+    padding: 12px 28px;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1025px) {
+  .btn-desktop {
+    min-height: 48px;
+    font-size: 18px;
+    padding: 16px 32px;
+  }
+}
+
 :root {
   /* Pure White Background */
   --background: hsl(0, 0%, 100%);
