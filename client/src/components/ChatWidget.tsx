@@ -61,7 +61,7 @@ export default function ChatWidget() {
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
-        console.log('Connected to chat websocket');
+        
         setSocket(ws);
       };
 
@@ -72,17 +72,17 @@ export default function ChatWidget() {
             queryClient.invalidateQueries({ queryKey: ["/api/chat/messages"] });
           }
         } catch (error) {
-          console.error('Error parsing websocket message:', error);
+          
         }
       };
 
       ws.onclose = () => {
-        console.log('Disconnected from chat websocket');
+        
         setSocket(null);
       };
 
       ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        
       };
 
       return () => {

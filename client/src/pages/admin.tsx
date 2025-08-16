@@ -899,10 +899,10 @@ export default function Admin() {
         }
         
         const data = await response.json();
-        console.log('Profile API response:', data);
+        
         return data;
       } catch (error) {
-        console.error('Profile API error:', error);
+        
         throw error;
       }
     },
@@ -1080,7 +1080,7 @@ export default function Admin() {
 
   // Function to open user profile dialog
   const openUserProfile = (user: any) => {
-    console.log('Opening user profile for:', user);
+    
     setSelectedUserProfile(user);
     setUserProfileDialogOpen(true);
     setShowSensitiveInfo(true); // Show all sensitive info by default for admins

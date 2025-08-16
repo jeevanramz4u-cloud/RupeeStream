@@ -122,64 +122,64 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
         {/* Overview Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
           <Card>
-            <CardContent className="flex items-center p-6">
+            <CardContent className="flex items-center p-3 sm:p-6">
               <div className="flex items-center justify-between w-full">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Users</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalUsers}</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Total Users</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">{totalUsers}</p>
                   <p className="text-xs text-green-600">{activeUsers} active</p>
                 </div>
-                <Users className="h-8 w-8 text-blue-500" />
+                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="flex items-center p-6">
+            <CardContent className="flex items-center p-3 sm:p-6">
               <div className="flex items-center justify-between w-full">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active Tasks</p>
-                  <p className="text-2xl font-bold text-gray-900">{activeTasks}</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Active Tasks</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">{activeTasks}</p>
                   <p className="text-xs text-blue-600">{totalTasks} total</p>
                 </div>
-                <FileText className="h-8 w-8 text-green-500" />
+                <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="flex items-center p-6">
+            <CardContent className="flex items-center p-3 sm:p-6">
               <div className="flex items-center justify-between w-full">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Inquiries</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalInquiries}</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Inquiries</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">{totalInquiries}</p>
                   <p className="text-xs text-orange-600">Business requests</p>
                 </div>
-                <MessageCircle className="h-8 w-8 text-orange-500" />
+                <MessageCircle className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="flex items-center p-6">
+            <CardContent className="flex items-center p-3 sm:p-6">
               <div className="flex items-center justify-between w-full">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Earnings</p>
-                  <p className="text-2xl font-bold text-gray-900">₹{totalEarnings.toFixed(2)}</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Total Earnings</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">₹{totalEarnings.toFixed(2)}</p>
                   <p className="text-xs text-purple-600">Platform activity</p>
                 </div>
-                <DollarSign className="h-8 w-8 text-purple-500" />
+                <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Management Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
           {/* User Management */}
           <Card>
             <CardHeader>
@@ -189,9 +189,9 @@ export default function AdminDashboard() {
                   <span>User Management</span>
                 </div>
                 <Link href="/admin-users">
-                  <Button size="sm" data-testid="button-manage-users">
-                    <ArrowRight className="w-4 h-4 mr-1" />
-                    Manage Users
+                  <Button size="sm" className="text-xs sm:text-sm" data-testid="button-manage-users">
+                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                    <span className="hidden sm:inline">Manage </span>Users
                   </Button>
                 </Link>
               </CardTitle>
@@ -223,9 +223,9 @@ export default function AdminDashboard() {
                   <span>Task Management</span>
                 </div>
                 <Link href="/admin-tasks">
-                  <Button size="sm" data-testid="button-manage-tasks">
-                    <ArrowRight className="w-4 h-4 mr-1" />
-                    Manage Tasks
+                  <Button size="sm" className="text-xs sm:text-sm" data-testid="button-manage-tasks">
+                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                    <span className="hidden sm:inline">Manage </span>Tasks
                   </Button>
                 </Link>
               </CardTitle>
@@ -259,29 +259,29 @@ export default function AdminDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
                 <Link href="/admin-users">
-                  <Button variant="outline" className="w-full" data-testid="link-users">
-                    <Users className="w-4 h-4 mr-2" />
-                    View All Users
+                  <Button variant="outline" className="w-full p-2 sm:p-3 text-xs sm:text-sm" data-testid="link-users">
+                    <Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">View All </span>Users
                   </Button>
                 </Link>
                 <Link href="/admin-tasks">
-                  <Button variant="outline" className="w-full" data-testid="link-tasks">
-                    <FileText className="w-4 h-4 mr-2" />
-                    Manage Tasks
+                  <Button variant="outline" className="w-full p-2 sm:p-3 text-xs sm:text-sm" data-testid="link-tasks">
+                    <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Manage </span>Tasks
                   </Button>
                 </Link>
                 <Link href="/admin-inquiries">
-                  <Button variant="outline" className="w-full" data-testid="link-inquiries">
-                    <Building2 className="w-4 h-4 mr-2" />
-                    Business Inquiries
+                  <Button variant="outline" className="w-full p-2 sm:p-3 text-xs sm:text-sm" data-testid="link-inquiries">
+                    <Building2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    <span className="hidden lg:inline">Business </span>Inquiries
                   </Button>
                 </Link>
                 <Link href="/admin-live-chat">
-                  <Button variant="outline" className="w-full" data-testid="link-chat">
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Live Chat Support
+                  <Button variant="outline" className="w-full p-2 sm:p-3 text-xs sm:text-sm" data-testid="link-chat">
+                    <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Live </span>Chat
                   </Button>
                 </Link>
               </div>

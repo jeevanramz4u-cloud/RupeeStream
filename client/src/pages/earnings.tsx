@@ -37,19 +37,19 @@ export default function Earnings() {
   const [payoutAmount, setPayoutAmount] = useState("");
 
   // Debug logging
-  console.log("Earnings page - Auth status:", { user, authLoading, isAuthenticated });
+  
 
   // Force refetch when user becomes available
   useEffect(() => {
     if (user && !authLoading) {
       queryClient.invalidateQueries({ queryKey: ["/api/payouts"] });
-      console.log("Invalidating payouts query because user is loaded");
+      
     }
   }, [user, authLoading, queryClient]);
 
   // Manual trigger for payouts query
   const triggerPayoutsRefetch = () => {
-    console.log("Manual payouts refetch triggered");
+    
     queryClient.invalidateQueries({ queryKey: ["/api/payouts"] });
     refetchPayouts();
   };

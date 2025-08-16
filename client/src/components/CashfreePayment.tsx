@@ -61,7 +61,7 @@ export default function CashfreePayment({
           // Payment completed, verify on return
           setIsProcessing(false);
         }).catch((error: any) => {
-          console.error('Cashfree checkout error:', error);
+          
           setPaymentStep('error');
           onError('Payment process was cancelled or failed');
           setIsProcessing(false);
@@ -77,7 +77,7 @@ export default function CashfreePayment({
       document.head.appendChild(script);
       
     } catch (error) {
-      console.error('Payment error:', error);
+      
       setPaymentStep('error');
       onError(error instanceof Error ? error.message : 'Payment failed');
       setIsProcessing(false);

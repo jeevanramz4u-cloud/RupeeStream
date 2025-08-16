@@ -58,7 +58,7 @@ export default function AITaskSuggestions({ onTaskSuggestionSelect }: AITaskSugg
         description: `Generated ${data.suggestions?.length || 0} task suggestions`,
       });
     } catch (error) {
-      console.error("Error generating AI suggestions:", error);
+      
       toast({
         title: "Error",
         description: "Failed to generate AI task suggestions",

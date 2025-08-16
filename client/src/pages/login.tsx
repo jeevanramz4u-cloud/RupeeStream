@@ -37,9 +37,6 @@ export default function Login() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Login successful:', data);
-        
-        // Login successful
         
         // Invalidate auth query to refetch user data
         await queryClient.invalidateQueries({ queryKey: ["/api/auth/check"] });
@@ -49,11 +46,8 @@ export default function Login() {
         
         // Check if user is suspended and redirect accordingly
         if (data.user && data.user.status === 'suspended') {
-          console.log('Suspended user logged in - redirecting to suspended page');
           setLocation('/suspended');
         } else {
-          // Redirect to dashboard after successful login
-          console.log('Redirecting to dashboard');
           setLocation('/dashboard');
         }
       } else {

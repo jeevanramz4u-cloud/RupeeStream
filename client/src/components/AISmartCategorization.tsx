@@ -78,7 +78,7 @@ export default function AISmartCategorization({
         onCategorySuggestion(data);
       }
     } catch (error) {
-      console.error("Error analyzing task category:", error);
+      
       toast({
         title: "Analysis Failed",
         description: "Failed to analyze task category. Please try again.",

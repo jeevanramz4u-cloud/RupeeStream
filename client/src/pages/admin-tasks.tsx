@@ -445,7 +445,7 @@ export default function AdminTasks() {
                     <select 
                       value={newTask.category} 
                       onChange={(e) => {
-                        console.log('Category changed to:', e.target.value);
+                        
                         setNewTask({ ...newTask, category: e.target.value });
                       }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

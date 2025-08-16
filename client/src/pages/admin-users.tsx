@@ -251,51 +251,51 @@ export default function AdminUsers() {
     <div className="min-h-screen bg-gray-50">
       {/* Admin Header */}
       <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" onClick={() => setLocation("/admin")}>
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-3 sm:py-4 gap-3 sm:gap-0">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <Button variant="ghost" size="sm" onClick={() => setLocation("/admin")}>
+                <ChevronLeft className="h-3 h-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="text-sm sm:text-base">Back to Dashboard</span>
               </Button>
-              <div className="text-2xl font-bold text-gray-900">User Management</div>
+              <div className="text-lg sm:text-2xl font-bold text-gray-900">User Management</div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Button onClick={exportUsers} variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export
+            <div className="flex items-center space-x-2 w-full sm:w-auto">
+              <Button onClick={exportUsers} variant="outline" size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm">
+                <Download className="h-3 h-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Export</span>
               </Button>
-              <Button onClick={() => refetchUsers()} variant="outline" size="sm">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
+              <Button onClick={() => refetchUsers()} variant="outline" size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm">
+                <RefreshCw className="h-3 h-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Refresh</span>
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-2">
-                <Users className="h-5 w-5 text-blue-500" />
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500 flex-shrink-0" />
                 <div>
-                  <p className="text-sm text-gray-600">Total Users</p>
-                  <p className="text-2xl font-bold">{users.length}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">Total Users</p>
+                  <p className="text-lg sm:text-2xl font-bold">{users.length}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-2">
-                <Check className="h-5 w-5 text-green-500" />
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 flex-shrink-0" />
                 <div>
-                  <p className="text-sm text-gray-600">Active Users</p>
-                  <p className="text-2xl font-bold">{users.filter((u: any) => u.status === 'active').length}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">Active Users</p>
+                  <p className="text-lg sm:text-2xl font-bold">{users.filter((u: any) => u.status === 'active').length}</p>
                 </div>
               </div>
             </CardContent>
@@ -327,9 +327,9 @@ export default function AdminUsers() {
         </div>
 
         {/* Filters and Search */}
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="mb-4 sm:mb-6">
+          <CardContent className="p-3 sm:p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label>Search Users</Label>
                 <div className="relative">
@@ -396,65 +396,69 @@ export default function AdminUsers() {
               </div>
             ) : (
               <>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>User</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>KYC Status</TableHead>
-                      <TableHead>Balance</TableHead>
-                      <TableHead>Earnings</TableHead>
-                      <TableHead>Tasks</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="min-w-[150px]">User</TableHead>
+                        <TableHead className="hidden sm:table-cell">Status</TableHead>
+                        <TableHead className="hidden md:table-cell">KYC Status</TableHead>
+                        <TableHead className="hidden lg:table-cell">Balance</TableHead>
+                        <TableHead className="hidden lg:table-cell">Earnings</TableHead>
+                        <TableHead className="hidden xl:table-cell">Tasks</TableHead>
+                        <TableHead className="hidden xl:table-cell">Created</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
                   <TableBody>
                     {paginatedUsers.map((user: any) => (
                       <TableRow key={user.id}>
-                        <TableCell>
+                        <TableCell className="min-w-[150px]">
                           <div>
-                            <div className="font-medium">{user.firstName} {user.lastName}</div>
-                            <div className="text-sm text-gray-500">{user.email}</div>
+                            <div className="font-medium text-sm">{user.firstName} {user.lastName}</div>
+                            <div className="text-xs text-gray-500 truncate">{user.email}</div>
+                            <div className="sm:hidden mt-1 space-y-1">
+                              {getStatusBadge(user.status)}
+                              <div className="md:hidden">{getKycBadge(user.kycStatus)}</div>
+                            </div>
                           </div>
                         </TableCell>
-                        <TableCell>{getStatusBadge(user.status)}</TableCell>
-                        <TableCell>{getKycBadge(user.kycStatus)}</TableCell>
-                        <TableCell>₹{parseFloat(user.balance || 0).toLocaleString()}</TableCell>
-                        <TableCell>₹{getUserEarnings(user.id).toLocaleString()}</TableCell>
-                        <TableCell>{getUserTaskCount(user.id)}</TableCell>
-                        <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{getStatusBadge(user.status)}</TableCell>
+                        <TableCell className="hidden md:table-cell">{getKycBadge(user.kycStatus)}</TableCell>
+                        <TableCell className="hidden lg:table-cell text-sm">₹{parseFloat(user.balance || 0).toLocaleString()}</TableCell>
+                        <TableCell className="hidden lg:table-cell text-sm">₹{getUserEarnings(user.id).toLocaleString()}</TableCell>
+                        <TableCell className="hidden xl:table-cell text-sm">{getUserTaskCount(user.id)}</TableCell>
+                        <TableCell className="hidden xl:table-cell text-sm">{new Date(user.createdAt).toLocaleDateString()}</TableCell>
                         <TableCell>
-                          <div className="flex space-x-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => {
-                                setSelectedUser(user);
-                                setDialogOpen(true);
-                              }}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setDialogOpen(true);
+                            }}
+                          >
+                            <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
-                </Table>
+                  </Table>
+                </div>
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex justify-center items-center space-x-2 mt-6">
+                  <div className="flex justify-center items-center space-x-2 mt-4 sm:mt-6">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setCurrentPage(currentPage - 1)}
                       disabled={currentPage === 1}
                     >
-                      <ChevronLeft className="h-4 w-4" />
+                      <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
-                    <span className="text-sm text-gray-600">
+                    <span className="text-xs sm:text-sm text-gray-600">
                       Page {currentPage} of {totalPages}
                     </span>
                     <Button
@@ -463,7 +467,7 @@ export default function AdminUsers() {
                       onClick={() => setCurrentPage(currentPage + 1)}
                       disabled={currentPage === totalPages}
                     >
-                      <ChevronRight className="h-4 w-4" />
+                      <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
                   </div>
                 )}

@@ -23,7 +23,7 @@ export default function SuspendedPage() {
   // Redirect non-suspended users away from this page
   useEffect(() => {
     if (!isLoading && user && (user as any)?.status !== 'suspended') {
-      console.log('Non-suspended user accessing suspended page - redirecting to dashboard');
+      
       setLocation('/dashboard');
     }
   }, [user, isLoading, setLocation]);
@@ -40,7 +40,7 @@ export default function SuspendedPage() {
   const reactivationMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/account/reactivate-payment"),
     onSuccess: (data: any) => {
-      console.log("Reactivation payment session created:", data);
+      
       
       if (data.paymentUrl) {
         toast({

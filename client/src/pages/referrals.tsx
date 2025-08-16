@@ -93,7 +93,7 @@ export default function Referrals() {
         });
       }
     } catch (error) {
-      console.error("Error sharing:", error);
+      
     }
   };
 

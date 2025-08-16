@@ -121,7 +121,7 @@ export default function KYC() {
       return data.uploadURL;
     },
     onError: (error) => {
-      console.error("Upload error:", error);
+      
       toast({
         title: "Upload Error",
         description: "Failed to get upload URL. Please try again.",
@@ -159,7 +159,7 @@ export default function KYC() {
       return response.json();
     },
     onSuccess: (data) => {
-      console.log("Production Cashfree payment session created:", data);
+      
       
       toast({
         title: "Payment Gateway Ready",
@@ -236,13 +236,13 @@ export default function KYC() {
         url: uploadURL,
       };
     } catch (error) {
-      console.error("Error getting upload URL:", error);
+      
       throw error;
     }
   };
 
   const handleUploadComplete = (documentType: 'front' | 'back' | 'selfie') => (result: any) => {
-    console.log("Upload complete result:", result);
+    
     
     if (result.successful && result.successful.length > 0) {
       const uploadedFile = result.successful[0];
@@ -267,10 +267,10 @@ export default function KYC() {
         }
       }
       
-      console.log("Document URL extracted:", documentUrl);
+      
       
       if (!documentUrl) {
-        console.error("No document URL found in upload result:", uploadedFile);
+        
         toast({
           title: "Upload Error",
           description: "Upload completed but couldn't get document URL. Please try again.",
@@ -282,13 +282,13 @@ export default function KYC() {
       // Update state only - no localStorage to prevent data leakage between users
       if (documentType === 'front') {
         setGovIdFrontUrl(documentUrl);
-        console.log("Set govIdFrontUrl to:", documentUrl);
+        
       } else if (documentType === 'back') {
         setGovIdBackUrl(documentUrl);
-        console.log("Set govIdBackUrl to:", documentUrl);
+        
       } else if (documentType === 'selfie') {
         setSelfieWithIdUrl(documentUrl);
-        console.log("Set selfieWithIdUrl to:", documentUrl);
+        
       }
 
       // Save to backend asynchronously
@@ -296,13 +296,13 @@ export default function KYC() {
         documentUrl,
         documentType,
       }).then(() => {
-        console.log("Document saved to backend successfully");
+        
         toast({
           title: "Document Uploaded",
           description: `Your ${documentType === 'front' ? 'ID front' : documentType === 'back' ? 'ID back' : 'selfie'} has been uploaded successfully.`,
         });
       }).catch((error) => {
-        console.error("Error saving document:", error);
+        
         toast({
           title: "Save Error", 
           description: "Document uploaded but failed to save. Please try again.",
@@ -310,7 +310,7 @@ export default function KYC() {
         });
       });
     } else {
-      console.error("Upload failed, result:", result);
+      
       toast({
         title: "Upload Failed",
         description: "Failed to upload document. Please try again.",
@@ -337,7 +337,7 @@ export default function KYC() {
       return;
     }
 
-    console.log("Submitting KYC with mutation...");
+    
     submitKycMutation.mutate({
       governmentIdType: govIdType,
       governmentIdNumber: govIdNumber,
@@ -789,13 +789,13 @@ export default function KYC() {
                     {/* Pay Processing Fee Button */}
                     <Button
                       onClick={() => {
-                        console.log("Complete KYC button clicked");
-                        console.log("Form data:", { govIdType, govIdNumber, govIdFrontUrl, govIdBackUrl, selfieWithIdUrl });
                         
-                        console.log("All fields complete, submitting KYC...");
+                        
+                        
+                        
                         handleSubmitKyc();
                         setTimeout(() => {
-                          console.log("Initiating Cashfree payment session...");
+                          
                           createPaymentMutation.mutate();
                         }, 500);
                       }}

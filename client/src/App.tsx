@@ -137,7 +137,7 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
     
     // If user is suspended and not on suspended page, force redirect
     if (currentPath !== '/suspended') {
-      console.log('Suspended user attempting to access:', currentPath, '- redirecting to /suspended');
+      
       // Force page reload to ensure complete redirect
       setTimeout(() => {
         window.location.href = '/suspended';

@@ -208,10 +208,10 @@ export default function Tasks() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Complete Tasks & Earn Money</h1>
-          <p className="text-gray-600 text-base sm:text-lg">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3">Complete Tasks & Earn Money</h1>
+          <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
             Browse available tasks across 6 categories and start earning immediately!
           </p>
           

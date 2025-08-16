@@ -51,7 +51,7 @@ export default function Dashboard() {
   // Check if user is suspended and redirect with forced refresh
   React.useEffect(() => {
     if ((user as any)?.status === 'suspended') {
-      console.log('User is suspended, redirecting to /suspended page');
+      
       setLocation('/suspended');
       // Force reload to clear any cached data
       window.location.href = '/suspended';
@@ -168,7 +168,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-purple-700 mb-1">Tasks Completed</p>
-                  <p className="text-3xl font-black text-gray-900">{stats?.completedTasks || '0'}</p>
+                  <p className="text-3xl font-black text-gray-900">{(stats as any)?.completedTasks || '0'}</p>
                   <p className="text-xs text-purple-600 font-medium">This month</p>
                 </div>
                 <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">

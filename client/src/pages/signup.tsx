@@ -230,7 +230,7 @@ export default function Signup() {
         url: data.uploadURL,
       };
     } catch (error) {
-      console.error('Error getting upload URL:', error);
+      
       toast({
         title: "Upload Error",
         description: "Could not prepare file upload. Please try again.",

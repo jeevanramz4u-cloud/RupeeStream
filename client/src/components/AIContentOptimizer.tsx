@@ -66,7 +66,7 @@ export default function AIContentOptimizer({
         onOptimization(data);
       }
     } catch (error) {
-      console.error("Error optimizing content:", error);
+      
       toast({
         title: "Optimization Failed",
         description: "Failed to optimize content. Please try again.",
