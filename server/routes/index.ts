@@ -114,6 +114,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Signup endpoint with ₹1000 bonus
+  app.post('/api/auth/signup', async (req, res) => {
+    const { firstName, lastName, email, phone, password } = req.body;
+    console.log('Signup attempt for:', email);
+    
+    if (!firstName || !lastName || !email || !phone || !password) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // In development mode, create user in memory storage
+    if (process.env.NODE_ENV === 'development') {
+      // Check if email already exists (simulate for dev)
+      if (email === 'demo@innovativetaskearn.online' || email === 'admin@innovativetaskearn.online') {
+        return res.status(400).json({ error: 'Email already registered' });
+      }
+
+      // Create new user ID and session
+      const newUserId = `user-${Date.now()}`;
+      (req.session as any).userId = newUserId;
+      (req.session as any).role = 'user';
+      
+      console.log('Signup successful with ₹1000 bonus for:', email);
+      res.json({
+        success: true,
+        message: 'Account created successfully with ₹1000 signup bonus!',
+        user: {
+          id: newUserId,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          role: 'user',
+          balance: 1000
+        },
+        signupBonus: 1000
+      });
+    } else {
+      res.status(501).json({ error: 'Signup not implemented in production' });
+    }
+  });
+
   // Logout endpoint
   app.post('/api/auth/logout', (req, res) => {
     req.session.destroy((err) => {

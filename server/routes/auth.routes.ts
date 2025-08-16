@@ -111,78 +111,45 @@ router.post('/login', rateLimit(5, 60000), async (req, res) => {
 router.post('/signup', rateLimit(3, 60000), async (req, res) => {
   try {
     const data = signupSchema.parse(req.body);
+    const { storage } = await import('../storage');
 
     // Check if email exists
-    const [existingUser] = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, data.email.toLowerCase()))
-      .limit(1);
-
+    const existingUser = await storage.getUserByEmail(data.email);
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered' });
-    }
-
-    // Generate unique referral code
-    let referralCode = generateReferralCode();
-    let codeExists = true;
-    
-    while (codeExists) {
-      const [existing] = await db
-        .select()
-        .from(users)
-        .where(eq(users.referralCode, referralCode))
-        .limit(1);
-      
-      if (!existing) {
-        codeExists = false;
-      } else {
-        referralCode = generateReferralCode();
-      }
-    }
-
-    // Check referrer if provided
-    let referrerId = null;
-    if (data.referralCode) {
-      const [referrer] = await db
-        .select()
-        .from(users)
-        .where(eq(users.referralCode, data.referralCode))
-        .limit(1);
-
-      if (referrer) {
-        referrerId = referrer.id;
-      }
     }
 
     // Hash password
     const hashedPassword = await hashPassword(data.password);
 
-    // Generate OTP for email verification
-    const otp = generateOTP();
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    // Create user with ₹1000 signup bonus
+    const newUser = await storage.createUser({
+      email: data.email.toLowerCase(),
+      password: hashedPassword,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phone,
+      referredBy: data.referralCode || null,
+      emailVerified: true, // For development mode, auto-verify
+      balance: 1000
+    });
 
-    // Create user
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        email: data.email.toLowerCase(),
-        password: hashedPassword,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        phone: data.phone,
-        referralCode: referralCode,
-        referredBy: referrerId,
-        emailOtp: otp,
-        otpExpiry: otpExpiry
-      })
-      .returning();
+    // Create session for immediate login
+    req.session.userId = newUser.id;
+    req.session.role = newUser.role;
 
     res.json({
       success: true,
-      message: 'Account created successfully. Please verify your email.',
-      requiresVerification: true,
-      email: newUser.email
+      message: 'Account created successfully with ₹1000 signup bonus!',
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        role: newUser.role,
+        balance: newUser.balance
+      },
+      signupBonus: 1000
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

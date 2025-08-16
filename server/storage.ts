@@ -51,7 +51,7 @@ class MemoryStorage {
       phone: '8888888888',
       role: 'user',
       status: 'active',
-      balance: 250.50,
+      balance: 1250.50, // Includes ₹1000 signup bonus + earnings
       referralCode: 'DEMO001',
       kycStatus: 'pending',
       kycFeePaid: false,
@@ -59,6 +59,19 @@ class MemoryStorage {
       createdAt: new Date(),
       updatedAt: new Date()
     } as User);
+
+    // Add signup bonus earning record for demo user
+    this.earnings.set(userId, [
+      {
+        id: 'earn-signup-001',
+        userId: userId,
+        type: 'signup_bonus',
+        amount: 1000,
+        description: 'Welcome Signup Bonus',
+        createdAt: new Date('2025-01-01'),
+        status: 'approved'
+      }
+    ]);
 
     // Create sample tasks
     const taskCategories = [
@@ -111,7 +124,7 @@ class MemoryStorage {
       phone: userData.phone!,
       role: 'user',
       status: 'active',
-      balance: 0,
+      balance: 1000, // ₹1000 signup bonus
       referralCode: generateReferralCode(),
       kycStatus: 'pending',
       kycFeePaid: false,
@@ -121,6 +134,20 @@ class MemoryStorage {
       ...userData
     };
     this.users.set(id, user);
+    
+    // Add signup bonus earning record
+    this.earnings.set(id, [
+      {
+        id: `earn-signup-${Date.now()}`,
+        userId: id,
+        type: 'signup_bonus',
+        amount: 1000,
+        description: 'Welcome Signup Bonus',
+        createdAt: new Date(),
+        status: 'approved'
+      }
+    ]);
+    
     return user;
   }
 
