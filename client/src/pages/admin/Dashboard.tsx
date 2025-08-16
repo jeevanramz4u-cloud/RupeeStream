@@ -27,9 +27,26 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [timeRange, setTimeRange] = useState('today');
 
-  // Check admin access
-  if (user?.role !== 'admin') {
-    setLocation('/dashboard');
+  // Check admin access with useEffect to avoid render-time updates
+  React.useEffect(() => {
+    if (user && user.role !== 'admin') {
+      setLocation('/dashboard');
+    }
+  }, [user, setLocation]);
+
+  // Show loading while checking auth
+  if (!user) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Don't render admin content for non-admin users
+  if (user.role !== 'admin') {
     return null;
   }
 

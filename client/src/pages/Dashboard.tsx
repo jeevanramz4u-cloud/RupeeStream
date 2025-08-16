@@ -22,10 +22,13 @@ export default function Dashboard() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
 
-  // Redirect if not authenticated
+  // Redirect based on authentication and role
   useEffect(() => {
     if (!user) {
       setLocation('/login');
+    } else if (user.role === 'admin') {
+      // Redirect admins to admin dashboard
+      setLocation('/admin');
     }
   }, [user, setLocation]);
 
@@ -50,7 +53,7 @@ export default function Dashboard() {
     initialData: []
   });
 
-  if (!user) {
+  if (!user || user.role === 'admin') {
     return null;
   }
 
@@ -289,13 +292,13 @@ export default function Dashboard() {
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Member Since</span>
                   <span className="text-sm font-medium">
-                    {new Date(user.createdAt || Date.now()).toLocaleDateString()}
+                    {new Date(Date.now()).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Referral Code</span>
                   <span className="text-sm font-medium font-mono">
-                    {user.referralCode || 'N/A'}
+                    {user.id?.substring(0, 8).toUpperCase() || 'N/A'}
                   </span>
                 </div>
               </CardContent>
