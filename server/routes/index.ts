@@ -138,6 +138,141 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(sampleTasks);
   });
 
+  // Admin task creation endpoint
+  app.post('/api/admin/tasks', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    const role = (req.session as any)?.role;
+    
+    if (!userId || role !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+
+    const { title, category, description, reward, timeLimit, requirements } = req.body;
+
+    // Validate required fields
+    if (!title || !category || !description || !reward || !timeLimit) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // Create new task with generated ID
+    const newTask = {
+      id: `task_${Date.now()}`,
+      title,
+      category,
+      description,
+      reward: Number(reward),
+      timeLimit: Number(timeLimit),
+      requirements: requirements || '',
+      status: 'active',
+      completions: 0,
+      approvalRate: 100,
+      createdDate: new Date().toISOString(),
+      createdBy: userId,
+      isActive: true
+    };
+
+    console.log('New task created by admin:', newTask);
+
+    res.json({
+      success: true,
+      task: newTask,
+      message: 'Task created successfully'
+    });
+  });
+
+  // Admin get all tasks endpoint
+  app.get('/api/admin/tasks', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    const role = (req.session as any)?.role;
+    
+    if (!userId || role !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+
+    const adminTasks = [
+      { 
+        id: '1', 
+        title: 'Download Amazon App', 
+        category: 'app_download', 
+        description: 'Download and install the Amazon Shopping app, take a screenshot of the installed app on your home screen',
+        reward: 15, 
+        timeLimit: 20, 
+        status: 'active',
+        completions: 234,
+        approvalRate: 95.2,
+        createdDate: '2024-08-01T10:00:00Z',
+        createdBy: 'admin-001'
+      },
+      { 
+        id: '2', 
+        title: 'Review Local Restaurant', 
+        category: 'business_review', 
+        description: 'Write a genuine review for a local restaurant on Google Maps with at least 100 words',
+        reward: 20, 
+        timeLimit: 30, 
+        status: 'active',
+        completions: 156,
+        approvalRate: 88.7,
+        createdDate: '2024-08-02T14:30:00Z',
+        createdBy: 'admin-001'
+      },
+      { 
+        id: '3', 
+        title: 'Subscribe to Tech Channel', 
+        category: 'channel_subscribe', 
+        description: 'Subscribe to specified tech YouTube channel and provide screenshot of subscription confirmation',
+        reward: 10, 
+        timeLimit: 15, 
+        status: 'active',
+        completions: 445,
+        approvalRate: 97.8,
+        createdDate: '2024-08-03T09:15:00Z',
+        createdBy: 'admin-001'
+      },
+      { 
+        id: '4', 
+        title: 'Review Product on E-commerce', 
+        category: 'product_review', 
+        description: 'Write a detailed product review on specified e-commerce platform with photos',
+        reward: 25, 
+        timeLimit: 45, 
+        status: 'active',
+        completions: 89,
+        approvalRate: 92.1,
+        createdDate: '2024-08-04T16:45:00Z',
+        createdBy: 'admin-001'
+      },
+      { 
+        id: '5', 
+        title: 'Social Media Engagement', 
+        category: 'comment_like', 
+        description: 'Like and comment meaningfully on specified social media posts',
+        reward: 8, 
+        timeLimit: 10, 
+        status: 'active',
+        completions: 567,
+        approvalRate: 91.4,
+        createdDate: '2024-08-05T11:20:00Z',
+        createdBy: 'admin-001'
+      },
+      { 
+        id: '6', 
+        title: 'Watch and Share Video', 
+        category: 'youtube_video_see', 
+        description: 'Watch full video, like, and share on your social media with meaningful caption',
+        reward: 12, 
+        timeLimit: 20, 
+        status: 'active',
+        completions: 323,
+        approvalRate: 94.6,
+        createdDate: '2024-08-06T13:00:00Z',
+        createdBy: 'admin-001'
+      }
+    ];
+
+    res.json(adminTasks);
+  });
+
   // Admin endpoints
   
   // Admin dashboard stats

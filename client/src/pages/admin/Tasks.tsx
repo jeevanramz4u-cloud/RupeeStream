@@ -9,6 +9,8 @@ import { Alert, AlertDescription } from '../../components/ui/alert.tsx';
 import { useAuth } from '../../hooks/useAuth';
 import { useLocation } from 'wouter';
 import { useToast } from '../../hooks/use-toast';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { queryClient } from '../../lib/queryClient';
 import { 
   ListTodo,
   Plus,
@@ -58,6 +60,14 @@ export default function AdminTasks() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+  const [newTask, setNewTask] = useState({
+    title: '',
+    category: '',
+    description: '',
+    reward: '',
+    timeLimit: '',
+    requirements: ''
+  });
 
   // Check admin access with useEffect to avoid render-time updates
   React.useEffect(() => {
@@ -82,74 +92,11 @@ export default function AdminTasks() {
     return null;
   }
 
-  // Mock tasks data
-  const tasks: Task[] = [
-    {
-      id: '1',
-      title: 'Download Amazon App',
-      category: 'app_download',
-      description: 'Download and install the Amazon shopping app',
-      reward: 15,
-      timeLimit: 20,
-      status: 'active',
-      completions: 1234,
-      approvalRate: 95.5,
-      createdDate: '2024-01-15',
-      createdBy: 'Admin'
-    },
-    {
-      id: '2',
-      title: 'Review Local Restaurant',
-      category: 'business_review',
-      description: 'Write a genuine review for a local restaurant',
-      reward: 20,
-      timeLimit: 20,
-      status: 'active',
-      completions: 876,
-      approvalRate: 88.3,
-      createdDate: '2024-02-10',
-      createdBy: 'Admin'
-    },
-    {
-      id: '3',
-      title: 'Subscribe to Tech Channel',
-      category: 'channel_subscribe',
-      description: 'Subscribe to a technology YouTube channel',
-      reward: 10,
-      timeLimit: 15,
-      status: 'inactive',
-      completions: 2345,
-      approvalRate: 92.1,
-      createdDate: '2024-01-20',
-      createdBy: 'Admin'
-    },
-    {
-      id: '4',
-      title: 'Review Product',
-      category: 'product_review',
-      description: 'Write a detailed product review on e-commerce platform',
-      reward: 25,
-      timeLimit: 30,
-      status: 'active',
-      completions: 567,
-      approvalRate: 79.8,
-      createdDate: '2024-03-01',
-      createdBy: 'Admin'
-    },
-    {
-      id: '5',
-      title: 'Like and Comment',
-      category: 'comment_like',
-      description: 'Like and comment on social media posts',
-      reward: 5,
-      timeLimit: 10,
-      status: 'pending',
-      completions: 0,
-      approvalRate: 0,
-      createdDate: '2024-03-10',
-      createdBy: 'Admin'
-    }
-  ];
+  // Fetch tasks from API
+  const { data: tasks = [], isLoading: tasksLoading, refetch: refetchTasks } = useQuery({
+    queryKey: ['/api/admin/tasks'],
+    enabled: !!user && user.role === 'admin'
+  });
 
   const categories = [
     { value: 'app_download', label: 'App Downloads' },
@@ -221,6 +168,63 @@ export default function AdminTasks() {
   const getCategoryLabel = (category: string) => {
     const cat = categories.find(c => c.value === category);
     return cat ? cat.label : category;
+  };
+
+  // Create task mutation
+  const createTaskMutation = useMutation({
+    mutationFn: async (taskData: any) => {
+      const response = await fetch('/api/admin/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(taskData),
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create task');
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      refetchTasks();
+      setShowCreateModal(false);
+      setNewTask({
+        title: '',
+        category: '',
+        description: '',
+        reward: '',
+        timeLimit: '',
+        requirements: ''
+      });
+      toast({
+        title: 'Success',
+        description: 'Task created successfully'
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to create task',
+        variant: 'destructive'
+      });
+    }
+  });
+
+  const handleCreateTask = () => {
+    if (!newTask.title || !newTask.category || !newTask.description || !newTask.reward || !newTask.timeLimit) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fill in all required fields',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    createTaskMutation.mutate(newTask);
   };
 
   return (
@@ -499,6 +503,127 @@ export default function AdminTasks() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Create Task Modal */}
+        {showCreateModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-blue-900">Create New Task</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowCreateModal(false)}
+                    disabled={createTaskMutation.isPending}
+                  >
+                    ✕
+                  </Button>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="title">Task Title *</Label>
+                    <Input
+                      id="title"
+                      value={newTask.title}
+                      onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                      placeholder="Enter task title"
+                      disabled={createTaskMutation.isPending}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="category">Category *</Label>
+                    <select
+                      id="category"
+                      value={newTask.category}
+                      onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      disabled={createTaskMutation.isPending}
+                    >
+                      <option value="">Select category</option>
+                      {categories.map(cat => (
+                        <option key={cat.value} value={cat.value}>{cat.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="description">Description *</Label>
+                    <textarea
+                      id="description"
+                      value={newTask.description}
+                      onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                      placeholder="Enter detailed task description"
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      disabled={createTaskMutation.isPending}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="reward">Reward (₹) *</Label>
+                      <Input
+                        id="reward"
+                        type="number"
+                        value={newTask.reward}
+                        onChange={(e) => setNewTask({ ...newTask, reward: e.target.value })}
+                        placeholder="0"
+                        min="1"
+                        disabled={createTaskMutation.isPending}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="timeLimit">Time Limit (minutes) *</Label>
+                      <Input
+                        id="timeLimit"
+                        type="number"
+                        value={newTask.timeLimit}
+                        onChange={(e) => setNewTask({ ...newTask, timeLimit: e.target.value })}
+                        placeholder="0"
+                        min="1"
+                        disabled={createTaskMutation.isPending}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="requirements">Requirements (Optional)</Label>
+                    <textarea
+                      id="requirements"
+                      value={newTask.requirements}
+                      onChange={(e) => setNewTask({ ...newTask, requirements: e.target.value })}
+                      placeholder="Enter specific requirements or instructions"
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      disabled={createTaskMutation.isPending}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 mt-6 pt-6 border-t">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowCreateModal(false)}
+                    disabled={createTaskMutation.isPending}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleCreateTask}
+                    disabled={createTaskMutation.isPending}
+                    className="flex-1"
+                  >
+                    {createTaskMutation.isPending ? 'Creating...' : 'Create Task'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );
