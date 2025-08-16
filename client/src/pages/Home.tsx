@@ -144,24 +144,16 @@ export default function Home() {
                     <p className="text-xl md:text-2xl mb-8 max-w-2xl opacity-90">
                       {slide.description}
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                      <Link href="/signup" className="w-full sm:w-auto">
+                    <div className="flex justify-center sm:justify-start">
+                      <Link href="/signup" className="w-full sm:w-auto max-w-sm sm:max-w-none">
                         <Button 
                           size="lg" 
-                          className="w-full sm:w-auto bg-white text-blue-600 hover:bg-blue-50 border-0 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                          className="w-full sm:w-auto bg-white text-blue-600 hover:bg-blue-50 border-0 px-8 sm:px-10 py-4 sm:py-6 text-base sm:text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
                         >
                           {slide.buttonText}
                           <ArrowRight className="ml-2 w-5 h-5 sm:w-6 sm:h-6" />
                         </Button>
                       </Link>
-                      <Button 
-                        size="lg" 
-                        className="w-full sm:w-auto bg-white/20 border-2 border-white text-white hover:bg-white hover:text-blue-600 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg backdrop-blur-sm transition-all duration-300"
-                        onClick={() => setIsPlaying(!isPlaying)}
-                      >
-                        <Play className="mr-2 w-4 h-4 sm:w-5 sm:h-5" />
-                        {isPlaying ? 'Pause' : 'Play'} Slides
-                      </Button>
                     </div>
                   </div>
                 </div>
