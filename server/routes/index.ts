@@ -668,6 +668,202 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(withdrawals);
   });
 
+  // User profile endpoint
+  app.get('/api/user/profile', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    // Return comprehensive user profile data
+    const profileData = {
+      user: {
+        id: userId,
+        firstName: userId === 'user-001' ? 'Demo' : 'User',
+        lastName: 'User',
+        email: userId === 'user-001' ? 'demo@innovativetaskearn.online' : 'user@example.com',
+        phone: '+91 98765 43210',
+        joinedDate: '2024-08-01',
+        kycStatus: 'verified',
+        referralCode: 'DEMO2024',
+        profilePicture: null
+      },
+      stats: {
+        totalEarnings: 3450,
+        completedTasks: 89,
+        pendingTasks: 3,
+        approvalRate: 96.2,
+        referrals: 5,
+        rank: 'Silver',
+        points: 2340
+      },
+      recentActivity: [
+        { type: 'task_completed', description: 'Product Review task completed', date: '2024-08-16', amount: 25 },
+        { type: 'earning_credited', description: 'App Download reward credited', date: '2024-08-15', amount: 15 },
+        { type: 'withdrawal_approved', description: 'Withdrawal of ₹500 approved', date: '2024-08-15', amount: -500 }
+      ]
+    };
+    
+    res.json(profileData);
+  });
+
+  // User KYC endpoints
+  app.get('/api/users/kyc', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    const kycData = {
+      status: 'verified',
+      submittedAt: '2024-08-01T10:30:00Z',
+      verifiedAt: '2024-08-02T14:20:00Z',
+      documents: {
+        aadhaar: { uploaded: true, verified: true, maskedNumber: 'XXXX-XXXX-1234' },
+        pan: { uploaded: true, verified: true, maskedNumber: 'ABCDE1234F' },
+        selfie: { uploaded: true, verified: true }
+      },
+      paymentStatus: 'completed',
+      paymentAmount: 99,
+      paymentDate: '2024-08-01T11:00:00Z'
+    };
+    
+    res.json(kycData);
+  });
+
+  // User referrals endpoint
+  app.get('/api/users/referrals', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    const referralData = {
+      referralCode: 'DEMO2024',
+      referralLink: `${req.protocol}://${req.get('host')}/signup?ref=DEMO2024`,
+      stats: {
+        totalReferrals: 5,
+        activeReferrals: 4,
+        totalEarned: 245,
+        pendingEarnings: 49
+      },
+      referralList: [
+        {
+          id: 'ref-001',
+          name: 'John Smith',
+          email: 'john@example.com',
+          joinedDate: '2024-08-10',
+          kycStatus: 'verified',
+          earnedAmount: 49,
+          status: 'active'
+        },
+        {
+          id: 'ref-002',
+          name: 'Sarah Johnson',
+          email: 'sarah@example.com',
+          joinedDate: '2024-08-12',
+          kycStatus: 'verified',
+          earnedAmount: 49,
+          status: 'active'
+        },
+        {
+          id: 'ref-003',
+          name: 'Mike Wilson',
+          email: 'mike@example.com',
+          joinedDate: '2024-08-14',
+          kycStatus: 'pending',
+          earnedAmount: 0,
+          status: 'pending'
+        }
+      ]
+    };
+    
+    res.json(referralData);
+  });
+
+  // User support tickets endpoint
+  app.get('/api/users/support/tickets', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    const tickets = [
+      {
+        id: 'TKT-USR-001',
+        subject: 'Question about task approval',
+        status: 'resolved',
+        priority: 'medium',
+        category: 'tasks',
+        createdAt: '2024-08-14T09:30:00Z',
+        lastUpdate: '2024-08-14T15:45:00Z',
+        messages: [
+          {
+            sender: 'Demo User',
+            message: 'How long does it take for task submissions to be approved?',
+            timestamp: '2024-08-14T09:30:00Z',
+            isUser: true
+          },
+          {
+            sender: 'Support Team',
+            message: 'Task submissions are typically reviewed within 5-20 minutes during business hours.',
+            timestamp: '2024-08-14T15:45:00Z',
+            isUser: false
+          }
+        ]
+      }
+    ];
+    
+    res.json(tickets);
+  });
+
+  // User notifications endpoint
+  app.get('/api/users/notifications', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    const notifications = [
+      {
+        id: 1,
+        title: 'Task Approved',
+        message: 'Your Product Review task has been approved. ₹25 credited to your account.',
+        type: 'success',
+        read: false,
+        createdAt: '2024-08-16T10:30:00Z'
+      },
+      {
+        id: 2,
+        title: 'New Task Available',
+        message: 'New Restaurant Review task is now available in your area.',
+        type: 'info',
+        read: true,
+        createdAt: '2024-08-15T14:20:00Z'
+      },
+      {
+        id: 3,
+        title: 'Withdrawal Processed',
+        message: 'Your withdrawal request of ₹500 has been successfully processed.',
+        type: 'success',
+        read: true,
+        createdAt: '2024-08-15T12:15:00Z'
+      }
+    ];
+    
+    res.json(notifications);
+  });
+
+  // Mark notification as read
+  app.post('/api/notifications/:id/read', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    res.json({ success: true, message: 'Notification marked as read' });
+  });
+
   // Health check endpoint
   app.get('/api/health', (req, res) => {
     res.json({ 
