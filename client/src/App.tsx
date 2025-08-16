@@ -14,6 +14,12 @@ import Profile from './pages/Profile';
 import Earnings from './pages/Earnings';
 import KYC from './pages/KYC';
 import Referrals from './pages/Referrals';
+import VerifyEmail from './pages/VerifyEmail';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Contact from './pages/Contact';
+import About from './pages/About';
+import FAQ from './pages/FAQ';
 
 export default function App() {
   return (
@@ -30,6 +36,18 @@ export default function App() {
           <Route path="/earnings" component={Earnings} />
           <Route path="/kyc" component={KYC} />
           <Route path="/referrals" component={Referrals} />
+          
+          {/* Auth & Verification Pages */}
+          <Route path="/verify-email" component={VerifyEmail} />
+          
+          {/* Legal Pages */}
+          <Route path="/terms" component={Terms} />
+          <Route path="/privacy" component={Privacy} />
+          
+          {/* Info Pages */}
+          <Route path="/contact" component={Contact} />
+          <Route path="/about" component={About} />
+          <Route path="/faq" component={FAQ} />
           
           {/* Admin Routes */}
           <Route path="/admin">
