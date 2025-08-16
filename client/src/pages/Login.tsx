@@ -22,11 +22,22 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const [, setLocation] = useLocation();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Redirect if already logged in
+  React.useEffect(() => {
+    if (user) {
+      if (user.role === 'admin') {
+        setLocation('/admin/dashboard');
+      } else {
+        setLocation('/users/dashboard');
+      }
+    }
+  }, [user, setLocation]);
 
   const {
     register,
@@ -50,17 +61,7 @@ export default function Login() {
           description: 'Welcome back!'
         });
         
-        // Small delay to ensure state updates
-        setTimeout(() => {
-          // Redirect based on user role
-          if (result.user.role === 'admin') {
-            console.log('Redirecting to admin dashboard'); // Debug log
-            setLocation('/admin/dashboard');
-          } else {
-            console.log('Redirecting to user dashboard'); // Debug log
-            setLocation('/users/dashboard');
-          }
-        }, 100);
+        // The redirect will be handled by the useEffect above when user state updates
       } else {
         setError(result.error || 'Login failed');
       }

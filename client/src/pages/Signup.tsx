@@ -30,12 +30,23 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 export default function Signup() {
   const [, setLocation] = useLocation();
-  const { signup } = useAuth();
+  const { signup, user } = useAuth();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Redirect if already logged in
+  React.useEffect(() => {
+    if (user) {
+      if (user.role === 'admin') {
+        setLocation('/admin/dashboard');
+      } else {
+        setLocation('/users/dashboard');
+      }
+    }
+  }, [user, setLocation]);
 
   const {
     register,
