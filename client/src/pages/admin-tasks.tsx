@@ -28,6 +28,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import AITaskSuggestions from "@/components/AITaskSuggestions";
 import AISmartCategorization from "@/components/AISmartCategorization";
 import AIContentOptimizer from "@/components/AIContentOptimizer";
@@ -46,6 +47,7 @@ const taskCategoryIcons = {
 export default function AdminTasks() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isAdminAuthenticated } = useAdminAuth();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [isCompletionsDialogOpen, setIsCompletionsDialogOpen] = useState(false);
@@ -67,10 +69,22 @@ export default function AdminTasks() {
 
   const { data: tasks = [], isLoading: tasksLoading } = useQuery({
     queryKey: ["/api/admin/tasks"],
+    enabled: isAdminAuthenticated,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/tasks", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   const { data: completions = [] } = useQuery({
     queryKey: ["/api/admin/task-completions"],
+    enabled: isAdminAuthenticated,
+    queryFn: async () => {
+      const res = await fetch("/api/admin/task-completions", { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
   });
 
   const createTaskMutation = useMutation({
