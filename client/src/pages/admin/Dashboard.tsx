@@ -66,7 +66,9 @@ export default function AdminDashboard() {
     completedTasks: 0,
     pendingTasks: 0,
     todayEarnings: 0,
-    weeklyEarnings: 0
+    weeklyEarnings: 0,
+    totalTasks: 0,
+    totalPayoutAmount: 0
   };
 
   const recentActivities = [
@@ -115,11 +117,11 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total Users</p>
+                  <p className="text-sm text-blue-600">Total Users</p>
                   <p className="text-2xl font-bold">{displayStats.totalUsers.toLocaleString()}</p>
                   <div className="flex items-center mt-1">
-                    <ArrowUp className="w-4 h-4 text-green-600 mr-1" />
-                    <span className="text-sm text-green-600">+12% this week</span>
+                    <ArrowUp className="w-4 h-4 text-blue-500 mr-1" />
+                    <span className="text-sm text-blue-500">+12% this week</span>
                   </div>
                 </div>
                 <Users className="w-8 h-8 text-blue-600" />
@@ -131,14 +133,14 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total Earnings</p>
+                  <p className="text-sm text-blue-600">Total Earnings</p>
                   <p className="text-2xl font-bold">₹{displayStats.weeklyEarnings.toLocaleString()}</p>
                   <div className="flex items-center mt-1">
-                    <TrendingUp className="w-4 h-4 text-green-600 mr-1" />
-                    <span className="text-sm text-green-600">₹{displayStats.todayEarnings} today</span>
+                    <TrendingUp className="w-4 h-4 text-blue-500 mr-1" />
+                    <span className="text-sm text-blue-500">₹{displayStats.todayEarnings} today</span>
                   </div>
                 </div>
-                <DollarSign className="w-8 h-8 text-green-600" />
+                <DollarSign className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -147,14 +149,14 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Completed Tasks</p>
+                  <p className="text-sm text-blue-600">Completed Tasks</p>
                   <p className="text-2xl font-bold">{displayStats.completedTasks.toLocaleString()}</p>
                   <div className="flex items-center mt-1">
                     <Activity className="w-4 h-4 text-blue-600 mr-1" />
                     <span className="text-sm text-blue-600">{displayStats.totalTasks} total</span>
                   </div>
                 </div>
-                <ListTodo className="w-8 h-8 text-purple-600" />
+                <ListTodo className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -163,14 +165,14 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Pending Payouts</p>
+                  <p className="text-sm text-blue-600">Pending Payouts</p>
                   <p className="text-2xl font-bold">₹{displayStats.totalPayoutAmount.toLocaleString()}</p>
                   <div className="flex items-center mt-1">
-                    <Clock className="w-4 h-4 text-yellow-600 mr-1" />
-                    <span className="text-sm text-yellow-600">{displayStats.pendingPayouts} requests</span>
+                    <Clock className="w-4 h-4 text-blue-400 mr-1" />
+                    <span className="text-sm text-blue-400">{displayStats.pendingPayouts} requests</span>
                   </div>
                 </div>
-                <CreditCard className="w-8 h-8 text-yellow-600" />
+                <CreditCard className="w-8 h-8 text-blue-500" />
               </div>
             </CardContent>
           </Card>
@@ -190,21 +192,21 @@ export default function AdminDashboard() {
                   return (
                     <div key={index} className="flex items-start space-x-3">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        activity.type === 'alert' ? 'bg-red-100' :
-                        activity.type === 'payment' ? 'bg-green-100' :
-                        activity.type === 'task' ? 'bg-blue-100' :
-                        'bg-gray-100'
+                        activity.type === 'alert' ? 'bg-blue-200' :
+                        activity.type === 'payment' ? 'bg-blue-100' :
+                        activity.type === 'task' ? 'bg-blue-50' :
+                        'bg-white border border-blue-200'
                       }`}>
                         <Icon className={`w-4 h-4 ${
-                          activity.type === 'alert' ? 'text-red-600' :
-                          activity.type === 'payment' ? 'text-green-600' :
-                          activity.type === 'task' ? 'text-blue-600' :
-                          'text-gray-600'
+                          activity.type === 'alert' ? 'text-blue-700' :
+                          activity.type === 'payment' ? 'text-blue-600' :
+                          activity.type === 'task' ? 'text-blue-500' :
+                          'text-blue-400'
                         }`} />
                       </div>
                       <div className="flex-1">
                         <p className="text-sm font-medium">{activity.message}</p>
-                        <p className="text-xs text-gray-500">{activity.time}</p>
+                        <p className="text-xs text-blue-400">{activity.time}</p>
                       </div>
                     </div>
                   );
@@ -225,13 +227,13 @@ export default function AdminDashboard() {
             <CardContent>
               <div className="space-y-4">
                 {pendingActions.map((action, index) => (
-                  <Link key={index} href={action.action} className="block p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                  <Link key={index} href={action.action} className="block p-4 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors">
                     <div className="flex justify-between items-center">
                       <div>
                         <p className="font-medium">{action.title}</p>
-                        <p className="text-sm text-gray-500">{action.description}</p>
+                        <p className="text-sm text-blue-400">{action.description}</p>
                       </div>
-                      <AlertCircle className="w-5 h-5 text-yellow-500" />
+                      <AlertCircle className="w-5 h-5 text-blue-500" />
                     </div>
                   </Link>
                 ))}

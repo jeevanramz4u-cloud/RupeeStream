@@ -228,11 +228,11 @@ export default function AdminTasks() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+          <h1 className="text-3xl font-bold text-blue-900 flex items-center">
             <ListTodo className="w-8 h-8 mr-3" />
             Manage Tasks
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-blue-600 mt-2">
             Create and manage platform tasks
           </p>
         </div>
@@ -243,7 +243,7 @@ export default function AdminTasks() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total Tasks</p>
+                  <p className="text-sm text-blue-600">Total Tasks</p>
                   <p className="text-2xl font-bold">156</p>
                 </div>
                 <ListTodo className="w-8 h-8 text-blue-600" />
@@ -254,10 +254,10 @@ export default function AdminTasks() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Active Tasks</p>
+                  <p className="text-sm text-blue-600">Active Tasks</p>
                   <p className="text-2xl font-bold">124</p>
                 </div>
-                <CheckCircle className="w-8 h-8 text-green-600" />
+                <CheckCircle className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -265,10 +265,10 @@ export default function AdminTasks() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Completions Today</p>
+                  <p className="text-sm text-blue-600">Completions Today</p>
                   <p className="text-2xl font-bold">1,234</p>
                 </div>
-                <TrendingUp className="w-8 h-8 text-purple-600" />
+                <TrendingUp className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -276,10 +276,10 @@ export default function AdminTasks() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Avg Approval Rate</p>
+                  <p className="text-sm text-blue-600">Avg Approval Rate</p>
                   <p className="text-2xl font-bold">92.5%</p>
                 </div>
-                <CheckCircle className="w-8 h-8 text-yellow-600" />
+                <CheckCircle className="w-8 h-8 text-blue-500" />
               </div>
             </CardContent>
           </Card>
@@ -291,7 +291,7 @@ export default function AdminTasks() {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 w-5 h-5" />
                   <Input
                     placeholder="Search tasks..."
                     value={searchTerm}
@@ -304,7 +304,7 @@ export default function AdminTasks() {
                 <select
                   value={filterCategory}
                   onChange={(e) => setFilterCategory(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">All Categories</option>
                   {categories.map(cat => (

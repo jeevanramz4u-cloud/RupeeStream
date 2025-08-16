@@ -203,10 +203,10 @@ export default function AdminUsers() {
 
   const getKYCBadge = (status: string) => {
     const colors: Record<string, string> = {
-      verified: 'bg-green-100 text-green-800',
-      pending: 'bg-yellow-100 text-yellow-800',
-      rejected: 'bg-red-100 text-red-800',
-      none: 'bg-gray-100 text-gray-800'
+      verified: 'bg-blue-100 text-blue-800',
+      pending: 'bg-blue-50 text-blue-600',
+      rejected: 'bg-blue-200 text-blue-900',
+      none: 'bg-white text-blue-500 border border-blue-200'
     };
     return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors[status]}`}>{status}</span>;
   };
@@ -216,11 +216,11 @@ export default function AdminUsers() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+          <h1 className="text-3xl font-bold text-blue-900 flex items-center">
             <Users className="w-8 h-8 mr-3" />
             Manage Users
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-blue-600 mt-2">
             View and manage all platform users
           </p>
         </div>
@@ -231,7 +231,7 @@ export default function AdminUsers() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total Users</p>
+                  <p className="text-sm text-blue-600">Total Users</p>
                   <p className="text-2xl font-bold">10,423</p>
                 </div>
                 <Users className="w-8 h-8 text-blue-600" />
@@ -242,10 +242,10 @@ export default function AdminUsers() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Active Users</p>
+                  <p className="text-sm text-blue-600">Active Users</p>
                   <p className="text-2xl font-bold">8,567</p>
                 </div>
-                <UserCheck className="w-8 h-8 text-green-600" />
+                <UserCheck className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -253,10 +253,10 @@ export default function AdminUsers() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">KYC Verified</p>
+                  <p className="text-sm text-blue-600">KYC Verified</p>
                   <p className="text-2xl font-bold">6,234</p>
                 </div>
-                <CheckCircle className="w-8 h-8 text-purple-600" />
+                <CheckCircle className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -264,10 +264,10 @@ export default function AdminUsers() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Suspended</p>
+                  <p className="text-sm text-blue-600">Suspended</p>
                   <p className="text-2xl font-bold">234</p>
                 </div>
-                <UserX className="w-8 h-8 text-red-600" />
+                <UserX className="w-8 h-8 text-blue-700" />
               </div>
             </CardContent>
           </Card>
@@ -279,7 +279,7 @@ export default function AdminUsers() {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 w-5 h-5" />
                   <Input
                     placeholder="Search by name or email..."
                     value={searchTerm}
@@ -292,7 +292,7 @@ export default function AdminUsers() {
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">All Status</option>
                   <option value="active">Active</option>
