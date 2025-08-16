@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
-import { useAuth } from '../hooks/useAuth';
-import { Button } from './ui/button';
+import { useAuth } from '../hooks/useAuth.tsx';
+import { Button } from './ui/button.tsx';
 import { 
   Menu, 
   X, 
@@ -21,7 +21,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
+} from './ui/dropdown-menu.tsx';
 
 interface LayoutProps {
   children: React.ReactNode;

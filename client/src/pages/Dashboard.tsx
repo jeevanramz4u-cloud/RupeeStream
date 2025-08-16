@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth.tsx';
 import { Layout } from '../components/Layout';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button.tsx';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card.tsx';
 import { useQuery } from '@tanstack/react-query';
 import { 
   Wallet, 

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth.tsx';
 import { Layout } from '../components/Layout';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
-import { Input } from '../components/ui/input';
-import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button.tsx';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card.tsx';
+import { Input } from '../components/ui/input.tsx';
+import { Badge } from '../components/ui/badge.tsx';
 import { useQuery } from '@tanstack/react-query';
 import { 
   Search,

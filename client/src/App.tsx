@@ -1,6 +1,8 @@
 import { Route, Switch } from 'wouter';
-import { AuthProvider } from './hooks/useAuth';
-import { Toaster } from './components/ui/toaster';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './lib/queryClient';
+import { AuthProvider } from './hooks/useAuth.tsx';
+import { Toaster } from './components/ui/toaster.tsx';
 
 // Pages
 import Login from './pages/Login';
@@ -11,7 +13,8 @@ import Tasks from './pages/Tasks';
 
 export default function App() {
   return (
-    <AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
       <div className="min-h-screen">
         <Switch>
           <Route path="/" component={Home} />
@@ -43,5 +46,6 @@ export default function App() {
       </div>
       <Toaster />
     </AuthProvider>
+    </QueryClientProvider>
   );
 }
