@@ -1,16 +1,16 @@
 // Real Cashfree integration with HTTP API calls
 // For KYC payments, always use production API for real transactions
 const cashfreeConfig = {
-  appId: process.env.CASHFREE_APP_ID!,
-  secretKey: process.env.CASHFREE_SECRET_KEY!,
+  clientId: process.env.CASHFREE_CLIENT_ID!,
+  clientSecret: process.env.CASHFREE_CLIENT_SECRET!,
   environment: 'PRODUCTION', // Always use production for KYC payments
   baseUrl: 'https://api.cashfree.com' // Production API URL for real payments
 };
 
 // Debug: Check if credentials are present
 console.log('Cashfree Config Check:', {
-  hasAppId: !!cashfreeConfig.appId,
-  hasSecretKey: !!cashfreeConfig.secretKey,
+  hasClientId: !!cashfreeConfig.clientId,
+  hasClientSecret: !!cashfreeConfig.clientSecret,
   environment: cashfreeConfig.environment,
   baseUrl: cashfreeConfig.baseUrl
 });
@@ -63,9 +63,9 @@ export async function createPaymentSession(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Client-Id': cashfreeConfig.appId,
-        'X-Client-Secret': cashfreeConfig.secretKey,
-        'x-api-version': '2022-09-01'
+        'X-Client-Id': cashfreeConfig.clientId,
+        'X-Client-Secret': cashfreeConfig.clientSecret,
+        'x-api-version': '2023-08-01'
       },
       body: JSON.stringify(orderRequest)
     });

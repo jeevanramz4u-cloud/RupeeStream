@@ -26,16 +26,18 @@ import {
 } from 'lucide-react';
 
 interface KYCData {
-  status: 'not_submitted' | 'pending' | 'verified' | 'rejected';
+  status: 'not_submitted' | 'documents_uploaded' | 'payment_pending' | 'payment_completed' | 'verified' | 'rejected';
+  documentsUploaded: boolean;
+  paymentStatus: 'pending' | 'completed';
+  paymentAmount: number;
   documents: {
-    aadhaar?: string;
-    pan?: string;
-    selfie?: string;
+    aadhaar: { uploaded: boolean; verified: boolean; maskedNumber?: string };
+    pan: { uploaded: boolean; verified: boolean; maskedNumber?: string };
+    selfie: { uploaded: boolean; verified: boolean };
   };
   submittedAt?: string;
   verifiedAt?: string;
   rejectionReason?: string;
-  paymentStatus?: 'pending' | 'completed';
 }
 
 export default function KYC() {
@@ -56,80 +58,95 @@ export default function KYC() {
   // Fetch KYC status
   const { data: kycData, isLoading } = useQuery({
     queryKey: ['/api/users/kyc'],
-    enabled: !!user,
-    initialData: {
-      status: user?.kycStatus || 'not_submitted',
-      documents: {},
-      paymentStatus: 'pending'
-    } as KYCData
+    enabled: !!user
   });
 
-  // Submit KYC documents
-  const submitKYCMutation = useMutation({
+  // Safe data with defaults
+  const safeKycData = {
+    status: kycData?.status || 'not_submitted',
+    documentsUploaded: kycData?.documentsUploaded || false,
+    paymentStatus: kycData?.paymentStatus || 'pending',
+    paymentAmount: kycData?.paymentAmount || 99,
+    documents: kycData?.documents || {
+      aadhaar: { uploaded: false, verified: false },
+      pan: { uploaded: false, verified: false },
+      selfie: { uploaded: false, verified: false }
+    },
+    submittedAt: kycData?.submittedAt || null,
+    verifiedAt: kycData?.verifiedAt || null,
+    rejectionReason: kycData?.rejectionReason || null
+  } as KYCData;
+
+  // Upload KYC documents
+  const uploadDocumentsMutation = useMutation({
     mutationFn: async (data: any) => {
-      const formData = new FormData();
-      Object.keys(data).forEach(key => {
-        formData.append(key, data[key]);
-      });
-      
-      const response = await fetch('/api/users/kyc/submit', {
+      const response = await fetch('/api/users/kyc/upload', {
         method: 'POST',
-        credentials: 'include',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
       });
       
-      if (!response.ok) throw new Error('Failed to submit KYC');
+      if (!response.ok) {
+        throw new Error('Failed to upload documents');
+      }
+      
       return response.json();
     },
     onSuccess: () => {
-      toast({
-        title: 'KYC Submitted',
-        description: 'Your documents have been submitted for verification'
-      });
       queryClient.invalidateQueries({ queryKey: ['/api/users/kyc'] });
-      setStep(3);
-    },
-    onError: () => {
       toast({
-        title: 'Submission Failed',
-        description: 'Failed to submit KYC documents. Please try again.',
+        title: 'Documents Uploaded',
+        description: 'Your documents have been uploaded successfully. Please proceed to payment.'
+      });
+      setStep(3); // Move to payment step
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Upload Failed',
+        description: error.message || 'Failed to upload documents.',
         variant: 'destructive'
       });
     }
   });
 
-  // Process payment
-  const processPaymentMutation = useMutation({
+  // Create payment session
+  const createPaymentMutation = useMutation({
     mutationFn: async () => {
       const response = await fetch('/api/users/kyc/payment', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ amount: 99 })
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
       
-      if (!response.ok) throw new Error('Payment failed');
+      if (!response.ok) {
+        throw new Error('Failed to create payment session');
+      }
+      
       return response.json();
     },
     onSuccess: (data) => {
       if (data.paymentUrl) {
-        window.location.href = data.paymentUrl;
-      } else {
+        // Redirect to Cashfree payment page
+        window.open(data.paymentUrl, '_blank');
         toast({
-          title: 'Payment Processed',
-          description: 'Your KYC verification fee has been processed'
+          title: 'Payment Session Created',
+          description: 'Redirecting to payment gateway. Complete the ₹99 payment to verify your KYC.'
         });
-        setStep(2);
       }
     },
-    onError: () => {
+    onError: (error: any) => {
       toast({
         title: 'Payment Failed',
-        description: 'Failed to process payment. Please try again.',
+        description: error.message || 'Failed to create payment session.',
         variant: 'destructive'
       });
     }
   });
+
+
 
   const handleFileChange = (field: string, file: File | null) => {
     setDocuments(prev => ({ ...prev, [field]: file }));
@@ -152,11 +169,11 @@ export default function KYC() {
       selfieDoc: documents.selfie
     };
 
-    submitKYCMutation.mutate(data);
+    uploadDocumentsMutation.mutate(data);
   };
 
   const getStatusDisplay = () => {
-    const status = kycData?.status || 'not_submitted';
+    const status = safeKycData.status;
     const configs = {
       verified: {
         icon: CheckCircle,
@@ -177,7 +194,7 @@ export default function KYC() {
         color: 'text-red-600',
         bgColor: 'bg-red-50',
         title: 'Verification Rejected',
-        description: kycData?.rejectionReason || 'Your documents were rejected. Please resubmit with valid documents.'
+        description: safeKycData.rejectionReason || 'Your documents were rejected. Please resubmit with valid documents.'
       },
       not_submitted: {
         icon: AlertCircle,
@@ -199,14 +216,14 @@ export default function KYC() {
             <div className="flex-1">
               <h3 className="font-semibold text-lg">{config.title}</h3>
               <p className="text-gray-600 mt-1">{config.description}</p>
-              {status === 'verified' && kycData?.verifiedAt && (
+              {status === 'verified' && safeKycData.verifiedAt && (
                 <p className="text-sm text-gray-500 mt-2">
-                  Verified on: {new Date(kycData.verifiedAt).toLocaleDateString()}
+                  Verified on: {new Date(safeKycData.verifiedAt).toLocaleDateString()}
                 </p>
               )}
-              {status === 'pending' && kycData?.submittedAt && (
+              {status === 'pending' && safeKycData.submittedAt && (
                 <p className="text-sm text-gray-500 mt-2">
-                  Submitted on: {new Date(kycData.submittedAt).toLocaleDateString()}
+                  Submitted on: {new Date(safeKycData.submittedAt).toLocaleDateString()}
                 </p>
               )}
             </div>
@@ -230,7 +247,7 @@ export default function KYC() {
   }
 
   // If already verified
-  if (kycData?.status === 'verified') {
+  if (safeKycData.status === 'verified') {
     return (
       <Layout>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -280,7 +297,7 @@ export default function KYC() {
   }
 
   // If pending
-  if (kycData?.status === 'pending') {
+  if (safeKycData.status === 'pending') {
     return (
       <Layout>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -389,8 +406,8 @@ export default function KYC() {
               <Button 
                 className="w-full" 
                 size="lg"
-                onClick={() => processPaymentMutation.mutate()}
-                disabled={processPaymentMutation.isPending}
+                onClick={() => createPaymentMutation.mutate()}
+                disabled={createPaymentMutation.isPending}
               >
                 <IndianRupee className="w-5 h-5 mr-2" />
                 Pay ₹99 and Continue
@@ -400,7 +417,7 @@ export default function KYC() {
         )}
 
         {/* Step 2: Upload Documents */}
-        {(step === 2 || (step === 1 && kycData?.paymentStatus === 'completed')) && (
+        {(step === 2 || (step === 1 && safeKycData.paymentStatus === 'completed')) && (
           <Card>
             <CardHeader>
               <CardTitle>Upload Documents</CardTitle>
@@ -495,38 +512,89 @@ export default function KYC() {
                 <Button 
                   variant="outline" 
                   onClick={() => setStep(1)}
-                  disabled={submitKYCMutation.isPending}
+                  disabled={uploadDocumentsMutation.isPending}
                 >
                   Back
                 </Button>
                 <Button 
                   className="flex-1"
                   onClick={handleSubmit}
-                  disabled={submitKYCMutation.isPending || !documents.aadhaar || !documents.pan || !documents.selfie}
+                  disabled={uploadDocumentsMutation.isPending || !documents.aadhaar || !documents.pan || !documents.selfie}
                 >
                   <Upload className="w-4 h-4 mr-2" />
-                  Submit Documents
+                  {uploadDocumentsMutation.isPending ? 'Uploading...' : 'Upload Documents & Continue to Payment'}
                 </Button>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Step 3: Verification */}
+        {/* Step 3: Payment */}
         {step === 3 && (
           <Card>
             <CardHeader>
-              <CardTitle>Documents Submitted Successfully</CardTitle>
+              <CardTitle>Complete Payment</CardTitle>
+              <CardDescription>Pay ₹99 KYC verification fee to complete the process</CardDescription>
             </CardHeader>
-            <CardContent className="text-center py-8">
-              <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-              <p className="text-lg font-medium mb-2">Your KYC documents have been submitted!</p>
-              <p className="text-gray-600">
-                We'll review your documents within 24-48 hours. You'll receive an email once verification is complete.
-              </p>
-              <Button className="mt-6" onClick={() => window.location.href = '/dashboard'}>
-                Go to Dashboard
-              </Button>
+            <CardContent className="space-y-6">
+              <Alert>
+                <CheckCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Your documents have been uploaded successfully. Complete the payment to submit for verification.
+                </AlertDescription>
+              </Alert>
+
+              <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-lg font-medium">KYC Verification Fee</span>
+                  <span className="text-2xl font-bold text-blue-600">₹99</span>
+                </div>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+                    One-time verification fee
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+                    Secure payment via Cashfree
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+                    Fast verification (24-48 hours)
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+                    Enable withdrawals upon approval
+                  </div>
+                </div>
+              </div>
+
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription>
+                  This payment is non-refundable and covers manual document verification costs. 
+                  You will be redirected to Cashfree's secure payment gateway.
+                </AlertDescription>
+              </Alert>
+
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setStep(2)}
+                  disabled={createPaymentMutation.isPending}
+                >
+                  Back to Documents
+                </Button>
+                <Button 
+                  className="flex-1 bg-green-600 hover:bg-green-700"
+                  size="lg"
+                  onClick={() => createPaymentMutation.mutate()}
+                  disabled={createPaymentMutation.isPending}
+                >
+                  <IndianRupee className="w-5 h-5 mr-2" />
+                  {createPaymentMutation.isPending ? 'Creating Payment...' : 'Pay ₹99 via Cashfree'}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         )}

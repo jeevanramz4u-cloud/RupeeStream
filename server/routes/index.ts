@@ -807,26 +807,127 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(payoutHistory);
   });
 
-  // User KYC endpoints
+  // KYC document upload endpoint
+  app.post('/api/users/kyc/upload', (req, res) => {
+    const userId = (req.session as any)?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    // Simulate document upload success
+    // In real implementation, this would handle file uploads to cloud storage
+    const { documentType, documentNumber, fullName } = req.body;
+    
+    res.json({
+      success: true,
+      message: 'Documents uploaded successfully',
+      uploadId: `upload_${Date.now()}`,
+      nextStep: 'payment'
+    });
+  });
+
+  // KYC payment session creation
+  app.post('/api/users/kyc/payment', async (req, res) => {
+    const userId = (req.session as any)?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    try {
+      const { createPaymentSession } = await import('../cashfree.js');
+      
+      // Get user data - in development, use sample data
+      const user = {
+        id: userId,
+        email: userId === 'user-001' ? 'demo@innovativetaskearn.online' : 'user@example.com',
+        firstName: userId === 'user-001' ? 'Demo' : 'User',
+        lastName: 'User',
+        phone: '+91 9876543210'
+      };
+
+      const orderId = `KYC_${userId}_${Date.now()}`;
+      const paymentSession = await createPaymentSession(
+        orderId,
+        99, // KYC fee amount
+        user.phone || '+91 9876543210',
+        user.email,
+        `${user.firstName} ${user.lastName}`,
+        'kyc_fee'
+      );
+
+      res.json({
+        success: true,
+        paymentUrl: `https://payments.cashfree.com/pay/${paymentSession.payment_session_id}`,
+        orderId: paymentSession.order_id,
+        amount: 99
+      });
+
+    } catch (error: any) {
+      console.error('Cashfree payment creation error:', error);
+      res.status(500).json({ 
+        error: 'Failed to create payment session',
+        details: error.message 
+      });
+    }
+  });
+
+  // KYC payment webhook
+  app.post('/api/kyc/payment-webhook', (req, res) => {
+    console.log('KYC Payment webhook received:', req.body);
+    
+    // Process webhook and update user KYC status
+    const { orderId, orderAmount, paymentStatus } = req.body;
+    
+    if (paymentStatus === 'PAID') {
+      // Extract userId from orderId (format: KYC_userId_timestamp)
+      const userId = orderId.split('_')[1];
+      
+      // Update user KYC payment status
+      console.log(`KYC payment completed for user ${userId}`);
+      
+      // In real implementation, update database
+      res.json({ status: 'OK' });
+    } else {
+      res.json({ status: 'Payment not completed' });
+    }
+  });
+
+  // User KYC status endpoint
   app.get('/api/users/kyc', (req, res) => {
     const userId = (req.session as any)?.userId;
     if (!userId) {
       return res.status(401).json({ error: 'Authentication required' });
     }
     
+    // Return KYC status based on user state
     const kycData = {
-      status: 'verified',
-      submittedAt: '2024-08-01T10:30:00Z',
-      verifiedAt: '2024-08-02T14:20:00Z',
-      documents: {
-        aadhaar: { uploaded: true, verified: true, maskedNumber: 'XXXX-XXXX-1234' },
-        pan: { uploaded: true, verified: true, maskedNumber: 'ABCDE1234F' },
-        selfie: { uploaded: true, verified: true }
-      },
-      paymentStatus: 'completed',
+      status: 'not_submitted', // can be: not_submitted, documents_uploaded, payment_pending, payment_completed, verified, rejected
+      documentsUploaded: false,
+      paymentStatus: 'pending',
       paymentAmount: 99,
-      paymentDate: '2024-08-01T11:00:00Z'
+      documents: {
+        aadhaar: { uploaded: false, verified: false },
+        pan: { uploaded: false, verified: false },
+        selfie: { uploaded: false, verified: false }
+      },
+      submittedAt: null as string | null,
+      verifiedAt: null as string | null,
+      rejectionReason: null
     };
+    
+    // If user has completed KYC (demo user)
+    if (userId === 'user-001') {
+      kycData.status = 'verified';
+      kycData.documentsUploaded = true;
+      kycData.paymentStatus = 'completed';
+      kycData.documents = {
+        aadhaar: { uploaded: true, verified: true },
+        pan: { uploaded: true, verified: true },
+        selfie: { uploaded: true, verified: true }
+      };
+      kycData.submittedAt = '2024-08-01T10:30:00Z';
+      kycData.verifiedAt = '2024-08-02T14:20:00Z';
+    }
     
     res.json(kycData);
   });
