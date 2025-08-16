@@ -170,36 +170,7 @@ export default function Home() {
           </div>
         ))}
         
-        {/* Slide Controls */}
-        <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3">
-          {heroSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 min-h-[32px] min-w-[32px] flex items-center justify-center ${
-                index === currentSlide ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'
-              }`}
-            >
-              <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${
-                index === currentSlide ? 'bg-white' : 'bg-transparent'
-              }`} />
-            </button>
-          ))}
-        </div>
-        
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-2 sm:left-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
-        >
-          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-2 sm:right-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
-        >
-          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-        </button>
+
       </section>
 
       {/* Enhanced Stats Section */}
