@@ -141,12 +141,10 @@ export function Layout({ children }: LayoutProps) {
               {/* Earnings Dropdown (for regular users) */}
               {user && user.role !== 'admin' && (
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="flex items-center space-x-1">
-                      <DollarSign className="w-4 h-4" />
-                      <span>Earnings</span>
-                      <ChevronDown className="w-3 h-3" />
-                    </Button>
+                  <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-3 py-1 space-x-1">
+                    <DollarSign className="w-4 h-4" />
+                    <span>Earnings</span>
+                    <ChevronDown className="w-3 h-3" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     {earningsMenuItems.map((item) => {
@@ -169,12 +167,10 @@ export function Layout({ children }: LayoutProps) {
               {/* Account Dropdown (for regular users) */}
               {user && user.role !== 'admin' && (
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="flex items-center space-x-1">
-                      <User className="w-4 h-4" />
-                      <span>Account</span>
-                      <ChevronDown className="w-3 h-3" />
-                    </Button>
+                  <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-3 py-1 space-x-1">
+                    <User className="w-4 h-4" />
+                    <span>Account</span>
+                    <ChevronDown className="w-3 h-3" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     {accountMenuItems.map((item) => {
@@ -197,12 +193,10 @@ export function Layout({ children }: LayoutProps) {
               {/* Admin Menu Dropdown */}
               {user?.role === 'admin' && (
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="flex items-center space-x-1">
-                      <Shield className="w-4 h-4" />
-                      <span>Admin</span>
-                      <ChevronDown className="w-3 h-3" />
-                    </Button>
+                  <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-3 py-1 space-x-1">
+                    <Shield className="w-4 h-4" />
+                    <span>Admin</span>
+                    <ChevronDown className="w-3 h-3" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuLabel>Administration</DropdownMenuLabel>
@@ -237,16 +231,14 @@ export function Layout({ children }: LayoutProps) {
               {/* User Menu */}
               {user ? (
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex items-center space-x-2">
-                      <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">
-                          {user.firstName?.[0]?.toUpperCase() || 'U'}
-                        </span>
-                      </div>
-                      <span className="hidden sm:inline">{user.firstName}</span>
-                      <ChevronDown className="w-3 h-3" />
-                    </Button>
+                  <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-3 py-1 space-x-2">
+                    <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">
+                        {user.firstName?.[0]?.toUpperCase() || 'U'}
+                      </span>
+                    </div>
+                    <span className="hidden sm:inline">{user.firstName}</span>
+                    <ChevronDown className="w-3 h-3" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuLabel>
