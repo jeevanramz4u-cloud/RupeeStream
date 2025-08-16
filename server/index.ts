@@ -1,10 +1,51 @@
 import express, { type Request, Response, NextFunction } from "express";
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 import { registerRoutes } from "./routes";
 import { PerformanceOptimizer } from "./performanceOptimizations";
 import { initializeSuspensionSystem } from "./suspensionSystem";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// Set trust proxy for rate limiting
+app.set('trust proxy', 1);
+
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "ws:", "wss:"],
+    },
+  },
+  crossOriginEmbedderPolicy: false
+}));
+
+// Rate limiting for authentication endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 requests per windowMs
+  message: { error: 'Too many authentication attempts, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// General rate limiting
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes  
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: { error: 'Too many requests, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/auth', authLimiter);
+app.use('/api', generalLimiter);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

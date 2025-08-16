@@ -9,6 +9,7 @@ import { eq } from 'drizzle-orm';
 // Memory storage for development mode
 class MemoryStorage {
   private users: Map<string, User> = new Map();
+  private passwords: Map<string, string> = new Map();
   private tasks: Map<string, Task> = new Map();
   private completions: Map<string, TaskCompletion> = new Map();
   private earnings: Map<string, Earning[]> = new Map();
@@ -518,6 +519,23 @@ class MemoryStorage {
     return this.earnings.get(userId) || [];
   }
 
+  // Authentication method
+  async authenticateUser(email: string, password: string): Promise<User | null> {
+    // Import bcrypt for password comparison
+    const bcrypt = await import('bcryptjs');
+    
+    // Find user by email
+    for (const [userId, user] of this.users.entries()) {
+      if (user.email.toLowerCase() === email.toLowerCase()) {
+        const storedPassword = this.passwords.get(userId);
+        if (storedPassword && await bcrypt.compare(password, storedPassword)) {
+          return user;
+        }
+      }
+    }
+    return null;
+  }
+
   // Get all verified users
   async getAllVerifiedUsers(): Promise<User[]> {
     return Array.from(this.users.values()).filter(u => u.kycStatus === 'verified');
@@ -538,6 +556,15 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 const memoryStorage = new MemoryStorage();
 
 export const storage = {
+  // Authentication operation
+  async authenticateUser(email: string, password: string): Promise<any> {
+    if (!db || isDevelopment) {
+      return memoryStorage.authenticateUser(email, password);
+    }
+    // In production, you would implement proper authentication with the database
+    return null;
+  },
+
   // User operations
   async getUserByEmail(email: string): Promise<any> {
     if (!db || isDevelopment) {

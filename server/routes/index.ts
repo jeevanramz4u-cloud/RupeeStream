@@ -34,7 +34,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(session(sessionConfig));
 
   // Simple auth check endpoint for now
-  app.get('/api/auth/check', (req, res) => {
+  app.get('/api/auth/check', async (req, res) => {
     if (req.session && (req.session as any).userId) {
       const userId = (req.session as any).userId;
       const role = (req.session as any).role;
@@ -51,75 +51,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
             balance: 0
           } 
         });
-      } else if (userId === 'user-001') {
-        res.json({ 
-          user: { 
-            id: 'user-001',
-            email: 'demo@innovativetaskearn.online',
-            role: 'user',
-            firstName: 'Demo',
-            lastName: 'User',
-            balance: 0
-          } 
-        });
       } else {
-        res.json({ user: { id: userId, role: role || 'user' } });
+        // Get user from storage for all other users
+        const { storage } = await import('../storage');
+        const user = await storage.getUserById(userId);
+        
+        if (user) {
+          res.json({ 
+            user: { 
+              id: user.id,
+              email: user.email,
+              role: user.role,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              balance: user.balance,
+              kycStatus: user.kycStatus,
+              verificationStatus: user.verificationStatus,
+              status: user.status
+            } 
+          });
+        } else {
+          res.json({ user: { id: userId, role: role || 'user' } });
+        }
       }
     } else {
       res.json({ user: null });
     }
   });
 
-  // Simple login endpoint for testing
+  // Login endpoint using storage authentication
   app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
-    console.log('Login attempt for:', email); // Debug log
     
-    // Development mode test users
-    if (process.env.NODE_ENV === 'development') {
-      // Check for suspended test user
-      if (email === 'suspended@innovativetaskearn.online' && password === 'test123') {
-        console.log('Suspended user login attempt'); // Debug log
-        res.status(403).json({ 
-          error: 'Account suspended',
-          requiresReactivation: true,
-          phone: '9876543210',
-          name: 'Test Suspended User'
-        });
-      } else if (email === 'admin@innovativetaskearn.online' && password === 'admin123') {
-        (req.session as any).userId = 'admin-001';
-        (req.session as any).role = 'admin';
-        console.log('Admin login successful'); // Debug log
+    // Basic validation - only check if completely empty
+    if (!email || !password || email.trim() === '' || password.trim() === '') {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+    
+    console.log('Login attempt for:', email);
+    
+    try {
+      const { storage } = await import('../storage');
+      const user = await storage.authenticateUser(email, password);
+      
+      if (user) {
+        // Check if account is suspended
+        if (user.status === 'suspended') {
+          console.log('Suspended user login attempt for:', email);
+          res.status(403).json({ 
+            error: 'Account suspended',
+            requiresReactivation: true,
+            phone: user.phone,
+            name: `${user.firstName} ${user.lastName}`,
+            suspensionReason: user.suspensionReason
+          });
+          return;
+        }
+        
+        // Set session
+        (req.session as any).userId = user.id;
+        (req.session as any).role = user.role;
+        
+        console.log(`${user.role === 'admin' ? 'Admin' : 'User'} login successful for: ${email}`);
+        
         res.json({ 
           success: true, 
           user: { 
-            id: 'admin-001', 
-            email: 'admin@innovativetaskearn.online',
-            role: 'admin',
-            firstName: 'Admin',
-            lastName: 'User'
-          } 
-        });
-      } else if (email === 'demo@innovativetaskearn.online' && password === 'demo123') {
-        (req.session as any).userId = 'user-001';
-        (req.session as any).role = 'user';
-        console.log('User login successful'); // Debug log
-        res.json({ 
-          success: true, 
-          user: { 
-            id: 'user-001', 
-            email: 'demo@innovativetaskearn.online',
-            role: 'user',
-            firstName: 'Demo',
-            lastName: 'User'
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            status: user.status,
+            kycStatus: user.kycStatus,
+            verificationStatus: user.verificationStatus,
+            balance: user.balance
           } 
         });
       } else {
-        console.log('Invalid credentials for:', email); // Debug log
+        console.log('Invalid credentials for:', email);
         res.status(401).json({ error: 'Invalid credentials' });
       }
-    } else {
-      res.status(401).json({ error: 'Login not implemented' });
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ error: 'Login failed' });
     }
   });
 
@@ -128,8 +143,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { firstName, lastName, email, phone, password } = req.body;
     console.log('Signup attempt for:', email);
     
+    // Comprehensive validation
     if (!firstName || !lastName || !email || !phone || !password) {
       return res.status(400).json({ error: 'All fields are required' });
+    }
+    
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+    
+    // Password strength validation
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+    }
+    
+    // Phone number validation (basic)
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({ error: 'Phone number must be 10 digits' });
     }
 
     // In development mode, create user in memory storage
